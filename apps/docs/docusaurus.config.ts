@@ -3,7 +3,7 @@ import type { Config } from '@docusaurus/types';
 
 const config: Config = {
 	title: 'agentCourses',
-	tagline: 'Healthcheck API',
+	tagline: 'Training course catalog API',
 	url: 'https://docs.agentcourses.localhost',
 	baseUrl: '/',
 	organizationName: 'agentcourses',

@@ -1,3 +1,6 @@
+import { listCourses } from '@axc/persistence';
+import { type CourseListResult, createCourseSearch, type RawCourseQuery } from './course-search.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -19,6 +22,9 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: {
+		search(rawQuery: RawCourseQuery): CourseListResult;
+	};
 }
 
 export interface ApplicationServicesFactory {
@@ -36,6 +42,12 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const searchCourses = createCourseSearch({
+		courses: {
+			list: listCourses,
+		},
+	});
+
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -49,7 +61,13 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses: {
+				search: searchCourses,
+			},
 		});
 
 	return { forRequest };
 }
+
+export type { CourseListResult, QueryParameterErrorDetail, RawCourseQuery } from './course-search.ts';
+export { QueryValidationError } from './course-search.ts';
