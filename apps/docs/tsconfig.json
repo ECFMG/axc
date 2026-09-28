@@ -1,17 +1,11 @@
 {
-	"extends": "@cellix/config-typescript/base",
+	"extends": ["@cellix/config-typescript/base", "@docusaurus/tsconfig"],
 	"compilerOptions": {
 		"types": ["@docusaurus/module-type-aliases"],
-		"jsx": "preserve",
-		"lib": ["ES2023", "DOM"],
-		"module": "ESNext", // Overrides @cellix/config-typescript/base.json. Docusaurus site packages stay untyped so webpack can parse require.resolveWeak.
-		"moduleResolution": "bundler", // Overrides @cellix/config-typescript/base.json
-		"moduleDetection": "force",
-		"noEmit": true,
-		"skipLibCheck": true, // Overrides @cellix/config-typescript/base.json. Docusaurus dependencies fail exactOptionalPropertyTypes.
 		"paths": {
 			"@site/*": ["./*"]
-		}
+		},
+		"ignoreDeprecations": "6.0"
 	},
 	"include": ["./src", "./docusaurus.config.*", "./sidebars.*"]
 }

@@ -19,16 +19,17 @@ catalog:
   '@serenity-js/assertions': 3.43.0
   '@serenity-js/console-reporter': 3.43.0
   '@serenity-js/core': 3.43.0
+  '@serenity-js/cucumber': 3.43.0
   '@serenity-js/rest': 3.43.0
   '@serenity-js/serenity-bdd': 3.43.0
   '@storybook/addon-vitest': ^10.4.2
   '@types/node': 24.10.1
   '@typescript/native-preview': 7.0.0-dev.20260428.1
-  '@vitest/browser-playwright': 4.1.10
-  '@vitest/coverage-istanbul': 4.1.10
+  '@vitest/browser-playwright': 4.1.11
+  '@vitest/coverage-istanbul': 4.1.11
   archunit: ^2.1.63
   graphql: ^16.10.0
-  hono: 4.12.25
+  hono: 4.13.10
   mongodb: 6.18.0
   mongodb-memory-server: ^10.1.4
   mongodb-memory-server-core: 10.1.4
@@ -39,7 +40,7 @@ catalog:
   rimraf: 6.0.1
   tsx: ^4.21.0
   typescript: 6.0.3
-  vitest: 4.1.10
+  vitest: 4.1.11
 
 auditConfig:
   ignoreGhsas: []
@@ -48,7 +49,12 @@ overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.18.0
-  serialize-javascript: 7.0.3
+  hono: 4.13.10
+  serialize-javascript: 7.1.2
+  sirv: 3.0.2
+  vitest: 4.1.11
+  '@vitest/browser-playwright': 4.1.11
+  '@vitest/mocker': 4.1.11
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
@@ -58,3 +64,6 @@ allowBuilds:
   core-js: false
   esbuild: false
   mongodb-memory-server: false
+
+minimumReleaseAgeExclude:
+  - hono@4.13.10

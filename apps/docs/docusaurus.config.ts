@@ -4,6 +4,9 @@ import type { Config } from '@docusaurus/types';
 const config: Config = {
 	title: 'agentCourses',
 	tagline: 'Healthcheck API',
+	future: {
+		v4: {},
+	},
 	url: 'https://docs.agentcourses.localhost',
 	baseUrl: '/',
 	organizationName: 'agentcourses',
@@ -13,6 +16,10 @@ const config: Config = {
 		hooks: {
 			onBrokenMarkdownLinks: 'throw',
 		},
+	},
+	i18n: {
+		defaultLocale: 'en',
+		locales: ['en'],
 	},
 	presets: [
 		[
@@ -31,4 +38,4 @@ const config: Config = {
 	],
 };
 
-export default config;
+module.exports = config satisfies Config;

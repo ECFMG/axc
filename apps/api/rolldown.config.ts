@@ -30,5 +30,6 @@ export default defineConfig(async () =>
 		repoRoot,
 		appPackageName: '@apps/api',
 		applicationNamespaces: ['@axc/'],
+		skipAliasNamespaces: ['hono'],
 	}),
 );

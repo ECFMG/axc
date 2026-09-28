@@ -1,0 +1,40 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-BRACES-19963945:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:43.527Z
+        created: 2026-09-28T22:36:43.528Z
+  SNYK-JS-DEEPMERGE-19964053:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:44.923Z
+        created: 2026-09-28T22:36:44.928Z
+  SNYK-JS-HTTPCACHESEMANTICS-19964064:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:46.295Z
+        created: 2026-09-28T22:36:46.299Z
+  SNYK-JS-HTTPCACHESEMANTICS-19964068:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:47.625Z
+        created: 2026-09-28T22:36:47.628Z
+  SNYK-JS-URIJS-19963961:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:48.966Z
+        created: 2026-09-28T22:36:48.969Z
+  SNYK-JS-URIJS-19963963:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:50.274Z
+        created: 2026-09-28T22:36:50.278Z
+  SNYK-JS-UUID-16133035:
+    - '*':
+        reason: uuid 11+ is ESM-only and breaks the Azure Functions bundle
+        expires: 2026-10-28T22:44:29.364Z
+        created: 2026-09-28T22:44:29.367Z
+patch: {}

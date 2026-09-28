@@ -7,7 +7,7 @@
 		"node": ">=24"
 	},
 	"scripts": {
-		"dev": "pnpm run proxy:ensure && turbo watch dev --filter=@apps/api",
+		"dev": "pnpm run proxy:ensure && turbo watch dev",
 		"proxy:ensure": "pnpm exec portless proxy start --https -p 1355 || true",
 		"test": "turbo run test test:acceptance",
 		"test:arch": "turbo run test:arch",
