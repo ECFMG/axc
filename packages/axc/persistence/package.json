@@ -20,14 +20,20 @@
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
+		"test": "vitest run --silent --reporter=dot",
+		"test:watch": "vitest",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
+		"@axc/domain": "workspace:*",
 		"@cellix/domain-seedwork": "workspace:*"
 	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",
+		"@cellix/config-vitest": "workspace:*",
+		"@vitest/coverage-istanbul": "catalog:",
 		"rimraf": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

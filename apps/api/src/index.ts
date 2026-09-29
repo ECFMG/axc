@@ -13,4 +13,6 @@ Cellix.initializeInfrastructureServices<ApiContext, ApplicationServices>((servic
 	})
 	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+	// host.json sets routePrefix to '', so the catalog route carries its own '/api' segment.
+	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
 	.startUp();
