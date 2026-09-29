@@ -16,12 +16,12 @@ catalog:
   '@azure/functions': 4.11.0
   '@cucumber/cucumber': 12.8.1
   '@cucumber/messages': 32.3.1
-  '@serenity-js/assertions': 3.43.0
-  '@serenity-js/console-reporter': 3.43.0
-  '@serenity-js/core': 3.43.0
-  '@serenity-js/cucumber': 3.43.0
-  '@serenity-js/rest': 3.43.0
-  '@serenity-js/serenity-bdd': 3.43.0
+  '@serenity-js/assertions': 3.46.0
+  '@serenity-js/console-reporter': 3.46.0
+  '@serenity-js/core': 3.46.0
+  '@serenity-js/cucumber': 3.46.0
+  '@serenity-js/rest': 3.46.0
+  '@serenity-js/serenity-bdd': 3.46.0
   '@storybook/addon-vitest': ^10.4.2
   '@types/node': 24.10.1
   '@typescript/native-preview': 7.0.0-dev.20260428.1
@@ -48,9 +48,10 @@ auditConfig:
 overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
-  axios: 1.18.0
+  axios: 1.20.0
   hono: 4.13.10
   serialize-javascript: 7.1.2
+  'shell-quote': 1.11.0
   sirv: 3.0.2
   vitest: 4.1.11
   '@vitest/browser-playwright': 4.1.11
@@ -67,3 +68,4 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - hono@4.13.10
+  - shell-quote@1.11.0

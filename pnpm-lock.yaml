@@ -19,23 +19,23 @@ catalogs:
       specifier: 32.3.1
       version: 32.3.1
     '@serenity-js/assertions':
-      specifier: 3.43.0
-      version: 3.43.0
+      specifier: 3.46.0
+      version: 3.46.0
     '@serenity-js/console-reporter':
-      specifier: 3.43.0
-      version: 3.43.0
+      specifier: 3.46.0
+      version: 3.46.0
     '@serenity-js/core':
-      specifier: 3.43.0
-      version: 3.43.0
+      specifier: 3.46.0
+      version: 3.46.0
     '@serenity-js/cucumber':
-      specifier: 3.43.0
-      version: 3.43.0
+      specifier: 3.46.0
+      version: 3.46.0
     '@serenity-js/rest':
-      specifier: 3.43.0
-      version: 3.43.0
+      specifier: 3.46.0
+      version: 3.46.0
     '@serenity-js/serenity-bdd':
-      specifier: 3.43.0
-      version: 3.43.0
+      specifier: 3.46.0
+      version: 3.46.0
     '@storybook/addon-vitest':
       specifier: ^10.4.2
       version: 10.6.0
@@ -88,9 +88,10 @@ catalogs:
 overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
-  axios: 1.18.0
+  axios: 1.20.0
   hono: 4.13.10
   serialize-javascript: 7.1.2
+  shell-quote: 1.11.0
   sirv: 3.0.2
   vitest: 4.1.11
   '@vitest/browser-playwright': 4.1.11
@@ -237,22 +238,22 @@ importers:
         version: 12.8.1
       '@serenity-js/assertions':
         specifier: 'catalog:'
-        version: 3.43.0
+        version: 3.46.0
       '@serenity-js/console-reporter':
         specifier: 'catalog:'
-        version: 3.43.0
+        version: 3.46.0
       '@serenity-js/core':
         specifier: 'catalog:'
-        version: 3.43.0
+        version: 3.46.0
       '@serenity-js/cucumber':
         specifier: 'catalog:'
-        version: 3.43.0(@cucumber/cucumber@12.8.1)
+        version: 3.46.0(@cucumber/cucumber@12.8.1)
       '@serenity-js/rest':
         specifier: 'catalog:'
-        version: 3.43.0(supports-color@8.1.1)
+        version: 3.46.0
       '@serenity-js/serenity-bdd':
         specifier: 'catalog:'
-        version: 3.43.0
+        version: 3.46.0
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -634,7 +635,7 @@ importers:
         version: 20.10.1
       '@serenity-js/core':
         specifier: 'catalog:'
-        version: 3.43.0
+        version: 3.46.0
       graphql:
         specifier: 'catalog:'
         version: 16.14.2
@@ -1862,8 +1863,8 @@ packages:
   '@cucumber/gherkin@38.0.0':
     resolution: {integrity: sha512-duEXK+KDfQUzu3vsSzXjkxQ2tirF5PRsc1Xrts6THKHJO6mjw4RjM8RV+vliuDasmhhrmdLcOcM7d9nurNTJKw==}
 
-  '@cucumber/gherkin@39.1.0':
-    resolution: {integrity: sha512-pqmSO2bUWxJm3TbNrKXlDaHjL6c77+ez9kWmfCd9oRPeTRPEVH3spZvpAqdXYWOZYSNYwWFCAAeZ4RGpkauNoQ==}
+  '@cucumber/gherkin@42.0.1':
+    resolution: {integrity: sha512-Kqg0ULhWqbXp/a1c04ND4sS4KTlIL831tQ0NhZLXWdEhT6LiNsZ5LFRzy/lBy7QQpcKhroKp/i3C2WdEnRBKNg==}
 
   '@cucumber/html-formatter@23.0.0':
     resolution: {integrity: sha512-WwcRzdM8Ixy4e53j+Frm3fKM5rNuIyWUfy4HajEN+Xk/YcjA6yW0ACGTFDReB++VDZz/iUtwYdTlPRY36NbqJg==}
@@ -1885,6 +1886,9 @@ packages:
 
   '@cucumber/messages@32.3.1':
     resolution: {integrity: sha512-yNQq1KoXRYaEKrWMFmpUQX7TdeQuU9jeGgJAZ3dArTsC/T4NpJ6DnqaJIIgwPnz/wtQIQTNX7/h0rOuF5xY4qQ==}
+
+  '@cucumber/messages@34.2.1':
+    resolution: {integrity: sha512-aj2iCAG9ZOpMVcMxcgShifv5fbR96b7SMgdWcPXXh2QbFp7OEcAnQ5MC5YfWUDSDasmw7FU5NJEsOrXdTQOU1A==}
 
   '@cucumber/pretty-formatter@1.0.1':
     resolution: {integrity: sha512-A1lU4VVP0aUWdOTmpdzvXOyEYuPtBDI0xYwYJnmoMDplzxMdhcHk86lyyvYDoMoPzzq6OkOE3isuosvUU4X7IQ==}
@@ -3145,23 +3149,23 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@serenity-js/assertions@3.43.0':
-    resolution: {integrity: sha512-ZcBhu4hs8fT25JqUMXsflVqnPt+8xCeIKT7IKfKaO6/2bsVFa+H+cHZY3tlwERNbTT0M053TLdImf438o2dcZw==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/assertions@3.46.0':
+    resolution: {integrity: sha512-CYoIENNLRu+OVKTmms1UGcIhqdB0s4Xk58zCoedaJpJ8gA/DiX85pvwn9wF3p/HAalswrjwMuroGnOKjVOskNQ==}
+    engines: {node: ^22.22.2 || ^24.15.0}
 
-  '@serenity-js/console-reporter@3.43.0':
-    resolution: {integrity: sha512-IqQCvg21qqBEWeZr+0DwhA49begHBhRqQ/E/z8mv7Ec3KW9EA4uT8ABMJmP4hEgTJNiEAq13q9Ac7P/Wq8tVTQ==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/console-reporter@3.46.0':
+    resolution: {integrity: sha512-be55UNeHkNDFEJJuyl78QfZwl7XI+AZXsQbG7cDEOGRojdG163ZTfj1V85THdqmOIjE/BYgZhIOVjXYsa0ygdA==}
+    engines: {node: ^22.22.2 || ^24.15.0}
 
-  '@serenity-js/core@3.43.0':
-    resolution: {integrity: sha512-r9MfqbSgOfnedPjbykShPDrje77HiEjER6i4+URxh6/TfH71fzAFvCB4dx01ts0Z6xWik+8/opbIewenekTKxg==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/core@3.46.0':
+    resolution: {integrity: sha512-wtm5oYuaiTqCvE0SAvuiMJikCwl9z97G9vgLJmt3jx2wjhjqew6ka2B9wTEUbtR5l3SYU51sAqzrM/4FiYeKDQ==}
+    engines: {node: ^22.22.2 || ^24.15.0}
 
-  '@serenity-js/cucumber@3.43.0':
-    resolution: {integrity: sha512-9mUoEWZKnqzwD9x31di8b0hj3ohdo0On6feHtJyytIeSZuPOOJM+OuICXQp8zOSFjc7I6VqQyeN7hHVLa+l6IQ==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/cucumber@3.46.0':
+    resolution: {integrity: sha512-coPxBL0z1ZoXjv3GtVBqlG0xN3E3+vTqKHWJExNqq1UsnUNVUloNdPPeHtj1fVVyMXxTgCQ7zaNWRyieZW+OKg==}
+    engines: {node: ^22.22.2 || ^24.15.0}
     peerDependencies:
-      '@cucumber/cucumber': ^7.3.2 || ^8.5.0 || ^9.1.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      '@cucumber/cucumber': ^7.3.2 || ^8.5.0 || ^9.1.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
       cucumber: ^1.3.3 || ^2.3.1 || ^3.2.1 || ^4.2.1 || ^5.0.0 || ^6.0.0
     peerDependenciesMeta:
       '@cucumber/cucumber':
@@ -3169,13 +3173,13 @@ packages:
       cucumber:
         optional: true
 
-  '@serenity-js/rest@3.43.0':
-    resolution: {integrity: sha512-LVGNgJX5qz3rwSBV9Nw/uL0FIqZv2d4pLRM9Kki1V+mFBjEfawai8tRsTIcnP0YHbr0nxG0UtEEFv+LzMpnrcg==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/rest@3.46.0':
+    resolution: {integrity: sha512-fZmsQweCOzzPRjU4q8IezYU8XC3GpxtR1x6rW9d5ivy9SKzfa2XC+LqvHB+Kz3+OOzyhFCMgFnr/1CggcNlX2g==}
+    engines: {node: ^22.22.2 || ^24.15.0}
 
-  '@serenity-js/serenity-bdd@3.43.0':
-    resolution: {integrity: sha512-Y+1qzmrsGcd10alhZoYGOLb0flXQrLNz6momjEwDbQFGz+KfFJ++xaRL+kzbg7PAyBOsPOrFPMoLyKpXGvAQmw==}
-    engines: {node: ^20 || ^22 || ^24}
+  '@serenity-js/serenity-bdd@3.46.0':
+    resolution: {integrity: sha512-h7rlYJS2MHpabsgrIto/l5KVr+KOYtZHb38JRw1fUxfUUadMtlzJvreP+KEECkc9UR3x3nqhGl/9LlXfnQQeng==}
+    engines: {node: ^22.22.2 || ^24.15.0}
     hasBin: true
 
   '@sideway/address@4.1.5':
@@ -3918,8 +3922,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axios@1.18.0:
-    resolution: {integrity: sha512-E32NzpYKp++W7XRe52rHiXV2ehxmh3wbdgO7MHeFM+vqxLBYHzt0ElkiImtOBxtOmyp0yoC8C6uESVV84Y2/hw==}
+  axios@1.20.0:
+    resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
 
   b4a@1.9.0:
     resolution: {integrity: sha512-dpfcF9fDNR6++cthXR67iyhgqWy9CBouAvIWhIntzBG6cvK/cnIPiZQjBwi/ZqjjBEDGfoNDtmB0kTjroOJ3pQ==}
@@ -4226,9 +4230,9 @@ packages:
   cliui@7.0.4:
     resolution: {integrity: sha512-OcRE68cOsVMXp1Yvonl/fzkQOyjLSu/8bhPDfQt0e0/Eb283TKP20Fs2MqoPsr9SwA595rRCA+QMzYc9nBP+JQ==}
 
-  cliui@8.0.1:
-    resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
-    engines: {node: '>=12'}
+  cliui@9.0.1:
+    resolution: {integrity: sha512-k7ndgKhwoQveBL+/1tqGJYNz097I7WOvwbmmU2AR5+magtbjPWQTS1C5vzGkBC8Ym8UWRzfKUzUUqFLypY4Q+w==}
+    engines: {node: '>=20'}
 
   clone-deep@4.0.1:
     resolution: {integrity: sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ==}
@@ -5827,8 +5831,8 @@ packages:
     resolution: {integrity: sha512-ozCC6gdQ+glXOQsveKD0YsDy8DSQFjDTz4zyzEHNV5+JP5D62LmfDZ6o1cycFx9ouG940M5dE8C8CTewdj2YWQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  lru-cache@11.3.6:
-    resolution: {integrity: sha512-Gf/KoL3C/MlI7Bt0PGI9I+TeTC/I6r/csU58N4BSNc4lppLBeKsOdFYkK+dX0ABDUMJNfCHTyPpzwwO21Awd3A==}
+  lru-cache@11.5.2:
+    resolution: {integrity: sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==}
     engines: {node: 20 || >=22}
 
   lru-cache@11.5.3:
@@ -7475,11 +7479,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.8.0:
-    resolution: {integrity: sha512-AcM7dV/5ul4EekoQ29Agm5vri8JNqRyj39o0qpX6vDF2GZrtutZl5RwgD1XnZjiTAfncsJhMI48QQH3sN87YNA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
     engines: {node: '>=10'}
@@ -7535,8 +7534,8 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shell-quote@1.10.0:
-    resolution: {integrity: sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==}
+  shell-quote@1.11.0:
+    resolution: {integrity: sha512-JdxDPD0DBTyu08pq0kPC0xSNet/qsU07qT6IsX1AS8oO2ICNRY4ldNa8OAI6PuwAH8tG3lxEhbqmyp4Dw4036g==}
     engines: {node: '>= 0.4'}
 
   side-channel-list@1.0.1:
@@ -8118,9 +8117,9 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
-  upath@2.0.1:
-    resolution: {integrity: sha512-1uEe95xksV1O0CYKXo8vQvN1JEbtJp7lb7C5U9HMsIp6IVwntkH/oNUzyVNQSd4S1sYk2FpSSW44FqMc8qee5w==}
-    engines: {node: '>=4'}
+  upath@3.0.8:
+    resolution: {integrity: sha512-YAsrLMIlhfSCm9rga5TZsJ1mXgahs7N0qOTokzU8mFz35hUrYMvVkaEPefI3rEb/vkAWAOj1Km/qdije9RC1kQ==}
+    engines: {node: '>=20'}
 
   update-browserslist-db@1.3.3:
     resolution: {integrity: sha512-pJ2sYawQS0R/WI928Gj5GlPhTGzbMelq0+4INtSYNDV9ErKJcX6xjGWkoG/VnB3dpUm00zALaqkrUD77pO5TDQ==}
@@ -8182,9 +8181,9 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
-  validate-npm-package-name@7.0.2:
-    resolution: {integrity: sha512-hVDIBwsRruT73PbK7uP5ebUt+ezEtCmzZz3F59BSr2F6OVFnJ/6h8liuvdLrQ88Xmnk6/+xGGuq+pG9WwTuy3A==}
-    engines: {node: ^20.17.0 || >=22.9.0}
+  validate-npm-package-name@8.0.0:
+    resolution: {integrity: sha512-SCv6OOV6Xj2/3cXy3dGmADluJTNcL3o7hZAglNPTe+WYuEuvxgJzxPrSDLZhF+CwyQOubqgecjMmTJGMVLWjYQ==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   value-equal@1.0.1:
     resolution: {integrity: sha512-NOJ6JZCAWr0zlxZt+xqCHNTEKOsrks2HQd4MqhP1qy4z1SkbEP467eNx6TgDKXMvUOb+OENfJCZwM+16n7fRfw==}
@@ -8398,9 +8397,9 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  which@6.0.1:
-    resolution: {integrity: sha512-oGLe46MIrCRqX7ytPUf66EAYvdeMIZYn3WaocqqKZAxrBpkqHfL/qvTyJ/bTk5+AqHCjXmrv3CEWgy368zhRUg==}
-    engines: {node: ^20.17.0 || >=22.9.0}
+  which@7.0.0:
+    resolution: {integrity: sha512-RancgH2dmbLdHl6LRhEqvklWMgl/Hdnun0Y90KhBOLkMefg8Qa7/Zel8Sm+8HEcP6DEjzsWzpkuBQEZok58isA==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     hasBin: true
 
   why-is-node-running@2.3.0:
@@ -8493,17 +8492,17 @@ packages:
     resolution: {integrity: sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==}
     engines: {node: '>=10'}
 
-  yargs-parser@21.1.1:
-    resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
-    engines: {node: '>=12'}
+  yargs-parser@22.0.0:
+    resolution: {integrity: sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
   yargs@16.2.2:
     resolution: {integrity: sha512-Nt9ZJjXTv5R8MHbqby/wXQ6Gi0Bb3TcYZkR1bzuL4yB2OxWPkXknz513gEF0GoA6tn00UpbPvERW8rzCuWCA6w==}
     engines: {node: '>=10'}
 
-  yargs@17.7.2:
-    resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
-    engines: {node: '>=12'}
+  yargs@18.1.0:
+    resolution: {integrity: sha512-2rAgRKu54VsHkqI0/tYkmluGXHD4KW7yZoycuqDQ15QOTnc2VVfy0nN/1eMhnQLO00A+dwtK20xuCnc1YGeUyg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
   yauzl@3.4.0:
     resolution: {integrity: sha512-jIH9yLR9wqr0wOS0TpBvo/g/2UgZH5qePVbjgRliiF0BYvOZyaBknKsF+x9Iht0O6sqgnB93rCICdOZFecJuDw==}
@@ -9961,9 +9960,9 @@ snapshots:
     dependencies:
       '@cucumber/messages': 32.3.1
 
-  '@cucumber/gherkin@39.1.0':
+  '@cucumber/gherkin@42.0.1':
     dependencies:
-      '@cucumber/messages': 32.3.1
+      '@cucumber/messages': 34.2.1
 
   '@cucumber/html-formatter@23.0.0(@cucumber/messages@32.2.0)':
     dependencies:
@@ -9991,6 +9990,8 @@ snapshots:
     dependencies:
       class-transformer: 0.5.1
       reflect-metadata: 0.2.2
+
+  '@cucumber/messages@34.2.1': {}
 
   '@cucumber/pretty-formatter@1.0.1(@cucumber/cucumber@12.8.1)(@cucumber/messages@32.2.0)':
     dependencies:
@@ -11862,18 +11863,18 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@serenity-js/assertions@3.43.0':
+  '@serenity-js/assertions@3.46.0':
     dependencies:
-      '@serenity-js/core': 3.43.0
+      '@serenity-js/core': 3.46.0
       tiny-types: 2.0.5
 
-  '@serenity-js/console-reporter@3.43.0':
+  '@serenity-js/console-reporter@3.46.0':
     dependencies:
-      '@serenity-js/core': 3.43.0
+      '@serenity-js/core': 3.46.0
       chalk: 4.1.2
       tiny-types: 2.0.5
 
-  '@serenity-js/core@3.43.0':
+  '@serenity-js/core@3.46.0':
     dependencies:
       '@paralleldrive/cuid2': 2.3.1
       chalk: 4.1.2
@@ -11882,47 +11883,47 @@ snapshots:
       fast-glob: 3.3.3
       filenamify: 4.3.0
       graceful-fs: 4.2.11
-      semver: 7.8.0
+      semver: 7.8.5
       tiny-types: 2.0.5
-      upath: 2.0.1
-      validate-npm-package-name: 7.0.2
+      upath: 3.0.8
+      validate-npm-package-name: 8.0.0
 
-  '@serenity-js/cucumber@3.43.0(@cucumber/cucumber@12.8.1)':
+  '@serenity-js/cucumber@3.46.0(@cucumber/cucumber@12.8.1)':
     dependencies:
-      '@cucumber/gherkin': 39.1.0
-      '@cucumber/messages': 32.3.1
-      '@serenity-js/core': 3.43.0
+      '@cucumber/gherkin': 42.0.1
+      '@cucumber/messages': 34.2.1
+      '@serenity-js/core': 3.46.0
       cli-table3: 0.6.5
       tiny-types: 2.0.5
     optionalDependencies:
       '@cucumber/cucumber': 12.8.1
 
-  '@serenity-js/rest@3.43.0(supports-color@8.1.1)':
+  '@serenity-js/rest@3.46.0':
     dependencies:
-      '@serenity-js/core': 3.43.0
+      '@serenity-js/core': 3.46.0
       agent-base: 7.1.4
-      axios: 1.18.0(supports-color@8.1.1)
-      http-proxy-agent: 7.0.2(supports-color@8.1.1)
-      https-proxy-agent: 7.0.6(supports-color@8.1.1)
-      lru-cache: 11.3.6
+      axios: 1.20.0
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.6
+      lru-cache: 11.5.2
       tiny-types: 2.0.5
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@serenity-js/serenity-bdd@3.43.0':
+  '@serenity-js/serenity-bdd@3.46.0':
     dependencies:
-      '@serenity-js/assertions': 3.43.0
-      '@serenity-js/core': 3.43.0
-      '@serenity-js/rest': 3.43.0(supports-color@8.1.1)
+      '@serenity-js/assertions': 3.46.0
+      '@serenity-js/core': 3.46.0
+      '@serenity-js/rest': 3.46.0
       ansi-regex: 5.0.1
-      axios: 1.18.0(supports-color@8.1.1)
+      axios: 1.20.0
       chalk: 4.1.2
       find-java-home: 2.0.0
       progress: 2.0.3
       tiny-types: 2.0.5
-      which: 6.0.1
-      yargs: 17.7.2
+      which: 7.0.0
+      yargs: 18.1.0
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -12630,7 +12631,7 @@ snapshots:
 
   address@2.0.3: {}
 
-  agent-base@6.0.2(supports-color@8.1.1):
+  agent-base@6.0.2:
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -12797,11 +12798,11 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.18.0(supports-color@8.1.1):
+  axios@1.20.0:
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
       form-data: 4.0.6
-      https-proxy-agent: 5.0.1(supports-color@8.1.1)
+      https-proxy-agent: 5.0.1
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
@@ -13154,11 +13155,11 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  cliui@8.0.1:
+  cliui@9.0.1:
     dependencies:
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      wrap-ansi: 7.0.0
+      string-width: 7.2.0
+      strip-ansi: 7.2.0
+      wrap-ansi: 9.0.2
 
   clone-deep@4.0.1:
     dependencies:
@@ -14354,7 +14355,7 @@ snapshots:
 
   http-parser-js@0.5.10: {}
 
-  http-proxy-agent@7.0.2(supports-color@8.1.1):
+  http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -14386,14 +14387,14 @@ snapshots:
       quick-lru: 5.1.1
       resolve-alpn: 1.2.1
 
-  https-proxy-agent@5.0.1(supports-color@8.1.1):
+  https-proxy-agent@5.0.1:
     dependencies:
-      agent-base: 6.0.2(supports-color@8.1.1)
+      agent-base: 6.0.2
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.6(supports-color@8.1.1):
+  https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -14682,7 +14683,7 @@ snapshots:
   launch-editor@2.14.1:
     dependencies:
       picocolors: 1.1.1
-      shell-quote: 1.10.0
+      shell-quote: 1.11.0
 
   leven@3.1.0: {}
 
@@ -14813,7 +14814,7 @@ snapshots:
 
   lowercase-keys@3.0.0: {}
 
-  lru-cache@11.3.6: {}
+  lru-cache@11.5.2: {}
 
   lru-cache@11.5.3: {}
 
@@ -15452,7 +15453,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
-      https-proxy-agent: 7.0.6(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6
       mongodb: 6.21.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
@@ -15479,7 +15480,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3)
-      https-proxy-agent: 7.0.6(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6
       mongodb: 6.18.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
@@ -15506,7 +15507,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
-      https-proxy-agent: 7.0.6(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6
       mongodb: 6.18.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
@@ -16952,8 +16953,6 @@ snapshots:
 
   semver@7.7.4: {}
 
-  semver@7.8.0: {}
-
   semver@7.8.5: {}
 
   send@0.19.2:
@@ -17040,7 +17039,7 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shell-quote@1.10.0: {}
+  shell-quote@1.11.0: {}
 
   side-channel-list@1.0.1:
     dependencies:
@@ -17611,7 +17610,7 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  upath@2.0.1: {}
+  upath@3.0.8: {}
 
   update-browserslist-db@1.3.3(browserslist@4.29.0):
     dependencies:
@@ -17676,7 +17675,7 @@ snapshots:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
 
-  validate-npm-package-name@7.0.2: {}
+  validate-npm-package-name@8.0.0: {}
 
   value-equal@1.0.1: {}
 
@@ -17965,7 +17964,7 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  which@6.0.1:
+  which@7.0.0:
     dependencies:
       isexe: 4.0.0
 
@@ -18033,7 +18032,7 @@ snapshots:
 
   yargs-parser@20.2.9: {}
 
-  yargs-parser@21.1.1: {}
+  yargs-parser@22.0.0: {}
 
   yargs@16.2.2:
     dependencies:
@@ -18045,15 +18044,14 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 20.2.9
 
-  yargs@17.7.2:
+  yargs@18.1.0:
     dependencies:
-      cliui: 8.0.1
+      cliui: 9.0.1
       escalade: 3.2.0
       get-caller-file: 2.0.5
-      require-directory: 2.1.1
-      string-width: 4.2.3
+      string-width: 8.2.2
       y18n: 5.0.8
-      yargs-parser: 21.1.1
+      yargs-parser: 22.0.0
 
   yauzl@3.4.0:
     dependencies:
