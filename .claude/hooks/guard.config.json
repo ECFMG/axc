@@ -1,0 +1,63 @@
+{
+	"_comment": "Tune this file, not guard.py. Patterns are Python regex, matched case-insensitively against the full bash command string.",
+	"bash_deny": [
+		[">>?\\s*\\S*\\.env\\b", "Redirecting output into a secrets file."],
+		["\\b(tee|cp|mv|sed\\s+-i\\S*)\\b[^|;&]*\\s\\S*\\.env\\b", "Modifying a secrets file."],
+		["\\brm\\s+(?=(?:-\\S+\\s+)*-\\S*[rR])(?:-\\S+\\s+)+(/|~|\\$HOME|\\$\\{HOME\\})(?=[\\s/*]|$)", "Recursive delete rooted at / or the home directory."],
+		["\\brm\\s+(?=(?:-\\S+\\s+)*-\\S*[rRf])(?:-\\S+\\s+)+/(usr|etc|var|bin|sbin|lib|opt|boot|System|Library|Users|home|Applications)(?=[\\s/]|$)", "Recursive delete of a system directory."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)rm\\s+(?:-\\S+\\s+)*\\*(\\s|$)", "Unqualified wildcard delete."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)git\\s+push\\b[^|;&]*\\s(--force|--force-with-lease|-f)(\\s|$)", "Force push. Do this yourself if you really mean it."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+push\\s+\\S+\\s+(main|master|prod|production)(\\s|$)", "Direct push to a protected branch. Open a PR."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+reset\\s+--hard", "Discards uncommitted work irreversibly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+clean\\s+-[a-zA-Z]*[fd]", "Deletes untracked files irreversibly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+checkout\\s+\\.\\s*$", "Discards all unstaged changes."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(curl|wget)\\b[^|]*\\|\\s*(sudo\\s+)?(ba)?sh", "Piping a download straight into a shell."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)sudo\\s", "Elevated privileges. Run this yourself."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)chmod\\s+(-R\\s+)?777\\b", "World-writable permissions."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)dd\\b[^|;&]*\\bof=/dev/", "Raw device write."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(npm|yarn|pnpm)\\s+publish\\b", "Publishes a package publicly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(npm|yarn|pnpm)\\s+publish\\b", "Publishes a package publicly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)history\\s+-c\\b", "Clearing shell history."],
+		["\\b(psql|mysql|mariadb|sqlite3|mongosh?|sqlcmd|snowsql)\\b[^|;&]*\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE)\\b", "Destructive SQL."],
+		["\\b(psql|mysql|mariadb|sqlite3|mongosh?|sqlcmd|snowsql)\\b[^|;&]*\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE)\\b", "Destructive SQL."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)kubectl\\s+delete\\b", "Deletes cluster resources."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)terraform\\s+(destroy|apply)\\b", "Mutates real infrastructure."],
+		["\\baws\\s+\\S+\\s+(delete|terminate|remove)", "Destructive cloud operation."],
+		[
+			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(curl|wget)\\b(?![^|;&]*<<)[^|;&]*(\\s-X\\s*(POST|PUT|PATCH|DELETE)|\\s--data|\\s--post-data|\\s--form\\b|\\s-d\\s)",
+			"Calling external services (SRD data restriction: no external system calls)."
+		],
+		[
+			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(npm|pnpm|yarn)\\s+(add|install)\\s+(?:-{1,2}[A-Za-z][\\w-]*\\s+)*[A-Za-z@._/][^\\s;&|]*",
+			"Adding a dependency. The SRD forbids new dependencies unless clearly justified; state the need in your implementation notes instead of installing. (Plain `install` to restore the lockfile is allowed.)"
+		]
+	],
+	"bash_ask": [],
+	"path_deny": [
+		["(^|/)\\.env(\\.|$)", "Secrets file."],
+		["(^|/)\\.git/", "Git internals."],
+		["(^|/)(id_rsa|id_ed25519|\\.pem|\\.p12|\\.keystore)$", "Private key material."],
+		["(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|poetry\\.lock|Cargo\\.lock|Gemfile\\.lock)$", "Lockfile. Change it via the package manager."],
+		["(^|/)(node_modules|vendor|dist|build|\\.next|target|__pycache__)/", "Generated or vendored output."],
+		["\\.(min\\.js|min\\.css|pb\\.go|generated\\.ts|g\\.dart)$", "Generated file. Edit the source."],
+		["(^|/)(migrations)/.*\\.(sql|py|js|ts)$", "Applied migration. Add a new one instead."],
+		["(^|/)(azure-pipelines\\.ya?ml|\\.github/workflows/.*|build-pipeline/.*|Dockerfile|host\\.json)$", "Deployment pipeline / production configuration (SRD Do-Not-Modify)."],
+		["(^|/)(auth|authentication)/.*", "Authentication code (SRD Do-Not-Modify)."]
+	],
+	"max_bash_output_chars": 30000,
+	"path_ask": [],
+	"_comment_srd": "SRD 'The harness must not modify' list, enforced: production/deployment config, authentication, secrets/env, dependencies (ask-gated), external calls. allowed_write_globs, when set per task (e.g. from the Task Set's Allowed Write Boundary), denies ALL writes outside it.",
+	"allowed_write_globs": [
+		"apps/api/**",
+		"apps/docs/**",
+		"packages/cellix/**",
+		"packages/axc/rest/**",
+		"packages/axc/application-services/**",
+		"packages/axc/domain/**",
+		"packages/axc/persistence/**",
+		"packages/axc/service-mongoose/**",
+		"packages/axc/**",
+		"packages/axc-verification/**"
+	],
+	"_comment_eval": "Iteration 2. allowed_write_globs is the Task A boundary from this repo's task-set-a-prompt.md. Anything outside it \u2014 including pnpm-lock.yaml at the root, which the baseline wrote \u2014 is denied."
+}
