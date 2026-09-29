@@ -1,5 +1,12 @@
+import type { CourseReadRepository } from '@axc/domain';
 import { describe, expect, it } from 'vitest';
-import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
+import { type ApiContext, buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
+
+const emptyCourseRepository: CourseReadRepository = {
+	search: (criteria) => Promise.resolve({ items: [], page: criteria.page, pageSize: criteria.pageSize, totalItems: 0, totalPages: 0 }),
+};
+
+const context: ApiContext = { environment: 'test', courses: emptyCourseRepository };
 
 describe('healthcheck', () => {
 	it('maps runtime environments', () => {
@@ -10,7 +17,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory(context).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
