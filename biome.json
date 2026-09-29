@@ -168,7 +168,7 @@
 		},
 		{ "includes": ["**/src/**/*.ts"], "javascript": { "globals": [] } },
 		{
-			"includes": ["build-pipeline/scripts/**/*.{c|m}js", "packages/cellix/local-dev/bin/**/*.mjs"],
+			"includes": ["build-pipeline/scripts/**/*.{c|m}js", "packages/cellix/local-dev/bin/**/*.mjs", "apps/docs/sidebars.ts", "apps/docs/docusaurus.config.ts"],
 			"linter": { "rules": { "style": { "noCommonJs": "off" } } }
 		},
 		{

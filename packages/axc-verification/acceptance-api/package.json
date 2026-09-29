@@ -5,7 +5,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"test:acceptance": "NODE_ENV=test NODE_OPTIONS='--import tsx/esm' cucumber-js && pnpm exec serenity-bdd run --destination ./target/site/serenity",
+		"test:acceptance": "rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features",
 		"typecheck": "tsgo --noEmit",
 		"lint": "biome lint",
 		"format": "biome format --write",
@@ -17,6 +17,7 @@
 		"@serenity-js/assertions": "catalog:",
 		"@serenity-js/console-reporter": "catalog:",
 		"@serenity-js/core": "catalog:",
+		"@serenity-js/cucumber": "catalog:",
 		"@serenity-js/rest": "catalog:",
 		"@serenity-js/serenity-bdd": "catalog:",
 		"@cellix/serenity-framework": "workspace:*"

@@ -1,0 +1,18 @@
+default:
+  paths:
+    - src/features/**/*.feature
+  requireModule:
+    - tsx/cjs
+  require:
+    - src/serenity.ts
+    - src/world.ts
+    - src/step-definitions/**/*.steps.ts
+  format:
+    - progress-bar
+    - json:target/cucumber-report-api.json
+    - html:target/cucumber-report-api.html
+    - '@serenity-js/cucumber'
+  formatOptions:
+    snippetInterface: async-await
+    specDirectory: src/features
+  parallel: 0

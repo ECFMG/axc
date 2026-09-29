@@ -1,7 +1,7 @@
-import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
+type SidebarsConfig = import('@docusaurus/plugin-content-docs').SidebarsConfig;
 
-const sidebars: SidebarsConfig = {
+const sidebars = {
 	docs: ['intro', 'healthcheck'],
-};
+} satisfies SidebarsConfig;
 
-export default sidebars;
+module.exports = sidebars;
