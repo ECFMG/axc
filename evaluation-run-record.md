@@ -9,7 +9,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Reviewer | |
 | Harness | Codex |
 | Model | GPT-5.6 Sol (High) |
-| License / Plan | Self Serve Business Pro Lite |
+| License / Plan | Business (self_serve_business_prolite) |
 | Codebase | ECFMG/axc |
 | Task Set | A — TS-A-CATALOG-SEARCH |
 | Run Type | Baseline |
@@ -23,7 +23,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Input Tokens | 7690500 |
 | Cached Tokens | 7544448 |
 | Output Tokens | 35572 |
-| Total Tokens or Credits Used | Not exposed by the harness |
+| Total Tokens or Credits Used | 7726072 |
 | Estimated Cost | Not available |
 | Elapsed Time | 31m 52s |
 | Number of Human Interventions / Redirects | 0 |
