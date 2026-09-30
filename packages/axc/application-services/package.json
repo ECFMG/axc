@@ -24,6 +24,10 @@
 		"test:watch": "vitest",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
+	"dependencies": {
+		"@axc/domain": "workspace:*",
+		"@axc/persistence": "workspace:*"
+	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
