@@ -1,3 +1,5 @@
+import { type CourseListQueryInput, type CourseListResult, listCourses } from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -18,6 +20,9 @@ export interface ApiContext {
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		list(query: CourseListQueryInput): CourseListResult;
 	};
 }
 
@@ -49,7 +54,15 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses: {
+				list(query: CourseListQueryInput): CourseListResult {
+					return listCourses(query);
+				},
+			},
 		});
 
 	return { forRequest };
 }
+
+export type { CourseListQueryInput, CourseListResult } from './courses.ts';
+export { InvalidQueryParameterError } from './courses.ts';
