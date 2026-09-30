@@ -3,9 +3,9 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field                                     | Value                                                |
 |-------------------------------------------|------------------------------------------------------|
-| Team                                      | Anthropic                                            |
+| Team                                      | OpenAI / Anthropic / Cursor / xAI / Antigravity      |
 | Developer / Operator                      | esb                                                  |
-| Reviewer                                  | esb (self-scored per ACH SRD Appendix 1)             |
+| Reviewer                                  | (leave blank for now)                                |
 | Harness                                   | Claude Code                                          |
 | Model                                     | claude-opus-5                                        |
 | License / Plan                            | Claude Enterprise                                    |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost                            | $4.72                                                |
 | Elapsed Time                              | 10 min                                               |
 | Number of Human Interventions / Redirects | 0                                                    |
-| Reviewer Notes                            | FC 4: 12/12 in all three runs, verify green cold in all three; acceptance not probed. Test 3: no failures, but coverage is thinner and inconsistent — 593-619 passing and 8-16 cucumber scenarios across the arm vs iteration 2's steady 19, on 2 test files vs 6. Arch 3: same flat shape as iteration 2, application-services + rest only. Sec 4: 0 boundary violations in 3/3; snyk SKIPPED. HEE 5: largest measured gain of any arm — interleaved run-for-run against iteration 2 in one window, 35,643 vs 58,593 (-39.2%), ranges separated, thinking tokens -30% which is the predicted mechanism. Cost 5: $3.45 vs iteration 2's $5.78. Workflow 5: 10 min, 0 interventions. Vendor 4. Caveat: a 2-run ablation without the caveman skill gave 42,137, overlapping this arm's range, so caveman's contribution is unproven in either direction. |
-| Final Rubric Score                        | 80 / 100                                             |
+| Reviewer Notes                            | (leave blank for now)                                |
+| Final Rubric Score                        | (leave blank for now)                                |
 | Recommendation                            | Candidate for Pilot                                  |
