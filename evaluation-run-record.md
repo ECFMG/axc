@@ -3,9 +3,9 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field                                     | Value                                                          |
 |-------------------------------------------|----------------------------------------------------------------|
-| Team                                      | Anthropic                                                      |
+| Team                                      | OpenAI / Anthropic / Cursor / xAI / Antigravity                |
 | Developer / Operator                      | esb                                                            |
-| Reviewer                                  | esb (self-scored per ACH SRD Appendix 1)                       |
+| Reviewer                                  | (leave blank for now)                                          |
 | Harness                                   | Claude Code                                                    |
 | Model                                     | claude-opus-5                                                  |
 | License / Plan                            | Claude Enterprise                                              |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost                            | $4.45                                                          |
 | Elapsed Time                              | 12 min                                                         |
 | Number of Human Interventions / Redirects | 0                                                              |
-| Reviewer Notes                            | FC 4: 12/12, verify green; acceptance not probed. Test 4: 624 pass / 0 fail cold; snyk SKIPPED. Arch 3: output collapses into application-services + rest and never uses the domain or persistence layers the repo is built around — the baseline did use them, so this is a regression in codebase alignment. Sec 4: 0 boundary violations in 7/7 runs vs baseline 6/6; snyk still SKIPPED so not a 5. HEE 5: improvement in cost, speed and repeatability — n=7 interleaved with the baseline, mean 54,507 vs 79,756 (-31.7%), elapsed 12 vs 18 min, spread 20% vs 62%. Cost 5: -31.7% output, $5.08 vs $7.99. Workflow 5: 0 interventions, fastest consistent arm. Vendor 4. Honest caveat: the write-boundary guard recorded 0 permission denials in every run, so the replicated effect is NOT the hook blocking anything; mechanism unexplained. |
-| Final Rubric Score                        | 83 / 100                                                       |
+| Reviewer Notes                            | (leave blank for now)                                          |
+| Final Rubric Score                        | (leave blank for now)                                          |
 | Recommendation                            | Candidate for Pilot                                            |
