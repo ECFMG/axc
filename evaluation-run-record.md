@@ -3,9 +3,9 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field                                     | Value                                                          |
 |-------------------------------------------|----------------------------------------------------------------|
-| Team                                      | Anthropic                                                      |
+| Team                                      | OpenAI / Anthropic / Cursor / xAI / Antigravity                |
 | Developer / Operator                      | esb                                                            |
-| Reviewer                                  | esb (self-scored per ACH SRD Appendix 1)                       |
+| Reviewer                                  | (leave blank for now)                                          |
 | Harness                                   | Claude Code                                                    |
 | Model                                     | claude-opus-5                                                  |
 | License / Plan                            | Claude Enterprise                                              |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost                            | $6.90                                                          |
 | Elapsed Time                              | 18 min                                                         |
 | Number of Human Interventions / Redirects | 0                                                              |
-| Reviewer Notes                            | FC 4, Test 4, Arch 4, Sec 3 as baseline — this arm did not change them. HEE 2: 'little improvement despite added configuration'. n=1 at 71,916 output sits inside the baseline range (60,440-98,010), so no token effect is demonstrated; the lockfile violation persisted. Cost 3: indistinguishable from baseline. Workflow 4, Vendor 4. Caveat for the reviewer: the domain-layer bullet in this CLAUDE.md was written after observing a baseline failure, so this arm had information the baseline did not. NOT REPLICATED — n=1. |
-| Final Rubric Score                        | 71 / 100                                                       |
+| Reviewer Notes                            | (leave blank for now)                                          |
+| Final Rubric Score                        | (leave blank for now)                                          |
 | Recommendation                            | Remediate                                                      |
