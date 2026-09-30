@@ -56,6 +56,16 @@ criterion, each with PASS/FAIL and the test or file that proves it. A
 requirement whose only evidence is your own assertion is not done. Then the
 commands you ran with their real output, and any limitations.
 
+## Build the smallest thing that passes
+
+Apply the **ponytail** skill to every implementation decision: the laziest
+solution that satisfies every numbered requirement and passes `pnpm run
+verify`. Reuse before writing, one file before four, no abstraction with one
+caller. Report in **caveman** style — terse, no filler, technical substance
+intact.
+
+Requirements and gates are not negotiable; everything above them is.
+
 ## Prose is the expensive part
 
 Code and tests are the deliverable. Prose is overhead and output tokens are
