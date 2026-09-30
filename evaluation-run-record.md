@@ -3,9 +3,9 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field                                     | Value                                                          |
 |-------------------------------------------|----------------------------------------------------------------|
-| Team                                      | Anthropic                                                      |
+| Team                                      | OpenAI / Anthropic / Cursor / xAI / Antigravity                |
 | Developer / Operator                      | esb                                                            |
-| Reviewer                                  | esb (self-scored per ACH SRD Appendix 1)                       |
+| Reviewer                                  | (leave blank for now)                                          |
 | Harness                                   | Claude Code                                                    |
 | Model                                     | claude-opus-5                                                  |
 | License / Plan                            | Claude Enterprise                                              |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost                            | $6.91                                                          |
 | Elapsed Time                              | 18 min                                                         |
 | Number of Human Interventions / Redirects | 0                                                              |
-| Reviewer Notes                            | FC 4: 12/12 requirements implemented, verify green; not 5 because acceptance criteria were never probed over HTTP. Test 4: 653 pass / 0 fail cold, but snyk SKIPPED (org access), so validation is incomplete. Arch 4: work correctly spread across domain, persistence, application-services and rest. Sec 3: lockfile written outside the task boundary in 6/6 runs (added vitest), snyk not run. HEE 3: SRD neutral score for a baseline. Cost 3: arm mean 79,756 output / $7.99, range 60,440-98,010 (62% spread). Workflow 4: 0 interventions, headless, but least predictable arm. Vendor 4: Claude Enterprise, admin controls clear; Copilot remains the approved production standard. |
-| Final Rubric Score                        | 73 / 100                                                       |
+| Reviewer Notes                            | (leave blank for now)                                          |
+| Final Rubric Score                        | (leave blank for now)                                          |
 | Recommendation                            | Continue                                                       |
