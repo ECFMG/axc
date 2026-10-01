@@ -40,7 +40,7 @@ Prefer existing `packages/cellix/*` over new helpers:
 
 `api-core` · `api-services-spec` · `domain-seedwork` · `mongoose-seedwork` · `serenity-framework` · `server-mongodb-memory-mock-seedwork` · `event-bus-seedwork-node` · `local-dev` · `config-typescript` / `config-vitest` / `config-rolldown` · `archunit-tests`.
 
-Optional implementer skill: `minimal-build` (YAGNI, reuse-before-write, fewest files) — **off by default**; not on the SCORE load path.
+Optional implementer skills: `minimal-build` (YAGNI, reuse-before-write, fewest files); `mog-critique` (adversarial self-critique on harness prep / fail-repair only) — both **off by default**; not on the SCORE load path.
 
 ## Sources of Truth
 
@@ -50,10 +50,14 @@ Optional implementer skill: `minimal-build` (YAGNI, reuse-before-write, fewest f
 
 ## Default SCORE path (minimal context)
 
-Load **`mog-repo-map`** then **`run-validation`** only — no tree dumps to orient. Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
+Load **`mog-repo-map`** then **`run-validation`** only — no tree dumps to orient. Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `mog-critique`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
 
 - Targeted reads only (files/symbols you will change).
 - One `pnpm run verify` at the end; package-scoped tests while iterating.
+
+## Adversarial critique (opt-in — `mog-critique`)
+
+Load **`mog-critique`** on **harness prep** or **acceptance/verify fail repair** only — structured self-critique 3–10 rounds; **stop early when no new defects**. **Not** on clean/default SCORE (no mandatory critique; token bomb). Errors verbose; success silent (see Agent-to-agent output).
 
 ## Gate cost (iterate cheap)
 

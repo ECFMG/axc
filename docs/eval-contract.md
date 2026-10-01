@@ -69,10 +69,18 @@ Also required at scoring time: seed/fixture **≥12** courses (mixed modality/st
 | **`mog-repo-map`** | **ON** — compact repo map; load first instead of dumping trees |
 | **`run-validation`** | **ON** — targeted checks ending in one `pnpm run verify` |
 | `plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build` | **OFF by default** — do not open unless explicitly needed |
+| **`mog-critique`** | **OFF by default / opt-in** — adversarial self-critique 3–10 rounds (stop early when no new defects). Load on **harness prep** or **fail/repair** only. **Never** mandatory on clean/default SCORE. |
 | `portless`, `turborepo` | Available from main; **never auto-open** on SCORE path |
 | Copilot `.github/agents/*` + hooks | Optional additive for Copilot CLI; **do not load** for default Grok/Cursor SCORE. Write-boundary zero-token guard: `.github/hooks/write-boundary.*` (wired from `enforce-agent-workflow.sh`) |
 
-Default SCORE context: load **`mog-repo-map`** then **`run-validation`** only. Prefer targeted reads over dumping large trees; do not open optional skills, Copilot agents, `turborepo`, or large Cellix trees unless required for the task. Prefer terse summaries over diff/log dumps in chat.
+Default SCORE context: load **`mog-repo-map`** then **`run-validation`** only — keep lean (no always-on critique). Prefer targeted reads over dumping large trees; do not open optional skills (`mog-critique` included), Copilot agents, `turborepo`, or large Cellix trees unless required. Prefer terse summaries over diff/log dumps in chat.
+
+### `mog-critique` vs SCORE
+
+| Path | Critique |
+| --- | --- |
+| Default SCORE | **Off** — `mog-repo-map` + `run-validation` only |
+| Fail/repair or harness prep | **Opt-in** — load `.agents/skills/mog-critique/SKILL.md`; 3–10 rounds, stop early when clean |
 
 ## Vitest determinism policy (existing lock pin — choice A)
 
@@ -120,7 +128,7 @@ Checklist of prep that may complete overnight. Items may be marked **NOT SCOREAB
 The endpoint was intentionally not implemented during overnight prep; clean SCORE later completed on a-out.
 
 - [ ] Portable harness intact: `AGENTS.md`, `.agents/skills/**`, verify gate, `dev:worktree`, cost doc
-- [ ] Skills defaults documented: **`run-validation`** mandatory; plan/review/tdd/serenity/minimal-build off-by-default; never auto-open turborepo / `.github/agents/*`
+- [ ] Skills defaults documented: **`mog-repo-map`** + **`run-validation`** on SCORE; plan/review/tdd/serenity/minimal-build/`mog-critique` off-by-default; never auto-open turborepo / `.github/agents/*`
 - [ ] Copilot agents ported under `.github/agents/` (orchestrator/planner/implementer/reviewer/validator/security/…)
 - [ ] Copilot hooks under `.github/hooks/` (`workflow-enforcement.json` + enforce scripts); session-only (not husky)
 - [ ] Thin `.github/copilot-instructions.md` discovers agents/hooks

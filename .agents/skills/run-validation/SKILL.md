@@ -54,6 +54,8 @@ Use **once** before final completion. Husky runs verify on commit — do not byp
 4. Re-run earlier steps only if the fix could regress them
 5. Finish with a single `pnpm run verify`
 
+On verify / acceptance fail, may load **`mog-critique`** for structured adversarial self-critique (opt-in repair) — do **not** make it mandatory SCORE.
+
 ## Agent-to-agent output
 
 - Green / pass: report minimally (e.g. `verify OK`) — do not paste success logs.
