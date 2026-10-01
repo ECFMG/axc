@@ -37,4 +37,9 @@ ignore:
         reason: uuid 11+ is ESM-only and breaks the Azure Functions bundle
         expires: 2026-10-28T22:44:29.364Z
         created: 2026-09-28T22:44:29.367Z
+  SNYK-JS-URIJS-20341609:
+    - '*':
+        reason: No upgrade or patch available
+        expires: 2026-10-28T22:36:50.274Z
+        created: 2026-09-30T22:36:50.278Z
 patch: {}
