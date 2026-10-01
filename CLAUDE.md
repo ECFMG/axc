@@ -21,6 +21,12 @@ caught a run here:
 - **`packages/cellix/**` is vendored** from the CellixJS upstream. The prompt
   says it must never deviate from its source. Read it, reuse it, do not edit it.
 
+## Start with the map
+
+Read the **axc-orientation** skill before exploring. It is the repo's own layout,
+route/service/test patterns and gate costs in one place, and replaces the dozen
+file reads a session otherwise starts with. Then read only the files you will change.
+
 ## Reuse before you build
 
 Twelve packages already exist under `packages/cellix/`. Writing an
