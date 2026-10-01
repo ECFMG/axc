@@ -26,7 +26,7 @@ Allowed write paths only:
 
 Do not modify other trees. Do not weaken `pnpm run verify`, husky, architecture tests, or other guardrails. Never use `--no-verify`.
 
-Zero-token enforcement (Copilot CLI): `.github/hooks/write-boundary.json` + `write-boundary.py`, wired from `enforce-agent-workflow.sh`.
+Zero-token enforcement (Copilot CLI): `.github/hooks/write-boundary.json` + `write-boundary.py`, wired from `enforce-agent-workflow.sh`. Bash deny matches after stripping quoted/escaped heredoc bodies (inert doc text does not burn turns); unquoted heredocs stay visible.
 
 ### Boundary traps
 

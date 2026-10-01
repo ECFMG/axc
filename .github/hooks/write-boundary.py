@@ -5,6 +5,10 @@ Reads JSON from stdin (same shape as enforce-agent-workflow.sh).
 On deny: prints permissionDecision JSON to stdout and exits 0.
 On allow / non-applicable: prints nothing and exits 0.
 Fail-open on parse errors so a broken guard never bricks a session.
+
+Quoted/escaped heredoc bodies are stripped before bash_deny matching so
+deny rules see the command, not inert document text (avoids FP token burn).
+Unquoted heredocs stay visible — bash may expand $(...) inside them.
 """
 
 from __future__ import annotations
@@ -32,6 +36,13 @@ WRITE_TOOLS = frozenset({
 })
 
 BASH_TOOLS = frozenset({"execute", "bash", "shell"})
+
+# Quoted or escaped delimiter only: <<'E'  <<"E"  <<\E  (and <<- forms)
+_HEREDOC_QUOTED = re.compile(
+    r"<<-?\s*(?:'([A-Za-z_][A-Za-z0-9_]*)'"
+    r"|\"([A-Za-z_][A-Za-z0-9_]*)\""
+    r"|\\([A-Za-z_][A-Za-z0-9_]*))"
+)
 
 
 def load_config() -> dict:
@@ -89,6 +100,32 @@ def strip_dot_slash(path: str) -> str:
     while path.startswith("./"):
         path = path[2:]
     return path
+
+
+def strip_heredocs(cmd: str) -> str:
+    """Drop inert quoted/escaped heredoc bodies; keep the opener line.
+
+    Unquoted <<EOF bodies can run command substitution — leave them intact
+    so bash_deny still sees live $(curl ...) / similar.
+    """
+    if "<<" not in cmd:
+        return cmd
+    out: list[str] = []
+    lines = cmd.split("\n")
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        out.append(line)
+        i += 1
+        m = _HEREDOC_QUOTED.search(line)
+        if not m:
+            continue
+        term = m.group(1) or m.group(2) or m.group(3)
+        while i < len(lines) and lines[i].strip() != term:
+            i += 1
+        if i < len(lines):
+            i += 1  # drop terminator
+    return "\n".join(out)
 
 
 def repo_relative(path: str, repo_root: Path) -> str:
@@ -163,7 +200,9 @@ def main() -> None:
         blob = args.get("command") or args.get("cmd") or args.get("_blob") or ""
         if isinstance(blob, list):
             blob = " ".join(str(x) for x in blob)
-        reason = check_bash_deny(str(blob), cfg.get("bash_deny") or [])
+        # Match deny rules against the command, not inert heredoc documents.
+        cmd = strip_heredocs(str(blob))
+        reason = check_bash_deny(cmd, cfg.get("bash_deny") or [])
         if reason:
             deny(f"BLOCKED (write-boundary): {reason}")
         return

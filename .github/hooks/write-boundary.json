@@ -1,14 +1,42 @@
 {
-	"_comment": "Zero-token AXC write boundary for Copilot CLI preToolUse. Tune here; enforce via write-boundary.py from enforce-agent-workflow.sh. Do not vendor .claude/settings.json.",
+	"_comment": "Zero-token AXC write boundary for Copilot CLI preToolUse. Tune here; enforce via write-boundary.py from enforce-agent-workflow.sh. Do not vendor .claude/.",
 	"allowed_write_globs": ["apps/api/**", "apps/docs/**", "packages/axc/**", "packages/axc-verification/**", "packages/cellix/**", ".agents-work/**"],
 	"_comment_agents_work": ".agents-work/** is for Copilot multi-agent workflow markers only; SCORE default path does not load .github/agents/*.",
-	"path_deny": [["(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)$", "Lockfile. Prefer existing workspace deps; do not rewrite the lockfile."], ["(^|/)\\.env(\\.|$)", "Secrets file."], ["(^|/)\\.git/", "Git internals."]],
+	"path_deny": [
+		["(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml|poetry\\.lock|Cargo\\.lock|Gemfile\\.lock)$", "Lockfile. Prefer workspace deps; do not rewrite the lockfile."],
+		["(^|/)\\.env(\\.|$)", "Secrets file."],
+		["(^|/)\\.git/", "Git internals."],
+		["(^|/)(id_rsa|id_ed25519|\\.pem|\\.p12|\\.keystore)$", "Private key material."],
+		["(^|/)(node_modules|vendor|dist|build|\\.next|target|__pycache__)/", "Generated or vendored output — edit sources, not build artifacts."],
+		["\\.(min\\.js|min\\.css|pb\\.go|generated\\.ts|g\\.dart)$", "Generated file. Edit the source."],
+		["(^|/)(\\.github/workflows/|azure-pipelines\\.ya?ml$)", "CI / pipeline config — outside SCORE write boundary."]
+	],
 	"bash_deny": [
 		[
 			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(npm|pnpm|yarn)\\s+(add|install)\\s+(?:-{1,2}[A-Za-z][\\w-]*\\s+)*[A-Za-z@._/][^\\s;&|]*",
 			"Adding a dependency rewrites the lockfile outside the write boundary. Prefer workspace packages; state the need in notes instead of installing. (Bare `pnpm install` to restore the lockfile is allowed.)"
 		],
 		[">>?\\s*\\S*(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)\\b", "Redirecting output into a lockfile."],
-		["\\b(tee|cp|mv|sed\\s+-i\\S*)\\b[^|;&]*\\s\\S*(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)\\b", "Modifying a lockfile."]
+		["\\b(tee|cp|mv|sed\\s+-i\\S*)\\b[^|;&]*\\s\\S*(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)\\b", "Modifying a lockfile."],
+		[">>?\\s*\\S*\\.env\\b", "Redirecting output into a secrets file."],
+		["\\b(tee|cp|mv|sed\\s+-i\\S*)\\b[^|;&]*\\s\\S*\\.env\\b", "Modifying a secrets file."],
+		["\\brm\\s+(?=(?:-\\S+\\s+)*-\\S*[rR])(?:-\\S+\\s+)+(/|~|\\$HOME|\\$\\{HOME\\})(?=[\\s/*]|$)", "Recursive delete rooted at / or home."],
+		["\\brm\\s+(?=(?:-\\S+\\s+)*-\\S*[rRf])(?:-\\S+\\s+)+/(usr|etc|var|bin|sbin|lib|opt|boot|System|Library|Users|home|Applications)(?=[\\s/]|$)", "Recursive delete of a system directory."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)rm\\s+(?:-\\S+\\s+)*\\*(\\s|$)", "Unqualified wildcard delete."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)git\\s+push\\b[^|;&]*\\s(--force|--force-with-lease|-f)(\\s|$)", "Force push. Do this yourself if you really mean it."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+push\\s+\\S+\\s+(main|master|prod|production)(\\s|$)", "Direct push to a protected branch. Open a PR from another branch if needed."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+reset\\s+--hard", "Discards uncommitted work irreversibly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+clean\\s+-[a-zA-Z]*[fd]", "Deletes untracked files irreversibly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+checkout\\s+\\.\\s*$", "Discards all unstaged changes."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(curl|wget)\\b[^|]*\\|\\s*(sudo\\s+)?(ba)?sh", "Piping a download straight into a shell."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)sudo\\s", "Elevated privileges. Run this yourself."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)chmod\\s+(-R\\s+)?777\\b", "World-writable permissions."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)dd\\b[^|;&]*\\bof=/dev/", "Raw device write."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(npm|yarn|pnpm)\\s+publish\\b", "Publishes a package publicly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)history\\s+-c\\b", "Clearing shell history."],
+		["\\b(psql|mysql|mariadb|sqlite3|mongosh?|sqlcmd|snowsql)\\b[^|;&]*\\b(DROP\\s+(TABLE|DATABASE|SCHEMA)|TRUNCATE\\s+TABLE)\\b", "Destructive SQL."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)kubectl\\s+delete\\b", "Deletes cluster resources."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)terraform\\s+(destroy|apply)\\b", "Mutates real infrastructure."],
+		["\\baws\\s+\\S+\\s+(delete|terminate|remove)", "Destructive cloud operation."]
 	]
 }
