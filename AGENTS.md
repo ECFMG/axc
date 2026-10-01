@@ -3,6 +3,10 @@
 AXC follows CellixJS architecture. Authoritative Cellix reference:
 `/Volumes/files/src/cellixjs`.
 
+## Eval contract
+
+See [`docs/eval-contract.md`](docs/eval-contract.md) for TS-A scoring readiness (Eval Runner / a-out).
+
 ## Territory (CRITICAL)
 
 - Work only on branch `mog-xai-1` in this worktree.
@@ -32,13 +36,11 @@ Do not modify other trees. Do not weaken `pnpm run verify`, husky, architecture 
 
 First-party procedure skills (not in `skills-lock.json`):
 
-- `plan-feature` — scoped implementation plans
-- `review-diff` — structured review of changed files
-- `run-validation` — targeted checks ending in `pnpm run verify`
-- `tdd` — outside-in TDD for AXC application behavior
-- `serenity-tests` — Serenity/JS API acceptance tests (`@axc-verification/acceptance-api`)
+- **`run-validation`** — **mandatory on the default validation path** (targeted checks ending in `pnpm run verify`)
+- `plan-feature`, `review-diff`, `tdd`, `serenity-tests` — **optional, off-by-default** (invoke only when explicitly useful for the task)
+- Also available from main: `portless`, `turborepo`
 
-Also available from main: `portless`, `turborepo`.
+Copilot CLI role agents under `.github/agents/` are additive/optional; they do not replace these skills for Grok/Cursor.
 
 ## Cost / usage (eval operators)
 

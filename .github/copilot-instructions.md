@@ -6,6 +6,14 @@
 - Local commits OK. **Never push. Never open PRs** from this branch.
 - Do not run Task Set A prompts/eval. Eval Runner owns `mog-xai-1-a-out`.
 
+
+## Copilot CLI (optional)
+
+- Start Copilot CLI from the repo root so `.github/agents/` and `.github/hooks/*.json` load.
+- Workflow state: `.agents-work/current/` (see `.github/agents/README.md`).
+- Hooks are Copilot-session only — not husky/git pre-commit. Grok/Cursor paths unchanged.
+- Reset stale workflow: `touch .agents-work/current/reset.requested`
+
 ## Write Boundary
 
 Write only under: `apps/api`, `apps/docs`, `packages/axc/*`, `packages/axc-verification/*`.
@@ -35,8 +43,9 @@ pnpm run verify           # full gate — respect husky pre-commit
 
 ## Skills
 
-Use `.agents/skills/` (symlinked from `.github/skills/` for Copilot discovery):
-`plan-feature`, `review-diff`, `run-validation`. Final validation → `pnpm run verify`.
+Use `.agents/skills/` (symlinked from `.github/skills/` for Copilot discovery).
+**`run-validation`** is mandatory on the default validation path → `pnpm run verify`.
+`plan-feature` / `review-diff` / `tdd` / `serenity-tests` are optional (off-by-default).
 
 ## Later Eval (do not implement here)
 
