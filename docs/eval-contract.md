@@ -66,12 +66,13 @@ Also required at scoring time: seed/fixture **≥12** courses (mixed modality/st
 
 | Skill | Default |
 | --- | --- |
-| **`run-validation`** | **ON** — **only** skill on the default SCORE path → targeted checks ending in one `pnpm run verify` |
+| **`mog-repo-map`** | **ON** — compact repo map; load first instead of dumping trees |
+| **`run-validation`** | **ON** — targeted checks ending in one `pnpm run verify` |
 | `plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build` | **OFF by default** — do not open unless explicitly needed |
 | `portless`, `turborepo` | Available from main; **never auto-open** on SCORE path |
 | Copilot `.github/agents/*` + hooks | Optional additive for Copilot CLI; **do not load** for default Grok/Cursor SCORE. Write-boundary zero-token guard: `.github/hooks/write-boundary.*` (wired from `enforce-agent-workflow.sh`) |
 
-Default SCORE context: load **`run-validation` only**. Prefer targeted reads over dumping large trees; do not open optional skills, Copilot agents, `turborepo`, or large Cellix trees unless required for the task. Prefer terse summaries over diff/log dumps in chat.
+Default SCORE context: load **`mog-repo-map`** then **`run-validation`** only. Prefer targeted reads over dumping large trees; do not open optional skills, Copilot agents, `turborepo`, or large Cellix trees unless required for the task. Prefer terse summaries over diff/log dumps in chat.
 
 ## Vitest determinism policy (existing lock pin — choice A)
 

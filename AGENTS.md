@@ -48,9 +48,13 @@ Optional implementer skill: `minimal-build` (YAGNI, reuse-before-write, fewest f
 2. `/Volumes/files/src/cellixjs` for architecture and patterns.
 3. This repo’s `pnpm run verify` and existing package layout.
 
+## Start with the map
+
+Load `mog-repo-map` before exploring — do not dump trees to orient.
+
 ## Default SCORE path (minimal context)
 
-**Only load `run-validation`.** Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
+Load **`mog-repo-map`** then **`run-validation`** only. Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
 
 - Prefer **targeted reads** (specific files/symbols) over dumping directories or whole packages into context.
 - Prefer **one** `pnpm run verify` at the end over repeated full suites; use package-scoped tests while iterating.
