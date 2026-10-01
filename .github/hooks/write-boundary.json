@@ -1,0 +1,14 @@
+{
+	"_comment": "Zero-token AXC write boundary for Copilot CLI preToolUse. Tune here; enforce via write-boundary.py from enforce-agent-workflow.sh. Do not vendor .claude/settings.json.",
+	"allowed_write_globs": ["apps/api/**", "apps/docs/**", "packages/axc/**", "packages/axc-verification/**", "packages/cellix/**", ".agents-work/**"],
+	"_comment_agents_work": ".agents-work/** is for Copilot multi-agent workflow markers only; SCORE default path does not load .github/agents/*.",
+	"path_deny": [["(^|/)(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)$", "Lockfile. Prefer existing workspace deps; do not rewrite the lockfile."], ["(^|/)\\.env(\\.|$)", "Secrets file."], ["(^|/)\\.git/", "Git internals."]],
+	"bash_deny": [
+		[
+			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(npm|pnpm|yarn)\\s+(add|install)\\s+(?:-{1,2}[A-Za-z][\\w-]*\\s+)*[A-Za-z@._/][^\\s;&|]*",
+			"Adding a dependency rewrites the lockfile outside the write boundary. Prefer workspace packages; state the need in notes instead of installing. (Bare `pnpm install` to restore the lockfile is allowed.)"
+		],
+		[">>?\\s*\\S*(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)\\b", "Redirecting output into a lockfile."],
+		["\\b(tee|cp|mv|sed\\s+-i\\S*)\\b[^|;&]*\\s\\S*(package-lock\\.json|yarn\\.lock|pnpm-lock\\.yaml)\\b", "Modifying a lockfile."]
+	]
+}

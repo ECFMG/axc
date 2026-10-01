@@ -67,10 +67,11 @@ Also required at scoring time: seed/fixture **≥12** courses (mixed modality/st
 | Skill | Default |
 | --- | --- |
 | **`run-validation`** | **ON** — **only** skill on the default SCORE path → targeted checks ending in one `pnpm run verify` |
-| `plan-feature`, `review-diff`, `tdd`, `serenity-tests` | **OFF by default** — do not open unless explicitly needed |
-| Copilot `.github/agents/*` + hooks | Optional additive for Copilot CLI; **do not load** for default Grok/Cursor SCORE |
+| `plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build` | **OFF by default** — do not open unless explicitly needed |
+| `portless`, `turborepo` | Available from main; **never auto-open** on SCORE path |
+| Copilot `.github/agents/*` + hooks | Optional additive for Copilot CLI; **do not load** for default Grok/Cursor SCORE. Write-boundary zero-token guard: `.github/hooks/write-boundary.*` (wired from `enforce-agent-workflow.sh`) |
 
-Default SCORE context: load **`run-validation` only**. Prefer targeted reads over dumping large trees; do not open optional skills, Copilot agents, or large Cellix trees unless required for the task.
+Default SCORE context: load **`run-validation` only**. Prefer targeted reads over dumping large trees; do not open optional skills, Copilot agents, `turborepo`, or large Cellix trees unless required for the task. Prefer terse summaries over diff/log dumps in chat.
 
 ## Vitest determinism policy (existing lock pin — choice A)
 
@@ -116,7 +117,7 @@ Checklist of prep that may complete overnight. Items may be marked **NOT SCOREAB
 The endpoint was intentionally not implemented during overnight prep; clean SCORE later completed on a-out.
 
 - [ ] Portable harness intact: `AGENTS.md`, `.agents/skills/**`, verify gate, `dev:worktree`, cost doc
-- [ ] Skills defaults documented: **`run-validation`** mandatory; plan/review/tdd/serenity off-by-default
+- [ ] Skills defaults documented: **`run-validation`** mandatory; plan/review/tdd/serenity/minimal-build off-by-default; never auto-open turborepo / `.github/agents/*`
 - [ ] Copilot agents ported under `.github/agents/` (orchestrator/planner/implementer/reviewer/validator/security/…)
 - [ ] Copilot hooks under `.github/hooks/` (`workflow-enforcement.json` + enforce scripts); session-only (not husky)
 - [ ] Thin `.github/copilot-instructions.md` discovers agents/hooks

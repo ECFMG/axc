@@ -26,6 +26,22 @@ Allowed write paths only:
 
 Do not modify other trees. Do not weaken `pnpm run verify`, husky, architecture tests, or other guardrails. Never use `--no-verify`.
 
+Zero-token enforcement (Copilot CLI): `.github/hooks/write-boundary.json` + `write-boundary.py`, wired from `enforce-agent-workflow.sh`.
+
+### Boundary traps
+
+- **Lockfile is outside the boundary.** `pnpm-lock.yaml` lives at repo root. `pnpm add` / `pnpm install <pkg>` rewrites it and fails the boundary. Prefer workspace packages; if a dependency is unavoidable, say so in the summary instead of installing.
+- **`packages/axc/domain/**` must not import infrastructure.** `test:arch` scans every `.ts` under `domain/src` (tests included) and fails on `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest`, `@axc/persistence`, `@axc/service-mongoose`, `@axc/application-services`. Domain tests that need a DB belong in `packages/axc-verification/**`.
+- **`packages/cellix/**` is vendored.** Read and reuse; do not invent parallel copies. Edit only when porting a missing capability from CellixJS upstream.
+
+### Reuse before you build
+
+Prefer existing `packages/cellix/*` over new helpers:
+
+`api-core` · `api-services-spec` · `domain-seedwork` · `mongoose-seedwork` · `serenity-framework` · `server-mongodb-memory-mock-seedwork` · `event-bus-seedwork-node` · `local-dev` · `config-typescript` / `config-vitest` / `config-rolldown` · `archunit-tests`.
+
+Optional implementer skill: `minimal-build` (YAGNI, reuse-before-write, fewest files) — **off by default**; not on the SCORE load path.
+
 ## Sources of Truth
 
 1. Task prompt / task-set requirements (when an eval agent runs them — not this harness setup).
@@ -34,13 +50,38 @@ Do not modify other trees. Do not weaken `pnpm run verify`, husky, architecture 
 
 ## Default SCORE path (minimal context)
 
-**Only load `run-validation`.** Do **not** open optional skills, Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
+**Only load `run-validation`.** Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
 
 - Prefer **targeted reads** (specific files/symbols) over dumping directories or whole packages into context.
 - Prefer **one** `pnpm run verify` at the end over repeated full suites; use package-scoped tests while iterating.
-- Optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`) and Copilot agents are **off-by-default**.
+- Never auto-open the `turborepo` skill or `.github/agents/*` on the SCORE path.
 
-Also available from main when needed: `portless`, `turborepo`.
+Also available from main when needed: `portless`, `turborepo`, `minimal-build`.
+
+## Gate cost (iterate cheap)
+
+`pnpm run verify` is the enforcement boundary (minutes), not a search tool. While iterating:
+
+| need | command |
+| --- | --- |
+| lint/format one area | `pnpm exec biome check <path>` |
+| test one package | `pnpm --filter <pkg> run test` |
+| everything, before done | `pnpm run verify` (once) |
+
+A gate reporting **SKIPPED** is not a pass — say so explicitly.
+
+## Finish with evidence
+
+End with a short table: one row per numbered requirement / acceptance criterion, each PASS/FAIL with the test or file that proves it. Assertion-only rows are not done. Then commands run (summarized) and any limitations.
+
+## Terse output (token budget)
+
+Code and tests are the deliverable; chat prose is overhead.
+
+- No preamble, no restating the task, no announcing upcoming tool calls.
+- Never dump diffs, full file contents, or long logs into chat — summarize.
+- One line of intent before a batch of tool calls, not one per call.
+- If a sentence would not change what a reviewer does next, cut it.
 
 ## Cost / usage (eval operators)
 

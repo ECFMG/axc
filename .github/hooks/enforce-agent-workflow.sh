@@ -118,6 +118,16 @@ recover_phase() {
 
 recover_phase
 
+# ── Write boundary (always active) — zero-token AXC path + lockfile/deps guard ─
+# Config: write-boundary.json. Applies to SCORE/eval writes even when the
+# multi-agent phase machine is idle. Prints deny JSON and exits when blocked.
+
+WB_OUT="$(printf '%s' "$INPUT" | python3 "${SCRIPT_DIR}/write-boundary.py" || true)"
+if [[ -n "${WB_OUT}" ]]; then
+  printf '%s\n' "$WB_OUT"
+  exit 0
+fi
+
 # ── Git push / PR guard (always active) — AXC mog-xai-1 ───────────────────────
 # Local commits are allowed (husky + pnpm run verify). Never push or open PRs
 # from branch mog-xai-1.
