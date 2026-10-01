@@ -64,25 +64,36 @@ Use the CLI's native usage/cost summary if this version and plan expose one. Cap
 same five fields and its session/window identifier. If no native or provider meter exists,
 record `n/a` with the precise reason; do not treat shell-output savings as usage.
 
-### Grok Bot / Eval Runner executor
+### Grok Bot / Eval Runner (Mohit-confirmed meter path)
 
-The Eval Runner Grok Bot executor currently has **no usage panel and does not produce a
-session `usage.json`**. Therefore:
+**Required SCORE meter path (confirmed 2026-10-01):** run unmodified Task Set A in a **fresh
+Grok Build session**, then run **`/usage`** at the end of that same session and fill
+[`evaluation-run-record.md`](../evaluation-run-record.md) from that `/usage` output.
 
-- The operator **must** supply a platform usage UI/report covering this exact executor
-  session, or re-run SCORE under a metered host (for example Cursor, Claude Code, or Codex).
-- If neither is available, record each unavailable field as `n/a — Grok Bot Eval Runner
-  executor has no usage panel or usage.json for this session` and put the same explanation
-  in Config / Diff Notes. This is an explicit exception, not a successful meter capture.
-- Do not derive tokens from the transcript, tool calls, elapsed time, or RTK output. Do not
-  label the run comparable to a metered SCORE when its fields are `n/a`.
+Procedure:
 
-If the workload is actually using the **xAI developer API**, rather than the Grok Bot
-executor, an operator may use the xAI Console team's usage/billing view or its Management
+1. Carve a **new clean** `mog-xai-1-a-out` from the current harness tip (no leftover feature).
+2. Open a **fresh Grok Build session** scoped only to this SCORE (no unrelated chat).
+3. Run the unmodified `task-set-a-prompt.md` (+ `task-set-a-requirements.md`) on that a-out
+   with default skill `run-validation` only.
+4. When the SCORE attempt finishes (pass or fail), run **`/usage`** in that same Grok Build
+   session before closing it.
+5. Map `/usage` Input / Cached / Output / Total / Cost (or credits) into the five evaluation
+   run-record fields. Preserve `/usage` definitions; do not double-count cache.
+6. Local-commit the filled record on a-out. Do not invent numbers. Do not use RTK/transcript
+   length as a substitute meter.
+
+**Background Grok Bot executor subagents** (sand-subagent) still have **no** usage panel and
+do **not** produce `usage.json`. Do **not** use an executor-only run as the metered SCORE
+path when `/usage` in a Grok Build session is available. If a future run is forced through
+an executor-only path with no `/usage`, record `n/a` with that explicit reason — that run is
+**not** comparable to a metered SCORE.
+
+If the workload is actually using the **xAI developer API**, rather than Grok Build /
+Grok Bot, an operator may use the xAI Console team's usage/billing view or its Management
 API with a least-privilege **Billing: Read Only** management key. An ordinary inference key
-is not a billing meter. Filter to the exact team and time window, and note that an API billing
-report may provide cost/credits without all five token fields. xAI API billing is not proof
-of usage for a consumer/platform Grok Bot session.
+is not a billing meter. Filter to the exact team and time window. xAI API billing is not
+proof of usage for a Grok Build `/usage` session.
 
 ## Optional aids (not bill meters)
 
@@ -128,6 +139,8 @@ only some fields is still useful: record the known values and explain each unkno
 - `headroom` was not on PATH and no `~/.headroom` state directory was present; Headroom is
   therefore **not installed** on this Mac.
 - `rtk` is installed, but remains only an output-reduction aid, not a bill meter.
+- **Mohit confirmed (2026-10-01 ET):** next SCORE meters via fresh **Grok Build** session
+  + **`/usage`** at end (not the background Eval Runner executor).
 
 ## References
 

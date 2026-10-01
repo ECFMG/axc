@@ -109,7 +109,9 @@ When the SCORE run is comparable (same Task Set A catalog-search scope, implemen
 
 **Provisional aspirational ceiling: 800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / **unmeasured** for Grok. Keep as aspirational until a metered Grok SCORE exists; revise when measured. Do not invent alternate field names (e.g. do not create a separate `input_tokens` table).
 
-**Forbid silent `n/a`:** if any meter exists (tool UI, CLI, dashboard), fill the fields. Only use `n/a` with an explicit reason when no meter is available (see `docs/harness-cost-usage.md` and [`docs/score-metering.md`](score-metering.md)). The Grok Bot / Eval Runner executor currently has no usage panel or `usage.json`; its operator must provide a platform usage report or re-run under a metered host, or declare that explicit exception before SCORE GO.
+**Mohit-confirmed SCORE meter (2026-10-01):** fresh **Grok Build** session → unmodified TS-A → **`/usage`** at end → fill the five fields above (see [`docs/score-metering.md`](score-metering.md)). Map whatever `/usage` exposes; if Cached is absent, `n/a` only for that field with a note. Note meter source `Grok Build /usage` + session timestamp in Config / Diff Notes. **Do not declare SCORE complete** until those fields are filled.
+
+**Forbid silent `n/a`:** if `/usage` (or a fallback meter) exposes a field, fill it. Only use `n/a` with an explicit reason when a field is truly absent. Background Grok Bot executor / sand-subagent alone still has no panel — do **not** use executor-only as the metered SCORE path when Build `/usage` is available. Other meters (Cursor, Claude Code, Codex, etc.) are **fallbacks only**.
 
 ## OVERNIGHT PREP DONE (mog-xai-1 harness)
 
@@ -122,7 +124,7 @@ The endpoint was intentionally not implemented during overnight prep; clean SCOR
 - [ ] Copilot hooks under `.github/hooks/` (`workflow-enforcement.json` + enforce scripts); session-only (not husky)
 - [ ] Thin `.github/copilot-instructions.md` discovers agents/hooks
 - [ ] Vitest: existing **`4.1.11`** pin + frozen `pnpm-lock.yaml` documented (no new lock invented)
-- [ ] Cost/usage: reuse `evaluation-run-record.md` fields only + `docs/harness-cost-usage.md`
+- [ ] Cost/usage: reuse `evaluation-run-record.md` fields only + `docs/harness-cost-usage.md`; Mohit-confirmed meter **Grok Build `/usage`** (`docs/score-metering.md`)
 - [ ] This `docs/eval-contract.md` committed on `mog-xai-1`
 - [ ] Local commit(s) on `mog-xai-1`; **no push**; **no unmodified TS-A prompt run**
 - [ ] `GET /api/courses` **not** implemented overnight (**expected**)
@@ -136,7 +138,7 @@ The endpoint was intentionally not implemented during overnight prep; clean SCOR
 1. **`mog-xai-1-a-out` exists** — Eval Runner **creates `mog-xai-1-a-out` if absent** (documented Eval Runner morning step; harness does not create it during overnight prep).
 2. **Contract present for scoring:** `docs/eval-contract.md` present on **`mog-xai-1-a-out`** **OR** the full contract text included in the Eval Runner brief.
 3. **Resolvable prompt + requirements paths** on the scoring machine (see Path resolvability).
-4. **Meter source chosen before SCORE GO**: record the runner host, source, and session window (native usage panel/export or provider report). If the chosen Grok Bot executor has no panel/report, explicitly declare the no-meter exception before GO and plan a metered rerun; do not silently accept `n/a`.
+4. **Mohit-confirmed meter before SCORE GO**: fresh Grok Build session + `/usage` after SCORE (record runner host + session window). Executor/sand-subagent-only is not the metered path when Build `/usage` is available. Fallbacks only if Build `/usage` cannot cover the run.
 5. **Nothing critical marked NOT SCOREABLE** blocked (2)/(3); source paths were resolvable for this SCORE.
 
 Morning checklist (Eval Runner):
@@ -144,10 +146,10 @@ Morning checklist (Eval Runner):
 - [x] **Create `mog-xai-1-a-out` if absent** (Eval Runner step)
 - [x] Place `docs/eval-contract.md` on a-out **or** paste full contract text into Eval Runner brief
 - [x] Confirm `task-set-a-prompt.md` + `task-set-a-requirements.md` paths resolvable
-- [ ] Choose and verify a per-runner-host meter source and session window before SCORE GO, or document the explicit no-meter exception (see `docs/score-metering.md`)
+- [ ] Confirm Mohit-confirmed meter: fresh **Grok Build** + **`/usage`** after SCORE (see `docs/score-metering.md`); executor-only is not the metered path
 - [x] Write boundary understood; feature implementation happened on a-out clean eval (not overnight prep)
 - [x] Success = A1–A11 + A-AC1–12 + `pnpm run verify`
-- [ ] Fill **Evaluation Run Record** token/cost fields (Input / Cached / Output / Total / Estimated Cost) per [`docs/harness-cost-usage.md`](harness-cost-usage.md) — **required for next SCORE**; forbid silent `n/a` when a meter exists; prior SCORE was n/a because no meter was available
+- [ ] After SCORE: run **`/usage`** in the Grok Build session; fill **Evaluation Run Record** Input / Cached / Output / Total / Estimated Cost from `/usage` **before declaring complete** (see [`docs/harness-cost-usage.md`](harness-cost-usage.md)); prior SCORE was n/a (no meter)
 - [x] **GO** conditions (1)–(3) were met; SCORE PASS 100% (a-out `58f31aa`, feature `22808ca`)
 
 ### Explicit a-out rule
@@ -156,4 +158,4 @@ Overnight harness prep on `mog-xai-1` must **not** create `mog-xai-1-a-out`. In 
 
 ## SCORE result
 
-**PASS 100% @ a-out `58f31aa` / feature `22808ca`; tokens n/a this run (no meter). Next SCORE must fill cost fields and aim under ~3.6M / ~$0.86 when comparable.**
+**PASS 100% @ a-out `58f31aa` / feature `22808ca`; tokens n/a this run (no meter). Next SCORE: fresh Grok Build + unmodified TS-A + `/usage` → fill cost fields before complete; hold 12/12; aim under ~3.6M / ~$0.86 when comparable.**
