@@ -4,6 +4,7 @@
 - [ ] Use pnpm 11+ and JRE 17+.
 - [ ] Optionally install/authenticate Snyk CLI; `pnpm run verify` may skip Snyk when the CLI or auth is unavailable.
 - [ ] Install/use `portless` for local service URLs.
+- [ ] Ensure Azurite is available on PATH for `pnpm run dev` (auto-starts via turbo watch; no separate terminal). The API package depends on `azurite`; `AzureWebJobsStorage=UseDevelopmentStorage=true` is written into generated `local.settings.json`.
 - [ ] Keep sibling clones/worktrees under one `src/` directory, for example `axc`, `axc-mog-xai-1`, and `axc-mog-xai-1-a-out`.
 - [ ] Run `pnpm install --frozen-lockfile`.
 - [ ] Run `pnpm run verify` (Snyk may be skipped without the CLI/auth).

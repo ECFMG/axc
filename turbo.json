@@ -48,6 +48,12 @@
 			"cache": false,
 			"persistent": true
 		},
+		"azurite": {
+			"description": "Starts the Azurite storage emulator",
+			"dependsOn": ["^build", "@cellix/local-dev#build"],
+			"cache": false,
+			"persistent": true
+		},
 		"lint": {
 			"description": "Runs the Biome linter",
 			"outputs": []

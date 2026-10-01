@@ -18,7 +18,8 @@
 		"format:check": "biome format .",
 		"clean": "rimraf dist deploy",
 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
-		"start": "node --experimental-strip-types scripts/start-host.ts"
+		"start": "node --experimental-strip-types scripts/start-host.ts",
+		"azurite": "node start-azurite.ts"
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
@@ -32,6 +33,7 @@
 		"@types/node": "catalog:",
 		"rimraf": "catalog:",
 		"rolldown": "1.0.0-beta.55",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"azurite": "^3.35.0"
 	}
 }

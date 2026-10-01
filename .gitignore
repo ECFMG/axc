@@ -26,3 +26,9 @@ apps/api/agentCourses-api.zip
 # Docusaurus
 apps/docs/.docusaurus/
 apps/docs/build/
+
+# Local Azurite storage directories
+__blobstorage__*
+__queuestorage__*
+__tablestorage__*
+AzuriteConfig

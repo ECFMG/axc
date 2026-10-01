@@ -6,8 +6,9 @@
 			"project": ["scripts/**/*.mjs"]
 		},
 		"apps/api": {
-			"entry": ["src/index.ts", "start-dev.ts", "rolldown.config.ts", "scripts/**/*.{ts,mjs}"],
-			"project": ["src/**/*.ts", "scripts/**/*.ts", "*.ts"]
+			"entry": ["src/index.ts", "start-dev.ts", "start-azurite.ts", "rolldown.config.ts", "scripts/**/*.{ts,mjs}"],
+			"project": ["src/**/*.ts", "scripts/**/*.ts", "*.ts"],
+			"ignoreDependencies": ["azurite"]
 		},
 		"apps/docs": {
 			"entry": ["docusaurus.config.ts", "sidebars.ts", "start-dev.ts", "scripts/**/*.mjs"],
@@ -49,5 +50,5 @@
 	"ignoreIssues": {
 		"packages/cellix/archunit-tests/src/validate-compiler-options.ts": ["exports", "types"]
 	},
-	"ignoreBinaries": ["func", "serenity-bdd", "zip"]
+	"ignoreBinaries": ["func", "serenity-bdd", "zip", "azurite", "azurite-blob", "azurite-queue", "azurite-table"]
 }
