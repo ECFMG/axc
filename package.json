@@ -8,6 +8,7 @@
 	},
 	"scripts": {
 		"dev": "pnpm run proxy:ensure && turbo watch dev",
+		"dev:worktree": "WORKTREE_NAME=$(basename $PWD) pnpm run proxy:ensure && WORKTREE_NAME=$(basename $PWD) turbo watch dev:worktree --filter='./apps/*'",
 		"proxy:ensure": "pnpm exec portless proxy start --https -p 1355 || true",
 		"test": "turbo run test test:acceptance",
 		"test:arch": "turbo run test:arch",

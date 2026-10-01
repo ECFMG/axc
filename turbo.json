@@ -36,6 +36,12 @@
 			"cache": false,
 			"persistent": true
 		},
+		"dev:worktree": {
+			"description": "Starts application packages through portless with WORKTREE_NAME hostname suffix",
+			"dependsOn": ["^build", "@cellix/local-dev#build"],
+			"cache": false,
+			"persistent": true
+		},
 		"start": {
 			"description": "Starts the built API with the Azure Functions host",
 			"dependsOn": ["build"],
