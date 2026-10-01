@@ -35,8 +35,17 @@ First-party procedure skills (not in `skills-lock.json`):
 - `plan-feature` — scoped implementation plans
 - `review-diff` — structured review of changed files
 - `run-validation` — targeted checks ending in `pnpm run verify`
+- `tdd` — outside-in TDD for AXC application behavior
+- `serenity-tests` — Serenity/JS API acceptance tests (`@axc-verification/acceptance-api`)
 
 Also available from main: `portless`, `turborepo`.
+
+## Cost / usage (eval operators)
+
+When filling an Evaluation Run Record after a later TS-A (or TS-B) eval, capture
+token/cost into the fields already defined in `evaluation-run-record.md`. See
+[`docs/harness-cost-usage.md`](docs/harness-cost-usage.md). Headroom/RTK are
+optional if present on a workstation — not required and not installed here.
 
 ## Dev Worktrees
 
