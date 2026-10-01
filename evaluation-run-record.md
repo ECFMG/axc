@@ -3,7 +3,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field                                     | Value                                                |
 |-------------------------------------------|------------------------------------------------------|
-| Team                                      | OpenAI / Anthropic / Cursor / xAI / Antigravity      |
+| Team                                      | Anthropic                                            |
 | Developer / Operator                      | esb                                                  |
 | Reviewer                                  | (leave blank for now)                                |
 | Harness                                   | Claude Code                                          |
