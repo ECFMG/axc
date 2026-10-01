@@ -5,61 +5,36 @@ description: Reusable validation procedure for build, test, lint, architecture, 
 
 # Skill: Run Validation
 
-Validate AXC changes before marking work complete.
+Validate AXC changes before marking work complete. Keep context minimal: targeted checks while iterating, **one** full gate at the end.
 
 ## When to Use
 
 - After implementation, before commit/handoff
 - After fixing review or security findings
-- Whenever targeted verification is needed
+- Default SCORE / harness validation path (do not load other skills unless needed)
 
 ## Procedure
 
-### 1. Build
+### Iterate with targeted checks
 
-```bash
-pnpm run build
-```
-
-### 2. Tests
-
-```bash
-pnpm run test
-```
-
-Target packages when possible, e.g.:
+Prefer package-scoped commands while fixing:
 
 ```bash
 pnpm --filter @axc-verification/acceptance-api test:acceptance
 pnpm --filter @axc-verification/archunit-tests test:arch
-```
-
-### 3. Lint / Format Check
-
-```bash
 pnpm run lint
 pnpm run format:check
 ```
 
-### 4. Architecture
+Run build/test/arch/snyk individually only when diagnosing a failure — avoid repeating the full suite.
 
-```bash
-pnpm run test:arch
-```
-
-### 5. Security
-
-```bash
-pnpm run snyk
-```
-
-### 6. Full Gate
+### Single final verify
 
 ```bash
 pnpm run verify
 ```
 
-Use before final completion. Husky runs verify on commit — do not bypass with `--no-verify`.
+Use **once** before final completion. Husky runs verify on commit — do not bypass with `--no-verify`.
 
 ## Validation Matrix
 
@@ -75,6 +50,6 @@ Use before final completion. Husky runs verify on commit — do not bypass with 
 
 1. Read the failing output
 2. Fix the root cause
-3. Re-run the failing step
-4. Re-run earlier steps if the fix could regress them
-5. Finish with `pnpm run verify`
+3. Re-run the failing step only
+4. Re-run earlier steps only if the fix could regress them
+5. Finish with a single `pnpm run verify`

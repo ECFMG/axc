@@ -66,9 +66,11 @@ Also required at scoring time: seed/fixture **≥12** courses (mixed modality/st
 
 | Skill | Default |
 | --- | --- |
-| **`run-validation`** | **ON** — mandatory on the default validation path → `pnpm run verify` (skill directory/name is `run-validation`, not “validate”) |
-| `plan-feature`, `review-diff`, `tdd`, `serenity-tests` | **OFF by default** — invoke only when explicitly useful |
-| Copilot `.github/agents/*` + hooks | Optional additive for Copilot CLI; not required for Grok/Cursor |
+| **`run-validation`** | **ON** — **only** skill on the default SCORE path → targeted checks ending in one `pnpm run verify` |
+| `plan-feature`, `review-diff`, `tdd`, `serenity-tests` | **OFF by default** — do not open unless explicitly needed |
+| Copilot `.github/agents/*` + hooks | Optional additive for Copilot CLI; **do not load** for default Grok/Cursor SCORE |
+
+Default SCORE context: load **`run-validation` only**. Prefer targeted reads over dumping large trees; do not open optional skills, Copilot agents, or large Cellix trees unless required for the task.
 
 ## Vitest determinism policy (existing lock pin — choice A)
 
@@ -91,12 +93,22 @@ Shared config: `@cellix/config-vitest` (`nodeConfig` / `archConfig`) — no inte
 | Evaluation Run Record field | Use |
 | --- | --- |
 | Input Tokens | Prompt / input tokens |
-| Cached Tokens | Cache-hit tokens when reported; else blank / `n/a` |
+| Cached Tokens | Cache-hit tokens when reported; else `n/a` + reason |
 | Output Tokens | Completion / output tokens |
 | Total Tokens or Credits Used | Sum or provider credits |
 | Estimated Cost | Currency estimate when available |
 
-Also record Model / Harness / Branch / Commit in that same table. **Provisional ceiling: 800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / unmeasured for Grok. This is an educated guess because a first clean TS-A catalog-search SCORE (implement + tests + verify) typically lands in the mid-hundreds of thousands of total tokens on agentic coding tools; other tools/models may differ. Revise when a metered run exists. Do not invent alternate field names (e.g. do not create a separate `input_tokens` table).
+Also record Model / Harness / Branch / Commit in that same table.
+
+### Competitiveness target
+
+When the SCORE run is comparable (same Task Set A catalog-search scope, implement + tests + verify), aim to **beat the nrn-xai baseline of ~3.6M total tokens / ~$0.86**. Lower is better. Record actuals in the five fields above; do not invent numbers.
+
+### Provisional Grok aspirational ceiling
+
+**Provisional aspirational ceiling: 800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / **unmeasured** for Grok. Keep as aspirational until a metered Grok SCORE exists; revise when measured. Do not invent alternate field names (e.g. do not create a separate `input_tokens` table).
+
+**Forbid silent `n/a`:** if any meter exists (tool UI, CLI, dashboard), fill the fields. Only use `n/a` with an explicit reason when no meter is available (see `docs/harness-cost-usage.md`).
 
 ## OVERNIGHT PREP DONE (mog-xai-1 harness)
 
@@ -113,7 +125,7 @@ The endpoint was intentionally not implemented during overnight prep; clean SCOR
 - [ ] This `docs/eval-contract.md` committed on `mog-xai-1`
 - [ ] Local commit(s) on `mog-xai-1`; **no push**; **no unmodified TS-A prompt run**
 - [ ] `GET /api/courses` **not** implemented overnight (**expected**)
-- [x] Provisional token ceiling documented: **800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / unmeasured for Grok; other tools/models may differ
+- [x] Token competitiveness target documented: beat nrn-xai ~3.6M / ~$0.86 when comparable; provisional Grok **800k** remains aspirational until measured
 - [ ] a-out worktree/branch **not** created by harness overnight (Eval Runner creates it in MORNING SCORE GO if absent)
 
 ## MORNING SCORE GO (scoring readiness; completed PASS)
@@ -132,7 +144,7 @@ Morning checklist (Eval Runner):
 - [x] Confirm `task-set-a-prompt.md` + `task-set-a-requirements.md` paths resolvable
 - [x] Write boundary understood; feature implementation happened on a-out clean eval (not overnight prep)
 - [x] Success = A1–A11 + A-AC1–12 + `pnpm run verify`
-- [x] Fill **Evaluation Run Record** token/cost fields only (Input / Cached / Output / Total / Estimated Cost); this SCORE was n/a because no meter was available
+- [ ] Fill **Evaluation Run Record** token/cost fields (Input / Cached / Output / Total / Estimated Cost) per [`docs/harness-cost-usage.md`](harness-cost-usage.md) — **required for next SCORE**; forbid silent `n/a` when a meter exists; prior SCORE was n/a because no meter was available
 - [x] **GO** conditions (1)–(3) were met; SCORE PASS 100% (a-out `58f31aa`, feature `22808ca`)
 
 ### Explicit a-out rule
@@ -141,4 +153,4 @@ Overnight harness prep on `mog-xai-1` must **not** create `mog-xai-1-a-out`. In 
 
 ## SCORE result
 
-**PASS 100% @ a-out `58f31aa` / feature `22808ca`; tokens n/a this run.**
+**PASS 100% @ a-out `58f31aa` / feature `22808ca`; tokens n/a this run (no meter). Next SCORE must fill cost fields and aim under ~3.6M / ~$0.86 when comparable.**

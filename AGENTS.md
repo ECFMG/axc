@@ -32,22 +32,19 @@ Do not modify other trees. Do not weaken `pnpm run verify`, husky, architecture 
 2. `/Volumes/files/src/cellixjs` for architecture and patterns.
 3. This repo’s `pnpm run verify` and existing package layout.
 
-## Skills
+## Default SCORE path (minimal context)
 
-First-party procedure skills (not in `skills-lock.json`):
+**Only load `run-validation`.** Do **not** open optional skills, Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
 
-- **`run-validation`** — **mandatory on the default validation path** (targeted checks ending in `pnpm run verify`)
-- `plan-feature`, `review-diff`, `tdd`, `serenity-tests` — **optional, off-by-default** (invoke only when explicitly useful for the task)
-- Also available from main: `portless`, `turborepo`
+- Prefer **targeted reads** (specific files/symbols) over dumping directories or whole packages into context.
+- Prefer **one** `pnpm run verify` at the end over repeated full suites; use package-scoped tests while iterating.
+- Optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`) and Copilot agents are **off-by-default**.
 
-Copilot CLI role agents under `.github/agents/` are additive/optional; they do not replace these skills for Grok/Cursor.
+Also available from main when needed: `portless`, `turborepo`.
 
 ## Cost / usage (eval operators)
 
-When filling an Evaluation Run Record after a later TS-A (or TS-B) eval, capture
-token/cost into the fields already defined in `evaluation-run-record.md`. See
-[`docs/harness-cost-usage.md`](docs/harness-cost-usage.md). Headroom/RTK are
-optional if present on a workstation — not required and not installed here.
+When filling an Evaluation Run Record after a TS-A (or TS-B) eval, capture token/cost into the five fields in `evaluation-run-record.md` per [`docs/harness-cost-usage.md`](docs/harness-cost-usage.md). **Forbid silent `n/a` when a meter exists.** Aim under the nrn-xai baseline (~3.6M tokens / ~$0.86) when comparable. RTK/Headroom are optional workstation tools — not repo dependencies.
 
 ## Dev Worktrees
 
