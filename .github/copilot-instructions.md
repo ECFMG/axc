@@ -2,6 +2,8 @@
 
 ## Territory
 
+Output: agent-parseable + terse (AGENTS.md “Agent-to-agent output”). Success → minimal; errors → what/where/next fix.
+
 - Branch/worktree: `mog-xai-1` only.
 - Local commits OK. **Never push. Never open PRs** from this branch.
 - Do not run Task Set A prompts/eval. Eval Runner owns `mog-xai-1-a-out`.

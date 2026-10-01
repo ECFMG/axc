@@ -10,6 +10,20 @@ attempt starts. Capture these five fields from that same window:
 - **Total Tokens or Credits Used**
 - **Estimated Cost**
 
+### Quick paste map (Grok Build `/usage` → record)
+
+After SCORE, run `/usage` in that same fresh Grok Build session and paste — **do not invent numbers**:
+
+| `/usage` shows | → `evaluation-run-record.md` field |
+| --- | --- |
+| Input | Input Tokens |
+| Cached / cache-read | Cached Tokens (`n/a` + reason if absent) |
+| Output | Output Tokens |
+| Total | Total Tokens or Credits Used |
+| Cost / estimated cost | Estimated Cost |
+
+Preserve `/usage` definitions; do not double-count cache into Input. Note `Grok Build /usage` + session timestamp under Config / Diff Notes.
+
 Do not estimate tokens from transcript length, shell output, elapsed time, or RTK savings.
 Keep the export/screenshot or a reference to the platform report with the evaluation record
 when policy permits; never copy credentials or session cookies into the repository.

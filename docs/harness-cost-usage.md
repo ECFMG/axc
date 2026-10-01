@@ -33,7 +33,7 @@ Other record fields (elapsed time, interventions, branch/commit, acceptance coun
 ### After the SCORE attempt
 
 1. In that same Grok Build session, run **`/usage`** before closing (do not silently substitute RTK or Headroom savings).
-2. Copy `/usage` session token counts + cost into the five record fields (Input / Cached / Output / Total / Estimated Cost). Map whatever `/usage` exposes; if Cached is absent, `n/a` **only for that field** with a note.
+2. Copy `/usage` into the five record fields using the paste map in [`evaluation-run-record.md`](../evaluation-run-record.md) and [`score-metering.md`](score-metering.md) (Input / Cached / Output / Total / Estimated Cost). Map whatever `/usage` exposes; if Cached is absent, `n/a` **only for that field** with a note. Do not invent numbers.
 3. Note meter source `Grok Build /usage` + session timestamp under Config / Diff Notes.
 4. If `/usage` reports tokens but omits USD, fill token fields and use the provider/plan dashboard for Estimated Cost when the window matches; note the source under Config / Diff Notes.
 5. **Do not write silent `n/a` when a meter exists.** If Input/Output/Total (or cost) is visible in `/usage` or a fallback UI/export, record it.

@@ -53,3 +53,9 @@ Use **once** before final completion. Husky runs verify on commit — do not byp
 3. Re-run the failing step only
 4. Re-run earlier steps only if the fix could regress them
 5. Finish with a single `pnpm run verify`
+
+## Agent-to-agent output
+
+- Green / pass: report minimally (e.g. `verify OK`) — do not paste success logs.
+- Fail: include gate name, failing package/path, key error line(s), and next fix.
+- Structured over prose. See AGENTS.md “Agent-to-agent output”.

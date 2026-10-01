@@ -48,19 +48,12 @@ Optional implementer skill: `minimal-build` (YAGNI, reuse-before-write, fewest f
 2. `/Volumes/files/src/cellixjs` for architecture and patterns.
 3. This repo’s `pnpm run verify` and existing package layout.
 
-## Start with the map
-
-Load `mog-repo-map` before exploring — do not dump trees to orient.
-
 ## Default SCORE path (minimal context)
 
-Load **`mog-repo-map`** then **`run-validation`** only. Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
+Load **`mog-repo-map`** then **`run-validation`** only — no tree dumps to orient. Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
 
-- Prefer **targeted reads** (specific files/symbols) over dumping directories or whole packages into context.
-- Prefer **one** `pnpm run verify` at the end over repeated full suites; use package-scoped tests while iterating.
-- Never auto-open the `turborepo` skill or `.github/agents/*` on the SCORE path.
-
-Also available from main when needed: `portless`, `turborepo`, `minimal-build`.
+- Targeted reads only (files/symbols you will change).
+- One `pnpm run verify` at the end; package-scoped tests while iterating.
 
 ## Gate cost (iterate cheap)
 
@@ -78,18 +71,21 @@ A gate reporting **SKIPPED** is not a pass — say so explicitly.
 
 End with a short table: one row per numbered requirement / acceptance criterion, each PASS/FAIL with the test or file that proves it. Assertion-only rows are not done. Then commands run (summarized) and any limitations.
 
-## Terse output (token budget)
+## Agent-to-agent output (token budget)
 
-Code and tests are the deliverable; chat prose is overhead.
+Write for the next AI agent, not a human reader. Chat prose is overhead; code/tests are the deliverable.
 
+- Prefer compact, structured, agent-parseable output (tables, bullets, SHA/path/command) over narrative.
+- **Success = minimal or silent.** Do not narrate green gates, “done”, or play-by-play of what worked.
+- **Errors = spend tokens.** On failure: what failed, where (path/command/gate), and the next fix — enough to troubleshoot without re-exploring.
 - No preamble, no restating the task, no announcing upcoming tool calls.
-- Never dump diffs, full file contents, or long logs into chat — summarize.
+- Never dump diffs, full file contents, or long green logs into chat — summarize failures only.
 - One line of intent before a batch of tool calls, not one per call.
-- If a sentence would not change what a reviewer does next, cut it.
+- If a sentence would not change what the next agent does, cut it.
 
 ## Cost / usage (eval operators)
 
-When filling an Evaluation Run Record after a TS-A (or TS-B) eval, capture token/cost into the five fields in `evaluation-run-record.md` per [`docs/harness-cost-usage.md`](docs/harness-cost-usage.md). **Forbid silent `n/a` when a meter exists.** Aim under the nrn-xai baseline (~3.6M tokens / ~$0.86) when comparable. RTK/Headroom are optional workstation tools — not repo dependencies.
+After TS-A/TS-B SCORE, paste Grok Build `/usage` into the five fields in `evaluation-run-record.md` (paste map: [`docs/score-metering.md`](docs/score-metering.md); detail: [`docs/harness-cost-usage.md`](docs/harness-cost-usage.md)). **Forbid silent `n/a` when a meter exists. Do not invent numbers.** Aim under the nrn-xai baseline (~3.6M tokens / ~$0.86) when comparable. RTK/Headroom are optional workstation tools — not repo dependencies.
 
 ## Dev Worktrees
 

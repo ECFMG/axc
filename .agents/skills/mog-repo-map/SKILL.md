@@ -107,3 +107,8 @@ Node: `.nvmrc` → 24.x (`engines.node >=24`).
 Do not tree-walk the repo or bulk-read harness config to “orient.” This skill is the map.
 Open only the files your change needs. Optional skills stay off unless required
 (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`).
+
+## Agent-to-agent output
+
+Structured + terse for the next agent. Success → minimal/silent. Failure → what/where/next fix.
+See AGENTS.md “Agent-to-agent output”.
