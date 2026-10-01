@@ -1,18 +1,18 @@
 # AXC Eval Contract — Task Set A (TS-A-CATALOG-SEARCH)
 
-Portable contract for harness prep on `mog-xai-1` and scoring readiness on Eval Runner’s `mog-xai-1-a-out`.
+Portable contract for harness prep on `mog-xai-1` and the completed SCORE on Eval Runner’s `mog-xai-1-a-out`.
 **This file does not run the eval.** Harness must not self-run the unmodified Task Set A prompt.
 
 > **Portability caveat:** Overnight prep on one workstation does **NOT** prove multi-workstation portability.
 
-> **Feature status (overnight):** `GET /api/courses` catalog search is **not implemented yet — expected**. Overnight work is harness prep only; the feature is for a later clean eval on a-out.
+> **Feature status (SCORE):** `GET /api/courses` catalog search was implemented on a-out and **passed SCORE 100%**. The feature remains a clean-eval result, not an overnight-prep deliverable on mog-xai-1.
 
 ## Task identity
 
 | Field | Value |
 | --- | --- |
 | Task Set ID | `TS-A-CATALOG-SEARCH` |
-| Feature | `GET /api/courses` course catalog search (**not implemented yet — expected** for overnight harness prep) |
+| Feature | `GET /api/courses` course catalog search (**SCORE PASS 100% on a-out; not an overnight-prep deliverable**) |
 | Prompt (source) | `/Volumes/files/src/axc/task-set-a-prompt.md` |
 | Requirements (source) | `/Volumes/files/src/axc/task-set-a-requirements.md` |
 | Who runs them | **Eval Runner only** (on `mog-xai-1-a-out`) |
@@ -96,12 +96,12 @@ Shared config: `@cellix/config-vitest` (`nodeConfig` / `archConfig`) — no inte
 | Total Tokens or Credits Used | Sum or provider credits |
 | Estimated Cost | Currency estimate when available |
 
-Also record Model / Harness / Branch / Commit in that same table. **Ceiling: TBD** — **NOT SCOREABLE** as a hard fail until a ceiling is published. Do not invent alternate field names (e.g. do not create a separate `input_tokens` table).
+Also record Model / Harness / Branch / Commit in that same table. **Provisional ceiling: 800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / unmeasured for Grok. This is an educated guess because a first clean TS-A catalog-search SCORE (implement + tests + verify) typically lands in the mid-hundreds of thousands of total tokens on agentic coding tools; other tools/models may differ. Revise when a metered run exists. Do not invent alternate field names (e.g. do not create a separate `input_tokens` table).
 
 ## OVERNIGHT PREP DONE (mog-xai-1 harness)
 
 Checklist of prep that may complete overnight. Items may be marked **NOT SCOREABLE** and still count as prep-ok.
-Courses endpoint remaining unimplemented is **expected** and does not fail overnight prep.
+The endpoint was intentionally not implemented during overnight prep; clean SCORE later completed on a-out.
 
 - [ ] Portable harness intact: `AGENTS.md`, `.agents/skills/**`, verify gate, `dev:worktree`, cost doc
 - [ ] Skills defaults documented: **`run-validation`** mandatory; plan/review/tdd/serenity off-by-default
@@ -113,28 +113,32 @@ Courses endpoint remaining unimplemented is **expected** and does not fail overn
 - [ ] This `docs/eval-contract.md` committed on `mog-xai-1`
 - [ ] Local commit(s) on `mog-xai-1`; **no push**; **no unmodified TS-A prompt run**
 - [ ] `GET /api/courses` **not** implemented overnight (**expected**)
-- [ ] Token ceiling still **TBD** → prep-ok, **NOT SCOREABLE** as a fail criterion
+- [x] Provisional token ceiling documented: **800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / unmeasured for Grok; other tools/models may differ
 - [ ] a-out worktree/branch **not** created by harness overnight (Eval Runner creates it in MORNING SCORE GO if absent)
 
-## MORNING SCORE GO (scoring readiness)
+## MORNING SCORE GO (scoring readiness; completed PASS)
 
 **SCORE GO** requires **all** of:
 
 1. **`mog-xai-1-a-out` exists** — Eval Runner **creates `mog-xai-1-a-out` if absent** (documented Eval Runner morning step; harness does not create it during overnight prep).
 2. **Contract present for scoring:** `docs/eval-contract.md` present on **`mog-xai-1-a-out`** **OR** the full contract text included in the Eval Runner brief.
 3. **Resolvable prompt + requirements paths** on the scoring machine (see Path resolvability).
-4. **Nothing critical marked NOT SCOREABLE** blocking (2)/(3). Any TBD/unresolvable path = prep-ok but **automatic NO-GO for scoring**.
+4. **Nothing critical marked NOT SCOREABLE** blocked (2)/(3); source paths were resolvable for this SCORE.
 
 Morning checklist (Eval Runner):
 
-- [ ] **Create `mog-xai-1-a-out` if absent** (Eval Runner step)
-- [ ] Place `docs/eval-contract.md` on a-out **or** paste full contract text into Eval Runner brief
-- [ ] Confirm `task-set-a-prompt.md` + `task-set-a-requirements.md` paths resolvable (not TBD)
-- [ ] Write boundary understood; feature implementation happens on a-out clean eval (not overnight prep)
-- [ ] Success = A1–A11 + A-AC1–12 + `pnpm run verify`
-- [ ] Fill **Evaluation Run Record** token/cost fields only (Input / Cached / Output / Total / Estimated Cost); ceiling TBD
-- [ ] **GO** only if (1)+(2)+(3) true; else **NO-GO** (still may remediate harness)
+- [x] **Create `mog-xai-1-a-out` if absent** (Eval Runner step)
+- [x] Place `docs/eval-contract.md` on a-out **or** paste full contract text into Eval Runner brief
+- [x] Confirm `task-set-a-prompt.md` + `task-set-a-requirements.md` paths resolvable
+- [x] Write boundary understood; feature implementation happened on a-out clean eval (not overnight prep)
+- [x] Success = A1–A11 + A-AC1–12 + `pnpm run verify`
+- [x] Fill **Evaluation Run Record** token/cost fields only (Input / Cached / Output / Total / Estimated Cost); this SCORE was n/a because no meter was available
+- [x] **GO** conditions (1)–(3) were met; SCORE PASS 100% (a-out `58f31aa`, feature `22808ca`)
 
 ### Explicit a-out rule
 
 Overnight harness prep on `mog-xai-1` must **not** create `mog-xai-1-a-out`. In the morning, **Eval Runner creates `mog-xai-1-a-out` if absent**, then ensures this contract is on a-out (or fully inlined in the brief) before scoring.
+
+## SCORE result
+
+**PASS 100% @ a-out `58f31aa` / feature `22808ca`; tokens n/a this run.**
