@@ -109,7 +109,7 @@ When the SCORE run is comparable (same Task Set A catalog-search scope, implemen
 
 **Provisional aspirational ceiling: 800,000 total tokens per SCORE attempt** (Input+Output; Cached counted separately if available) — provisional / **unmeasured** for Grok. Keep as aspirational until a metered Grok SCORE exists; revise when measured. Do not invent alternate field names (e.g. do not create a separate `input_tokens` table).
 
-**Forbid silent `n/a`:** if any meter exists (tool UI, CLI, dashboard), fill the fields. Only use `n/a` with an explicit reason when no meter is available (see `docs/harness-cost-usage.md`).
+**Forbid silent `n/a`:** if any meter exists (tool UI, CLI, dashboard), fill the fields. Only use `n/a` with an explicit reason when no meter is available (see `docs/harness-cost-usage.md` and [`docs/score-metering.md`](score-metering.md)). The Grok Bot / Eval Runner executor currently has no usage panel or `usage.json`; its operator must provide a platform usage report or re-run under a metered host, or declare that explicit exception before SCORE GO.
 
 ## OVERNIGHT PREP DONE (mog-xai-1 harness)
 
@@ -136,13 +136,15 @@ The endpoint was intentionally not implemented during overnight prep; clean SCOR
 1. **`mog-xai-1-a-out` exists** — Eval Runner **creates `mog-xai-1-a-out` if absent** (documented Eval Runner morning step; harness does not create it during overnight prep).
 2. **Contract present for scoring:** `docs/eval-contract.md` present on **`mog-xai-1-a-out`** **OR** the full contract text included in the Eval Runner brief.
 3. **Resolvable prompt + requirements paths** on the scoring machine (see Path resolvability).
-4. **Nothing critical marked NOT SCOREABLE** blocked (2)/(3); source paths were resolvable for this SCORE.
+4. **Meter source chosen before SCORE GO**: record the runner host, source, and session window (native usage panel/export or provider report). If the chosen Grok Bot executor has no panel/report, explicitly declare the no-meter exception before GO and plan a metered rerun; do not silently accept `n/a`.
+5. **Nothing critical marked NOT SCOREABLE** blocked (2)/(3); source paths were resolvable for this SCORE.
 
 Morning checklist (Eval Runner):
 
 - [x] **Create `mog-xai-1-a-out` if absent** (Eval Runner step)
 - [x] Place `docs/eval-contract.md` on a-out **or** paste full contract text into Eval Runner brief
 - [x] Confirm `task-set-a-prompt.md` + `task-set-a-requirements.md` paths resolvable
+- [ ] Choose and verify a per-runner-host meter source and session window before SCORE GO, or document the explicit no-meter exception (see `docs/score-metering.md`)
 - [x] Write boundary understood; feature implementation happened on a-out clean eval (not overnight prep)
 - [x] Success = A1–A11 + A-AC1–12 + `pnpm run verify`
 - [ ] Fill **Evaluation Run Record** token/cost fields (Input / Cached / Output / Total / Estimated Cost) per [`docs/harness-cost-usage.md`](harness-cost-usage.md) — **required for next SCORE**; forbid silent `n/a` when a meter exists; prior SCORE was n/a because no meter was available
