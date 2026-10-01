@@ -16,6 +16,10 @@ rather than inventing alternatives from generic knowledge.
 
 Do not modify or weaken repository guardrails to make an implementation pass.
 
+For local application wiring, runtime, and verification conventions, follow
+existing AXC code. Use CellixJS as the authority for DDD architecture,
+framework usage, and patterns not already established in AXC.
+
 ## Repository Map
 
 - `apps/` — application entrypoints and composition roots.

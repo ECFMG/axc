@@ -1,90 +1,98 @@
-# Acceptance API Setup
+# API Acceptance Setup
 
-Use this guide when creating or changing the API-only Cucumber Screenplay suite under `@axc-verification/acceptance-api`.
+Use this guide when creating or changing an API acceptance suite built with
+Cucumber, Serenity/JS, and `@cellix/serenity-framework`.
 
-## Package Shape
+## Discover the Consumer Suite
 
-- Keep the package private, ESM, and TypeScript-loaded by Cucumber through `tsx/esm`.
-- Depend on `@cellix/serenity-framework`, `@cucumber/cucumber`, `@serenity-js/core`, `@serenity-js/cucumber`, `@serenity-js/assertions`, `@serenity-js/console-reporter`, and `@serenity-js/serenity-bdd`.
-- Put app-specific dependencies, GraphQL schema/server packages, persistence packages, and seed helpers in the consumer package rather than the framework.
-- Use scripts shaped like:
+Before changing setup, inspect the consumer project's:
 
-```json
-{
-  "test:acceptance": "LOG_LEVEL=warn NODE_OPTIONS='--import tsx/esm' cucumber-js --format json:./reports/cucumber-report-api.json",
-  "test:coverage:acceptance": "LOG_LEVEL=warn NODE_OPTIONS='--import tsx/esm' c8 -- cucumber-js --format json:./reports/cucumber-report-api.json"
-}
-```
+- package manifest and acceptance-test scripts
+- Cucumber configuration
+- feature and support-file locations
+- world, hooks, and infrastructure setup
+- existing actor cast and Abilities
+- application startup and test-server lifecycle
+- neighboring acceptance tests
 
-## Cucumber Config
+Do not assume a particular transport, module system, Cucumber config filename,
+feature-sharing strategy, parallelism setting, or reporting format.
 
-- Point `paths` at shared feature files, usually `../verification-shared/src/scenarios/**/*.feature`.
-- Import `src/world.ts` and a single step-definition barrel such as `src/step-definitions/index.ts`.
-- Use the framework formatter for agents:
+Preserve established project conventions unless the task requires changing
+them.
 
-```ts
-import { isAgent } from 'std-env';
+## Package Responsibilities
 
-export default {
-  paths: ['../verification-shared/src/scenarios/**/*.feature'],
-  import: ['src/world.ts', 'src/step-definitions/index.ts'],
-  format: [
-    ...(isAgent ? ['@cellix/serenity-framework/formatters/agent'] : ['progress-bar']),
-    'json:./reports/cucumber-report-api.json',
-    'html:./reports/cucumber-report-api.html',
-  ],
-  formatOptions: { snippetInterface: 'async-await' },
-  parallel: 1,
-};
-```
+Keep generic Serenity, Cucumber, infrastructure, and server-lifecycle
+capabilities in `@cellix/serenity-framework`.
+
+Keep consumer-specific concerns in the acceptance package, including:
+
+- feature files and step definitions
+- application Tasks, Interactions, Questions, and Abilities
+- transport clients and operations
+- test data and fixtures
+- application server construction
+- persistence or external-service test infrastructure
+
+Reuse dependency versions and package-management conventions already established
+by the consumer repository.
+
+## Cucumber Configuration
+
+Configure Cucumber around the consumer project's actual suite.
+
+- Point feature paths at the project's intended `.feature` files.
+- Load the world, hooks, and step definitions required by the suite.
+- Preserve the project's TypeScript loader and module system.
+- Preserve existing formatter and reporting conventions.
+- Choose parallel execution only when scenario and infrastructure isolation make
+  it safe.
+
+Do not import configuration from another application merely because it also
+uses Serenity/JS.
 
 ## Infrastructure
 
-- Use `ApiInfrastructure` for API-only suites. It starts process or in-memory servers, resets scenario state, and stops servers without launching a browser.
-- Register servers in dependency order with explicit `dependsOn` metadata.
-- Keep server constructors app-owned. The framework should receive ready `TestServer` instances, not import OCOM paths.
+Use managed infrastructure when acceptance behavior requires real application
+processes, in-memory servers, databases, or other runtime dependencies.
 
-```ts
-import { ApiInfrastructure } from '@cellix/serenity-framework/infrastructure/api';
-import { apiGraphQLTestServer, mongooseTestServer, testMongoServer } from './servers/index.ts';
+When using `ApiInfrastructure`:
 
-export const infrastructure = ApiInfrastructure.create()
-  .addServer('mongo', testMongoServer)
-  .addServer('mongoose', mongooseTestServer, { dependsOn: ['mongo'] })
-  .addServer('graphql', apiGraphQLTestServer, { dependsOn: ['mongoose'] })
-  .finalize();
-```
+- register servers in dependency order
+- declare dependencies explicitly
+- keep concrete server constructors in the consumer project
+- expose ready `TestServer` instances to the framework
+- reset scenario state between scenarios
+- stop managed infrastructure when the suite completes
 
-## World And Hooks
+The framework should manage lifecycle. It should not know application package
+paths or construct application-specific servers itself.
 
-- Use `registerManagedSerenityWorld`.
-- Validate that the GraphQL server URL exists before creating the cast.
-- Give actors app-specific abilities, commonly a GraphQL client ability and domain command abilities.
-- Register lifecycle hooks from `world.ts` after exporting the world type.
+## World and Actor Cast
 
-```ts
-export const CellixApiWorld = registerManagedSerenityWorld({
-  infrastructure,
-  validateState: (state) => {
-    const graphql = state.servers['graphql'];
-    if (!graphql?.isRunning()) throw new Error('API acceptance infrastructure did not expose a graphqlUrl');
-  },
-  createCast: (state) =>
-    new SerenityCast({
-      useNotepad: true,
-      abilities: [
-        () => createGraphQLClientAbility(state.servers['graphql']?.getUrl() ?? ''),
-        () => createCommunityAbility(),
-      ],
-    }),
-});
-```
+When using `registerManagedSerenityWorld`:
 
-Lifecycle hooks should call `world.init()` before each scenario, `world.cleanup()` after each scenario, and `infrastructure.stopAll()` in `AfterAll`.
+- validate required infrastructure state before building the actor cast;
+- give actors only the Abilities required to interact with the application;
+- keep transport-specific Ability construction in the consumer project;
+- initialise the world before each scenario;
+- clean scenario state after each scenario;
+- stop shared infrastructure after the suite completes.
 
-## Turborepo
+Abilities represent actor capabilities, such as interacting with an HTTP or
+GraphQL API. They should not become one wrapper per business use case.
 
-- Add `test:acceptance`, `test:coverage:acceptance`, and `test:serenity` tasks when the package participates in repo-level verification.
-- Depend on `^build`.
-- Include `src/**/*.ts`, `cucumber.js`, `package.json`, and coverage config in task inputs.
-- Keep process-backed acceptance tasks uncached unless the suite is proven deterministic and side-effect free.
+## Build Integration
+
+Acceptance tests must run against the application artifacts and runtime they
+actually exercise.
+
+Configure the repository build system so required upstream packages are built
+before acceptance execution.
+
+Keep process-backed acceptance tasks uncached unless the suite is known to be
+deterministic, isolated, and safe to cache.
+
+Use the consumer project's existing validation commands rather than inventing
+alternate repository-wide commands.

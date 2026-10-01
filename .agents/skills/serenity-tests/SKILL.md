@@ -1,62 +1,54 @@
 ---
 name: serenity-tests
 description: >
-  Write, review, explain, or set up AXC Serenity/JS API acceptance tests.
-  Use for Cucumber Screenplay tests, @cellix/serenity-framework usage,
-  acceptance-api setup, or acceptance test authoring.
+  Write, review, or set up API acceptance tests with Serenity/JS, Cucumber,
+  Screenplay, and @cellix/serenity-framework. Use for Gherkin scenarios, step
+  definitions, Tasks, Interactions, Questions, Abilities, actor notes, managed
+  worlds, test infrastructure, or acceptance-suite configuration.
 ---
 
 # Serenity Tests
 
-Use this skill when working with AXC API acceptance tests that follow the
-CellixJS Serenity/JS Screenplay pattern.
+Use this skill for API acceptance tests built with Serenity/JS and Cucumber.
 
-Use `/Volumes/files/src/cellixjs` as the authoritative reference for these
-patterns.
+Treat `@cellix/serenity-framework` as reusable test infrastructure. Keep
+application-specific behavior, transport operations, test data, server
+construction, and step definitions in the consumer project.
+
+Before changing an acceptance suite, inspect its existing package manifest,
+Cucumber configuration, world and infrastructure setup, and neighboring tests.
+Preserve the project's established transport, runtime, module system, discovery
+paths, and reporting conventions unless the task requires changing them.
 
 ## Core Model
 
-- Keep business intent in `.feature` files and map steps to Screenplay actors,
-  tasks, questions, abilities, and notes.
-- Reuse `@cellix/serenity-framework` for generic Serenity, Cucumber,
-  infrastructure, and server-lifecycle capabilities.
-- Keep AXC-specific test behavior, API operations, test data, server construction,
-  and Cucumber steps in `@axc-verification/acceptance-api`.
-- Prefer actor notes for scenario-local state.
-- Keep Cucumber step definitions at the acceptance-package edge rather than in
-  framework packages.
+- Express externally observable business behavior in `.feature` files
+- Keep Cucumber step definitions thin and declarative
+- Use Tasks for meaningful actor goals and Interactions for lower-level actions
+- Use Abilities for capabilities an actor needs to interact with the system
+- Use Questions to observe state for assertions
+- Use actor notes for scenario-local context when appropriate, not as a
+  substitute for observing the system under test
+- Keep protocol and application details out of generic framework packages.
 
-## Scenario Contract
+Do not introduce Screenplay abstractions solely for ceremony. Each Task,
+Interaction, Question, or Ability should represent a useful responsibility or
+remove meaningful duplication.
 
-When writing or changing application behavior, create or update the Gherkin
-scenario first under `@axc-verification/acceptance-api`.
+## Acceptance Boundary
 
-Keep scenarios focused on externally observable application behavior rather than
-implementation details.
+Acceptance tests should exercise the application's real externally observable
+boundary.
 
-Use `tdd` for the outside-in development workflow.
+Do not substitute direct application-service, domain, or internal handler calls
+for the boundary the scenario claims to verify.
+
+When used with outside-in TDD, establish the failing acceptance behavior before
+implementing the application behavior that satisfies it.
 
 ## References
 
 Read only the relevant reference:
 
-- **API acceptance setup:** read `references/acceptance-api/setup.md`
-- **API acceptance test writing:** read `references/acceptance-api/writing-tests.md`
-
-Treat the reference files as Cellix pattern guidance. Adapt consumer-specific
-names, transports, and setup details to the existing AXC implementation rather
-than taking them literally.
-
-## Shared Conventions
-
-- Use catalog versions for `@cucumber/*` and `@serenity-js/*` dependencies.
-- Use `NODE_OPTIONS='--import tsx/esm'` for TypeScript Cucumber packages.
-- Use `GherkinDataTable.from(dataTable).rowsHash<T>()` for typed Cucumber table
-  input when applicable.
-- Use `ActorName.resolve` when an assertion can refer to a named actor or the
-  previous actor.
-- Validate infrastructure state in `registerManagedSerenityWorld` before building the cast.
-
-## Validation
-
-Use `run-validation` for targeted and final verification.
+- **API acceptance setup:** `references/acceptance-api/setup.md`
+- **API acceptance test writing:** `references/acceptance-api/writing-tests.md`

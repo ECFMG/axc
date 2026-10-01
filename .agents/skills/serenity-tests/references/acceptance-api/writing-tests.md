@@ -1,85 +1,90 @@
-# Acceptance API Test Writing
+# API Acceptance Test Writing
 
-Use this guide for API-only Cucumber Screenplay scenarios. API acceptance verifies application behavior through APIs and domain services without a browser.
+Use this guide when writing API acceptance behavior with Cucumber and the
+Serenity/JS Screenplay pattern.
 
-## Step Definitions
+## Scenarios
 
-- Keep Cucumber steps thin: resolve the actor, parse data tables, run tasks, and answer questions.
-- Use `actorCalled(name)` to create or retrieve the actor.
-- Store the last actor name when later steps omit an actor.
-- Use `GherkinDataTable.from(dataTable).rowsHash<T>()` for typed input.
-- Use `ActorName.resolve` in assertions that can refer to a named actor or the last actor.
+Write scenarios in externally observable business language.
 
-```ts
-When('{word} creates a community with:', async (actorName: string, dataTable: DataTable) => {
-  lastActorName = actorName;
-  const actor = actorCalled(actorName);
-  const details = GherkinDataTable.from(dataTable).rowsHash<CommunityDetails>();
+- Describe meaningful preconditions, actor actions, and outcomes
+- Avoid implementation details such as classes, repositories, database
+  structure, or internal method calls
+- Keep each scenario focused on behavior it can independently prove
+- Include negative behavior when rejection or validation semantics are part of
+  the requirement
 
-  await actor.attemptsTo(CreateCommunity.with(details));
-});
-```
+A scenario should fail when the behavior it claims to verify is absent or
+incorrect.
 
-## Tasks
+## Screenplay Structure
 
-- Use a class extending `Task` when the task has reusable factories or meaningful state.
-- Use domain abilities for API actions. Do not put GraphQL request details directly in step definitions.
-- Store observable scenario state in actor notes.
+Keep Cucumber step definitions thin and declarative.
 
-```ts
-export class CreateCommunity extends Task {
-  static with(details: CommunityDetails) {
-    return new CreateCommunity(details);
-  }
+Steps should primarily:
 
-  private constructor(private readonly details: CommunityDetails) {
-    super(`creates a community named "${details.name}"`);
-  }
+1. resolve the actor
+2. translate Gherkin input into typed test data
+3. invoke Tasks or Interactions
+4. ask Questions and perform assertions
 
-  async performAs(actor: Actor): Promise<void> {
-    const community = await CreateCommunityAbility.as(actor).performAs(actor, this.details);
-    await actor.attemptsTo(
-      notes<CommunityNotes>().set('lastCommunityId', community.id ?? ''),
-      notes<CommunityNotes>().set('lastCommunityName', community.name),
-      notes<CommunityNotes>().set('lastCommunityStatus', 'SUCCESS'),
-    );
-  }
-}
-```
+Use:
 
-## Questions
+- **Tasks** for meaningful actor goals
+- **Interactions** for lower-level actions supporting those goals
+- **Abilities** for capabilities required to interact with the system
+- **Questions** for observable state used by assertions
+- **Actor notes** for scenario-local context that cannot reasonably be
+  re-observed.
 
-- Use `Question` for observable assertions.
-- Prefer reading from the system under test, falling back to actor notes only when no system read is available.
-- Fail with a diagnostic error if prerequisite state is missing.
+Use Serenity/JS Interactions and Abilities appropriate to the consumer suite.
 
-```ts
-export class CommunityName extends Question<Promise<string>> {
-  static displayed(): CommunityName {
-    return new CommunityName();
-  }
+Introduce Tasks when they represent meaningful actor goals, encapsulate
+multi-step behavior, or provide useful reuse. Do not require a Task wrapper
+around every transport interaction.
 
-  override async answeredBy(actor: AnswersQuestions & UsesAbilities): Promise<string> {
-    const communityId = await readNote(actor, 'lastCommunityId');
-    const apiName = communityId ? await readNameFromApi(actor, communityId) : undefined;
-    if (apiName) return apiName;
+Do not create Screenplay abstractions solely for ceremony. Each should represent
+a useful responsibility, encapsulate meaningful detail, or remove meaningful
+duplication.
 
-    const notedName = await readNote(actor, 'lastCommunityName');
-    if (!notedName) throw new Error('No community name found. Did the actor create a community first?');
-    return notedName;
-  }
-}
-```
+## Observing State
 
-## Validation And Negative Paths
+Prefer observing the system through its supported boundary rather than asserting
+values remembered by the test itself.
 
-- For invalid actions, clear stale success/error notes before attempting the task.
-- Catch expected domain or API validation failures in the step, then store the message in notes.
-- Assertions should verify that no success note or created ID was recorded.
-- Do not let negative-path scenarios pass merely because a task threw; assert the specific observable validation state.
+Use actor notes for context such as identifiers or correlation values needed for
+later observations, not as the source of truth for behavior the system can
+expose.
 
-## Boundaries
+Fail clearly when required scenario state is missing.
 
-- Put feature files and reusable test data in shared verification packages when API, UI, and E2E suites share the scenario language.
-- Put API-specific abilities, GraphQL operations, server setup, and step definitions in `acceptance-api`.
-- Do not import UI page objects or Playwright in API acceptance tests.
+## Assertions and Negative Paths
+
+Assertions should prove the specific observable outcome described by the
+scenario.
+
+For rejected or invalid actions:
+
+- assert the expected error, status, message, or observable result
+- verify unchanged or absent success state when relevant
+- distinguish the expected failure from unrelated runtime failures
+
+Do not allow a negative scenario to pass merely because an operation threw an
+exception.
+
+## Test Boundary
+
+Exercise the externally observable application boundary named by the scenario.
+
+Do not replace API acceptance behavior with direct calls to application
+services, repositories, domain objects, or internal transport handlers.
+
+Keep protocol-specific operations, application test data, and step definitions
+in the consumer acceptance package.
+
+## Scenario Independence
+
+Each scenario should be independently executable.
+
+Do not depend on scenario ordering or state left by another scenario. Reset
+mutable test state through the suite's established lifecycle.

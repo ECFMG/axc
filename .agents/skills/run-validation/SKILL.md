@@ -44,12 +44,10 @@ dead-code, dependency-analysis, architecture, test, audit, and security checks.
 Do not duplicate those checks individually immediately before `verify` unless
 there is a specific diagnostic reason.
 
-For completed implementation, commit normally and allow the repository
-pre-commit hook to execute its required validation. Do not bypass the hook or
-use `--no-verify`.
-
-Run `pnpm run verify` explicitly when full verification is required without
-committing.
+For completed implementation, commit normally. The repository pre-commit hook
+runs `lint-staged` followed by `pnpm run verify`, so do not run `pnpm run verify`
+immediately before committing unless there is a specific reason to validate
+without committing.
 
 ## Failure Recovery
 
