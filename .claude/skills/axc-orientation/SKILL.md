@@ -57,6 +57,11 @@ packages/cellix/*              vendored framework — read, reuse, never edit
   `Ensure.that(resolved(LastResponse.status()), equals(200))`,
   `Question.about('…', async a => (await a.answer(LastResponse.body<T>())).field)`.
   The suite boots the real Functions host on :7071 (minutes) — it is the slowest gate.
+  Cover every row of the task's acceptance-criteria table (`task-set-*-requirements.md`,
+  ids `A-AC1…`) with its own scenario, and put the criterion id in the scenario name
+  (`Scenario: A-AC8 invalid query parameters return 400`); a feature with fewer scenarios
+  than criteria is incomplete and will be sent back. Before finishing, run
+  `python3 .claude/hooks/coverage_gate.py --check` — it lists any criteria still uncovered.
 - Architecture: `archunit-tests/src/dependency-rules.test.ts` — see the domain list above.
 
 ## Docs
