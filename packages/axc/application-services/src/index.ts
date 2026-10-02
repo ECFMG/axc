@@ -1,3 +1,17 @@
+import { type CourseSearchCriteria, type CourseSearchResult, searchCourses } from './courses.ts';
+
+export type { Course, CourseModality, CourseQueryErrorBody, CourseQueryErrorDetail, CourseQueryParseResult, CourseSearchCriteria, CourseSearchResult, CourseSortField, CourseStatus } from './courses.ts';
+export {
+	COURSE_CATALOG,
+	COURSE_MODALITIES,
+	COURSE_SORT_FIELDS,
+	COURSE_STATUSES,
+	DEFAULT_COURSE_PAGE_SIZE,
+	MAX_COURSE_PAGE_SIZE,
+	parseCourseQuery,
+	searchCourses,
+} from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -18,6 +32,9 @@ export interface ApiContext {
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		search(criteria: CourseSearchCriteria): CourseSearchResult;
 	};
 }
 
@@ -48,6 +65,9 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						timestamp: new Date().toISOString(),
 					};
 				},
+			},
+			courses: {
+				search: searchCourses,
 			},
 		});
 
