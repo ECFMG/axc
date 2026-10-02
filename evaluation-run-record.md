@@ -18,7 +18,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Requirements Completed / Attempted | 11 / 11 (A1–A11) |
 | Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
 | Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
+| Static Analysis / Security Findings | snyk: Tested 1178 dependencies for known issues, found 1 issues, 4 vulnerable paths. |
 | Input Tokens | 1.66k |
 | Cached Tokens | 11.5m |
 | Output Tokens | 92.2k |
