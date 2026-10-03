@@ -30,7 +30,8 @@
 		},
 		"packages/axc/*": {
 			"entry": ["src/index.ts", "vitest.config.ts"],
-			"project": ["src/**/*.ts"]
+			"project": ["src/**/*.ts"],
+			"ignoreDependencies": ["@cellix/config-vitest"]
 		},
 		"packages/axc-verification/archunit-tests": {
 			"entry": ["src/**/*.test.ts", "vitest.config.ts"],

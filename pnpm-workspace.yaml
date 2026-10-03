@@ -43,7 +43,15 @@ catalog:
   vitest: 4.1.11
 
 auditConfig:
-  ignoreGhsas: []
+  ignoreGhsas:
+    # braces <=3.0.3 (transitive via knip, ts-scope-trimmer-plugin, Docusaurus):
+    # no upstream fix as of 2026-10-03, risk accepted by user.
+    # Remove once a patched version ships.
+    - GHSA-vfj7-8cjw-p6xm
+    # http-cache-semantics <=4.2.0 (transitive via @docusaurus/core>update-notifier):
+    # no upstream fix as of 2026-10-03, risk accepted by user.
+    # Remove once a patched version ships.
+    - GHSA-ch52-4w7c-c8xp
 
 overrides:
   happy-dom: 20.10.1

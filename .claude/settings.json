@@ -1,0 +1,28 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Write|Edit|NotebookEdit|Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/manager-guard.mjs"
+					},
+					{
+						"type": "command",
+						"command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/unit-test-guard.mjs"
+					},
+					{
+						"type": "command",
+						"command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/developer-guard.mjs"
+					},
+					{
+						"type": "command",
+						"command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/committer-guard.mjs"
+					}
+				]
+			}
+		]
+	}
+}

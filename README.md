@@ -24,7 +24,7 @@ The architecture follows [CellixJS](https://github.com/CellixJs/cellixjs). Reusa
 
 ## Commands
 
-Requires Node.js 24 (`nvm use`) and pnpm 11. Dependency lifecycle scripts are disabled (`.npmrc` sets `ignore-scripts=true`).
+Requires Node.js 24.21.0 (pinned in `mise.toml`) and pnpm 11. Run `mise install`, then activate mise in your shell (for example `eval "$(mise activate zsh)"`) or prefix commands with `mise exec --`. Dependency lifecycle scripts are disabled (`.npmrc` sets `ignore-scripts=true`).
 
 | Command | What it does |
 | --- | --- |
@@ -59,8 +59,13 @@ Husky and lint-staged format staged files on commit. `pnpm run verify` and the G
 - `packages/axc-verification/acceptance-api` drives `GET /health` over HTTP against the `@apps/api` host and writes a Serenity HTML report under `packages/axc-verification/acceptance-api/target/site/serenity`.
 - `packages/axc-verification/archunit-tests` checks layering with `@cellix/archunit-tests`.
 
+## Agent instructions
+
+Coding agents start at [AGENTS.md](AGENTS.md). Claude Code and Copilot reach it through `CLAUDE.md` and `.github/copilot-instructions.md`. Instruction sets, their roles, and a change log are kept in [.agents/instructions/](.agents/instructions/README.md).
+
 ## Local tools
 
+- [mise](https://mise.jdx.dev) for the pinned Node.js version in `mise.toml`
 - Azure Functions Core Tools v4 (`func`) for `pnpm run dev`, `pnpm run start`, and acceptance tests.
 - A JRE for the Serenity BDD report
 - Snyk CLI, authenticated, when security results should fail the gate
