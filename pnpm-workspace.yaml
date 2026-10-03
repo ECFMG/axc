@@ -43,7 +43,9 @@ catalog:
   vitest: 4.1.11
 
 auditConfig:
-  ignoreGhsas: []
+  ignoreGhsas: 
+    - GHSA-ch52-4w7c-c8xp # no patched version available
+    - GHSA-vfj7-8cjw-p6xm # no patched version available
 
 overrides:
   happy-dom: 20.10.1
