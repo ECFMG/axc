@@ -16,6 +16,7 @@ export interface ApiContext {
 }
 
 export interface ApplicationServices {
+	catalog: ReturnType<typeof Catalog>;
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -38,6 +39,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			catalog: Catalog(createDataSources()),
 			health: {
 				getStatus(): HealthStatus {
 					return {
@@ -53,3 +55,8 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 
 	return { forRequest };
 }
+
+import { createDataSources } from '@axc/persistence';
+import { Catalog } from './contexts/catalog/index.ts';
+
+export type { CourseListQuery, CourseListResult } from './contexts/catalog/course/index.ts';
