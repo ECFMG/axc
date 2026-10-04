@@ -10,7 +10,7 @@
 // denied. When git is unavailable the project dir is used as the root.
 
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, isAbsolute, relative, resolve } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 
 // Dependency-free prelude: decide scope from the raw input before loading the shared lib, so a broken lib never blocks
 // out-of-scope callers. Anything that goes wrong in scope exits 2, which blocks the tool call (exit 1 would not).
@@ -78,6 +78,7 @@ const PNPM_BOOLEAN_FLAGS = new Set([
 ]);
 const BIOME_SUBCOMMANDS = new Set(['check', 'lint', 'format', 'ci', 'explain', 'version']);
 const BIOME_WRITE_FLAGS = /^--(write|fix|apply|apply-unsafe|unsafe|staged|changed)(=|$)/;
+const VITEST_CONFIG = /^vitest\.config\.(ts|mts|js|mjs)$/;
 
 function check(tool, args) {
 	if (tool === 'Write' || tool === 'Edit' || tool === 'NotebookEdit') {
@@ -108,14 +109,26 @@ function checkWrite(path) {
 	if (!root) return `the unit tester may only write inside this repository or one of its git worktrees (tried ${path}).`;
 	const rel = relative(root, full);
 	if (rel.startsWith('..') || isAbsolute(rel)) return `the unit tester may only write inside this repository or one of its git worktrees (tried ${path}).`;
-	if (isUnitTesterTestPath(rel)) return null;
+	if (isUnitTesterTestPath(rel) || isPackageVitestConfig(root, rel)) return null;
 	return (
 		`the unit tester may only write colocated *.test.ts files and features/*.feature files under packages/axc/*/src/ or apps/*/src/, ` +
 		`*.test.ts files under packages/axc-verification/archunit-tests/src/, packages/axc/*/tests/integration/, or apps/*/tests/integration/, ` +
 		`*.feature files under packages/axc-verification/acceptance-api/src/features/ and *.ts files under its src/step-definitions/, ` +
-		`plus notes under .agents-work/ and the temp dir; not source code, test config or harness (world.ts, serenity.ts, infrastructure.ts, ` +
-		`cucumber.yaml), package.json, lockfiles, or packages/cellix/ (tried ${rel}).`
+		`vitest.config.{ts,mts,js,mjs} directly in a package root under packages/axc/, packages/axc-verification/, or apps/, ` +
+		`plus notes under .agents-work/ and the temp dir; not source code, other test config (vitest.workspace.*, a root vitest config, ` +
+		`packages/cellix/config-vitest), harness (world.ts, serenity.ts, infrastructure.ts, cucumber.yaml), package.json, lockfiles, ` +
+		`or packages/cellix/ (tried ${rel}).`
 	);
+}
+
+// A per-package vitest config the unit tester owns (user decision, 2026-10-03): vitest.config.{ts,mts,js,mjs} directly in
+// packages/axc/<pkg>/, packages/axc-verification/<pkg>/, or apps/<app>/, where that directory has a package.json. Never
+// vitest.workspace.*, a root config, or packages/cellix/ (including config-vitest).
+function isPackageVitestConfig(root, rel) {
+	const parts = rel.split(sep);
+	if (!VITEST_CONFIG.test(parts.at(-1))) return false;
+	const inPackage = (parts[0] === 'packages' && (parts[1] === 'axc' || parts[1] === 'axc-verification') && parts.length === 4) || (parts[0] === 'apps' && parts.length === 3);
+	return inPackage && existsSync(join(root, ...parts.slice(0, -1), 'package.json'));
 }
 
 // --- shell -------------------------------------------------------------------------------------------------------
@@ -191,7 +204,7 @@ function checkVitestFlags(args) {
 }
 
 function checkVitest(args) {
-	if (args.find((arg) => !arg.startsWith('-')) === 'init') return '`vitest init` writes config files.';
+	if (args.find((arg) => !arg.startsWith('-')) === 'init') return '`vitest init` writes config files; write a package vitest.config.ts with Write instead.';
 	return checkVitestFlags(args);
 }
 

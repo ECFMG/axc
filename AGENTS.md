@@ -30,7 +30,7 @@ Instruction sets live in [`.agents/instructions/`](.agents/instructions/). They 
 - Only the unit tester creates or changes unit, architecture, integration, and acceptance tests (acceptance features and step definitions). Developers never modify tests or snapshots. The acceptance harness is infrastructure code that a developer changes when the brief names it. See the ownership table in [01-managerial-agent.md](.agents/instructions/01-managerial-agent.md#who-owns-what).
 - Some files belong to no sub-agent, and a change to them goes to the user:
   - Tests in the vendored `packages/cellix/**`
-  - Test config: `vitest.config.*`, `vitest.workspace.*`, and `packages/cellix/config-vitest/**`
+  - Test config: `vitest.workspace.*`, a root `vitest.config.*`, and `packages/cellix/config-vitest/**`. The one exception: the unit tester owns a package's own `vitest.config.*` in `packages/axc/<pkg>/`, `packages/axc-verification/<pkg>/`, or `apps/<app>/`.
   - Agent guardrails: `.claude/**`, `.agents/**`, `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`. They are changed in a maintenance session with the guards off.
 - Commits and pushes are made only by the committer, and only when the user asks (see [04-committer-agent.md](.agents/instructions/04-committer-agent.md)). To dispute a test, send a challenge to the manager, who routes it to the unit tester (see [02-unit-test-agent.md](.agents/instructions/02-unit-test-agent.md#rules-for-other-agents)).
 - Put scratch, plan, and runtime files in `.agents-work/` (gitignored).

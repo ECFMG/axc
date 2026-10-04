@@ -21,6 +21,7 @@ You do not change product code. You do not run the final gate. A verifier sub-ag
 - Architecture tests: `packages/axc-verification/archunit-tests/src/**/*.test.ts`
 - Integration tests: `packages/axc/<pkg>/tests/integration/**/*.test.ts` and `apps/<app>/tests/integration/**/*.test.ts`
 - Acceptance tests: `packages/axc-verification/acceptance-api/src/features/**/*.feature` and `packages/axc-verification/acceptance-api/src/step-definitions/**/*.ts`
+- A package's vitest config: `vitest.config.ts` (or `.mts`, `.js`, `.mjs`) directly in `packages/axc/<pkg>/`, `packages/axc-verification/<pkg>/`, or `apps/<app>/`. Follow `packages/axc/application-services/vitest.config.ts` (`mergeConfig` of `nodeConfig` from `@cellix/config-vitest`).
 
 And only inside the write boundary in your brief. "Tests" in the rest of this file means all four kinds.
 
@@ -28,7 +29,7 @@ And only inside the write boundary in your brief. "Tests" in the rest of this fi
 
 - **Create new directories.** Some task sets forbid them anyway (for example, Task Set A ([`task-set-a-prompt.md`](../../task-set-a-prompt.md)) forbids new directories under `packages/axc/**`). In Claude Code the hook blocks them even when the task set allows them (see [Enforcement](#enforcement-claude-code)). If you need a new `features/`, `tests/integration/`, or acceptance `features/` or `step-definitions/` subdirectory, ask the manager to have a developer create it. A `tests/integration/` directory under `packages/axc/<pkg>/` or `apps/<app>/` is an exception the user approved: it may be created even when the task set forbids new directories. You still can't create it yourself, so ask the manager. For `features/`, you can write plain `describe`/`it` tests instead.
 - **Modify product or source code**, including to "make it testable".
-- **Modify test config**: `vitest.config.*`, `vitest.workspace.*`, or `@cellix/config-vitest`. Test config belongs to no sub-agent. Report a needed change, and the manager takes it to the user.
+- **Modify other test config**: `vitest.workspace.*`, a root `vitest.config.*`, or `@cellix/config-vitest`. That config belongs to no sub-agent. Report a needed change, and the manager takes it to the user.
 - **Modify `package.json`, the lockfile, or any other config.**
 - **Modify the acceptance harness:** `packages/axc-verification/acceptance-api/src/world.ts`, `serenity.ts`, `infrastructure.ts`, `cucumber-lifecycle-hooks.ts`, and the package's `cucumber.yaml`, `package.json`, and `tsconfig.json`. It is infrastructure code that a developer changes. If you need a change there, report it.
 - **Modify `packages/cellix/**`** (vendored, and must match upstream CellixJS, tests included). If a cellix test seems to need a change, report it. The manager escalates it to the user.
@@ -72,7 +73,9 @@ Never:
   - Empty or no-match results
 - **Follow the style already used in the package.** Unit tests are colocated `*.test.ts` files run by vitest through `@cellix/config-vitest` (`nodeConfig`). Some packages use plain `describe`/`it` (see `packages/axc/application-services/src/health.test.ts`). Others use `@amiceli/vitest-cucumber` with `describeFeature`/`loadFeature` and a colocated `features/*.feature` file (see `packages/cellix/domain-seedwork/src/domain-seedwork/value-object.test.ts`).
 - **Keep tests deterministic and independent.** They must not depend on run order.
-- **If the package has no vitest setup** (no `vitest.config.*` or `test` script), stop and report "package has no vitest setup" to the manager. Don't improvise one (see [01-managerial-agent.md](01-managerial-agent.md#packages-without-a-vitest-setup)).
+- **If the package has no vitest setup:**
+  - With no `test` script or vitest devDependencies, stop and report "package has no vitest setup" to the manager. A developer adds the scripts and devDependencies (see [01-managerial-agent.md](01-managerial-agent.md#packages-without-a-vitest-setup)).
+  - With those in place but no `vitest.config.*`, write `vitest.config.ts` in the package root, following `packages/axc/application-services/vitest.config.ts`. Don't add package-specific overrides unless your brief asks for them.
 
 ## TDD: the red phase
 
@@ -195,6 +198,7 @@ For the unit tester, the hook allows:
   - `*.test.ts` under `packages/axc-verification/archunit-tests/src/**`.
   - `*.test.ts` under `packages/axc/<pkg>/tests/integration/**` and `apps/<app>/tests/integration/**`.
   - `*.feature` under `packages/axc-verification/acceptance-api/src/features/**`, and `*.ts` under `packages/axc-verification/acceptance-api/src/step-definitions/**` (checked by `isAcceptanceTestPath`).
+  - `vitest.config.ts`, `.mts`, `.js`, or `.mjs` directly in `packages/axc/<pkg>/`, `packages/axc-verification/<pkg>/`, or `apps/<app>/`, when that directory has a `package.json` (checked by `isPackageVitestConfig` in the hook). `vitest.workspace.*`, a root vitest config, and `packages/cellix/**` are denied.
 
   Matching is case-sensitive. Symlinks are resolved first. The path must be inside this repository or one of its git worktrees, and its parent directory must already exist, so no new directories. A new directory needs a developer first. Paths under `node_modules/` and `dist/`, `packages/cellix/**`, and the acceptance harness are denied.
 - `pnpm` only for the `test`, `test:arch`, `test:acceptance`, `build`, and `typecheck` scripts (at the root or with `--filter`), plus read-only queries such as `pnpm ls` and `pnpm why`. The three test scripts deny `-u`, `--update`, and `--outputFile`.

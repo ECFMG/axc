@@ -89,14 +89,16 @@ The vendored `packages/cellix/**` is out of scope, because it must match upstrea
 
 ### Packages without a vitest setup
 
-Only `@axc/application-services` has a vitest setup today. `@axc/domain`, `@axc/persistence`, `@axc/rest`, and `@axc/service-mongoose` don't. The user decided on 2026-10-02 that a setup is added when a package first needs tests, with the user's approval at that point, not in advance.
+Only `@axc/application-services` has a vitest setup today. `@axc/domain`, `@axc/persistence`, `@axc/rest`, and `@axc/service-mongoose` don't. A setup is added when a package first needs tests. The user decided on 2026-10-03 that this no longer needs the user's approval per package.
 
-- Before the unit tester writes the first tests in such a package, ask the user to approve a setup:
-  - A `vitest.config.ts` that uses `nodeConfig` from `@cellix/config-vitest` (as in `packages/axc/application-services/vitest.config.ts`)
-  - `vitest` and `@vitest/coverage-istanbul` devDependencies from the pnpm catalog (`catalog:`), plus `@cellix/config-vitest` (`workspace:*`)
-  - `test` and `test:coverage` scripts
-- `vitest.config.*` is test config, and the developer hook blocks it. Once the user approves, it is written in a maintenance session (`AXC_DEVELOPER_GUARD=off`) or by the user. A developer can add the scripts and devDependencies to `package.json`, if the brief allows the dependencies.
-- Until then, coverage can't run in that package. The verifier judges test association from the tests (see [Verify](#5-verify-through-sub-agents)).
+Before the unit tester writes the first tests in such a package, set it up with two briefs:
+
+- **Developer:** add `test` and `test:coverage` scripts to the package's `package.json`, add the devDependencies `vitest` and `@vitest/coverage-istanbul` from the pnpm catalog (`catalog:`) and `@cellix/config-vitest` (`workspace:*`), and run `pnpm install` to update the lockfile. The brief must allow these dependencies and `pnpm-lock.yaml`.
+- **Unit tester:** write the package's `vitest.config.ts`, using `nodeConfig` from `@cellix/config-vitest` as in `packages/axc/application-services/vitest.config.ts`.
+
+The unit tester may write only a `vitest.config.*` directly in a package root under `packages/axc/`, `packages/axc-verification/`, or `apps/`. The developer hook still blocks every vitest config. `vitest.workspace.*`, a root `vitest.config.*`, and `packages/cellix/config-vitest/**` still go to the user.
+
+Until a package has a setup, coverage can't run there. The verifier judges test association from the tests (see [Verify](#5-verify-through-sub-agents)).
 
 ## Who owns what
 
@@ -106,13 +108,14 @@ Only `@axc/application-services` has a vitest setup today. `@axc/domain`, `@axc/
 | Unit, architecture, integration, and acceptance tests | Reads, routes disputes | Writes and owns | No; challenges through the manager | No |
 | Acceptance harness (`world.ts`, `serenity.ts`, `infrastructure.ts`, `cucumber-lifecycle-hooks.ts`, `cucumber.yaml`, `package.json`, `tsconfig.json`) | Reads | No; reports the need | Writes, when the brief names it | No |
 | Cellix tests (`packages/cellix/**`) | Escalates to the user | No | No | No |
-| Test config (`vitest.config.*`, `vitest.workspace.*`, `packages/cellix/config-vitest/**`) | Escalates to the user | No | No | No |
+| Package vitest config (`vitest.config.*` in a package root under `packages/axc/`, `packages/axc-verification/`, or `apps/`) | Briefs the unit tester | Writes and owns | No | No |
+| Other test config (`vitest.workspace.*`, a root `vitest.config.*`, `packages/cellix/config-vitest/**`) | Escalates to the user | No | No | No |
 | Agent guardrails (`.claude/**`, `.agents/**`, `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`) | Escalates to the user | No | No | No |
 | `.agents-work/` | Plans and status | Rationale notes | Scratch files | Commit-message file |
 | Staging (`git add`) | No | No | Only if the brief asks | Final staging |
 | Commits and pushes | Briefs the committer | No | No | Only when the user asks (push only when the user approves it) |
 
-Test config and agent guardrails belong to no sub-agent. A change to either goes to the user. Guardrails are changed in a maintenance session with the guards off (`AXC_MANAGER_GUARD=off`, `AXC_UNIT_TEST_GUARD=off`, `AXC_DEVELOPER_GUARD=off`, `AXC_COMMITTER_GUARD=off`).
+Other test config and agent guardrails belong to no sub-agent. A change to either goes to the user. Guardrails are changed in a maintenance session with the guards off (`AXC_MANAGER_GUARD=off`, `AXC_UNIT_TEST_GUARD=off`, `AXC_DEVELOPER_GUARD=off`, `AXC_COMMITTER_GUARD=off`).
 
 Integration test directories: a developer creates `packages/axc/<pkg>/tests/integration/` or `apps/<app>/tests/integration/` when you ask, even if the task set forbids new directories. The user approved this exception on 2026-10-02. The unit tester then owns the tests inside it.
 
@@ -147,7 +150,7 @@ Integration test directories: a developer creates `packages/axc/<pkg>/tests/inte
   - In Claude Code, you MUST spawn it as the `unit-tester` agent type (`subagent_type: unit-tester`). The set 02 hook only enforces that agent type, so a general-purpose agent briefed with `Role: unit-tester` is not enforced.
   - The unit tester cannot create directories. If a test needs a new directory (`features/`, `tests/integration/`, or a subdirectory of the acceptance `features/` or `step-definitions/`), have a developer create it first. A `tests/integration/` directory under `packages/axc/<pkg>/` or `apps/<app>/` is always allowed, even when the task set forbids new directories (an exception the user approved on 2026-10-02).
   - The acceptance harness (`world.ts`, `serenity.ts`, `infrastructure.ts`, `cucumber-lifecycle-hooks.ts`, `cucumber.yaml`, `package.json`, `tsconfig.json`) is infrastructure code. Brief a developer for it, naming the files.
-  - Tests in the vendored `packages/cellix/**`, test config, and agent guardrails belong to no sub-agent. Escalate a needed change to the user.
+  - Tests in the vendored `packages/cellix/**`, test config other than a package's own `vitest.config.*`, and agent guardrails belong to no sub-agent. Escalate a needed change to the user.
 - Follow the [TDD order](#default-flow-tdd-red-green-refactor). The unit tester, and a developer's skeleton, can come first. The implementation goes to a developer only after red is confirmed.
 - Run independent tasks in parallel. Run dependent tasks in order.
 - When sub-agents change code in parallel, give each one its own git worktree (this repository is built for that; see `README.md`, including `WORKTREE_NAME` for `pnpm run dev`).

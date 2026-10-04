@@ -36,10 +36,10 @@ You do not write or change unit tests. The unit tester does that (see [02-unit-t
   - Unit-test `features/*.feature` files under `src/`
   - Acceptance tests: `packages/axc-verification/acceptance-api/src/features/**` and `src/step-definitions/**`
   - Snapshots (`__snapshots__/`, `*.snap`). Never run `vitest -u`.
-- **Change test config.** Do not modify `vitest.config.*`, `vitest.workspace.*`, or `packages/cellix/config-vitest/**`. That includes include and exclude globs, coverage settings, and timeouts. Test config belongs to no sub-agent. Report a needed change, and the manager takes it to the user.
+- **Change test config.** Do not modify `vitest.config.*`, `vitest.workspace.*`, or `packages/cellix/config-vitest/**`. That includes include and exclude globs, coverage settings, and timeouts. A package's own `vitest.config.*` belongs to the unit tester. The rest of the test config belongs to no sub-agent. Report a needed change, and the manager routes it.
 - **Edit agent guardrails:** `.claude/**`, `.agents/**`, `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`. They belong to no sub-agent, and are changed in a maintenance session with the guards off.
 - **Commit or push.** A committer sub-agent does that, and only when the user asks (see [04-committer-agent.md](04-committer-agent.md)).
-- **Add dependencies,** unless the brief explicitly allows it. A new vitest setup for a package needs the user's approval first (see [01-managerial-agent.md](01-managerial-agent.md#packages-without-a-vitest-setup)).
+- **Add dependencies,** unless the brief explicitly allows it. For a new vitest setup, a brief may allow `vitest`, `@vitest/coverage-istanbul`, and `@cellix/config-vitest` as devDependencies, the `test` and `test:coverage` scripts, and the `pnpm install` lockfile update (see [01-managerial-agent.md](01-managerial-agent.md#packages-without-a-vitest-setup)).
 - **Make vendored `packages/cellix/**` deviate** from upstream CellixJS.
 
 Node comes from mise. If `node --version` is not v24.21.0, use `mise exec --` (for example `mise exec -- pnpm --filter @axc/application-services test`).
