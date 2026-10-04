@@ -22,6 +22,16 @@ The architecture follows [CellixJS](https://github.com/CellixJs/cellixjs). Reusa
 
 `environment` is `production` when `NODE_ENV=production`, `test` when `NODE_ENV=test`, and `local` otherwise.
 
+## Course catalog
+
+`GET /api/courses` searches the course catalog. It supports keyword search (`q`), filters (`modality`, `status`, `tag`), pagination (`page`, `pageSize`, max 50), and sorting (`sort`: `title`, `createdAt`, `updatedAt`). Invalid query parameters return `400` with an `INVALID_QUERY_PARAMETER` error body. The route lives in `@axc/rest`, the search logic in `@axc/application-services`, and the data is an in-memory seed of 16 courses in `@axc/persistence`.
+
+```bash
+curl -s 'https://api.agentcourses.localhost/api/courses?q=security&modality=online&pageSize=5'
+```
+
+See [apps/docs/docs/courses.md](apps/docs/docs/courses.md) for the full contract.
+
 ## Commands
 
 Requires Node.js 24.21.0 (pinned in `mise.toml`) and pnpm 11. Run `mise install`, then activate mise in your shell (for example `eval "$(mise activate zsh)"`) or prefix commands with `mise exec --`. Dependency lifecycle scripts are disabled (`.npmrc` sets `ignore-scripts=true`).
@@ -53,7 +63,7 @@ Husky and lint-staged format staged files on commit. `pnpm run verify` and the G
 ## Layout
 
 - `apps/api` composes infrastructure, application services, and REST with `@cellix/api-core`.
-- `apps/docs` is the Docusaurus site for the healthcheck contract.
+- `apps/docs` is the Docusaurus site for the healthcheck and course catalog contracts.
 - `packages/cellix/*` are reusable Cellix packages, including `@cellix/api-core`.
 - `packages/axc/*` is the application layer.
 - `packages/axc-verification/acceptance-api` drives `GET /health` over HTTP against the `@apps/api` host and writes a Serenity HTML report under `packages/axc-verification/acceptance-api/target/site/serenity`.

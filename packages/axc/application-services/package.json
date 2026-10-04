@@ -21,8 +21,12 @@
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
 		"test": "vitest run --silent --reporter=dot",
+		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
+	},
+	"dependencies": {
+		"@axc/domain": "workspace:*"
 	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",

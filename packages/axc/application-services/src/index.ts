@@ -1,3 +1,9 @@
+import type { CourseRepository } from '@axc/domain';
+import { type CourseSearchResult, parseCourseQuery, type RawCourseQuery, searchCourses } from './course-catalog.ts';
+
+export type { Course, CourseModality, CourseRepository, CourseStatus } from '@axc/domain';
+export * from './course-catalog.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -13,11 +19,15 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	courseRepository: CourseRepository;
 }
 
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		search(raw: RawCourseQuery): Promise<CourseSearchResult>;
 	};
 }
 
@@ -47,6 +57,16 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						environment: context.environment,
 						timestamp: new Date().toISOString(),
 					};
+				},
+			},
+			courses: {
+				async search(raw: RawCourseQuery): Promise<CourseSearchResult> {
+					const parsed = parseCourseQuery(raw);
+					if (!parsed.ok) {
+						return { ok: false, errors: parsed.errors };
+					}
+					const courses = await context.courseRepository.getAll();
+					return { ok: true, result: searchCourses(courses, parsed.criteria) };
 				},
 			},
 		});
