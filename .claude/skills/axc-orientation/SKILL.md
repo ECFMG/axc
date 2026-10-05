@@ -52,7 +52,8 @@ packages/cellix/*              vendored framework — read, reuse, never edit
   Run one package: `corepack pnpm --filter @axc/application-services run test`.
 - Acceptance: `packages/axc-verification/acceptance-api/src/features/*.feature` +
   `src/step-definitions/*.steps.ts`. `cucumber.yaml` already globs both — new files need no
-  registration. Copy the shape of `healthcheck.steps.ts`:
+  registration. Name the feature/step files after the capability under test (as `healthcheck.feature`
+  is), not the entity, and keep them consistent with the doc slug you register. Copy the shape of `healthcheck.steps.ts`:
   `actorCalled('API client').attemptsTo(Send.a(GetRequest.to('/path?x=y')))`,
   `Ensure.that(resolved(LastResponse.status()), equals(200))`,
   `Question.about('…', async a => (await a.answer(LastResponse.body<T>())).field)`.
