@@ -6,7 +6,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | OpenAI |
 | Developer / Operator | Duy Nguyen / Codex |
-| Reviewer | |
+| Reviewer | Duy Nguyen |
 | Harness | Codex |
 | Model | GPT-5.6 Sol (High) |
 | License / Plan | Business (self_serve_business_prolite) |
@@ -27,6 +27,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | Not available |
 | Elapsed Time | 31m 52s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | |
-| Final Rubric Score | 69/100 |
-| Recommendation | Stop |
+| Reviewer Notes | The model, fixtures, query behavior, and composition are concentrated in the application-services root, while routing and validation are concentrated in the REST root. This requires coordinated structural rewriting against Cellix—not merely minor cleanup. 7.7 million tokens is very expensive for this task and output quality. The resulting code requires substantial architectural cleanup. |
+| Final Rubric Score | 66/100 |
+| Recommendation | Continue to add more harness because the resulting code requires substantial architectural cleanup. |
