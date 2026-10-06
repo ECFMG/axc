@@ -15,13 +15,13 @@
 | --- | ---: | ---: |
 | Functional Correctness | 5/5 | 20/20 |
 | Test and Validation Performance | 5/5 | 15/15 |
-| Architecture and Codebase Alignment | 3/5 | 9/15 |
+| Architecture and Codebase Alignment | 2/5 | 6/15 |
 | Security and Guardrail Compliance | 3/5 | 9/15 |
 | Harness Engineering Effectiveness | 3/5 | 6/10 |
-| Context Token and Cost Efficiency | 0/5 | 0/10 |
-| Developer Workflow Fit | 4/5 | 8/10 |
+| Context Token and Cost Efficiency | 1/5 | 2/10 |
+| Developer Workflow Fit | 3/5 | 6/10 |
 | Operational and Vendor Readiness | 2/5 | 2/5 |
-| **Total** |  | **69/100** |
+| **Total** |  | **66/100** |
 
 **Recommendation:** Remediate  
 **Security hard rule:** Not triggered
