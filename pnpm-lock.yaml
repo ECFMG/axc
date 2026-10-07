@@ -350,15 +350,24 @@ importers:
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
     devDependencies:
+      '@cellix/archunit-tests':
+        specifier: workspace:*
+        version: link:../../cellix/archunit-tests
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
+      '@cellix/config-vitest':
+        specifier: workspace:*
+        version: link:../../cellix/config-vitest
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.6.2)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/rest:
     dependencies:

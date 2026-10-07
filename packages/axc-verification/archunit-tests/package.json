@@ -4,6 +4,9 @@
 	"description": "Architectural fitness tests for agentCourses",
 	"private": true,
 	"type": "module",
+	"exports": {
+		"./application-services": "./src/application-services.ts"
+	},
 	"scripts": {
 		"test:arch": "vitest run",
 		"test:watch": "vitest",

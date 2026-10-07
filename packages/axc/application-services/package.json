@@ -21,10 +21,13 @@
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
 		"test": "vitest run --silent --reporter=dot",
+		"test:arch": "vitest run --config vitest.arch.config.ts",
 		"test:watch": "vitest",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"devDependencies": {
+		"@axc-verification/archunit-tests": "workspace:*",
+		"@cellix/archunit-tests": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
 		"@vitest/coverage-istanbul": "catalog:",
