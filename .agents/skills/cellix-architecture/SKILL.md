@@ -68,7 +68,10 @@ The command writes:
 1. Domain permissions, visa, passport (passport is created once), value objects, aggregate, repository interface, unit-of-work interface
 2. `models/<entity>/<entity>.model.ts`
 3. Persistence domain adapter, repository, and `get<Entity>UnitOfWork`
-4. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
+4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. Queries call `readonlyDataSource.<Context>.<Entity>.<Entity>ReadRepo`
+5. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
+
+`datasources/readonly/mongo-data-source.ts`, `datasources/readonly/index.ts`, and `datasources/readonly/<context>/index.ts` are created once. A later generate leaves them in place. Add the next entity to those indexes yourself.
 
 It refuses to overwrite an entity file. A second action in an existing entity is a new generator invocation only when that action file does not already exist; shared passport is left in place. If the generator stops, do not copy a file over the collision.
 

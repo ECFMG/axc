@@ -27,8 +27,17 @@ describe('Cellix generator', () => {
 		roots.push(root);
 		const lint = defaultCellixLintConfig();
 		const files = await generateFeature({ root, lint, context: 'course', entity: 'course', action: 'create', transport: 'graphql' });
-		expect(files.map((file) => file.path).join('\n')).toContain('course.aggregate.ts');
-		expect(files.map((file) => file.path).join('\n')).toContain('course.resolvers.ts');
+		const paths = files.map((file) => file.path).join('\n');
+		expect(paths).toContain('course.aggregate.ts');
+		expect(paths).toContain('course.resolvers.ts');
+		expect(paths).toContain('course.data.ts');
+		expect(paths).toContain('course.read-repository.ts');
+		expect(paths).toContain('datasources/readonly/mongo-data-source.ts');
+		const readRepository = files.find((file) => file.path.endsWith('course.read-repository.ts'));
+		expect(readRepository?.contents).toContain('getCourseReadRepository');
+		expect(readRepository?.contents).toContain('mongoDataSource.findById');
+		const readonlyIndex = files.find((file) => file.path.endsWith('datasources/readonly/index.ts'));
+		expect(readonlyIndex?.contents).toContain('CourseReadRepo: CourseReadRepository');
 		expect(files.map((file) => file.path).join('\n')).not.toContain('.event.ts');
 		const aggregate = files.find((file) => file.path.endsWith('course.aggregate.ts'));
 		expect(aggregate?.contents).toContain('entity.markAsNew()');
@@ -65,6 +74,9 @@ describe('Cellix generator', () => {
 		expect(aggregate?.contents).toContain('displayName: DisplayNameProps');
 		expect(aggregate?.contents).toContain('new DisplayNameValues.Label');
 		expect(aggregate?.contents).toContain('ActivityLogEntityReference');
+		const readonlyIndex = files.find((file) => file.path.endsWith('datasources/readonly/index.ts'));
+		expect(readonlyIndex?.contents).toContain('StaffUserReadRepo: StaffUserReadRepository');
+		expect(readonlyIndex?.contents).toContain('User: {');
 
 		const violations = await checkCellixLint({ root, lint });
 		expect(violations).toStrictEqual([]);
@@ -193,7 +205,7 @@ describe('Cellix generator', () => {
 		roots.push(queryRoot);
 		const queryFiles = await generateFeature({ root: queryRoot, lint, context: 'course', entity: 'course', action: 'query-by-id', resolver: true });
 		const queryAction = queryFiles.find((file) => file.path.endsWith('query-by-id.ts'));
-		expect(queryAction?.contents).toContain('readonlyDataSource');
+		expect(queryAction?.contents).toContain('readonlyDataSource.Course.Course.CourseReadRepo.getById');
 		expect(queryAction?.contents).not.toContain('withScopedTransaction');
 		expect(queryFiles.find((file) => file.path.endsWith('course.resolvers.ts'))?.contents).toContain('Query:');
 		await expect(checkCellixLint({ root: queryRoot, lint })).resolves.toStrictEqual([]);

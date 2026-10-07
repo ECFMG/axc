@@ -33,11 +33,13 @@ export async function generateFeature(options: GenerateFeatureOptions): Promise<
 	}
 	const files = plan(options);
 	const passport = path.join(options.root, options.lint.layers.domain, 'domain/contexts/passport.ts');
+	const readonlyRoot = path.join(options.root, options.lint.layers.persistence, 'datasources/readonly');
+	const shared = new Set([passport, path.join(readonlyRoot, 'mongo-data-source.ts'), path.join(readonlyRoot, 'index.ts'), path.join(readonlyRoot, context, 'index.ts')]);
 	const collisions: string[] = [];
 	const writes: GeneratedFile[] = [];
 	for (const file of files) {
 		if (await exists(file.path)) {
-			if (file.path === passport) continue;
+			if (shared.has(file.path)) continue;
 			collisions.push(file.path);
 			continue;
 		}
@@ -70,6 +72,8 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 	const domainContexts = path.join(root, lint.layers.domain, 'domain/contexts');
 	const entityDir = path.join(domainContexts, context, entity);
 	const persistenceDir = path.join(root, lint.layers.persistence, 'datasources/domain', context, entity);
+	const readonlyRoot = path.join(root, lint.layers.persistence, 'datasources/readonly');
+	const readonlyDir = path.join(readonlyRoot, context, entity);
 	const applicationDir = path.join(root, lint.layers.applicationServices, 'contexts', context, entity);
 	const modelFile = path.join(root, lint.layers.models, 'models', entity, `${entity}.model.ts`);
 
@@ -123,8 +127,32 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 			contents: persistenceUowTemplate({ entity, entityPascal, scope }),
 		},
 		{
+			path: path.join(readonlyRoot, 'mongo-data-source.ts'),
+			contents: mongoDataSourceTemplate(),
+		},
+		{
+			path: path.join(readonlyDir, `${entity}.data.ts`),
+			contents: dataTemplate({ entityPascal, scope }),
+		},
+		{
+			path: path.join(readonlyDir, `${entity}.read-repository.ts`),
+			contents: readRepositoryTemplate({ context, entity, entityPascal, scope }),
+		},
+		{
+			path: path.join(readonlyDir, 'index.ts'),
+			contents: readEntityIndexTemplate({ entity, entityPascal, scope }),
+		},
+		{
+			path: path.join(readonlyRoot, context, 'index.ts'),
+			contents: readContextIndexTemplate({ context, contextPascal, entity, entityPascal, scope }),
+		},
+		{
+			path: path.join(readonlyRoot, 'index.ts'),
+			contents: readonlyIndexTemplate({ context, contextPascal, entity, entityPascal, scope }),
+		},
+		{
 			path: path.join(applicationDir, `${action}.ts`),
-			contents: actionTemplate({ actionCamel, command, entityPascal, mutation, scope, shape }),
+			contents: actionTemplate({ actionCamel, command, contextPascal, entityPascal, mutation, scope, shape }),
 		},
 		{
 			path: path.join(applicationDir, 'index.ts'),
@@ -291,6 +319,222 @@ export class ${entityPascal}Repository extends MongooseSeedwork.MongoRepositoryB
 `;
 }
 
+function dataTemplate(input: { entityPascal: string; scope: string }): string {
+	const { entityPascal, scope } = input;
+	return `import type { ${entityPascal} } from '${scope}/data-sources-mongoose-models';
+import { MongoDataSourceImpl, type MongoDataSource } from '../../mongo-data-source.ts';
+
+export interface ${entityPascal}DataSource extends MongoDataSource<${entityPascal}> {}
+
+export class ${entityPascal}DataSourceImpl extends MongoDataSourceImpl<${entityPascal}> implements ${entityPascal}DataSource {}
+`;
+}
+
+function readRepositoryTemplate(input: { context: string; entity: string; entityPascal: string; scope: string }): string {
+	const { context, entity, entityPascal, scope } = input;
+	const reference = `Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}EntityReference`;
+	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
+import type { Domain } from '${scope}/domain';
+import { ${entityPascal}Converter } from '../../../domain/${context}/${entity}/${entity}.domain-adapter.ts';
+import type { FindOneOptions, FindOptions } from '../../mongo-data-source.ts';
+import { ${entityPascal}DataSourceImpl, type ${entityPascal}DataSource } from './${entity}.data.ts';
+
+export interface ${entityPascal}ReadRepository {
+	getAll: (options?: FindOptions) => Promise<${reference}[]>;
+	getById: (id: string, options?: FindOneOptions) => Promise<${reference} | null>;
+}
+
+export class ${entityPascal}ReadRepositoryImpl implements ${entityPascal}ReadRepository {
+	private readonly mongoDataSource: ${entityPascal}DataSource;
+	private readonly converter: ${entityPascal}Converter;
+	private readonly passport: Domain.Passport;
+
+	constructor(models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport) {
+		this.mongoDataSource = new ${entityPascal}DataSourceImpl(models.${entityPascal});
+		this.converter = new ${entityPascal}Converter();
+		this.passport = passport;
+	}
+
+	async getAll(options?: FindOptions): Promise<${reference}[]> {
+		const result = await this.mongoDataSource.find({}, options);
+		return result.map((doc) => this.converter.toDomain(doc, this.passport));
+	}
+
+	async getById(id: string, options?: FindOneOptions): Promise<${reference} | null> {
+		const result = await this.mongoDataSource.findById(id, options);
+		if (!result) {
+			return null;
+		}
+		return this.converter.toDomain(result, this.passport);
+	}
+}
+
+export const get${entityPascal}ReadRepository = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport): ${entityPascal}ReadRepository => {
+	return new ${entityPascal}ReadRepositoryImpl(models, passport);
+};
+`;
+}
+
+function readEntityIndexTemplate(input: { entity: string; entityPascal: string; scope: string }): string {
+	const { entity, entityPascal, scope } = input;
+	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
+import type { Domain } from '${scope}/domain';
+import { get${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
+
+export type { ${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
+
+export const ${entityPascal}ReadRepositoryImpl = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport) => {
+	return {
+		${entityPascal}ReadRepo: get${entityPascal}ReadRepository(models, passport),
+	};
+};
+`;
+}
+
+function readContextIndexTemplate(input: { context: string; contextPascal: string; entity: string; entityPascal: string; scope: string }): string {
+	const { contextPascal, entity, entityPascal, scope } = input;
+	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
+import type { Domain } from '${scope}/domain';
+import { ${entityPascal}ReadRepositoryImpl } from './${entity}/index.ts';
+
+export const ${contextPascal}Context = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport) => ({
+	${entityPascal}: ${entityPascal}ReadRepositoryImpl(models, passport),
+});
+`;
+}
+
+function readonlyIndexTemplate(input: { context: string; contextPascal: string; entity: string; entityPascal: string; scope: string }): string {
+	const { context, contextPascal, entity, entityPascal, scope } = input;
+	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
+import type { Domain } from '${scope}/domain';
+import { ${contextPascal}Context } from './${context}/index.ts';
+import type { ${entityPascal}ReadRepository } from './${context}/${entity}/${entity}.read-repository.ts';
+
+export interface ReadonlyDataSource {
+	${contextPascal}: {
+		${entityPascal}: {
+			${entityPascal}ReadRepo: ${entityPascal}ReadRepository;
+		};
+	};
+}
+
+export const ReadonlyDataSourceImplementation = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport): ReadonlyDataSource => ({
+	${contextPascal}: ${contextPascal}Context(models, passport),
+});
+`;
+}
+
+function mongoDataSourceTemplate(): string {
+	return `import type { MongooseSeedwork } from '@cellix/mongoose-seedwork';
+import { type FilterQuery, isValidObjectId, type Model, type PipelineStage, type QueryOptions, type Require_id } from 'mongoose';
+
+type LeanBase<T> = Readonly<Require_id<T>>;
+type Lean<T> = LeanBase<T> & { id: string };
+type ObjectIdLike = { toHexString: () => string };
+
+const hasToHexString = (value: unknown): value is ObjectIdLike => typeof value === 'object' && value !== null && 'toHexString' in value && typeof value.toHexString === 'function';
+
+export type FindOptions = {
+	fields?: string[] | undefined;
+	projectionMode?: 'include' | 'exclude';
+	populateFields?: string[] | undefined;
+	limit?: number;
+	skip?: number;
+	sort?: Partial<Record<string, 1 | -1>>;
+};
+
+export type FindOneOptions = Omit<FindOptions, 'limit' | 'skip' | 'sort'>;
+
+export interface MongoDataSource<TDoc extends MongooseSeedwork.Base> {
+	find(filter: Partial<TDoc>, options?: FindOptions): Promise<Lean<TDoc>[]>;
+	findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null>;
+	findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null>;
+	aggregate(pipeline: PipelineStage[]): Promise<Lean<TDoc>[]>;
+}
+
+export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements MongoDataSource<TDoc> {
+	private readonly model: Model<TDoc>;
+	constructor(model: Model<TDoc>) {
+		this.model = model;
+	}
+
+	private buildProjection(fields?: string[] | undefined, projectionMode: 'include' | 'exclude' = 'include'): Record<string, 1 | 0> {
+		const projection: Record<string, 1 | 0> = {};
+		if (fields) {
+			for (const key of fields) {
+				projection[key] = projectionMode === 'include' ? 1 : 0;
+			}
+		}
+		return projection;
+	}
+
+	private buildFilterQuery(filter: Partial<TDoc>): FilterQuery<TDoc> {
+		const query: FilterQuery<TDoc> = {};
+		for (const key of Object.keys(filter)) {
+			const value = filter[key as keyof TDoc];
+			if (value !== undefined) {
+				query[key as keyof FilterQuery<TDoc>] = value as FilterQuery<TDoc>[keyof TDoc];
+			}
+		}
+		return query;
+	}
+
+	private appendId(doc: LeanBase<TDoc>): Lean<TDoc> {
+		const id = doc._id;
+		const stringId = typeof id === 'string' ? id : hasToHexString(id) ? id.toHexString() : null;
+		if (stringId === null) {
+			throw new TypeError('MongoDB document is missing a string-compatible _id');
+		}
+		return { ...doc, id: stringId };
+	}
+
+	private buildQueryOptions(options?: FindOptions): QueryOptions {
+		const findOptions: QueryOptions = {};
+		if (options?.limit) findOptions.limit = options.limit;
+		if (options?.skip) findOptions.skip = options.skip;
+		if (options?.sort) findOptions.sort = options.sort;
+		return findOptions;
+	}
+
+	async find(filter: Partial<TDoc>, options?: FindOptions): Promise<Lean<TDoc>[]> {
+		const queryOptions = this.buildQueryOptions(options);
+		let query = this.model.find(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode), queryOptions);
+		if (options?.populateFields?.length) {
+			for (const field of options.populateFields) {
+				query = query.populate(field);
+			}
+		}
+		const docs = await query.lean<LeanBase<TDoc>[]>();
+		return docs.map((doc) => this.appendId(doc));
+	}
+
+	async findOne(filter: Partial<TDoc>, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
+		let query = this.model.findOne(this.buildFilterQuery(filter), this.buildProjection(options?.fields, options?.projectionMode));
+		if (options?.populateFields?.length) {
+			for (const field of options.populateFields) {
+				query = query.populate(field);
+			}
+		}
+		const doc = await query.lean<LeanBase<TDoc>>();
+		return doc ? this.appendId(doc) : null;
+	}
+
+	async findById(id: string, options?: FindOneOptions): Promise<Lean<TDoc> | null> {
+		if (!isValidObjectId(id)) return null;
+		let query = this.model.findById(id, this.buildProjection(options?.fields, options?.projectionMode));
+		if (options?.populateFields?.length) query = query.populate(options.populateFields);
+		const doc = await query.lean<LeanBase<TDoc>>();
+		return doc ? this.appendId(doc) : null;
+	}
+
+	async aggregate(pipeline: PipelineStage[]): Promise<Lean<TDoc>[]> {
+		const docs = await this.model.aggregate(pipeline).exec();
+		return docs.map((doc) => this.appendId(doc));
+	}
+}
+`;
+}
+
 function persistenceUowTemplate(input: { entity: string; entityPascal: string; scope: string }): string {
 	const { entity, entityPascal, scope } = input;
 	return `import { InProcEventBusInstance, NodeEventBusInstance } from '@cellix/event-bus-seedwork-node';
@@ -306,12 +550,12 @@ export const get${entityPascal}UnitOfWork = (model: unknown, passport: Domain.Pa
 `;
 }
 
-function actionTemplate(input: { actionCamel: string; command: string; entityPascal: string; mutation: boolean; scope: string; shape: Shape }): string {
-	const { actionCamel, command, entityPascal, mutation, scope, shape } = input;
+function actionTemplate(input: { actionCamel: string; command: string; contextPascal: string; entityPascal: string; mutation: boolean; scope: string; shape: Shape }): string {
+	const { actionCamel, command, contextPascal, entityPascal, mutation, scope, shape } = input;
 	const inputLiteral = [...shape.fields.map((field) => `${field.name}: command.${field.name}`), ...shape.nested.map((item) => `${item.camel}: command.${item.camel}`)].join(', ');
 	const body = mutation
 		? `return await dataSources.domainDataSource.${entityPascal}.${entityPascal}.${entityPascal}UnitOfWork.withScopedTransaction(async (repo) => {\n\t\t\treturn repo.save(await repo.getNewInstance({ ${inputLiteral} }));\n\t\t});`
-		: `return await dataSources.readonlyDataSource.${entityPascal}.${entityPascal}.${entityPascal}ReadRepo.getById(command.id);`;
+		: `return await dataSources.readonlyDataSource.${contextPascal}.${entityPascal}.${entityPascal}ReadRepo.getById(command.id);`;
 	const result = `Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}EntityReference`;
 	return `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\n\nexport interface ${command} {\n\t${commandFields(shape, mutation)}\n}\n\nexport const ${actionCamel} = (dataSources: DataSources) => {\n\treturn async (command: ${command}): Promise<${result}> => {\n\t\t${body}\n\t};\n};\n`;
 }

@@ -442,15 +442,33 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 			violations.push(...checkPersistenceUnitOfWork(file, content));
 			continue;
 		}
-		if (relative.includes('datasources/readonly/') && relative.endsWith('.ts')) {
-			if (!/MongoDataSourceImpl/.test(content)) {
-				violations.push(report(file, 'cellix/persistence-readonly', 'missing MongoDataSourceImpl', 'export class <Name> extends MongoDataSourceImpl'));
+		if (relative === 'datasources/readonly/mongo-data-source.ts') {
+			if (!/export\s+class\s+MongoDataSourceImpl\b/.test(content)) {
+				violations.push(report(file, 'cellix/persistence-mongo-data-source', 'missing MongoDataSourceImpl', 'export class MongoDataSourceImpl<TDoc>'));
 			}
 			violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-readonly-no-helper'));
 			continue;
 		}
+		if (relative.includes('datasources/readonly/') && relative.endsWith('.data.ts')) {
+			if (!/extends\s+MongoDataSourceImpl</.test(content)) {
+				violations.push(report(file, 'cellix/persistence-readonly', 'missing MongoDataSourceImpl', 'export class <Name>DataSourceImpl extends MongoDataSourceImpl'));
+			}
+			violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-readonly-no-helper'));
+			continue;
+		}
+		if (relative.includes('datasources/readonly/') && relative.endsWith('.read-repository.ts')) {
+			violations.push(...checkReadRepository(file, content));
+			continue;
+		}
 
-		violations.push(report(file, 'cellix/persistence-file-role', relative, 'datasources/domain/<context>/<entity>/*.(repository|domain-adapter|uow).ts, datasources/readonly/**, or index.ts'));
+		violations.push(
+			report(
+				file,
+				'cellix/persistence-file-role',
+				relative,
+				'datasources/domain/<context>/<entity>/*.(repository|domain-adapter|uow).ts, datasources/readonly/<context>/<entity>/*.(data|read-repository).ts, datasources/readonly/mongo-data-source.ts, or index.ts',
+			),
+		);
 	}
 
 	return violations;
@@ -491,6 +509,26 @@ function checkPersistenceAdapter(file: string, content: string): string[] {
 		violations.push(report(file, 'cellix/persistence-adapter-bases', 'missing adapter bases', 'MongooseDomainAdapter and MongoTypeConverter'));
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-adapter-no-helper'));
+	return violations;
+}
+
+function checkReadRepository(file: string, content: string): string[] {
+	const violations: string[] = [];
+	const stem = path.basename(file, '.read-repository.ts');
+	const pascal = kebabToPascal(stem);
+	if (!new RegExp(`export\\s+interface\\s+${pascal}ReadRepository\\b`).test(content)) {
+		violations.push(report(file, 'cellix/persistence-read-repository', `missing ${pascal}ReadRepository`, `export interface ${pascal}ReadRepository`));
+	}
+	if (!new RegExp(`export\\s+class\\s+${pascal}ReadRepositoryImpl\\b`).test(content)) {
+		violations.push(report(file, 'cellix/persistence-read-repository-class', `missing ${pascal}ReadRepositoryImpl`, `export class ${pascal}ReadRepositoryImpl`));
+	}
+	if (!new RegExp(`export\\s+const\\s+get${pascal}ReadRepository\\b`).test(content)) {
+		violations.push(report(file, 'cellix/persistence-read-repository-factory', `missing get${pascal}ReadRepository`, `export const get${pascal}ReadRepository`));
+	}
+	if (!/async\s+getById\s*\(/.test(content) || !/findById\(/.test(content) || !/toDomain\(/.test(content)) {
+		violations.push(report(file, 'cellix/persistence-read-repository-get-by-id', 'missing getById through the data source', 'async getById uses this.mongoDataSource.findById then this.converter.toDomain'));
+	}
+	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-read-repository-no-helper'));
 	return violations;
 }
 
