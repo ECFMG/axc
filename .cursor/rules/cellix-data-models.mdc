@@ -8,10 +8,12 @@ alwaysApply: false
 
 Put schemas in `packages/axc/data-sources-mongoose-models/src/models/<entity>/<entity>.model.ts`.
 
-Each file exports:
+Each model file exports:
 
 - `export const <Pascal>ModelFactory`
 - `export type <Pascal>ModelType`
 - `export const <Pascal>ModelName`
+
+`models/<entity>/<entity>.seed.ts` exports `<camel>Seed`, one example document for that collection. Insert it, start the app, and read it back through the endpoint. Do not import it from persistence or transport.
 
 `<entity>` matches the domain `*.aggregate.ts` or `*.entity.ts` stem. Models import mongoose and `@cellix/mongoose-seedwork` only, plus other models. They do not import domain, persistence, application services, or transport.

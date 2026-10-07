@@ -8,7 +8,9 @@ alwaysApply: false
 
 REST and GraphQL are adapters. They call `applicationServices` and return the result.
 
-- Do not import mongoose, persistence, service-mongoose, or data-source models
+- A REST file other than `index.ts` calls `applicationServices.<Context>.<Entity>.<action>(command)` inside the function that receives `applicationServices`. Context and Entity are PascalCase
+- Do not keep an array of documents in REST. Do not cast `applicationServices` and fall back to a local catalog
+- Do not import mongoose, persistence, service-mongoose, data-source models, or `<camel>Seed`
 - Do not call `withScopedTransaction`, repositories, or unit-of-work factories
 - GraphQL resolvers are `*.resolvers.ts` beside a same-stem `.graphql` file
 - A resolver default-exports one `Resolvers` object. Handlers are `async` and type context as `GraphContext`

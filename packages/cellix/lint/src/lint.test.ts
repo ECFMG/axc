@@ -239,6 +239,73 @@ export class ActivityLog extends DomainEntity<ActivityLogProps> implements Activ
 		expect(text).not.toContain('cellix/entity-value-object');
 		expect(text).not.toContain('cellix/value-object-extends');
 	});
+
+	it('rejects feature types on the domain package index, adapter types, a read-repository seed, and a local DataSources', async () => {
+		const root = await scaffold({
+			'packages/axc/domain/src/index.ts': `export type DomainRepository<T> = T;\nexport type { Course } from './domain/contexts/course/course/course.aggregate.ts';\nexport const Domain = { Contexts: {} };\n`,
+			'packages/axc/persistence/src/datasources/domain/course/course/course.domain-adapter.ts': `export interface CourseDocument { title: string }\nexport type CourseModelType = unknown;\nexport class CourseConverter {}\nexport class CourseDomainAdapter {}\n`,
+			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts': `export interface CourseReadRepository { getById(id: string): Promise<unknown> }\nexport class CourseReadRepositoryImpl {}\nconst courseCatalog: unknown[] = [];\nexport const getCourseReadRepository = () => courseCatalog;\nexport const courseCatalogReadRepository = { getAll() { return courseCatalog; } };\n`,
+			'packages/axc/application-services/src/contexts/course/course/query.ts': `interface DataSources { readonlyDataSource: unknown }\nexport interface CourseQueryCommand { id: string }\nexport const query = (dataSources: DataSources) => {\n  return async (command: CourseQueryCommand): Promise<string> => {\n    return await Promise.resolve(String(command.id) + String(dataSources.readonlyDataSource));\n  };\n};\n`,
+		});
+		const text = (await checkCellixLint({ root })).join('\n');
+		expect(text).toContain('cellix/domain-package-index');
+		expect(text).toContain('cellix/persistence-adapter-types');
+		expect(text).toContain('cellix/persistence-read-repository-seed');
+		expect(text).toContain('cellix/content-action-datasources-local');
+		expect(text).toContain('cellix/content-action-datasources-import');
+	});
+
+	it('rejects stub document types and extra interfaces outside the Cellix export set', async () => {
+		const root = await scaffold({
+			'packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts': `${aggregateSource}\ninterface CourseDocument { title: string }\n`,
+			'packages/axc/persistence/src/index.ts': `export type { UnitOfWork } from '@cellix/domain-seedwork/unit-of-work';\nexport interface DataSources { domainDataSource: unknown }\nexport interface CourseDocument { title: string }\n`,
+			'packages/axc/persistence/src/datasources/domain/course/course/course.domain-adapter.ts': `interface CourseDocument { title: string }\nexport class CourseConverter {}\nexport class CourseDomainAdapter {}\n`,
+			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts': `export interface CourseReadRepository { getById(id: string): Promise<unknown> }\nexport interface CourseQueryItem { title: string }\nexport class CourseReadRepositoryImpl {}\nexport const getCourseReadRepository = () => null;\n`,
+			'packages/axc/data-sources-mongoose-models/src/models/course/course.model.ts': `export interface CourseDocument { title: string }\nexport const CourseModelFactory = {};\nexport const CourseModelName = 'Course';\nexport type CourseModelType = unknown;\n`,
+		});
+		const text = (await checkCellixLint({ root })).join('\n');
+		expect(text).toContain('cellix/aggregate-types');
+		expect(text).toContain('cellix/persistence-index-types');
+		expect(text).toContain('cellix/persistence-adapter-types');
+		expect(text).toContain('cellix/persistence-adapter-document');
+		expect(text).toContain('cellix/persistence-read-repository-types');
+		expect(text).toContain('cellix/model-types');
+		expect(text).not.toContain('Found: DataSources');
+	});
+
+	it('rejects a REST catalog fallback and a seed that is not one example document', async () => {
+		const root = await scaffold({
+			'packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts': 'export class Course {}\n',
+			'packages/axc/data-sources-mongoose-models/src/models/course/course.seed.ts': 'export const courses = [{ title: "x" }];\n',
+			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts': `import { courseSeed } from '@axc/data-sources-mongoose-models';
+export interface CourseReadRepository { getById(id: string): Promise<unknown> }
+export class CourseReadRepositoryImpl {}
+export const getCourseReadRepository = () => courseSeed;
+`,
+			'packages/axc/rest/src/course-query.ts': `import type { ApplicationServices } from '@axc/application-services';
+const courseCatalog = [{ id: 'course-001', title: 'AI Security Foundations' }];
+const queryCatalog = (command: { id: string }) => Promise.resolve(courseCatalog.find((course) => course.id === command.id) ?? null);
+export const courseQuery = async (applicationServices: ApplicationServices, command: { id: string }): Promise<unknown> => {
+  const hosted = applicationServices as ApplicationServices & { course?: { course?: { query?: (command: { id: string }) => Promise<unknown> } } };
+  const hostedQuery = hosted.course?.course?.query;
+  if (hostedQuery) return await hostedQuery(command);
+  return await queryCatalog(command);
+};
+`,
+			'packages/axc/rest/src/course-create.ts': `import type { ApplicationServices } from '@axc/application-services';
+export const courseCreate = async (applicationServices: ApplicationServices, command: { courseName: string }): Promise<unknown> => {
+  return applicationServices.Course.Course.create(command);
+};
+`,
+		});
+
+		const text = (await checkCellixLint({ root })).join('\n');
+		expect(text).toContain('cellix/rest-application-call');
+		expect(text).toContain('cellix/transport-no-catalog');
+		expect(text).toContain('cellix/model-seed');
+		expect(text).toContain('cellix/persistence-seed-import');
+		expect(text).not.toContain('course-create.ts');
+	});
 });
 
 const aggregateSource = `import { AggregateRoot } from '@cellix/domain-seedwork/aggregate-root';
@@ -259,11 +326,11 @@ export class Course<props extends CourseProps> extends AggregateRoot<props, Pass
     this.visa = passport.course.forCourse(this);
   }
   public static getNewInstance<props extends CourseProps>(newProps: props, name: string, passport: Passport): Course<props> {
-    const course = new Course(newProps, passport);
-    course.markAsNew();
-    course.name = name;
-    course.isNew = false;
-    return course;
+    const newInstance = new Course(newProps, passport);
+    newInstance.markAsNew();
+    newInstance.name = name;
+    newInstance.isNew = false;
+    return newInstance;
   }
   private markAsNew(): void {
     this.isNew = true;

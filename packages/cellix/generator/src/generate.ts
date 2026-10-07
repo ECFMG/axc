@@ -115,16 +115,20 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 			contents: modelTemplate(entityPascal, shape),
 		},
 		{
+			path: path.join(root, lint.layers.models, 'models', entity, `${entity}.seed.ts`),
+			contents: seedTemplate(entity, entityPascal, shape),
+		},
+		{
 			path: path.join(persistenceDir, `${entity}.domain-adapter.ts`),
-			contents: adapterTemplate({ entity, entityPascal, scope, shape }),
+			contents: adapterTemplate({ entity, entityPascal, contextPascal, scope, shape }),
 		},
 		{
 			path: path.join(persistenceDir, `${entity}.repository.ts`),
-			contents: persistenceRepositoryTemplate({ entity, entityPascal, scope, shape }),
+			contents: persistenceRepositoryTemplate({ entity, entityPascal, contextPascal, scope, shape }),
 		},
 		{
 			path: path.join(persistenceDir, `${entity}.uow.ts`),
-			contents: persistenceUowTemplate({ entity, entityPascal, scope }),
+			contents: persistenceUowTemplate({ entity, entityPascal, contextPascal, scope }),
 		},
 		{
 			path: path.join(readonlyRoot, 'mongo-data-source.ts'),
@@ -136,7 +140,7 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 		},
 		{
 			path: path.join(readonlyDir, `${entity}.read-repository.ts`),
-			contents: readRepositoryTemplate({ context, entity, entityPascal, scope }),
+			contents: readRepositoryTemplate({ context, entity, entityPascal, contextPascal, scope }),
 		},
 		{
 			path: path.join(readonlyDir, 'index.ts'),
@@ -156,14 +160,14 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 		},
 		{
 			path: path.join(applicationDir, 'index.ts'),
-			contents: `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\nimport { type ${command}, ${actionCamel} } from './${action}.ts';\n\nexport interface ${entityPascal}ApplicationService {\n\t${actionCamel}: (command: ${command}) => Promise<Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}EntityReference>;\n}\n\nexport const ${entityPascal} = (dataSources: DataSources): ${entityPascal}ApplicationService => {\n\treturn {\n\t\t${actionCamel}: ${actionCamel}(dataSources),\n\t};\n};\n`,
+			contents: `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\nimport { type ${command}, ${actionCamel} } from './${action}.ts';\n\nexport interface ${entityPascal}ApplicationService {\n\t${actionCamel}: (command: ${command}) => Promise<Domain.Contexts.${namespacePath(contextPascal, entityPascal)}EntityReference>;\n}\n\nexport const ${entityPascal} = (dataSources: DataSources): ${entityPascal}ApplicationService => {\n\treturn {\n\t\t${actionCamel}: ${actionCamel}(dataSources),\n\t};\n};\n`,
 		},
 	];
 
 	if (options.transport === 'rest') {
 		files.push({
 			path: path.join(root, lint.layers.rest, `${entity}-${action}.ts`),
-			contents: `import type { ApplicationServices } from '${scope}/application-services';\n\nexport const ${camel(`${entity}-${action}`)} = async (applicationServices: ApplicationServices, command: { ${commandFields(shape, mutation)} }): Promise<unknown> => {\n\treturn applicationServices.${camel(context)}.${camel(entity)}.${actionCamel}(command);\n};\n`,
+			contents: `import type { ApplicationServices } from '${scope}/application-services';\n\nexport const ${camel(`${entity}-${action}`)} = async (applicationServices: ApplicationServices, command: { ${commandFields(shape, mutation)} }): Promise<unknown> => {\n\treturn applicationServices.${contextPascal}.${entityPascal}.${actionCamel}(command);\n};\n`,
 		});
 	}
 	if (resolver) {
@@ -176,7 +180,7 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 			},
 			{
 				path: path.join(typesDir, `${entity}.resolvers.ts`),
-				contents: `import type { Resolvers } from '../builder/generated.ts';\nimport type { GraphContext } from '../context.ts';\n\nconst ${camel(entity)}Resolvers: Resolvers = {\n\t${operation}: {\n\t\t${actionCamel}: async (_parent, args, context: GraphContext) => {\n\t\t\treturn await context.applicationServices.${camel(context)}.${camel(entity)}.${actionCamel}(args.input);\n\t\t},\n\t},\n};\n\nexport default ${camel(entity)}Resolvers;\n`,
+				contents: `import type { Resolvers } from '../builder/generated.ts';\nimport type { GraphContext } from '../context.ts';\n\nconst ${camel(entity)}Resolvers: Resolvers = {\n\t${operation}: {\n\t\t${actionCamel}: async (_parent, args, context: GraphContext) => {\n\t\t\treturn await context.applicationServices.${contextPascal}.${entityPascal}.${actionCamel}(args.input);\n\t\t},\n\t},\n};\n\nexport default ${camel(entity)}Resolvers;\n`,
 			},
 		);
 	}
@@ -187,7 +191,6 @@ function aggregateTemplate(input: { entity: string; entityPascal: string; contex
 	const { entity, entityPascal, context, shape } = input;
 	const contextCamel = camel(context);
 	const visa = `${pascal(context)}Visa`;
-	const permission = shape.permissions[0] ?? `canManage${entityPascal}`;
 	const entityNests = shape.nested.filter((item) => item.kind === 'entity');
 	const reference = entityNests.length === 0 ? `export interface ${entityPascal}EntityReference extends Readonly<${entityPascal}Props> {}` : entityReference(entityPascal, entityNests);
 	const nestedImports = shape.nested.map((item) => childImport(item)).join('\n');
@@ -199,11 +202,10 @@ function aggregateTemplate(input: { entity: string; entityPascal: string; contex
 		'\treadonly schemaVersion: string;',
 	].join('\n');
 	const inputFields = [...shape.fields.map((field) => `\t${field.name}: ${tsType(field.type)};`), ...shape.nested.map((item) => `\t${item.camel}: ${item.pascal}Props;`)].join('\n');
-	const assigns = [...shape.fields.map((field) => `\t\tentity.${field.name} = input.${field.name};`), ...shape.nested.map((item) => `\t\tentity.${item.camel} = input.${item.camel};`)].join('\n');
-	const members = [...shape.fields.map((field) => scalarMembers(field, permission)), ...shape.nested.map((item) => nestedMembers(item, permission)), createdMembers()].join('\n\n');
+	const assigns = [...shape.fields.map((field) => `\t\tnewInstance.${field.name} = input.${field.name};`), ...shape.nested.map((item) => `\t\tnewInstance.${item.camel} = input.${item.camel};`)].join('\n');
+	const members = [...shape.fields.map((field) => scalarMembers(field)), ...shape.nested.map((item) => nestedMembers(item)), createdMembers()].join('\n\n');
 	return `import { AggregateRoot } from '@cellix/domain-seedwork/aggregate-root';
 import type { DomainEntityProps } from '@cellix/domain-seedwork/domain-entity';
-import { PermissionError } from '@cellix/domain-seedwork/domain-entity';
 import type { Passport } from '../../passport.ts';
 import type { ${visa} } from '../${context}.visa.ts';
 import * as ValueObjects from './${entity}.value-objects.ts';
@@ -220,7 +222,9 @@ ${inputFields}
 }
 
 export class ${entityPascal}<props extends ${entityPascal}Props> extends AggregateRoot<props, Passport> implements ${entityPascal}EntityReference {
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: markAsNew sets this so a later setter can skip the visa check
 	private isNew: boolean = false;
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: passport wiring for a later visa.determineIf check
 	private readonly visa: ${visa};
 	constructor(props: props, passport: Passport) {
 		super(props, passport);
@@ -228,11 +232,11 @@ export class ${entityPascal}<props extends ${entityPascal}Props> extends Aggrega
 	}
 
 	public static getNewInstance<props extends ${entityPascal}Props>(newProps: props, input: ${entityPascal}NewInput, passport: Passport): ${entityPascal}<props> {
-		const entity = new ${entityPascal}(newProps, passport);
-		entity.markAsNew();
+		const newInstance = new ${entityPascal}(newProps, passport);
+		newInstance.markAsNew();
 ${assigns}
-		entity.isNew = false;
-		return entity;
+		newInstance.isNew = false;
+		return newInstance;
 	}
 
 	private markAsNew(): void {
@@ -269,8 +273,43 @@ export type ${entityPascal}ModelType = ReturnType<typeof ${entityPascal}ModelFac
 `;
 }
 
-function adapterTemplate(input: { entity: string; entityPascal: string; scope: string; shape: Shape }): string {
-	const { entityPascal, scope, shape } = input;
+function seedTemplate(entity: string, entityPascal: string, shape: Shape): string {
+	const seedName = `${camel(entity)}Seed`;
+	const fields = seedEntries(shape)
+		.map(([key, value]) => `\t\t${key}: ${value},`)
+		.join('\n');
+	const comment = `/** Insert ${seedName} into the ${entityPascal} collection. Start the application and read it back through the endpoint. Do not copy this document into a handler, a read repository, or an in-memory catalog. */`;
+	return `${comment}\nexport const ${seedName} = [\n\t{\n${fields}\n\t},\n];\n`;
+}
+
+function seedEntries(shape: Shape): [string, string][] {
+	const entries = new Map<string, string>([
+		['_id', "'000000000000000000000001'"],
+		['schemaVersion', "'1.0.0'"],
+		['version', '0'],
+	]);
+	for (const field of shape.fields) entries.set(field.name, sampleScalar(field));
+	for (const item of shape.nested) entries.set(item.camel, sampleNested(item));
+	if (!entries.has('createdAt')) entries.set('createdAt', "new Date('2024-01-01T00:00:00.000Z')");
+	if (!entries.has('updatedAt')) entries.set('updatedAt', "new Date('2024-01-01T00:00:00.000Z')");
+	return [...entries];
+}
+
+function sampleNested(item: ShapeNested): string {
+	const parts = item.fields.map((member) => (isShapeNested(member) ? `${member.camel}: ${sampleNested(member)}` : `${member.name}: ${sampleScalar(member)}`));
+	return `{ ${parts.join(', ')} }`;
+}
+
+function sampleScalar(field: ShapeField): string {
+	if (field.type === 'boolean') return 'false';
+	if (field.type === 'date') return "new Date('2024-01-01T00:00:00.000Z')";
+	if (field.type === 'number') return '1';
+	return `'Example ${field.name}'`;
+}
+
+function adapterTemplate(input: { entity: string; entityPascal: string; contextPascal: string; scope: string; shape: Shape }): string {
+	const { entityPascal, contextPascal, scope, shape } = input;
+	const domainPath = namespacePath(contextPascal, entityPascal);
 	const members = [
 		...shape.fields.map(
 			(field) => `	get ${field.name}(): ${tsType(field.type)} {\n\t\treturn this.doc.${field.name};\n\t}\n\tset ${field.name}(${field.name}: ${tsType(field.type)}) {\n\t\tthis.doc.${field.name} = ${field.name};\n\t}`,
@@ -280,30 +319,33 @@ function adapterTemplate(input: { entity: string; entityPascal: string; scope: s
 			return `	get ${item.camel}(): ${type} {\n\t\treturn this.doc.${item.camel};\n\t}\n\tset ${item.camel}(${item.camel}: ${type}) {\n\t\tthis.doc.${item.camel} = ${item.camel};\n\t}`;
 		}),
 	].join('\n');
-	return `import { Domain } from '${scope}/domain';
+	return `import type { ${entityPascal} } from '${scope}/data-sources-mongoose-models';
+import { Domain } from '${scope}/domain';
 import { MongooseSeedwork } from '@cellix/mongoose-seedwork';
 
-export class ${entityPascal}Converter extends MongooseSeedwork.MongoTypeConverter<unknown, ${entityPascal}DomainAdapter, Domain.Passport, Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}<${entityPascal}DomainAdapter>> {
+export class ${entityPascal}Converter extends MongooseSeedwork.MongoTypeConverter<${entityPascal}, ${entityPascal}DomainAdapter, Domain.Passport, Domain.Contexts.${domainPath}<${entityPascal}DomainAdapter>> {
 	constructor() {
-		super(${entityPascal}DomainAdapter, Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal});
+		super(${entityPascal}DomainAdapter, Domain.Contexts.${domainPath});
 	}
 }
 
-export class ${entityPascal}DomainAdapter extends MongooseSeedwork.MongooseDomainAdapter<unknown> implements Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}Props {
+export class ${entityPascal}DomainAdapter extends MongooseSeedwork.MongooseDomainAdapter<${entityPascal}> implements Domain.Contexts.${domainPath}Props {
 ${members}
 }
 `;
 }
 
-function persistenceRepositoryTemplate(input: { entity: string; entityPascal: string; scope: string; shape: Shape }): string {
-	const { entity, entityPascal, scope, shape } = input;
+function persistenceRepositoryTemplate(input: { entity: string; entityPascal: string; contextPascal: string; scope: string; shape: Shape }): string {
+	const { entity, entityPascal, contextPascal, scope, shape } = input;
+	const domainPath = namespacePath(contextPascal, entityPascal);
 	const inputType = `{ ${[...shape.fields.map((field) => `${field.name}: ${tsType(field.type)}`), ...shape.nested.map((item) => `${item.camel}: ${structuralType(item)}`)].join('; ')} }`;
-	return `import { Domain } from '${scope}/domain';
+	return `import type { ${entityPascal} } from '${scope}/data-sources-mongoose-models';
+import { Domain } from '${scope}/domain';
 import { MongooseSeedwork } from '@cellix/mongoose-seedwork';
 import type { ${entityPascal}DomainAdapter } from './${entity}.domain-adapter.ts';
 
-export class ${entityPascal}Repository extends MongooseSeedwork.MongoRepositoryBase<unknown, ${entityPascal}DomainAdapter, Domain.Passport, Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}<${entityPascal}DomainAdapter>> implements Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}Repository<${entityPascal}DomainAdapter> {
-	async getById(id: string): Promise<Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}<${entityPascal}DomainAdapter>> {
+export class ${entityPascal}Repository extends MongooseSeedwork.MongoRepositoryBase<${entityPascal}, ${entityPascal}DomainAdapter, Domain.Passport, Domain.Contexts.${domainPath}<${entityPascal}DomainAdapter>> implements Domain.Contexts.${domainPath}Repository<${entityPascal}DomainAdapter> {
+	async getById(id: string): Promise<Domain.Contexts.${domainPath}<${entityPascal}DomainAdapter>> {
 		const document = await this.model.findById(id).exec();
 		if (!document) {
 			throw new Error(\`${entityPascal} with id \${id} not found\`);
@@ -311,9 +353,9 @@ export class ${entityPascal}Repository extends MongooseSeedwork.MongoRepositoryB
 		return this.typeConverter.toDomain(document, this.passport);
 	}
 
-	getNewInstance(input: ${inputType}): Promise<Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}<${entityPascal}DomainAdapter>> {
+	getNewInstance(input: ${inputType}): Promise<Domain.Contexts.${domainPath}<${entityPascal}DomainAdapter>> {
 		const adapter = this.typeConverter.toAdapter(new this.model());
-		return Promise.resolve(Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}.getNewInstance(adapter, input, this.passport));
+		return Promise.resolve(Domain.Contexts.${domainPath}.getNewInstance(adapter, input, this.passport));
 	}
 }
 `;
@@ -330,9 +372,9 @@ export class ${entityPascal}DataSourceImpl extends MongoDataSourceImpl<${entityP
 `;
 }
 
-function readRepositoryTemplate(input: { context: string; entity: string; entityPascal: string; scope: string }): string {
-	const { context, entity, entityPascal, scope } = input;
-	const reference = `Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}EntityReference`;
+function readRepositoryTemplate(input: { context: string; entity: string; entityPascal: string; contextPascal: string; scope: string }): string {
+	const { context, entity, entityPascal, contextPascal, scope } = input;
+	const reference = `Domain.Contexts.${namespacePath(contextPascal, entityPascal)}EntityReference`;
 	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
 import type { Domain } from '${scope}/domain';
 import { ${entityPascal}Converter } from '../../../domain/${context}/${entity}/${entity}.domain-adapter.ts';
@@ -535,15 +577,16 @@ export class MongoDataSourceImpl<TDoc extends MongooseSeedwork.Base> implements 
 `;
 }
 
-function persistenceUowTemplate(input: { entity: string; entityPascal: string; scope: string }): string {
-	const { entity, entityPascal, scope } = input;
+function persistenceUowTemplate(input: { entity: string; entityPascal: string; contextPascal: string; scope: string }): string {
+	const { entity, entityPascal, contextPascal, scope } = input;
+	const domainPath = namespacePath(contextPascal, entityPascal);
 	return `import { InProcEventBusInstance, NodeEventBusInstance } from '@cellix/event-bus-seedwork-node';
 import { MongooseSeedwork } from '@cellix/mongoose-seedwork';
 import type { Domain } from '${scope}/domain';
 import { ${entityPascal}Converter } from './${entity}.domain-adapter.ts';
 import { ${entityPascal}Repository } from './${entity}.repository.ts';
 
-export const get${entityPascal}UnitOfWork = (model: unknown, passport: Domain.Passport): Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}UnitOfWork => {
+export const get${entityPascal}UnitOfWork = (model: unknown, passport: Domain.Passport): Domain.Contexts.${domainPath}UnitOfWork => {
 	const unitOfWork = new MongooseSeedwork.MongoUnitOfWork(InProcEventBusInstance, NodeEventBusInstance, model, new ${entityPascal}Converter(), ${entityPascal}Repository);
 	return MongooseSeedwork.getInitializedUnitOfWork(unitOfWork, passport);
 };
@@ -553,10 +596,11 @@ export const get${entityPascal}UnitOfWork = (model: unknown, passport: Domain.Pa
 function actionTemplate(input: { actionCamel: string; command: string; contextPascal: string; entityPascal: string; mutation: boolean; scope: string; shape: Shape }): string {
 	const { actionCamel, command, contextPascal, entityPascal, mutation, scope, shape } = input;
 	const inputLiteral = [...shape.fields.map((field) => `${field.name}: command.${field.name}`), ...shape.nested.map((item) => `${item.camel}: command.${item.camel}`)].join(', ');
+	const domainPath = namespacePath(contextPascal, entityPascal);
 	const body = mutation
-		? `return await dataSources.domainDataSource.${entityPascal}.${entityPascal}.${entityPascal}UnitOfWork.withScopedTransaction(async (repo) => {\n\t\t\treturn repo.save(await repo.getNewInstance({ ${inputLiteral} }));\n\t\t});`
+		? `return await dataSources.domainDataSource.${domainPath}UnitOfWork.withScopedTransaction(async (repo) => {\n\t\t\treturn repo.save(await repo.getNewInstance({ ${inputLiteral} }));\n\t\t});`
 		: `return await dataSources.readonlyDataSource.${contextPascal}.${entityPascal}.${entityPascal}ReadRepo.getById(command.id);`;
-	const result = `Domain.Contexts.${entityPascal}.${entityPascal}.${entityPascal}EntityReference`;
+	const result = `Domain.Contexts.${domainPath}EntityReference`;
 	return `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\n\nexport interface ${command} {\n\t${commandFields(shape, mutation)}\n}\n\nexport const ${actionCamel} = (dataSources: DataSources) => {\n\treturn async (command: ${command}): Promise<${result}> => {\n\t\t${body}\n\t};\n};\n`;
 }
 
@@ -619,31 +663,28 @@ function toShapeNested(item: NestedSpec, fileNames: Set<string>): ShapeNested {
 }
 
 function nestedFiles(entityDir: string, context: string, shape: Shape): GeneratedFile[] {
-	return shape.nested.flatMap((item) => filesForNested(entityDir, context, item, shape.permissions[0] ?? 'canManage'));
+	return shape.nested.flatMap((item) => filesForNested(entityDir, context, item));
 }
 
-function filesForNested(entityDir: string, context: string, item: ShapeNested, permission: string): GeneratedFile[] {
-	const children = item.fields.filter(isShapeNested).flatMap((child) => filesForNested(entityDir, context, child, permission));
+function filesForNested(entityDir: string, context: string, item: ShapeNested): GeneratedFile[] {
+	const children = item.fields.filter(isShapeNested).flatMap((child) => filesForNested(entityDir, context, child));
 	const strings = item.fields.filter((member): member is ShapeField => !isShapeNested(member) && member.type === 'string').map((member) => member.pascal);
 	const files = [...children];
 	if (item.kind === 'value' || strings.length > 0) {
 		files.push({ path: path.join(entityDir, `${item.name}.value-objects.ts`), contents: valueObjectModule(item, strings) });
 	}
-	if (item.kind === 'entity') files.push({ path: path.join(entityDir, `${item.name}.entity.ts`), contents: entityTemplate(item, context, permission) });
+	if (item.kind === 'entity') files.push({ path: path.join(entityDir, `${item.name}.entity.ts`), contents: entityTemplate(item, context) });
 	return files;
 }
 
-function entityTemplate(item: ShapeNested, context: string, permission: string): string {
+function entityTemplate(item: ShapeNested, context: string): string {
 	const visa = `${pascal(context)}Visa`;
 	const childEntities = item.fields.filter((member): member is ShapeNested => isShapeNested(member) && member.kind === 'entity');
 	const reference = childEntities.length === 0 ? `export interface ${item.pascal}EntityReference extends Readonly<${item.pascal}Props> {}` : entityReference(item.pascal, childEntities);
 	const imports = [valueObjectImport(item), ...item.fields.filter(isShapeNested).map((child) => childImport(child))].filter((line) => line.length > 0).join('\n');
-	const members = [
-		...item.fields.filter((member): member is ShapeField => !isShapeNested(member)).map((field) => scalarMembers(field, permission)),
-		...item.fields.filter(isShapeNested).map((child) => nestedMembers(child, permission)),
-	].join('\n\n');
+	const members = [...item.fields.filter((member): member is ShapeField => !isShapeNested(member)).map((field) => scalarMembers(field)), ...item.fields.filter(isShapeNested).map((child) => nestedMembers(child))].join('\n\n');
 	return `import type { DomainEntityProps } from '@cellix/domain-seedwork/domain-entity';
-import { DomainEntity, PermissionError } from '@cellix/domain-seedwork/domain-entity';
+import { DomainEntity } from '@cellix/domain-seedwork/domain-entity';
 import type { ${visa} } from '../${context}.visa.ts';
 ${imports}
 
@@ -656,7 +697,9 @@ ${propLines(item.fields)}
 ${reference}
 
 export class ${item.pascal} extends DomainEntity<${item.pascal}Props> implements ${item.pascal}EntityReference {
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: set true while constructing so a later setter can skip the visa check
 	private isNew: boolean = false;
+	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: visa wiring for a later visa.determineIf check
 	private readonly visa: ${visa};
 	constructor(props: ${item.pascal}Props, visa: ${visa}) {
 		super(props);
@@ -686,16 +729,16 @@ function valueObjectModule(item: ShapeNested, names: string[]): string {
 	return `${imports}\n\n${header}${classes}\n`;
 }
 
-function scalarMembers(field: ShapeField, permission: string): string {
+function scalarMembers(field: ShapeField): string {
 	const assign = field.type === 'string' ? `this.props.${field.name} = new ValueObjects.${field.pascal}(${field.name}).valueOf();` : `this.props.${field.name} = ${field.name};`;
-	return `\tget ${field.name}(): ${tsType(field.type)} {\n\t\treturn this.props.${field.name};\n\t}\n\tset ${field.name}(${field.name}: ${tsType(field.type)}) {\n\t\t${guard(permission, field.name)}\n\t\t${assign}\n\t}`;
+	return `\tget ${field.name}(): ${tsType(field.type)} {\n\t\treturn this.props.${field.name};\n\t}\n\tset ${field.name}(${field.name}: ${tsType(field.type)}) {\n\t\t${assign}\n\t}`;
 }
 
-function nestedMembers(item: ShapeNested, permission: string): string {
+function nestedMembers(item: ShapeNested): string {
 	if (item.kind === 'entity') {
-		return `\tget ${item.camel}(): ${item.pascal}EntityReference {\n\t\treturn new ${item.pascal}(this.props.${item.camel}, this.visa);\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\t${guard(permission, item.camel)}\n\t\tthis.props.${item.camel} = ${item.camel};\n\t}`;
+		return `\tget ${item.camel}(): ${item.pascal}EntityReference {\n\t\treturn new ${item.pascal}(this.props.${item.camel}, this.visa);\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\tthis.props.${item.camel} = ${item.camel};\n\t}`;
 	}
-	return `\tget ${item.camel}(): ${item.pascal}Props {\n\t\treturn this.props.${item.camel};\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\t${guard(permission, item.camel)}\n\t\tthis.props.${item.camel} = ${valueCopy(item, item.camel)};\n\t}`;
+	return `\tget ${item.camel}(): ${item.pascal}Props {\n\t\treturn this.props.${item.camel};\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\tthis.props.${item.camel} = ${valueCopy(item, item.camel)};\n\t}`;
 }
 
 function createdMembers(): string {
@@ -706,10 +749,6 @@ function entityReference(entityPascal: string, nests: ShapeNested[]): string {
 	const keys = nests.map((item) => `'${item.camel}'`).join(' | ');
 	const lines = nests.map((item) => `\treadonly ${item.camel}: ${item.pascal}EntityReference;`).join('\n');
 	return `export interface ${entityPascal}EntityReference extends Readonly<Omit<${entityPascal}Props, ${keys}>> {\n${lines}\n}`;
-}
-
-function guard(permission: string, name: string): string {
-	return `if (!this.isNew && !this.visa.determineIf((permissions) => permissions.${permission})) {\n\t\t\tthrow new PermissionError('You do not have permission to change ${name}');\n\t\t}`;
 }
 
 function commandFields(shape: Shape, mutation: boolean): string {
@@ -844,6 +883,10 @@ async function exists(file: string): Promise<boolean> {
 	} catch {
 		return false;
 	}
+}
+
+function namespacePath(contextPascal: string, entityPascal: string): string {
+	return `${contextPascal}.${entityPascal}.${entityPascal}`;
 }
 
 function camel(value: string): string {

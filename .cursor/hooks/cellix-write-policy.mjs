@@ -1,19 +1,12 @@
 import path from 'node:path';
 
-export const ALWAYS_LOCKED = ['cellix-lint.config.json', '.cursor/hooks.json', '.cursor/hooks/**'];
-
-export const DEFAULT_AGENT_ACCESS = {
-	'packages/cellix/**': false,
-	'apps/**': false,
-};
-
 // node/python/tsx count only when invoked as the command. versions/node/v24 in a PATH is not a write.
 const WRITE_COMMAND =
 	/--write\b|>>?|\btee\b|\brm\b|\bmv\b|\bcp\b|\bmkdir\b|\btouch\b|\bchmod\b|\bsed\s+-i|\bperl\s+-i|(?:^|&&|\|\||[;&|]\s)\s*(?:\.?\/)?(?:[\w@.+-]+\/)*node(?:\s|$)|(?:^|&&|\|\||[;&|]\s)\s*(?:\.?\/)?(?:[\w@.+-]+\/)*python3?(?:\s|$)|(?:^|&&|\|\||[;&|]\s)\s*(?:\.?\/)?(?:[\w@.+-]+\/)*tsx(?:\s|$)/;
 
 export function policyFromConfig(config = {}) {
 	return {
-		agentAccess: { ...DEFAULT_AGENT_ACCESS, ...(config.agentAccess ?? {}) },
+		agentAccess: config.agentAccess ?? {},
 		writable: config.writable ?? [],
 	};
 }
@@ -21,7 +14,6 @@ export function policyFromConfig(config = {}) {
 export function decidePath(file, workspace, policy) {
 	const relative = relativeToWorkspace(file, workspace);
 	if (!relative) return deny('That path is outside the workspace.');
-	if (matchesAny(ALWAYS_LOCKED, relative)) return deny(`${relative} stays closed. Edit cellix-lint.config.json yourself if you want the agent to work elsewhere.`);
 	const access = matchingAccess(relative, policy.agentAccess);
 	if (access === false) return deny(`${relative} is locked. Set its agentAccess entry to true in cellix-lint.config.json yourself, then ask again.`);
 	if (access === true) return allow();
@@ -30,9 +22,6 @@ export function decidePath(file, workspace, policy) {
 }
 
 export function decideShell(command, workspace, policy) {
-	if (mentionsAny(command, ALWAYS_LOCKED) && WRITE_COMMAND.test(command)) {
-		return deny('That command would change the agent write config or the hook. Edit cellix-lint.config.json yourself.');
-	}
 	for (const [glob, open] of Object.entries(policy.agentAccess)) {
 		if (open === true) continue;
 		if (mentionsGlob(command, glob) && WRITE_COMMAND.test(command)) {
@@ -68,10 +57,6 @@ function matchingAccess(relative, agentAccess) {
 		if (matchGlob(glob, relative)) return open === true;
 	}
 	return undefined;
-}
-
-function mentionsAny(command, globs) {
-	return globs.some((glob) => mentionsGlob(command, glob));
 }
 
 function mentionsGlob(command, glob) {

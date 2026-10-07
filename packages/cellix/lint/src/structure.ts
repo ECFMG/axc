@@ -94,7 +94,11 @@ function checkDomain(files: string[]): string[] {
 		violations.push(...banImports(file, content, active.domainBans, 'cellix/domain-no-infrastructure'));
 		violations.push(...banRelativeEscape(file, content, packageSrc, 'cellix/domain-no-infrastructure'));
 
-		if (relative.endsWith('/index.ts') || relative === 'index.ts') {
+		if (relative === 'index.ts') {
+			violations.push(...checkDomainPackageIndex(file, content));
+			continue;
+		}
+		if (relative.endsWith('/index.ts')) {
 			violations.push(...banExecutable(file, content, 'cellix/domain-barrel', 'Domain barrels re-export types and constructors only'));
 			continue;
 		}
@@ -134,6 +138,18 @@ function checkDomain(files: string[]): string[] {
 	return violations;
 }
 
+function checkDomainPackageIndex(file: string, content: string): string[] {
+	const violations: string[] = [];
+	if (!/export\s+type\s+DomainRepository\b/.test(content)) {
+		violations.push(report(file, 'cellix/domain-package-index', 'missing DomainRepository', 'export type DomainRepository<T> = Repository<T>'));
+	}
+	if (/export\s+type\s+\{/.test(content) || /export\s+interface\s+/.test(content) || /export\s+const\s+/.test(content) || /export\s+class\s+/.test(content) || /export\s+function\s+/.test(content)) {
+		violations.push(report(file, 'cellix/domain-package-index', 'feature type or value added to the package index', "keep feature types on their files. The only added export is export * as Domain from './domain/index.ts'"));
+	}
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(['DomainRepository']), 'cellix/domain-package-index'));
+	return violations;
+}
+
 function checkAggregate(file: string, content: string): string[] {
 	const violations: string[] = [];
 	if (!/extends\s+(?:DomainSeedwork\.)?AggregateRoot</.test(content)) {
@@ -151,8 +167,8 @@ function checkAggregate(file: string, content: string): string[] {
 	if (!/static\s+getNewInstance\b/.test(content)) {
 		violations.push(report(file, 'cellix/aggregate-factory', 'missing static getNewInstance', 'public static getNewInstance(...)'));
 	}
-	if (!/private\s+markAsNew\s*\(/.test(content) || !/\.markAsNew\s*\(/.test(content) || !/this\.isNew\s*=\s*true/.test(content)) {
-		violations.push(report(file, 'cellix/aggregate-mark-as-new', 'getNewInstance does not call markAsNew', 'private markAsNew(): void { this.isNew = true }'));
+	if (!/private\s+markAsNew\s*\(/.test(content) || !/newInstance\.markAsNew\s*\(/.test(content) || !/const\s+newInstance\s*=\s*new\s+/.test(content) || !/this\.isNew\s*=\s*true/.test(content)) {
+		violations.push(report(file, 'cellix/aggregate-mark-as-new', 'getNewInstance does not call markAsNew on newInstance', 'const newInstance = new <Name>(...); newInstance.markAsNew()'));
 	}
 	if (!/\bPassport\b/.test(content) || !/\b\w*Visa\b/.test(content)) {
 		violations.push(report(file, 'cellix/aggregate-auth-hooks', 'missing Passport or Visa', 'import Passport and a Visa type, matching Cellix aggregates'));
@@ -167,6 +183,8 @@ function checkAggregate(file: string, content: string): string[] {
 	if (/^\s+\w+\??:\s*\{/m.test(content)) {
 		violations.push(report(file, 'cellix/aggregate-nested-type', 'inline object type', 'a named Props type implemented by a ValueObject or Entity class'));
 	}
+	const pascal = kebabToPascal(path.basename(file, '.aggregate.ts'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}Props`, `${pascal}EntityReference`, `${pascal}NewInput`]), 'cellix/aggregate-types'));
 	return violations;
 }
 
@@ -185,6 +203,8 @@ function checkEntity(file: string, content: string): string[] {
 	if (/^\s+\w+\??:\s*\{/m.test(content)) {
 		violations.push(report(file, 'cellix/entity-nested-type', 'inline object type', 'a named Props type implemented by a ValueObject or Entity class'));
 	}
+	const pascal = kebabToPascal(path.basename(file, '.entity.ts'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}Props`, `${pascal}EntityReference`]), 'cellix/entity-types'));
 	return violations;
 }
 
@@ -214,6 +234,8 @@ function checkValueObjects(file: string, content: string): string[] {
 			violations.push(report(file, 'cellix/value-object-const', `export const ${match[1]}`, 'export const <Name> = { ... } as const'));
 		}
 	}
+	const pascal = kebabToPascal(path.basename(file, '.value-objects.ts'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}Props`]), 'cellix/value-object-types'));
 	return violations;
 }
 
@@ -230,6 +252,7 @@ function checkDomainRepository(file: string, content: string): string[] {
 	if (/export\s+class\s+/.test(content) || /^export\s+function\s+/m.test(content) || /^export\s+const\s+/m.test(content)) {
 		violations.push(report(file, 'cellix/domain-repository-interface', 'concrete export', 'domain repositories export interfaces only'));
 	}
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([expected]), 'cellix/domain-repository-types'));
 	return violations;
 }
 
@@ -250,6 +273,7 @@ function checkDomainUnitOfWork(file: string, content: string): string[] {
 		violations.push(report(file, 'cellix/domain-uow-interface', 'concrete class', 'domain unit-of-work files export interfaces only'));
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/domain-uow-no-helper'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([expected]), 'cellix/domain-uow-types'));
 	return violations;
 }
 
@@ -266,6 +290,18 @@ function checkDomainAuthorization(file: string, content: string, relative: strin
 	}
 	if (/export\s+class\s+/.test(content)) {
 		violations.push(report(file, 'cellix/domain-auth-interface', 'concrete class', 'passport, visa, and permissions files export types and interfaces'));
+	}
+	if (relative.endsWith('.visa.ts')) {
+		const pascal = kebabToPascal(path.basename(file, '.visa.ts'));
+		violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}Visa`]), 'cellix/domain-auth-types'));
+	} else if (relative.endsWith('passport.ts')) {
+		violations.push(...rejectUnexpectedTypes(file, content, new Set(['Passport']), 'cellix/domain-auth-types'));
+	} else {
+		const stem = path
+			.basename(file)
+			.replace(/\.domain-permissions\.ts$/, '')
+			.replace(/permissions\.ts$/, '');
+		violations.push(...rejectUnexpectedTypes(file, content, new Set([`${kebabToPascal(stem)}DomainPermissions`]), 'cellix/domain-auth-types'));
 	}
 	return violations;
 }
@@ -341,6 +377,7 @@ function checkApplicationHost(file: string, content: string): string[] {
 			violations.push(report(file, 'cellix/application-host-function', `export function ${name}`, 'a context action file: contexts/<context>/<kebab-name>.ts exporting a const factory'));
 		}
 	}
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(['HealthEnvironment', 'HealthStatus', 'ApiContext', 'ApplicationServices', 'ApplicationServicesFactory']), 'cellix/application-host-types'));
 	return violations;
 }
 
@@ -365,6 +402,7 @@ function checkApplicationContextIndex(file: string, content: string): string[] {
 		violations.push(report(file, 'cellix/application-context-single-factory', consts.join(', ') || 'no const export', `only export const ${pascal}`));
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/application-context-no-helper'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}ApplicationService`, `${pascal}Context`]), 'cellix/application-context-types'));
 	return violations;
 }
 
@@ -395,10 +433,11 @@ function checkApplicationAction(file: string, content: string): string[] {
 	}
 	for (const match of content.matchAll(/^export\s+(?:interface|type)\s+(\w+)/gm)) {
 		const name = match[1] ?? '';
-		if (!/(?:Command|Input|Result)$/.test(name)) {
-			violations.push(report(file, 'cellix/application-action-type', name, 'a Command, Input, or Result type next to the action const'));
+		if (!name.endsWith('Command')) {
+			violations.push(report(file, 'cellix/application-action-type', name, 'one Command type next to the action const'));
 		}
 	}
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(declaredTypes(content).filter((name) => name.endsWith('Command'))), 'cellix/application-action-types'));
 	if (/^(?:create|update|delete)(?:[A-Z]|$)/.test(camel) && !/withScopedTransaction/.test(content)) {
 		violations.push(report(file, 'cellix/application-mutation', `${camel} does not open a transaction`, 'domainDataSource.<context>.<entity>.<UnitOfWork>.withScopedTransaction(...)'));
 	}
@@ -422,12 +461,17 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 		const content = readSyncSafe(file);
 		violations.push(...banHelperFile(file));
 		violations.push(...banImports(file, content, active.persistenceBans, 'cellix/persistence-boundary'));
+		if (importsSeed(content)) {
+			violations.push(report(file, 'cellix/persistence-seed-import', 'seed import', 'insert the model seed into the database. Persistence reads through the model'));
+		}
 
 		if (relative === 'index.ts' || relative.endsWith('/index.ts')) {
 			violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-barrel'));
 			if (/export\s+class\s+/.test(content)) {
 				violations.push(report(file, 'cellix/persistence-barrel', 'export class in a barrel', 'classes live in *.repository.ts, *.domain-adapter.ts, or *.uow.ts'));
 			}
+			const allowed = relative === 'index.ts' ? new Set(['DataSources', 'DataSourcesFactory', 'ModelsContext']) : relative === 'datasources/readonly/index.ts' ? new Set(['ReadonlyDataSource']) : new Set<string>();
+			violations.push(...rejectUnexpectedTypes(file, content, allowed, 'cellix/persistence-index-types'));
 			continue;
 		}
 		if (relative.includes('datasources/domain/') && relative.endsWith('.repository.ts')) {
@@ -447,6 +491,7 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 				violations.push(report(file, 'cellix/persistence-mongo-data-source', 'missing MongoDataSourceImpl', 'export class MongoDataSourceImpl<TDoc>'));
 			}
 			violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-readonly-no-helper'));
+			violations.push(...rejectUnexpectedTypes(file, content, new Set(['FindOptions', 'FindOneOptions', 'MongoDataSource', 'LeanBase', 'Lean', 'ObjectIdLike']), 'cellix/persistence-mongo-data-source-types'));
 			continue;
 		}
 		if (relative.includes('datasources/readonly/') && relative.endsWith('.data.ts')) {
@@ -454,6 +499,8 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 				violations.push(report(file, 'cellix/persistence-readonly', 'missing MongoDataSourceImpl', 'export class <Name>DataSourceImpl extends MongoDataSourceImpl'));
 			}
 			violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-readonly-no-helper'));
+			const dataName = `${kebabToPascal(path.basename(file, '.data.ts'))}DataSource`;
+			violations.push(...rejectUnexpectedTypes(file, content, new Set([dataName]), 'cellix/persistence-data-types'));
 			continue;
 		}
 		if (relative.includes('datasources/readonly/') && relative.endsWith('.read-repository.ts')) {
@@ -492,6 +539,11 @@ function checkPersistenceRepository(file: string, content: string, domainReposit
 		violations.push(report(file, 'cellix/persistence-repository-implements', `class does not implement ${expected}`, `implements <domain>.${expected}`));
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-repository-no-helper'));
+	const pascal = kebabToPascal(stem);
+	if (!new RegExp(`MongoRepositoryBase<${pascal},`).test(content)) {
+		violations.push(report(file, 'cellix/persistence-repository-document', `document type is not ${pascal}`, `MongoRepositoryBase<${pascal}, ${pascal}DomainAdapter, ...>. The document type is the entity`));
+	}
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(), 'cellix/persistence-repository-types'));
 	return violations;
 }
 
@@ -507,6 +559,15 @@ function checkPersistenceAdapter(file: string, content: string): string[] {
 	}
 	if (!/MongooseDomainAdapter/.test(content) || !/MongoTypeConverter/.test(content)) {
 		violations.push(report(file, 'cellix/persistence-adapter-bases', 'missing adapter bases', 'MongooseDomainAdapter and MongoTypeConverter'));
+	}
+	if (/export\s+(?:interface|type)\s+/.test(content)) {
+		violations.push(report(file, 'cellix/persistence-adapter-types', 'exported type on the domain adapter', 'export class <Name>Converter and export class <Name>DomainAdapter only. The document type is the entity on the model'));
+	}
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(), 'cellix/persistence-adapter-types'));
+	if (!new RegExp(`MongooseDomainAdapter<${pascal}>`).test(content) || !new RegExp(`MongoTypeConverter<${pascal},`).test(content)) {
+		violations.push(
+			report(file, 'cellix/persistence-adapter-document', `document type is not ${pascal}`, `import ${pascal} from the models package and use MongooseDomainAdapter<${pascal}> and MongoTypeConverter<${pascal}, ...>`),
+		);
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-adapter-no-helper'));
 	return violations;
@@ -528,7 +589,13 @@ function checkReadRepository(file: string, content: string): string[] {
 	if (!/async\s+getById\s*\(/.test(content) || !/findById\(/.test(content) || !/toDomain\(/.test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository-get-by-id', 'missing getById through the data source', 'async getById uses this.mongoDataSource.findById then this.converter.toDomain'));
 	}
+	for (const name of content.matchAll(/^(?:export\s+)?const\s+(\w+)/gm)) {
+		if (name[1] !== `get${pascal}ReadRepository`) {
+			violations.push(report(file, 'cellix/persistence-read-repository-seed', `extra const ${name[1]}`, `only export const get${pascal}ReadRepository. A catalog seed does not live in the read repository`));
+		}
+	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-read-repository-no-helper'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}ReadRepository`]), 'cellix/persistence-read-repository-types'));
 	return violations;
 }
 
@@ -549,6 +616,7 @@ function checkPersistenceUnitOfWork(file: string, content: string): string[] {
 		violations.push(report(file, 'cellix/persistence-uow-no-class', 'export class', `export const ${factory}`));
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-uow-no-helper'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(), 'cellix/persistence-uow-types'));
 	return violations;
 }
 
@@ -562,6 +630,10 @@ function checkModels(files: string[], domainFiles: string[]): string[] {
 		const posix = toPosix(file);
 		violations.push(...banHelperFile(file));
 		violations.push(...banImports(file, content, active.modelBans, 'cellix/model-boundary'));
+		if (file.endsWith('.seed.ts')) {
+			violations.push(...checkModelSeed(file, content, domainStems));
+			continue;
+		}
 		if (!/\/models\/[^/]+\/[^/]+\.model\.ts$/.test(posix)) {
 			violations.push(report(file, 'cellix/model-path', posix, 'models/<entity>/<entity>.model.ts'));
 		}
@@ -585,9 +657,45 @@ function checkModels(files: string[], domainFiles: string[]): string[] {
 		if (!domainStems.has(stem)) {
 			violations.push(report(file, 'cellix/model-domain-name', `no domain ${stem}.aggregate.ts or ${stem}.entity.ts`, 'the same kebab-case stem as the domain type'));
 		}
+		if (!new RegExp(`export\\s+interface\\s+${pascal}\\b`).test(content)) {
+			violations.push(report(file, 'cellix/model-types', `missing interface ${pascal}`, `export interface ${pascal} extends MongooseSeedwork.Base. The document type is the entity`));
+		}
+		violations.push(...rejectUnexpectedTypes(file, content, modelTypeNames(pascal, content), 'cellix/model-types'));
 		violations.push(...banTopLevelFunctions(file, content, 'cellix/model-no-helper'));
 	}
 
+	return violations;
+}
+
+function checkModelSeed(file: string, content: string, domainStems: Set<string>): string[] {
+	const violations: string[] = [];
+	const posix = toPosix(file);
+	const stem = path.basename(file, '.seed.ts');
+	const seedName = `${kebabToCamel(stem)}Seed`;
+	if (!/\/models\/[^/]+\/[^/]+\.seed\.ts$/.test(posix) || path.basename(path.dirname(file)) !== stem) {
+		violations.push(report(file, 'cellix/model-seed-path', posix, 'models/<entity>/<entity>.seed.ts'));
+	}
+	if (!KEBAB_BASENAME.test(stem)) {
+		violations.push(report(file, 'cellix/model-seed-filename', stem, 'kebab-case entity name'));
+	}
+	if (!domainStems.has(stem)) {
+		violations.push(report(file, 'cellix/model-seed-domain', `no domain ${stem}.aggregate.ts or ${stem}.entity.ts`, 'the same kebab-case stem as the domain type'));
+	}
+	if (!new RegExp(`export\\s+const\\s+${seedName}\\b`).test(content)) {
+		violations.push(report(file, 'cellix/model-seed', `missing ${seedName}`, `export const ${seedName} = [ { _id, schemaVersion, ... } ]`));
+	}
+	for (const name of content.matchAll(/^(?:export\s+)?const\s+(\w+)/gm)) {
+		if (name[1] !== seedName) {
+			violations.push(report(file, 'cellix/model-seed-const', `extra const ${name[1]}`, `only export const ${seedName}`));
+		}
+	}
+	for (const key of ['_id', 'schemaVersion', 'createdAt', 'updatedAt']) {
+		if (!content.includes(`${key}:`)) {
+			violations.push(report(file, 'cellix/model-seed-document', `missing ${key}`, 'one example document with _id, schemaVersion, createdAt, and updatedAt'));
+		}
+	}
+	violations.push(...banTopLevelFunctions(file, content, 'cellix/model-seed-no-helper'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(), 'cellix/model-seed-types'));
 	return violations;
 }
 
@@ -632,8 +740,103 @@ function checkTransport(files: string[], kind: 'rest' | 'graphql'): string[] {
 		if (basename !== 'index' && !KEBAB_BASENAME.test(basename)) {
 			violations.push(report(file, 'cellix/transport-filename', basename, 'kebab-case or index.ts'));
 		}
+		violations.push(...checkTransportCall(file, content, kind, basename));
 	}
 	return violations;
+}
+
+const APPLICATION_CALL = /applicationServices\.[A-Z][A-Za-z0-9]*\.[A-Z][A-Za-z0-9]*\.[A-Za-z][A-Za-z0-9]*\s*\(/;
+
+function checkTransportCall(file: string, content: string, kind: 'rest' | 'graphql', basename: string): string[] {
+	const source = stripComments(content);
+	const violations: string[] = [];
+	if (kind === 'rest' && basename !== 'index') {
+		const handlers = exportedAsyncHandlers(source).filter((handler) => /\bapplicationServices\b/.test(handler.params));
+		if (handlers.length === 0 || handlers.some((handler) => !APPLICATION_CALL.test(handler.body))) {
+			violations.push(
+				report(
+					file,
+					'cellix/rest-application-call',
+					'handler does not call applicationServices.<Context>.<Entity>.<action>(...)',
+					'return applicationServices.Course.Course.query(command) inside the function that receives applicationServices',
+				),
+			);
+		}
+	}
+	if (hasObjectArray(source)) {
+		violations.push(report(file, 'cellix/transport-no-catalog', 'array of objects', 'call applicationServices and read rows from the database. Example documents live in models/<entity>/<entity>.seed.ts'));
+	}
+	return violations;
+}
+
+function exportedAsyncHandlers(content: string): { params: string; body: string }[] {
+	const handlers: { params: string; body: string }[] = [];
+	for (const match of content.matchAll(/export\s+const\s+\w+\s*=\s*async\s*\(/g)) {
+		const open = (match.index ?? 0) + match[0].length - 1;
+		const close = matchDelim(content, open, '(', ')');
+		if (close < 0) continue;
+		const tail = content.slice(close + 1);
+		const arrow = /^\s*(?::[^{]*?)?=>\s*\{/.exec(tail);
+		if (!arrow) continue;
+		const bodyOpen = close + 1 + arrow.index + arrow[0].length - 1;
+		const bodyClose = matchDelim(content, bodyOpen, '{', '}');
+		if (bodyClose < 0) continue;
+		handlers.push({ params: content.slice(open + 1, close), body: content.slice(bodyOpen + 1, bodyClose) });
+	}
+	return handlers;
+}
+
+function hasObjectArray(content: string): boolean {
+	for (let index = 0; index < content.length; index += 1) {
+		const char = content[index];
+		if (char === "'" || char === '"' || char === '`') {
+			index = skipString(content, index);
+			continue;
+		}
+		if (char !== '[') continue;
+		const end = matchDelim(content, index, '[', ']');
+		if (end < 0) return false;
+		if (content.slice(index + 1, end).includes('{')) return true;
+		index = end;
+	}
+	return false;
+}
+
+function matchDelim(content: string, openIndex: number, open: string, close: string): number {
+	let depth = 0;
+	for (let index = openIndex; index < content.length; index += 1) {
+		const char = content[index];
+		if (char === "'" || char === '"' || char === '`') {
+			index = skipString(content, index);
+			continue;
+		}
+		if (char === open) depth += 1;
+		else if (char === close) {
+			depth -= 1;
+			if (depth === 0) return index;
+		}
+	}
+	return -1;
+}
+
+function skipString(content: string, start: number): number {
+	const quote = content[start];
+	for (let index = start + 1; index < content.length; index += 1) {
+		if (content[index] === '\\') {
+			index += 1;
+			continue;
+		}
+		if (content[index] === quote) return index;
+	}
+	return content.length;
+}
+
+function stripComments(content: string): string {
+	return content.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+}
+
+function importsSeed(content: string): boolean {
+	return /from\s+['"][^'"]*seed(?:\.ts)?['"]/.test(content) || /import\s+(?:type\s+)?\{[^}]*\b\w+Seed\b/.test(content);
 }
 
 function checkGraphql(files: string[]): string[] {
@@ -779,6 +982,35 @@ function banRelativeEscape(file: string, content: string, packageSrc: string, ru
 		}
 	}
 	return violations;
+}
+
+function declaredTypes(content: string): string[] {
+	const names: string[] = [];
+	const pattern = /(?:^|\n)\s*(?:export\s+)?interface\s+([A-Za-z_]\w*)|(?:^|\n)\s*(?:export\s+)?type\s+([A-Za-z_]\w*)\s*(?:=|<|extends)/g;
+	for (const match of content.matchAll(pattern)) {
+		const name = match[1] ?? match[2];
+		if (name) names.push(name);
+	}
+	return names;
+}
+
+function rejectUnexpectedTypes(file: string, content: string, allowed: ReadonlySet<string>, rule: string): string[] {
+	const violations: string[] = [];
+	for (const name of declaredTypes(content)) {
+		if (allowed.has(name)) continue;
+		const expected = allowed.size === 0 ? 'no local type. Refer to the entity type' : `only ${[...allowed].join(', ')}`;
+		violations.push(report(file, rule, name, /Document$/.test(name) ? `the entity type. ${name} is a stub` : expected));
+	}
+	return violations;
+}
+
+function modelTypeNames(entityName: string, content: string): Set<string> {
+	const allowed = new Set<string>([entityName, `${entityName}ModelType`]);
+	for (const name of declaredTypes(content)) {
+		if (allowed.has(name) || !name.startsWith(entityName) || /Document$|Props$|EntityReference$|Command$|ModelType$|Model$/.test(name)) continue;
+		if (new RegExp(`:\\s*${name}\\b`).test(content)) allowed.add(name);
+	}
+	return allowed;
 }
 
 function importSpecifiers(content: string): string[] {

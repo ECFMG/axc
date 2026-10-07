@@ -12,18 +12,18 @@
 	"apiComposition": "apps/api/src/index.ts",
 	"hostFunctions": ["buildApplicationServicesFactory", "resolveEnvironment"],
 	"agentAccess": {
-		"packages/cellix/**": true,
+		"packages/cellix/**": false,
+		"apps/api/src/index.ts": true,
 		"apps/**": false
 	},
 	"writable": [
 		"packages/axc/domain/src/**",
-		"packages/axc/application-services/src/contexts/**",
-		"packages/axc/persistence/src/datasources/**",
+		"packages/axc/application-services/src/**",
+		"packages/axc/persistence/src/**",
 		"packages/axc/rest/src/**",
 		"packages/axc/graphql/src/**",
 		"packages/axc/data-sources-mongoose-models/src/models/**",
-		"biome.json",
 		"package.json",
-		".agents/skills/**"
+		"packages/axc/**/package.json"
 	]
 }

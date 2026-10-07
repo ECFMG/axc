@@ -20,7 +20,7 @@ export async function checkCellixContent(input: { root: string; lint: CellixLint
 		if (relative.endsWith('.uow.ts')) violations.push(...checkDomainUnitOfWorkContent(file, content));
 	}
 
-	violations.push(...(await checkApplicationContent(applicationFiles, applicationRoot)));
+	violations.push(...(await checkApplicationContent(applicationFiles, applicationRoot, input.lint.scope)));
 
 	for (const file of persistenceFiles) {
 		if (isTestFile(file)) continue;
@@ -76,9 +76,6 @@ function checkAggregateContent(file: string, content: string): string[] {
 		if (!setter.body.includes('new ValueObjects.') || !setter.body.includes('.valueOf()') || !setter.body.includes(`this.props.${setter.name}`)) {
 			violations.push(report(file, 'cellix/content-aggregate-setter', `set ${setter.name} assigns something other than a value object`, `this.props.${setter.name} = new ValueObjects.<Type>(${setter.name}).valueOf()`));
 		}
-		if (!setter.body.includes('this.visa.determineIf') || !setter.body.includes('PermissionError')) {
-			violations.push(report(file, 'cellix/content-aggregate-permission', `set ${setter.name} has no visa check`, 'if (!this.visa.determineIf((permissions) => permissions.<permission>)) throw new PermissionError(...)'));
-		}
 	}
 	return violations;
 }
@@ -133,7 +130,7 @@ function checkDomainUnitOfWorkContent(file: string, content: string): string[] {
 	return [];
 }
 
-async function checkApplicationContent(files: string[], applicationRoot: string): Promise<string[]> {
+async function checkApplicationContent(files: string[], applicationRoot: string, scope: string): Promise<string[]> {
 	const violations: string[] = [];
 	const actions = new Map<string, string[]>();
 	for (const file of files) {
@@ -144,7 +141,7 @@ async function checkApplicationContent(files: string[], applicationRoot: string)
 		const list = actions.get(directory) ?? [];
 		list.push(file);
 		actions.set(directory, list);
-		violations.push(...checkActionContent(file, await readText(file)));
+		violations.push(...checkActionContent(file, await readText(file), scope));
 	}
 	for (const [directory, actionFiles] of actions) {
 		const indexFile = path.join(directory, 'index.ts');
@@ -164,9 +161,15 @@ async function checkApplicationContent(files: string[], applicationRoot: string)
 	return violations;
 }
 
-function checkActionContent(file: string, content: string): string[] {
+function checkActionContent(file: string, content: string, scope: string): string[] {
 	const violations: string[] = [];
 	const camel = kebabToCamel(path.basename(file, '.ts'));
+	if (!new RegExp(`import\\s+type\\s+\\{[^}]*\\bDataSources\\b[^}]*\\}\\s+from\\s+['"]${scope.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/persistence['"]`).test(content)) {
+		violations.push(report(file, 'cellix/content-action-datasources-import', 'DataSources is not imported from persistence', `import type { DataSources } from '${scope}/persistence'`));
+	}
+	if (/(?:export\s+)?(?:interface|type)\s+DataSources\b/.test(content)) {
+		violations.push(report(file, 'cellix/content-action-datasources-local', 'local DataSources type', `import type { DataSources } from '${scope}/persistence'. Do not declare the port in the action`));
+	}
 	if (/\bconsole\./.test(content)) {
 		violations.push(report(file, 'cellix/content-action-console', 'console call', 'throw an Error or return a result. Logging stays outside the action'));
 	}

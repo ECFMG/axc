@@ -29,6 +29,7 @@ describe('Cellix generator', () => {
 		const files = await generateFeature({ root, lint, context: 'course', entity: 'course', action: 'create', transport: 'graphql' });
 		const paths = files.map((file) => file.path).join('\n');
 		expect(paths).toContain('course.aggregate.ts');
+		expect(paths).toContain('course.seed.ts');
 		expect(paths).toContain('course.resolvers.ts');
 		expect(paths).toContain('course.data.ts');
 		expect(paths).toContain('course.read-repository.ts');
@@ -40,9 +41,17 @@ describe('Cellix generator', () => {
 		expect(readonlyIndex?.contents).toContain('CourseReadRepo: CourseReadRepository');
 		expect(files.map((file) => file.path).join('\n')).not.toContain('.event.ts');
 		const aggregate = files.find((file) => file.path.endsWith('course.aggregate.ts'));
-		expect(aggregate?.contents).toContain('entity.markAsNew()');
+		const resolver = files.find((file) => file.path.endsWith('course.resolvers.ts'));
+		expect(resolver?.contents).toContain('applicationServices.Course.Course.create');
+		expect(aggregate?.contents).toContain('const newInstance = new Course');
+		expect(aggregate?.contents).toContain('newInstance.markAsNew()');
+		expect(aggregate?.contents).not.toContain('this.visa.determineIf');
 		expect(aggregate?.contents).toContain('private markAsNew(): void');
 		expect(aggregate?.contents).not.toContain('addIntegrationEvent');
+		const seed = files.find((file) => file.path.endsWith('course.seed.ts'));
+		expect(seed?.contents).toContain('export const courseSeed = [');
+		expect(seed?.contents).toContain("courseName: 'Example courseName'");
+		expect(seed?.contents).toContain('Start the application');
 
 		const violations = await checkCellixLint({ root, lint });
 		expect(violations).toStrictEqual([]);
@@ -77,6 +86,9 @@ describe('Cellix generator', () => {
 		const readonlyIndex = files.find((file) => file.path.endsWith('datasources/readonly/index.ts'));
 		expect(readonlyIndex?.contents).toContain('StaffUserReadRepo: StaffUserReadRepository');
 		expect(readonlyIndex?.contents).toContain('User: {');
+		const adapter = files.find((file) => file.path.endsWith('staff-user.domain-adapter.ts'));
+		expect(adapter?.contents).toContain('Domain.Contexts.User.StaffUser.StaffUser');
+		expect(adapter?.contents).not.toContain('Domain.Contexts.StaffUser.StaffUser.StaffUser');
 
 		const violations = await checkCellixLint({ root, lint });
 		expect(violations).toStrictEqual([]);
@@ -166,6 +178,10 @@ describe('Cellix generator', () => {
 		const log = files.find((file) => file.path.endsWith('activity-log.entity.ts'));
 		expect(log?.contents).toContain('detail: DetailProps');
 		expect(log?.contents).toContain('new DetailValues.Label');
+		const seed = files.find((file) => file.path.endsWith('staff-user.seed.ts'));
+		expect(seed?.contents).toContain('export const staffUserSeed = [');
+		expect(seed?.contents).toContain("label: 'Example label'");
+		expect(seed?.contents).toContain('activityLog: { activityType:');
 		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
 		expectBiomeClean(files);
 	});

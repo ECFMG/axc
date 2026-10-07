@@ -61,12 +61,12 @@ pnpm --filter @cellix/generator generate -- --context user --entity staff-user -
 
 The generator runs Biome on those files before it reports success, so import order and line length already match `biome.json`.
 
-That command writes a scaffold. It does not finish the feature. `getNewInstance` calls `private markAsNew()`, which sets `isNew` so the first assignment can pass the visa check. There is no created event. After the files exist, build the behavior they only sketch.
+That command writes a scaffold. It does not finish the feature. `getNewInstance` builds `const newInstance` and calls `private markAsNew()`, which sets `isNew`. Setters assign the value. They do not call `visa.determineIf`. The visa, the permissions interface, and passport are there so a later edit can add a check. There is no created event. After the files exist, build the behavior they only sketch.
 
 The command writes:
 
 1. Domain permissions, visa, passport (passport is created once), value objects, aggregate, repository interface, unit-of-work interface
-2. `models/<entity>/<entity>.model.ts`
+2. `models/<entity>/<entity>.model.ts` and `models/<entity>/<entity>.seed.ts`
 3. Persistence domain adapter, repository, and `get<Entity>UnitOfWork`
 4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. Queries call `readonlyDataSource.<Context>.<Entity>.<Entity>ReadRepo`
 5. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
@@ -80,16 +80,26 @@ Then build:
 - Value-object bounds and what the aggregate setters enforce
 - Repository methods behind `getNewInstance` and `getById`
 - The command fields and the body inside `withScopedTransaction` or `readonlyDataSource`
-- The `Domain` namespace the persistence and action files import
+- A visa check on a setter, when the feature needs one: `if (!this.isNew && !this.visa.determineIf(...)) throw new PermissionError(...)`
+- The `Domain` namespace, as `export * as Domain from './domain/index.ts'` on the domain package index. Do not add `export type { Course, ... }` or `export const Domain` there. Do not add document types to a domain adapter. Do not import `<camel>Seed` into a read repository or return it from one. An action imports `DataSources` from `@axc/persistence` and does not declare that type itself
+- The Azure function route in `apps/api/src/index.ts`
+- The Hono route in `packages/axc/rest/src/index.ts`. The handler calls `applicationServices.<Context>.<Entity>.<action>(command)`
+- The new service on the health host, `packages/axc/application-services/src/index.ts`. Add it beside `health` on `ApplicationServices` and return it from `buildApplicationServicesFactory`. Keep `health.getStatus`
 - The context factory's ports, when the action needs more than `DataSources`
-
-Leave the health host as it is unless the feature needs a connection there.
 
 When that behavior is in place, run `pnpm run build`. Lint only checks file shape. The build is what shows the slice compiles. Generate finishing is not that check.
 
+## Testing
+
+Start the application with `pnpm run dev` and call the endpoint. The rows come from the database.
+
+`models/<entity>/<entity>.seed.ts` exports `<camel>Seed`, one example document. Insert that document into the `<Pascal>` collection, then read it back through the running app. Do not copy it into a REST handler, a GraphQL resolver, a read repository, or a test that replaces the database with an in-memory list.
+
+A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entity>.<action>(command)` inside the function that receives `applicationServices`. Context and Entity are PascalCase. Mentioning `applicationServices`, casting it, or calling a local list when the property is missing does not count. A REST file does not keep an array of documents.
+
 ## Writable paths
 
-The hook allows writes only under `writable` in `cellix-lint.config.json`. In this repo that is domain source, `application-services/src/contexts`, persistence `datasources`, REST, GraphQL, and mongoose `models`.
+The hook allows writes only under `writable` in `cellix-lint.config.json`. In this repo that is domain source, application-services source including the health host, persistence source, REST, GraphQL, and mongoose `models`.
 
 Edits outside that list are denied. Shell redirects, `rm`, `mv`, `cp`, `mkdir`, and `touch` aimed outside that list are denied. `pnpm --filter @cellix/generator generate` is allowed.
 

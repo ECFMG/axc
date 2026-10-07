@@ -13,4 +13,5 @@ Persistence implements domain contracts. It does not import application services
 - `*.domain-adapter.ts` exports `<Name>DomainAdapter extends MongooseSeedwork.MongooseDomainAdapter` and `<Name>Converter extends MongooseSeedwork.MongoTypeConverter`
 - `*.uow.ts` exports `const get<Name>UnitOfWork` and wires `MongoUnitOfWork`, `InProcEventBusInstance`, and `NodeEventBusInstance`
 - Readonly data sources live under `datasources/readonly/` and extend `MongoDataSourceImpl`
+- Do not import `<camel>Seed`. Insert that document into the database and read it through the model
 - Filenames use the same kebab-case stem as the domain type
