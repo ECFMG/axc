@@ -42,4 +42,9 @@ ignore:
         reason: No upgrade or patch available
         expires: 2026-10-28T22:36:51.603Z
         created: 2026-10-01T09:35:51.606Z
+  SNYK-JS-POSTCSSSELECTORPARSER-20510276:
+    - '*':
+        reason: Upgrade to 7.1.6 breaks @apps/docs build for docusaurus
+        expires: 2027-01-31T22:36:52.000Z
+        created: 2026-10-06T09:36:52.003Z
 patch: {}

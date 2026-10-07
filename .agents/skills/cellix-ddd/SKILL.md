@@ -59,9 +59,11 @@ Domain code must remain independent of transport and infrastructure concerns.
 Before changing application code:
 
 1. Identify the bounded context, use case, domain concepts, and invariants.
-2. Inspect the closest analogous implementation in CellixJS.
-3. Determine aggregate and responsibility boundaries.
-4. Implement using `tdd`.
+2. Classify the use case as a command, query, or combination of both.
+3. Use `references/application-patterns.md` to trace the relevant Cellix
+   pattern through the affected layers.
+4. Determine the responsibility boundaries for the implementation.
+5. Implement using `tdd`.
 
 Before completion, verify:
 
