@@ -12,6 +12,9 @@
 			"default": "./dist/index.js"
 		}
 	},
+	"dependencies": {
+		"@axc/domain": "workspace:*"
+	},
 	"scripts": {
 		"lint": "biome lint",
 		"format": "biome format --write",
@@ -25,6 +28,7 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"devDependencies": {
+		"@axc/persistence": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
 		"@vitest/coverage-istanbul": "catalog:",
