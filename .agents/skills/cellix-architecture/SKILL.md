@@ -22,6 +22,7 @@ Do not modify the fixed task prompt to encode a solution. Do not copy an entire 
 - Read the applicable task requirements and allowed write boundary.
 - Inspect the current AgentCourses packages and architecture tests.
 - Identify existing behavior that must remain compatible.
+- Check the workspace dependency edges needed by the alignment map before editing manifests. Apply the repository run workflow's boundary decision to any required root lockfile change.
 
 ### 2. Find the Nearest Cellix Vertical Slice
 
@@ -63,6 +64,8 @@ Read and complete [the alignment review](references/review-template.md). Compare
 ### 6. Verify
 
 Run focused tests while implementing, then run the repository completion gate from `AGENTS.md`. Architecture-test failures must be fixed in application code; do not weaken the guardrail to make a feature pass.
+
+Reuse the alignment map and completed review as the handoff evidence. Run shared build-dependent completion commands sequentially and avoid repeating unchanged successful checks; follow [the run workflow](../../harness-run-workflow.md) for scope and security evidence.
 
 ## Completion Evidence
 

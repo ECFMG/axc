@@ -4,6 +4,12 @@
 
 These instructions apply to the entire repository. Preserve the user's task and the fixed task-set prompts. Do not edit `task-set-*-prompt.md` or `task-set-*-requirements.md` unless the user explicitly requests changes to those files.
 
+## Harness Run Discipline
+
+For feature runs, follow the [run workflow](.agents/harness-run-workflow.md). The task's explicit write boundary takes precedence over convenience: dependency justification does not authorize a root lockfile edit. Identify required workspace dependency edges before implementation and resolve any necessary boundary exception before changing manifests or installing packages.
+
+Do not stage, commit, push, or bypass hooks unless the user requests that operation. A working patch is a deliverable; a failed security scan must remain visible in the handoff.
+
 ## Cellix Architecture Source of Truth
 
 Treat the local Cellix repository at `/Volumes/files/src/cellixjs` as the authoritative reference for architecture, framework conventions, package structure, naming, testing patterns, and reusable infrastructure. If it is unavailable, use <https://github.com/CellixJs/cellixjs>.
@@ -51,3 +57,4 @@ Before reporting completion:
    ```
 
 4. In the final response, list the Cellix reference paths used, architectural decisions, deviations, and verification results.
+5. Review tracked, staged, and untracked changes against the task boundary and the initial worktree snapshot. Report security checks separately as passed, findings, execution error, or unavailable; an unavailable scan is not a pass.
