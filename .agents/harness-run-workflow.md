@@ -6,7 +6,7 @@ This workflow addresses the iteration-2 evaluation on `dn-oai-2-a-out`: architec
 
 - Record the starting branch/commit and `git status --short`; preserve existing user changes. Read the fixed task requirements once and extract the allowed paths, acceptance criteria, and prohibited changes into a compact working checklist.
 - Check required workspace dependency edges against existing package manifests before writing code. If implementing the chosen design needs a root lockfile or workspace configuration change outside the task boundary, explain the concrete dependency change and obtain authority for that exception. Do not silently update the lockfile, introduce undeclared imports, or flatten architecture to avoid package dependencies.
-- Inspect the current security baseline early using existing commands when execution is authorized: `pnpm run audit` and `pnpm run snyk`. Record exit status and findings, scan errors, unavailable tools, and sandbox/network restrictions separately. Do not change ignores, downgrade scans, or repair inherited dependencies as part of a bounded feature task without authorization.
+- Inspect the current security baseline early using existing commands when execution is authorized: `pnpm run audit`. Record exit status and findings, scan errors, unavailable tools, and sandbox/network restrictions separately. Do not change ignores, downgrade scans, or repair inherited dependencies as part of a bounded feature task without authorization.
 
 ## Use context and verification deliberately
 
