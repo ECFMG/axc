@@ -5,7 +5,9 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		"./application-services": "./src/application-services.ts"
+		"./application-services": "./src/application-services.ts",
+		"./domain": "./src/domain.ts",
+		"./persistence": "./src/persistence.ts"
 	},
 	"scripts": {
 		"test:arch": "vitest run",

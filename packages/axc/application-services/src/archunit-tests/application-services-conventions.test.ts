@@ -5,13 +5,13 @@ import {
 import { type ApplicationServicesConventionTestsConfig, describeApplicationServicesConventionTests } from '@cellix/archunit-tests/application-services';
 
 const cellixConfig: ApplicationServicesConventionTestsConfig = {
-	applicationServicesGlob: '../application-services/src/contexts/**',
-	applicationServicesAllGlob: '../application-services/src/**',
+	applicationServicesGlob: '**/src/contexts/**',
+	applicationServicesAllGlob: '**/src/**',
 };
 
 const axcConfig: AxcApplicationServicesConventionTestsConfig = {
-	applicationServicesGlob: '../application-services/src/contexts/**',
-	applicationServicesAllGlob: '../application-services/src/**',
+	applicationServicesGlob: 'src/contexts/**',
+	applicationServicesAllGlob: 'src/**',
 };
 
 describeApplicationServicesConventionTests(cellixConfig);

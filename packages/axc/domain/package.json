@@ -20,14 +20,19 @@
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
+		"test:arch": "vitest run --config vitest.arch.config.ts",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
 		"@cellix/domain-seedwork": "workspace:*"
 	},
 	"devDependencies": {
+		"@axc-verification/archunit-tests": "workspace:*",
+		"@cellix/archunit-tests": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
+		"@cellix/config-vitest": "workspace:*",
 		"rimraf": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
