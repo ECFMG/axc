@@ -1,0 +1,16 @@
+---
+description: Persistence repositories, adapters, and unit-of-work factories
+globs: packages/axc/persistence/**/*.ts
+alwaysApply: false
+---
+
+# Persistence
+
+Persistence implements domain contracts. It does not import application services, GraphQL, or REST.
+
+- `*.repository.ts` exports `class <Name>Repository extends MongooseSeedwork.MongoRepositoryBase implements <Name>Repository`
+- The domain package has the matching `*.repository.ts` interface
+- `*.domain-adapter.ts` exports `<Name>DomainAdapter extends MongooseSeedwork.MongooseDomainAdapter` and `<Name>Converter extends MongooseSeedwork.MongoTypeConverter`
+- `*.uow.ts` exports `const get<Name>UnitOfWork` and wires `MongoUnitOfWork`, `InProcEventBusInstance`, and `NodeEventBusInstance`
+- Readonly data sources live under `datasources/readonly/` and extend `MongoDataSourceImpl`
+- Filenames use the same kebab-case stem as the domain type

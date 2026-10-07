@@ -1,0 +1,17 @@
+---
+description: Cellix layer structure for domain, application services, persistence, mongoose models, GraphQL, and REST
+alwaysApply: true
+---
+
+# Cellix structure
+
+New application code follows the Cellix file roles. Data and behavior may differ. Structure may not.
+
+- Domain: `*.aggregate.ts`, `*.entity.ts`, `*.value-objects.ts`, `*.repository.ts` (interface), `*.uow.ts` (interface), visa, passport, permissions, `*.event.ts`
+- Application services: `contexts/<context>/<kebab-action>.ts` exports `export const <camelAction> = (dataSources: DataSources, ...ports) => async (command) => result`
+- `create` / `update` / `delete` call `withScopedTransaction`. `query` / `get` / `find` use `readonlyDataSource`
+- Persistence: `datasources/domain/<context>/<entity>/*.(repository|domain-adapter|uow).ts` implements the domain contract
+- Models: `models/<entity>/<entity>.model.ts` exports `<Pascal>ModelFactory`, `<Pascal>ModelType`, `<Pascal>ModelName`
+- REST and GraphQL call `applicationServices` only. Resolvers are `*.resolvers.ts` files with a default `Resolvers` export
+
+Do not add helper, util, common, or shared modules in these packages. New features come from `@cellix/generator`. The files it writes are a scaffold; build the behavior after that, then run `pnpm run build`. Lint does not compile the slice. Run `pnpm --filter @cellix/lint lint:cellix` before finishing. Read the `cellix-architecture` skill for how the generator, writable paths, lint, visibility, and dependency graph fit together.

@@ -15,14 +15,14 @@
 		"typecheck": "turbo run typecheck",
 		"build": "turbo run build",
 		"start": "pnpm --filter @apps/api start",
-		"lint": "biome lint",
+		"lint": "biome check . && pnpm --filter @cellix/lint lint:cellix",
 		"format": "biome format --write",
 		"format:check": "biome format .",
 		"knip": "knip",
 		"e18e": "pnpm dlx @e18e/cli analyze --log-level error --quiet",
 		"audit": "pnpm audit --audit-level=high",
 		"snyk": "node scripts/snyk-verify.mjs",
-		"verify": "node scripts/check-script-policy.mjs && biome check . && pnpm run typecheck && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk",
+		"verify": "node scripts/check-script-policy.mjs && biome check . && pnpm --filter @cellix/lint lint:cellix && pnpm run typecheck && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk",
 		"prepare": "husky"
 	},
 	"optionalDependencies": {
@@ -32,6 +32,7 @@
 	"devDependencies": {
 		"@amiceli/vitest-cucumber": "^6.3.0",
 		"@biomejs/biome": "2.4.10",
+		"@cellix/lint": "workspace:*",
 		"@types/node": "catalog:",
 		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
@@ -46,6 +47,7 @@
 		"typescript": "catalog:"
 	},
 	"lint-staged": {
-		"*.{ts,tsx,js,jsx,mjs,cjs,json,md}": "biome check --write --no-errors-on-unmatched"
+		"*.{ts,tsx,js,jsx,mjs,cjs,json,md}": "biome check --write --no-errors-on-unmatched",
+		"*.{ts,tsx}": "pnpm --filter @cellix/lint lint:cellix"
 	}
 }

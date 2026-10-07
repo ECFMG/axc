@@ -37,14 +37,15 @@ Requires Node.js 24 (`nvm use`) and pnpm 11. Dependency lifecycle scripts are di
 `pnpm run verify` runs, in order:
 
 1. Dependency script policy (`ignore-scripts=true`)
-2. Biome
-3. TypeScript compilation
-4. Knip
-5. `@e18e/cli analyze`
-6. Architecture tests
-7. Unit tests and Serenity acceptance tests
-8. `pnpm audit`
-9. Snyk local CLI
+2. Biome, including Cellix layer import rules
+3. Cellix lint from `@cellix/lint` (file roles, file body, visibility, dependency graph)
+4. TypeScript compilation
+5. Knip
+6. `@e18e/cli analyze`
+7. Architecture tests
+8. Unit tests and Serenity acceptance tests
+9. `pnpm audit`
+10. Snyk local CLI
 
 Snyk does not call `snyk monitor` and does not pass `--remote-repo-url`. The organization slug is `agentcourses`. If the Snyk CLI or credentials are missing, verify prints `Snyk: SKIPPED` and the reason, and continues. That skip is non-blocking for this first scaffold only. A successful authenticated `snyk test` still fails the gate when Snyk reports vulnerabilities.
 
@@ -57,7 +58,7 @@ Husky and lint-staged format staged files on commit. `pnpm run verify` and the G
 - `packages/cellix/*` are reusable Cellix packages, including `@cellix/api-core`.
 - `packages/axc/*` is the application layer.
 - `packages/axc-verification/acceptance-api` drives `GET /health` over HTTP against the `@apps/api` host and writes a Serenity HTML report under `packages/axc-verification/acceptance-api/target/site/serenity`.
-- `packages/axc-verification/archunit-tests` checks layering with `@cellix/archunit-tests`.
+- `packages/axc-verification/archunit-tests` checks layering and Cellix structure with `@cellix/archunit-tests`. `@cellix/lint` runs the same structure rules, plus file-body, visibility, and dependency-graph checks, from `pnpm run lint` and on commit. `@cellix/generator` writes a new feature slice into those rules.
 
 ## Local tools
 

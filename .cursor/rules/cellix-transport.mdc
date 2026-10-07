@@ -1,0 +1,16 @@
+---
+description: REST and GraphQL transport adapters over application services
+globs: packages/axc/rest/**/*.ts,packages/axc/graphql/**/*.ts,packages/axc/graphql/**/*.graphql
+alwaysApply: false
+---
+
+# Transport
+
+REST and GraphQL are adapters. They call `applicationServices` and return the result.
+
+- Do not import mongoose, persistence, service-mongoose, or data-source models
+- Do not call `withScopedTransaction`, repositories, or unit-of-work factories
+- GraphQL resolvers are `*.resolvers.ts` beside a same-stem `.graphql` file
+- A resolver default-exports one `Resolvers` object. Handlers are `async` and type context as `GraphContext`
+- Do not declare interfaces, types, classes, or named exports in a resolver file
+- Schema inputs end with `Input`. Mutation fields return a `MutationResult` type

@@ -1,0 +1,36 @@
+{
+	"name": "@cellix/lint",
+	"version": "1.0.0",
+	"description": "Portable Cellix structure, content, visibility, and dependency-graph lint",
+	"private": true,
+	"type": "module",
+	"files": [
+		"dist",
+		"biome-shared.json"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
+		},
+		"./biome": "./biome-shared.json"
+	},
+	"scripts": {
+		"lint": "biome lint",
+		"lint:cellix": "tsx src/cli.ts",
+		"prebuild": "biome lint",
+		"build": "tsgo --build",
+		"typecheck": "tsgo --noEmit",
+		"test": "vitest run",
+		"clean": "rimraf dist tsconfig.tsbuildinfo"
+	},
+	"devDependencies": {
+		"@cellix/config-typescript": "workspace:*",
+		"@cellix/config-vitest": "workspace:*",
+		"@types/node": "catalog:",
+		"rimraf": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	}
+}

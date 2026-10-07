@@ -1,0 +1,357 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+	"vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"attributePosition": "multiline",
+		"lineWidth": 230
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"complexity": {
+				"noAdjacentSpacesInRegex": "error",
+				"noExtraBooleanCast": "error",
+				"noStaticOnlyClass": "error",
+				"noUselessCatch": "error",
+				"noUselessConstructor": "error",
+				"noUselessEscapeInRegex": "error",
+				"noUselessTypeConstraint": "error"
+			},
+			"correctness": {
+				"noConstAssign": "error",
+				"noConstantCondition": "error",
+				"noEmptyCharacterClassInRegex": "error",
+				"noEmptyPattern": "error",
+				"noGlobalObjectCalls": "error",
+				"noInvalidBuiltinInstantiation": "error",
+				"noInvalidConstructorSuper": "error",
+				"noNonoctalDecimalEscape": "error",
+				"noPrecisionLoss": "error",
+				"noSelfAssign": "error",
+				"noSetterReturn": "error",
+				"noSwitchDeclarations": "error",
+				"noUndeclaredVariables": "error",
+				"noUnreachable": "error",
+				"noUnreachableSuper": "error",
+				"noUnsafeFinally": "error",
+				"noUnsafeOptionalChaining": "error",
+				"noUnusedLabels": "error",
+				"noUnusedPrivateClassMembers": "error",
+				"noUnusedVariables": "error",
+				"useIsNan": "error",
+				"useValidForDirection": "error",
+				"useValidTypeof": "error",
+				"useYield": "error"
+			},
+			"style": {
+				"noCommonJs": "error",
+				"noNamespace": "error",
+				"noNonNullAssertion": "error",
+				"useArrayLiterals": "error",
+				"useAsConstAssertion": "error",
+				"useLiteralEnumMembers": "error"
+			},
+			"suspicious": {
+				"noAsyncPromiseExecutor": "error",
+				"noCatchAssign": "error",
+				"noClassAssign": "error",
+				"noCompareNegZero": "error",
+				"noConfusingVoidType": "error",
+				"noControlCharactersInRegex": "error",
+				"noDebugger": "error",
+				"noDuplicateCase": "error",
+				"noDuplicateClassMembers": "error",
+				"noDuplicateElseIf": "error",
+				"noDuplicateObjectKeys": "error",
+				"noDuplicateParameters": "error",
+				"noEmptyBlockStatements": "error",
+				"noExplicitAny": "error",
+				"noExtraNonNullAssertion": "error",
+				"noFallthroughSwitchClause": "error",
+				"noFunctionAssign": "error",
+				"noGlobalAssign": "error",
+				"noImportAssign": "error",
+				"noIrregularWhitespace": "error",
+				"noMisleadingCharacterClass": "error",
+				"noMisleadingInstantiator": "error",
+				"noPrototypeBuiltins": "error",
+				"noRedeclare": "error",
+				"noShadowRestrictedNames": "error",
+				"noSparseArray": "error",
+				"noUnsafeDeclarationMerging": "error",
+				"noUnsafeNegation": "error",
+				"noWith": "error",
+				"useAwait": "error",
+				"useGetterReturn": "error",
+				"useNamespaceKeyword": "error"
+			}
+		},
+		"includes": [
+			"**/src/**",
+			"**/components/**",
+			"**/tests/**",
+			"**/docs/**",
+			"!*.config.*",
+			"!**/*.config.*",
+			"!**/node_modules/**",
+			"!**/dist/**",
+			"!**/*.d.ts",
+			"!**/package.json",
+			"!**/coverage/**",
+			"!**/generated.ts",
+			"!**/generated.tsx",
+			"!**/*.generated.ts",
+			"!**/*.generated.tsx",
+			"!**/*.generated.js",
+			"!**/*.generated.json",
+			"!**/graphql.schema.json",
+			"!**/App.css"
+		]
+	},
+	"javascript": { "formatter": { "quoteStyle": "single" }, "globals": [] },
+	"overrides": [
+		{
+			"includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+			"linter": {
+				"rules": {
+					"complexity": { "noArguments": "error" },
+					"correctness": {
+						"noConstAssign": "off",
+						"noGlobalObjectCalls": "off",
+						"noInvalidBuiltinInstantiation": "off",
+						"noInvalidConstructorSuper": "off",
+						"noSetterReturn": "off",
+						"noUndeclaredVariables": "off",
+						"noUnreachable": "off",
+						"noUnreachableSuper": "off"
+					},
+					"style": { "useConst": "error" },
+					"suspicious": {
+						"noClassAssign": "off",
+						"noDuplicateClassMembers": "off",
+						"noDuplicateObjectKeys": "off",
+						"noDuplicateParameters": "off",
+						"noFunctionAssign": "off",
+						"noImportAssign": "off",
+						"noRedeclare": "off",
+						"noUnsafeNegation": "off",
+						"noVar": "error",
+						"noWith": "off",
+						"useGetterReturn": "off"
+					}
+				}
+			}
+		},
+		{ "includes": ["**/src/**/*.ts"], "javascript": { "globals": [] } },
+		{
+			"includes": ["packages/cellix/domain-seedwork/**/*.ts"],
+			"linter": {
+				"rules": {
+					"performance": { "noBarrelFile": "error", "noReExportAll": "error" }
+				}
+			}
+		},
+		{
+			"includes": ["packages/ocom/persistence/**/*.ts", "packages/ocom/data-sources-mongoose-models/**/*.ts"],
+			"linter": {
+				"rules": {
+					"performance": { "noBarrelFile": "error", "noReExportAll": "error" }
+				}
+			}
+		},
+		{
+			"includes": ["packages/axc/domain/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"mongoose": "Domain code cannot import mongoose.",
+									"mongodb": "Domain code cannot import mongodb.",
+									"graphql": "Domain code cannot import GraphQL.",
+									"hono": "Domain code cannot import the transport framework.",
+									"@cellix/mongoose-seedwork": "Domain code cannot import mongoose seedwork."
+								},
+								"patterns": [
+									{
+										"group": [
+											"@azure/*",
+											"@axc/rest",
+											"@axc/rest/**",
+											"@axc/persistence",
+											"@axc/persistence/**",
+											"@axc/service-mongoose",
+											"@axc/service-mongoose/**",
+											"@axc/application-services",
+											"@axc/application-services/**",
+											"@axc/data-sources-mongoose-models",
+											"@axc/data-sources-mongoose-models/**",
+											"@axc/graphql",
+											"@axc/graphql/**"
+										],
+										"message": "Domain code cannot depend on infrastructure, persistence, application services, or transport."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["packages/axc/application-services/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"mongoose": "Application services cannot import mongoose.",
+									"mongodb": "Application services cannot import mongodb.",
+									"graphql": "Application services cannot import GraphQL.",
+									"hono": "Application services cannot import the transport framework.",
+									"@cellix/mongoose-seedwork": "Application services cannot import mongoose seedwork."
+								},
+								"patterns": [
+									{
+										"group": [
+											"@azure/*",
+											"@axc/rest",
+											"@axc/rest/**",
+											"@axc/service-mongoose",
+											"@axc/service-mongoose/**",
+											"@axc/data-sources-mongoose-models",
+											"@axc/data-sources-mongoose-models/**",
+											"@axc/graphql",
+											"@axc/graphql/**"
+										],
+										"message": "Application services depend on domain and persistence ports, not on mongoose, models, or transport."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["packages/axc/persistence/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"hono": "Persistence cannot import the transport framework.",
+									"graphql": "Persistence cannot import GraphQL."
+								},
+								"patterns": [
+									{
+										"group": ["@axc/application-services", "@axc/application-services/**", "@axc/graphql", "@axc/graphql/**", "@axc/rest", "@axc/rest/**"],
+										"message": "Persistence implements domain contracts. It cannot depend on application services or transport."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["packages/axc/data-sources-mongoose-models/**/*.ts", "packages/axc/service-mongoose/**/*.model.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"hono": "Mongoose models cannot import the transport framework.",
+									"graphql": "Mongoose models cannot import GraphQL."
+								},
+								"patterns": [
+									{
+										"group": [
+											"@axc/domain",
+											"@axc/domain/**",
+											"@axc/persistence",
+											"@axc/persistence/**",
+											"@axc/application-services",
+											"@axc/application-services/**",
+											"@axc/graphql",
+											"@axc/graphql/**",
+											"@axc/rest",
+											"@axc/rest/**"
+										],
+										"message": "Mongoose models are a schema package. They cannot import domain, persistence, application services, or transport."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["packages/axc/rest/**/*.ts", "packages/axc/graphql/**/*.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"mongoose": "Transport adapters cannot import mongoose.",
+									"mongodb": "Transport adapters cannot import mongodb.",
+									"@cellix/mongoose-seedwork": "Transport adapters cannot import mongoose seedwork."
+								},
+								"patterns": [
+									{
+										"group": ["@axc/persistence", "@axc/persistence/**", "@axc/service-mongoose", "@axc/service-mongoose/**", "@axc/data-sources-mongoose-models", "@axc/data-sources-mongoose-models/**"],
+										"message": "Transport adapters call application services. They cannot import persistence or mongoose models."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["packages/axc/service-mongoose/**/*.ts", "!packages/axc/service-mongoose/**/*.model.ts"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"hono": "Mongo infrastructure cannot import the transport framework.",
+									"graphql": "Mongo infrastructure cannot import GraphQL."
+								},
+								"patterns": [
+									{
+										"group": ["@axc/domain", "@axc/domain/**", "@axc/application-services", "@axc/application-services/**", "@axc/graphql", "@axc/graphql/**", "@axc/rest", "@axc/rest/**"],
+										"message": "service-mongoose is the Mongo runtime. Domain behavior stays in domain, persistence, and application services."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	],
+	"assist": {
+		"enabled": true,
+		"actions": { "source": { "organizeImports": "on" } }
+	}
+}

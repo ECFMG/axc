@@ -108,7 +108,7 @@ export async function checkApplicationServicesTransactionUsage(config: Pick<Appl
 		.adhereTo((file) => {
 			const fileName = file.path.split('/').pop() ?? '';
 
-			const isMutation = /^(create|update|delete)\.ts$/.test(fileName);
+			const isMutation = /^(create|update|delete)(?:-|\.ts$)/.test(fileName);
 			if (!isMutation) return true;
 
 			if (file.path.includes('.test.ts')) return true;
@@ -139,7 +139,7 @@ export async function checkApplicationServicesQueryPattern(config: Pick<Applicat
 		.adhereTo((file) => {
 			const fileName = file.path.split('/').pop() ?? '';
 
-			const isQuery = /^(query-|get-|find-)/.test(fileName);
+			const isQuery = /^(query|get|find)(?:-|\.ts$)/.test(fileName);
 			if (!isQuery) return true;
 			if (file.path.includes('.test.ts')) return true;
 
