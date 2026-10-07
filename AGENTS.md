@@ -6,7 +6,7 @@ These instructions apply to the entire repository. Preserve the user's task and 
 
 ## Harness Run Discipline
 
-For feature runs, follow the [run workflow](.agents/harness-run-workflow.md). The task's explicit write boundary takes precedence over convenience: dependency justification does not authorize a root lockfile edit. Identify required workspace dependency edges before implementation and resolve any necessary boundary exception before changing manifests or installing packages.
+For feature runs, follow the [run workflow](.agents/harness-run-workflow.md). A task clause that permits adding justified dependencies also permits the package manager to update the root lockfile for dependency declarations made in package manifests inside the allowed write boundary, unless the task explicitly prohibits lockfile changes. Keep the lockfile diff limited to the justified dependency changes and record the justification in the handoff. Identify required workspace dependency edges before implementation; obtain a boundary exception before changing any other root workspace file.
 
 Do not stage, commit, push, or bypass hooks unless the user requests that operation. A working patch is a deliverable; a failed security scan must remain visible in the handoff.
 
