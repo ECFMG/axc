@@ -43,7 +43,13 @@ catalog:
   vitest: 4.1.11
 
 auditConfig:
-  ignoreGhsas: []
+  ignoreGhsas:
+    # braces stack-exhaustion DoS. No upgrade path: the advisory asks for braces >=3.0.4 and
+    # 3.0.3 is the newest version ever published. braces is required by micromatch@4, which is a
+    # hard dependency of @docusaurus/utils, fast-glob (knip), http-proxy-middleware, and
+    # ts-scope-trimmer-plugin. Build-time tooling only; it does not reach the @apps/api bundle.
+    # Revisit when braces publishes a fix or micromatch drops it.
+    - GHSA-vfj7-8cjw-p6xm
 
 overrides:
   happy-dom: 20.10.1
@@ -56,6 +62,13 @@ overrides:
   vitest: 4.1.11
   '@vitest/browser-playwright': 4.1.11
   '@vitest/mocker': 4.1.11
+  # Audit remediation. Transitive dev/build tooling only; none of these reach the @apps/api bundle.
+  tinypool: 2.2.0
+  http-cache-semantics: 4.3.0
+  source-map-js: 1.2.2
+  smol-toml: 1.9.0
+  postcss-selector-parser: 7.1.6
+  ajv: 8.20.0
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch

@@ -1,5 +1,10 @@
+import type { CourseCatalogReadRepository } from '@axc/domain';
 import { describe, expect, it } from 'vitest';
 import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
+
+const emptyCourseCatalog: CourseCatalogReadRepository = {
+	search: () => Promise.resolve({ items: [], totalItems: 0 }),
+};
 
 describe('healthcheck', () => {
 	it('maps runtime environments', () => {
@@ -10,7 +15,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({ environment: 'test', courseCatalog: emptyCourseCatalog }).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
