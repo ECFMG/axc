@@ -362,6 +362,9 @@ importers:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../../packages/axc/application-services
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../../packages/axc/persistence
       '@axc/rest':
         specifier: workspace:*
         version: link:../../packages/axc/rest
@@ -502,6 +505,13 @@ importers:
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/application-services:
+    dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../persistence
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -540,6 +550,9 @@ importers:
 
   packages/axc/persistence:
     dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@cellix/domain-seedwork':
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
@@ -559,6 +572,12 @@ importers:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../application-services
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../persistence
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.0(patch_hash=69772ce521bf6df67d814ff4f419f19b5e966a41c4ce80b5938143ad628e5645)
@@ -578,6 +597,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.6.2)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/service-mongoose:
     dependencies:
