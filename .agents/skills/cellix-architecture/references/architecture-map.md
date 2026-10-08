@@ -53,11 +53,11 @@ Use the lightest applicable domain pattern. A read-only projection does not auto
 | Read repository interface and implementation | `packages/ocom/persistence/src/datasources/readonly/community/community/community.read-repository.ts` |
 | Read data source | `packages/ocom/persistence/src/datasources/readonly/community/community/community.data.ts` |
 
-Expected shape: application services depend on `DataSources` and the read repository interface defined in persistence. Concrete MongoDB, in-memory, or fixture-backed implementations remain replaceable behind those contracts. Use the matching `<context>/<entity>` directories and `*.read-repository.ts` suffix for read-side code. `*.data.ts` is appropriate when a separate data-source adapter is needed; do not add empty layers solely to mirror the reference.
+Expected shape: application services depend on `DataSources` and the read repository interface defined in persistence. Concrete MongoDB, in-memory, or fixture-backed implementations remain replaceable behind those contracts. Use the matching `<context>/<entity>` directories and `*.read-repository.ts` suffix for read-side code. Compose repositories through the applicable entity, context, and data-source `index.ts` files shown by the selected slice; do not centralize all concrete assembly in the root factory without a documented reason. `*.data.ts` is appropriate when a separate data-source adapter is needed; do not add empty layers solely to mirror the reference.
 
 ## Cross-Layer Naming Check
 
-For a chosen `Catalog` context and `Course` entity, verify that `Catalog` names the domain context, application-service context, and persistence read context, and that `Course` names the entity modules and `CourseReadRepo` binding. Inspect the analogous Cellix files before choosing exact files and exports. Check for missing applicable behavior, tests, and public types as well as matching names.
+For the chosen context and entity, verify that the same names appear in the domain context, application-service context, persistence context, entity modules, and data-source bindings. Inspect the analogous Cellix files before choosing exact files and exports. Check for missing applicable behavior, tests, and public types as well as matching names.
 
 ## Transport
 
@@ -66,7 +66,7 @@ For a chosen `Catalog` context and `Course` entity, verify that `Catalog` names 
 | Thin REST handler | `packages/ocom/rest/src/index.ts` |
 | Feature-oriented transport handlers | `packages/ocom/graphql-handler/src/features/**` |
 
-AgentCourses uses Hono, so copy responsibilities rather than GraphQL syntax: keep request parsing, validation, and response mapping in a transport feature module, and delegate application behavior to application services.
+This project uses Hono, so copy responsibilities rather than GraphQL syntax: keep request parsing, validation, and response mapping in a transport feature module, and delegate application behavior to application services. Treat application services as the production transport boundary. Do not import persistence contracts into transport; prefer application-service public contracts or transport-local request types. Use a domain contract directly only when the selected Cellix transport slice establishes that dependency.
 
 ## Architecture Verification
 
@@ -79,3 +79,5 @@ AgentCourses uses Hono, so copy responsibilities rather than GraphQL syntax: kee
 | Persistence conventions | `packages/cellix/archunit-tests/src/checks/persistence-conventions.ts` |
 
 Reuse exported checks from `@cellix/archunit-tests` where possible. Add application-specific tests only for boundaries not expressed by the reusable Cellix suite.
+
+For behavior verification, place focused tests beside the layer that owns each rule or adapter contract and add composed public-path coverage. When a task specifies an error contract, assert its status and code together. For custom adapters, test only the reference semantics relevant to the feature and risk rather than duplicating implementation details.
