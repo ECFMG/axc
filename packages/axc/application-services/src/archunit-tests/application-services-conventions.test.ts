@@ -5,8 +5,8 @@ import {
 import { type ApplicationServicesConventionTestsConfig, describeApplicationServicesConventionTests } from '@cellix/archunit-tests/application-services';
 
 const cellixConfig: ApplicationServicesConventionTestsConfig = {
-	applicationServicesGlob: '**/src/contexts/**',
-	applicationServicesAllGlob: '**/src/**',
+	applicationServicesGlob: 'src/contexts/**',
+	applicationServicesAllGlob: 'src/**',
 };
 
 const axcConfig: AxcApplicationServicesConventionTestsConfig = {

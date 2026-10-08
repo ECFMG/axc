@@ -2,7 +2,7 @@ import { type DomainConventionTestsConfig as AxcDomainConventionTestsConfig, des
 import { type DomainConventionTestsConfig, describeDomainConventionTests } from '@cellix/archunit-tests/domain';
 
 const cellixConfig: DomainConventionTestsConfig = {
-	domainContextsGlob: '**/src/domain/contexts/**',
+	domainContextsGlob: 'src/domain/contexts/**',
 };
 
 const axcConfig: AxcDomainConventionTestsConfig = {
