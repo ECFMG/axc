@@ -27,5 +27,5 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Elapsed Time | 8m 25s (2026-10-08 20:00:18–20:08:43 EDT) |
 | Number of Human Interventions / Redirects | 0 during the run (single prompt, no redirects) |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
+| Final Rubric Score | 84 / 100 (self-scored per SRD Appendix 1). Functional Correctness 5/5 (20); Test and Validation 4/5 (12): thorough tests all pass, but stale `pnpm-lock.yaml` breaks frozen-lockfile install/CI; Architecture 3/5 (9): correct domain → persistence → application-services → rest → api layering, but endpoint tests placed in `archunit-tests` with its vitest config narrowed, no colocated unit tests in `rest`/`application-services`, enum lists duplicated in REST instead of reusing domain constants, Cellix `DomainRepository` seedwork unused; Security and Guardrails 5/5 (15): boundary respected, no new dependencies or findings, strict input validation; Harness Engineering 3/5 (6): baseline neutral; Context/Token/Cost 5/5 (10): ~$0.44, 1.32M tokens; Developer Workflow Fit 4/5 (8): 0 interventions, 8m 25s, lockfile left for operator; Operational/Vendor Readiness 4/5 (4): ChatGPT Business with admin/SSO path, not production-approved. |
 | Recommendation | Continue |
