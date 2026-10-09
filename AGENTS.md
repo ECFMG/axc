@@ -12,7 +12,7 @@ General conventions for working in this repository.
 - Before adding new abstractions, look for existing ones in `packages/cellix` and `packages/axc/domain` (e.g. repository contracts, seedwork) and build on them.
 - Each concept has one source of truth. Import shared types and constants from the layer that owns them rather than redefining them.
 - HTTP concerns (request parsing, status codes, response/error bodies) belong in `rest`. Application services take typed inputs.
-- Keep `index.ts` files as export barrels; put implementations and data in their own modules.
+- Put new implementations and data in their own modules and export them from `index.ts`. Do not move existing code out of `index.ts` unless the task requires it.
 
 ## Tests
 - Unit tests live next to the code they test, in the same package (`src/*.test.ts`). Follow the setup of packages that already have tests.
@@ -22,7 +22,7 @@ General conventions for working in this repository.
 
 ## Dependencies
 - If you change any `package.json`, update `pnpm-lock.yaml` so `pnpm install --frozen-lockfile` succeeds. The lockfile update is always part of a dependency change, even when a task lists specific files to edit; you do not need to ask.
-- For `workspace:*` or already-installed packages, use `pnpm install --offline` first; it needs no network access.
+- For `workspace:*` or already-installed packages, use `pnpm install --offline` first; it needs no network access. `pnpm install --offline --frozen-lockfile` also works inside the sandbox.
 - The lockfile diff should contain only entries for the dependencies you changed.
 
 ## Sandbox and verification
@@ -30,10 +30,18 @@ General conventions for working in this repository.
 - While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`.
 - Run verification once, at the end, as a single command: `pnpm run verify; pnpm run snyk`. Everything must pass except the known `pnpm audit` advisories that already exist on `main` (2 critical, 3 high, 3 moderate). Do not re-audit the base branch to confirm them.
 
+## Token efficiency
+Every command's output stays in context for the rest of the session, so keep it small.
+- Read only what you need: locate with `rg -n` / `rg --files`, then read targeted ranges (`sed -n 'a,bp'`). Do not cat whole directories or large files.
+- Do not re-read files you just wrote or edited.
+- Show only check summaries: pipe lint/typecheck/build/test/verify output through `tail -n 30` (or `rg` for failures). Expand only when something fails.
+- Inspect lockfile changes with `git diff --stat pnpm-lock.yaml` or a targeted `rg`, not the full diff.
+- Batch independent reads and checks into one tool call. Keep progress messages to one line and the final summary short.
+
 ## Adversarial review
 Before final verification, get an independent review of your change. Use a sub-agent, not self-review.
 - Spawn the reviewer with `fork_turns: "none"`, `model: "gpt-6.1-sol"`, `reasoning_effort: "medium"`. Give it the original task instructions verbatim, the paths of any spec files they reference, and the base commit. Do not include your own reasoning or summary of the change.
-- The reviewer's brief: find defects in the uncommitted change (`git diff <base>` plus untracked files) against the task instructions, the spec, and this file. Look for unmet or misread requirements, incorrect edge-case behaviour, missing or weak tests, layering and single-source-of-truth violations, and out-of-scope changes. Report each finding with severity (blocker / major / minor), file and line, and evidence. Do not edit files or run commands that need network. Say "no blocking findings" if there are none.
+- The reviewer's brief: find defects in the uncommitted change (`git diff <base>` plus untracked files) against the task instructions, the spec, and this file. Look for unmet or misread requirements, incorrect edge-case behaviour, missing or weak tests, layering and single-source-of-truth violations, and out-of-scope changes. Report each finding with severity (blocker / major / minor), file and line, and evidence. Do not edit files or run commands that need network. Say "no blocking findings" if there are none. Follow the Token efficiency rules; keep the report terse.
 - Fix blocker and major findings that are within the task's scope. Ignore style preferences and suggestions that would expand scope. If you reject a finding, record why.
 - After fixing, spawn a fresh reviewer with the same brief. Stop when a review returns no blocker or major findings, or after 3 review rounds.
 - In your final summary, list each round's findings and how you resolved them.
