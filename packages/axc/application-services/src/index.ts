@@ -1,3 +1,6 @@
+import type { DataSources } from '@axc/persistence';
+import { Catalog, type CatalogContextApplicationService } from './contexts/catalog/index.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -13,12 +16,14 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	dataSources: DataSources;
 }
 
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	Catalog: CatalogContextApplicationService;
 }
 
 export interface ApplicationServicesFactory {
@@ -49,7 +54,11 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			Catalog: Catalog(context.dataSources),
 		});
 
 	return { forRequest };
 }
+
+export type { CatalogContextApplicationService, CourseApplicationService, CourseSearchQuery, CourseSearchResult, QueryParameterErrorDetail } from './contexts/catalog/index.ts';
+export { InvalidQueryParameterError } from './contexts/catalog/index.ts';
