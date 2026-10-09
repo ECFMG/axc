@@ -20,17 +20,22 @@
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
-		"clean": "rimraf dist tsconfig.tsbuildinfo"
+		"clean": "rimraf dist tsconfig.tsbuildinfo",
+		"test": "vitest run --silent --reporter=dot"
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
+		"@axc/domain": "workspace:*",
 		"@azure/functions": "catalog:",
 		"@marplex/hono-azurefunc-adapter": "1.0.1",
 		"hono": "catalog:"
 	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",
+		"@cellix/config-vitest": "workspace:*",
+		"@vitest/coverage-istanbul": "catalog:",
 		"rimraf": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
