@@ -23,7 +23,8 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
-		"@cellix/domain-seedwork": "workspace:*"
+		"@cellix/domain-seedwork": "workspace:*",
+		"@axc/domain": "workspace:*"
 	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",
