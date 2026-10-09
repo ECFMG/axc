@@ -61,6 +61,8 @@ Do not report completion until:
 - production transport does not depend on persistence contracts, and any direct domain dependency is justified by the reference;
 - required feature behavior and files have been implemented or their omission justified;
 - required tests and documentation are complete against the task evidence matrix;
+- focused tests cover rules at their owning layer; composed HTTP tests do not substitute for domain transition tests, application-service invariant tests, or applicable custom-adapter commit, rollback, isolation/serialization, and defensive-copy tests;
 - no available Cellix capability has been unnecessarily recreated;
 - all deviations are documented;
-- the verification commands in `AGENTS.md` have been run or any blocked command has been reported accurately.
+- `pnpm run verify` has passed, or an external security scan is accurately reported as unavailable after every non-external stage passes;
+- Biome and Knip have no patch-introduced findings, including formatting, import-order, unused-export, and unused-type findings.

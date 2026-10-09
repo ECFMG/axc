@@ -39,6 +39,7 @@ Before writing code:
 - Keep `packages/axc/rest/src/index.ts` focused on application construction and feature registration. Put non-health routes, transport validation, and error mapping in feature modules.
 - Treat application services as the feature boundary for production transport code. Transport must not import persistence contracts or access persistence or infrastructure directly. Prefer application-service public contracts or transport-local input types over direct domain imports; use a direct domain contract only when the closest Cellix transport pattern requires it and record that decision.
 - Test business rules at the layer that owns them, then test the composed public path. When an adapter replaces a Cellix implementation, test the reference semantics it promises, such as commit, rollback, isolation, serialization, or cloning, as applicable. Keep test depth proportional to the behavior and risk.
+- Composed HTTP tests do not replace focused tests for domain transition rules, application-service invariants, or custom unit-of-work and repository semantics. For an in-memory transactional adapter, directly test successful commit, rollback after an exception, concurrent serialization or isolation, and defensive copying when those behaviors are implemented.
 - When a task requires API documentation, cover every affected endpoint's request, successful response, status code, and specified error cases. Examples may be concise but must make the contract reviewable.
 - Reuse existing Cellix packages and patterns. Do not create a project-specific replacement for an available Cellix capability.
 - Do not modify vendored `packages/cellix/**` code for an application feature. Port upstream Cellix changes exactly when that work is explicitly requested.
@@ -50,15 +51,14 @@ Before reporting completion:
 
 1. Perform the review in `.agents/skills/cellix-architecture/references/review-template.md`.
 2. Compare the implemented tree with the planned Cellix map, including composition files, suffixes, exports, service interfaces, test companions, and behavior. Resolve unexplained differences.
-3. Run the relevant focused tests, followed by:
+3. Run the relevant focused tests, followed by the repository verification gate:
 
    ```bash
-   pnpm run lint
-   pnpm run typecheck
-   pnpm run build
-   pnpm run test:arch
-   pnpm run test
+   pnpm run verify
    ```
 
-4. Review tracked, staged, and untracked changes against the task boundary and the initial worktree snapshot. Treat an unavailable security scan as unavailable, not as a pass.
-5. Follow the task's explicit reporting requirements.
+   Do not replace `pnpm run verify` with a smaller set of commands. It includes script-policy and Biome checks, typecheck, build, Knip, dependency-efficiency analysis, architecture tests, the full test suite, dependency audit, and Snyk. Resolve every finding introduced by the patch. A failed Knip or Biome check is a completion blocker, including unused exports and formatting or import-order findings.
+
+4. If `pnpm run verify` stops because a security service or registry is unavailable, rerun the unchanged failing security command with the required network permission. If it remains unavailable, run any verification stages that did not execute, report the exact unavailable scan, and do not describe it as a pass. Product-code, architecture, formatting, Knip, or test failures are not external limitations and must be fixed before completion.
+5. Review tracked, staged, and untracked changes against the task boundary and the initial worktree snapshot. Treat an unavailable security scan as unavailable, not as a pass.
+6. Follow the task's explicit reporting requirements.
