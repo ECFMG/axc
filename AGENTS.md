@@ -2,6 +2,10 @@
 
 General conventions for working in this repository.
 
+## Scope
+- Change only what the task requires. Do not modify, remove, or reformat unrelated code, exports, or configuration.
+- Do not add new config files unless the change cannot work without them.
+
 ## Architecture
 - This repo follows CellixJS layering: `packages/axc/domain` → `persistence` / `service-mongoose` → `application-services` → `rest` → `apps/api` (composition root). Dependencies point inward only.
 - `packages/cellix/**` is vendored from CellixJS/cellixjs. Never modify it.
@@ -15,7 +19,11 @@ General conventions for working in this repository.
 - Do not weaken or narrow existing test configs to make tests pass.
 
 ## Dependencies
-- If you change any `package.json`, run `pnpm install` so `pnpm-lock.yaml` stays in sync. `pnpm install --frozen-lockfile` must succeed.
+- If you change any `package.json`, update `pnpm-lock.yaml` so `pnpm install --frozen-lockfile` succeeds.
+- For `workspace:*` or already-installed packages, use `pnpm install --offline` first; it needs no network access.
+- The lockfile diff should contain only entries for the dependencies you changed.
 
-## Before finishing
-- Run `pnpm run verify`. Everything must pass except `pnpm audit` / `snyk` findings that already exist on the base branch.
+## Sandbox and verification
+- The sandbox has no network access. Commands that need it (`pnpm run verify`, `pnpm audit`, `pnpm run snyk`) require approval, so batch them.
+- While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`.
+- Run `pnpm run verify` once, at the end. Everything must pass except the known `pnpm audit` advisories that already exist on `main` (2 critical, 3 high, 3 moderate). Do not re-audit the base branch to confirm them.
