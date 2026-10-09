@@ -5,7 +5,7 @@ export default mergeConfig(
 	archConfig,
 	defineConfig({
 		test: {
-			include: ['src/**/*.test.ts'],
+			include: ['src/dependency-rules.test.ts'],
 		},
 	}),
 );
