@@ -4,7 +4,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Field                                     | Value                                                       |
 |-------------------------------------------|-------------------------------------------------------------|
 | Team                                      | Anthropic                                                   |
-| Developer / Operator                      | esb                                                         |
+| Developer / Operator                      | Ethan Burr                                                          |
 | Reviewer                                  | (leave blank for now)                                       |
 | Harness                                   | Claude Code                                                 |
 | Model                                     | claude-opus-5                                               |
