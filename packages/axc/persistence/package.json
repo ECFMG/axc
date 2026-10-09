@@ -23,7 +23,13 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
-		"@cellix/domain-seedwork": "workspace:*"
+		"@axc/data-sources-mongoose-models": "workspace:*",
+		"@axc/domain": "workspace:*",
+		"@axc/service-mongoose": "workspace:*",
+		"@cellix/domain-seedwork": "workspace:*",
+		"@cellix/event-bus-seedwork-node": "workspace:*",
+		"@cellix/mongoose-seedwork": "workspace:*",
+		"mongoose": "catalog:"
 	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",

@@ -302,6 +302,10 @@ importers:
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/application-services:
+    dependencies:
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../persistence
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -322,11 +326,33 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.6.2)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
+  packages/axc/data-sources-mongoose-models:
+    dependencies:
+      '@cellix/mongoose-seedwork':
+        specifier: workspace:*
+        version: link:../../cellix/mongoose-seedwork
+      mongoose:
+        specifier: 'catalog:'
+        version: 8.24.1
+    devDependencies:
+      '@cellix/config-typescript':
+        specifier: workspace:*
+        version: link:../../cellix/config-typescript
+      rimraf:
+        specifier: 'catalog:'
+        version: 6.0.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
+
   packages/axc/domain:
     dependencies:
       '@cellix/domain-seedwork':
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
+      '@lucaspaganini/value-objects':
+        specifier: ^1.3.1
+        version: 1.3.1
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -340,9 +366,27 @@ importers:
 
   packages/axc/persistence:
     dependencies:
+      '@axc/data-sources-mongoose-models':
+        specifier: workspace:*
+        version: link:../data-sources-mongoose-models
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@axc/service-mongoose':
+        specifier: workspace:*
+        version: link:../service-mongoose
       '@cellix/domain-seedwork':
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
+      '@cellix/event-bus-seedwork-node':
+        specifier: workspace:*
+        version: link:../../cellix/event-bus-seedwork-node
+      '@cellix/mongoose-seedwork':
+        specifier: workspace:*
+        version: link:../../cellix/mongoose-seedwork
+      mongoose:
+        specifier: 'catalog:'
+        version: 8.24.1
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -378,6 +422,9 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.6.2)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/service-mongoose:
     dependencies:
@@ -389,7 +436,7 @@ importers:
         version: 10.1.4(supports-color@8.1.1)
       mongoose:
         specifier: 'catalog:'
-        version: 8.24.1(supports-color@8.1.1)
+        version: 8.24.1
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -663,7 +710,7 @@ importers:
         version: 10.4.3(supports-color@8.1.1)
       mongoose:
         specifier: 'catalog:'
-        version: 8.24.1(supports-color@8.1.1)
+        version: 8.24.1
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
@@ -751,7 +798,7 @@ importers:
         version: 10.4.3
       mongoose:
         specifier: 'catalog:'
-        version: 8.24.1(supports-color@8.1.1)
+        version: 8.24.1
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -2544,6 +2591,9 @@ packages:
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
+
+  '@lucaspaganini/value-objects@1.3.1':
+    resolution: {integrity: sha512-OLOJ74WsBtFQS3sssjnGPacavczs1UcmcUlpAOFEhJppLIWldC9nNUeJ+ERRVAMAJxRZQdIwioAl+mZSJg4vWg==}
 
   '@marplex/hono-azurefunc-adapter@1.0.1':
     resolution: {integrity: sha512-2hW13KsHj7SYLJ7sjfkenPVLmJZrDnHwhTmN+1KtS8nou7MhSqNNdnd3eIMSA7O6rk7d+tupWGso0Tz69nIbnw==}
@@ -11360,6 +11410,8 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
+  '@lucaspaganini/value-objects@1.3.1': {}
+
   '@marplex/hono-azurefunc-adapter@1.0.1': {}
 
   '@mdx-js/mdx@3.1.1':
@@ -15446,7 +15498,7 @@ snapshots:
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3)
       https-proxy-agent: 7.0.6(supports-color@8.1.1)
-      mongodb: 6.18.0
+      mongodb: 6.21.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
       tar-stream: 3.2.1
@@ -15473,7 +15525,7 @@ snapshots:
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
       https-proxy-agent: 7.0.6(supports-color@8.1.1)
-      mongodb: 6.18.0
+      mongodb: 6.21.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
       tar-stream: 3.2.1
@@ -15544,13 +15596,13 @@ snapshots:
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
 
-  mongoose@8.24.1(supports-color@8.1.1):
+  mongoose@8.24.1:
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
       mongodb: 6.20.0
       mpath: 0.9.0
-      mquery: 5.0.0(supports-color@8.1.1)
+      mquery: 5.0.0
       ms: 2.1.3
       sift: 17.1.3
     transitivePeerDependencies:
@@ -15565,7 +15617,7 @@ snapshots:
 
   mpath@0.9.0: {}
 
-  mquery@5.0.0(supports-color@8.1.1):
+  mquery@5.0.0:
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:

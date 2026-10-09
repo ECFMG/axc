@@ -1,0 +1,32 @@
+{
+	"name": "@axc/data-sources-mongoose-models",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/models/course/course.model.d.ts",
+			"default": "./dist/models/course/course.model.js"
+		}
+	},
+	"scripts": {
+		"lint": "biome lint",
+		"format": "biome format --write",
+		"format:check": "biome format .",
+		"prebuild": "pnpm run lint",
+		"build": "tsgo --declaration --sourceMap --module nodenext --moduleResolution nodenext --target ES2022 --lib ES2023 --types node --rootDir src --outDir dist --strict --exactOptionalPropertyTypes --noUncheckedIndexedAccess --noImplicitOverride --noImplicitReturns --noPropertyAccessFromIndexSignature --noUnusedLocals --noUnusedParameters --verbatimModuleSyntax --erasableSyntaxOnly --allowImportingTsExtensions --rewriteRelativeImportExtensions --noUncheckedSideEffectImports src/models/course/course.model.ts src/models/course/course.seed.ts",
+		"clean": "rimraf dist tsconfig.tsbuildinfo"
+	},
+	"dependencies": {
+		"@cellix/mongoose-seedwork": "workspace:*",
+		"mongoose": "catalog:"
+	},
+	"devDependencies": {
+		"@cellix/config-typescript": "workspace:*",
+		"rimraf": "catalog:",
+		"typescript": "catalog:"
+	}
+}

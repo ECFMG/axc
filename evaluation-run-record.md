@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
+| Team |Cursor|
+| Developer / Operator | Jason Morais |
 | Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Harness | Cursor |
+| Model | Grok 4.7 (High) |
+| License / Plan |Cursor Teams Premium|
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
+| Task Set | A |
 | Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
+| Harness Engineering Used | Generator Pattern, Custom Linting, Cursor Hooks, Skills and MD Files |
+| Config / Diff Notes | Added two new packages primarily, one for generator, one for lint |
+| Branch / Commit | jjm-cur-1-a-out |
 | Requirements Completed / Attempted | |
 | Acceptance Criteria Passed / Total | |
 | Tests Passed / Failed | |
 | Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Input Tokens |Doesn't Detail|
+| Cached Tokens |Doesn't Detail|
+| Output Tokens |Doesn't Detail|
+| Total Tokens or Credits Used | 15.6 million |
+| Estimated Cost | 15.6 million tokens |
+| Elapsed Time | 41m |
+| Number of Human Interventions / Redirects |0|
 | Reviewer Notes | (leave blank for now) |
 | Final Rubric Score | (leave blank for now) |
 | Recommendation | Continue / Remediate / Stop / Candidate for Pilot |

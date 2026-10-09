@@ -19,6 +19,7 @@
 		"prebuild": "pnpm run lint",
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
+		"test": "vitest run --silent --reporter=dot --testTimeout=120000 --hookTimeout=120000",
 		"watch": "tsgo --watch",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
@@ -31,6 +32,7 @@
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",
 		"rimraf": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
