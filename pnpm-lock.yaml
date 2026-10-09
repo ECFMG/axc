@@ -358,6 +358,9 @@ importers:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../../packages/axc/application-services
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../../packages/axc/persistence
       '@axc/rest':
         specifier: workspace:*
         version: link:../../packages/axc/rest
@@ -449,7 +452,7 @@ importers:
         version: 3.46.0(@cucumber/cucumber@12.8.1)
       '@serenity-js/rest':
         specifier: 'catalog:'
-        version: 3.46.0
+        version: 3.46.0(supports-color@8.1.1)
       '@serenity-js/serenity-bdd':
         specifier: 'catalog:'
         version: 3.46.0
@@ -498,6 +501,10 @@ importers:
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/application-services:
+    dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -536,6 +543,9 @@ importers:
 
   packages/axc/persistence:
     dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@cellix/domain-seedwork':
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
@@ -555,6 +565,9 @@ importers:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../application-services
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.0(patch_hash=69772ce521bf6df67d814ff4f419f19b5e966a41c4ce80b5938143ad628e5645)
@@ -565,15 +578,30 @@ importers:
         specifier: 4.13.10
         version: 4.13.10
     devDependencies:
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../persistence
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
+      '@cellix/config-vitest':
+        specifier: workspace:*
+        version: link:../../cellix/config-vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.1.11(vitest@4.1.11)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/service-mongoose:
     dependencies:
@@ -12097,13 +12125,13 @@ snapshots:
     optionalDependencies:
       '@cucumber/cucumber': 12.8.1
 
-  '@serenity-js/rest@3.46.0':
+  '@serenity-js/rest@3.46.0(supports-color@8.1.1)':
     dependencies:
       '@serenity-js/core': 3.46.0
       agent-base: 7.1.4
-      axios: 1.20.0
-      http-proxy-agent: 7.0.2
-      https-proxy-agent: 7.0.6
+      axios: 1.20.0(supports-color@8.1.1)
+      http-proxy-agent: 7.0.2(supports-color@8.1.1)
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       lru-cache: 11.5.2
       tiny-types: 2.0.5
     transitivePeerDependencies:
@@ -12114,9 +12142,9 @@ snapshots:
     dependencies:
       '@serenity-js/assertions': 3.46.0
       '@serenity-js/core': 3.46.0
-      '@serenity-js/rest': 3.46.0
+      '@serenity-js/rest': 3.46.0(supports-color@8.1.1)
       ansi-regex: 5.0.1
-      axios: 1.20.0
+      axios: 1.20.0(supports-color@8.1.1)
       chalk: 4.1.2
       find-java-home: 2.0.0
       progress: 2.0.3
@@ -12830,7 +12858,7 @@ snapshots:
 
   address@2.0.3: {}
 
-  agent-base@6.0.2:
+  agent-base@6.0.2(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -12997,11 +13025,11 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.20.0:
+  axios@1.20.0(supports-color@8.1.1):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
       form-data: 4.0.6
-      https-proxy-agent: 5.0.1
+      https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
@@ -14554,7 +14582,7 @@ snapshots:
 
   http-parser-js@0.5.10: {}
 
-  http-proxy-agent@7.0.2:
+  http-proxy-agent@7.0.2(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -14586,14 +14614,14 @@ snapshots:
       quick-lru: 5.1.1
       resolve-alpn: 1.2.1
 
-  https-proxy-agent@5.0.1:
+  https-proxy-agent@5.0.1(supports-color@8.1.1):
     dependencies:
-      agent-base: 6.0.2
+      agent-base: 6.0.2(supports-color@8.1.1)
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.6:
+  https-proxy-agent@7.0.6(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -15652,7 +15680,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       mongodb: 6.21.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
@@ -15679,7 +15707,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3)
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       mongodb: 6.18.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
@@ -15706,7 +15734,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       mongodb: 6.18.0
       new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5

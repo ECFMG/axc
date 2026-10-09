@@ -1,3 +1,5 @@
+import type { CourseRepository } from '@axc/domain';
+import { createCourseService } from './courses.ts';
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -16,6 +18,7 @@ export interface ApiContext {
 }
 
 export interface ApplicationServices {
+	courses: ReturnType<typeof createCourseService>;
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -35,9 +38,10 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 	return 'local';
 }
 
-export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+export function buildApplicationServicesFactory(context: ApiContext, courseRepository: CourseRepository): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			courses: createCourseService(courseRepository),
 			health: {
 				getStatus(): HealthStatus {
 					return {
