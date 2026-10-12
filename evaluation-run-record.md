@@ -10,7 +10,7 @@ This record describes the original measured baseline at commit `5c3b8dc105bb8b3d
 | Developer / Operator | Dane Fortun |
 | Reviewer |  |
 | Harness | OpenAI harness v7.12; exact archive and frozen execution sources preserved |
-| Model | gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0 |
+| Model | OpenAI GPT-6.1 Sol High |
 | License / Plan | Not recorded for the local inference run |
 | Codebase | ECFMG/axc |
 | Task Set | A |
