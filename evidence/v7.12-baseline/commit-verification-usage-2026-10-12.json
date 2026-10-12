@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "record_updated_at": "2026-10-12T14:59:51.794970+00:00",
+  "record_updated_at": "2026-10-12T15:59:20.576850+00:00",
   "scope": "Current active commit-verification task: inspection, planning, evidence verification, accounting correction, Git operations, validation and reporting. Excludes prior tasks, imported Ollama runs, and future follow-up conversations. Interrupted startup attempt is listed as unmeasured.",
   "measurement": {
     "session_id": "01a1309b-d549-7233-a387-6da82ea6a0c3",
@@ -17,16 +17,19 @@
       "total_tokens": 0
     },
     "ending_cumulative_counters": {
-      "input_tokens": 837180,
-      "cached_input_tokens": 787072,
-      "output_tokens": 7353,
-      "reasoning_output_tokens": 1046,
-      "total_tokens": 844533
+      "input_tokens": 1185721,
+      "cached_input_tokens": 1130368,
+      "output_tokens": 9365,
+      "reasoning_output_tokens": 1536,
+      "total_tokens": 1195086
     },
-    "recorded_through": "2026-10-12T14:59:31.858Z",
-    "method": "Ending cumulative counters minus starting cumulative counters; snapshots are not summed.",
-    "final_response_accounted": false,
-    "follow_up_usage_excluded": true
+    "recorded_through": "2026-10-12T15:00:55.238Z",
+    "method": "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed",
+    "final_response_accounted": true,
+    "follow_up_usage_excluded": true,
+    "starting_counter_timestamp": "2026-10-12T14:55:29.142Z",
+    "starting_counter_basis": "Fresh session boundary; no pre-task counters, reconstructed zero",
+    "task_completed_at": "2026-10-12T15:00:55.242Z"
   },
   "projected_estimate": {
     "codex_total_tokens_range": [
@@ -39,13 +42,13 @@
   "providers": {
     "codex": {
       "recorded": {
-        "input_tokens": 837180,
-        "cached_input_tokens": 787072,
-        "output_tokens": 7353,
-        "reasoning_output_tokens": 1046,
-        "total_tokens": 844533
+        "input_tokens": 1185721,
+        "cached_input_tokens": 1130368,
+        "output_tokens": 9365,
+        "reasoning_output_tokens": 1536,
+        "total_tokens": 1195086
       },
-      "complete": false,
+      "complete": true,
       "cached_input_is_subset_of_input": true,
       "reasoning_output_is_subset_of_output": true
     },
@@ -65,12 +68,11 @@
     "used": false,
     "recorded_total_tokens": 0
   },
-  "combined_recorded_total_tokens": 844533,
+  "combined_recorded_total_tokens": 1195086,
   "combined_total_label": "Sum across providers for the measured active task; not a monetary cost. Imported runs and unmeasured startup excluded.",
-  "completeness_status": "incomplete_final_response_pending_and_startup_unmeasured",
+  "completeness_status": "incomplete_startup_unmeasured",
   "missing_usage": [
-    "Interrupted startup turn 01a1309c-0de1-7f80-8813-d27bc9fe2998 at 2026-10-12T14:54:55.975Z has token_count info=null and no recorded cumulative counters; any Codex generation in that turn is unmeasured.",
-    "Final assistant response and continuations after the latest cumulative snapshot are pending."
+    "Interrupted startup turn 01a1309c-0de1-7f80-8813-d27bc9fe2998 at 2026-10-12T14:54:55.975Z has token_count info=null and no recorded cumulative counters; any Codex generation in that turn is unmeasured."
   ],
   "imported_baseline_usage_excluded_from_current_task": {
     "calls": 19,
@@ -83,5 +85,5 @@
     "complete_input_output_totals": true,
     "missing_breakdowns": "Ollama provides no separate cached-input or reasoning-output counters here."
   },
-  "recovery": "Run work/update_usage.py on the next user message before answering. It recovers only the original active turn, includes its final response, and excludes all follow-up usage. The interrupted startup remains unmeasured unless its missing counters become available."
+  "recovery": "Original final response recovered through task_complete. Later turns and this recovery task excluded."
 }

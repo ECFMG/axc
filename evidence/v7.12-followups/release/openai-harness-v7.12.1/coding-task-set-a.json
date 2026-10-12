@@ -1,0 +1,440 @@
+{
+  "id": "TS-A-CATALOG-SEARCH",
+  "spec": "task-set-a-requirements.md",
+  "allowed_paths": [
+    "apps/api/",
+    "packages/axc/rest/",
+    "packages/axc/application-services/",
+    "packages/axc/domain/",
+    "packages/axc/persistence/",
+    "packages/axc/service-mongoose/",
+    "packages/axc-verification/",
+    "apps/docs/"
+  ],
+  "protected_paths": [
+    "apps/api/host.json",
+    "apps/api/src/service-config/",
+    "apps/api/scripts/sync-local-settings.ts",
+    "apps/api/scripts/start-host.ts",
+    "apps/api/rolldown.config.ts"
+  ],
+  "checks": [
+    [
+      "pnpm",
+      "test",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    [
+      "pnpm",
+      "run",
+      "build",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "typecheck",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "test:arch",
+      "--env-mode=loose"
+    ],
+    [
+      "node",
+      "{verification_dir}/course_acceptance.mjs"
+    ],
+    [
+      "node",
+      "{verification_dir}/course_acceptance.mjs",
+      "--host"
+    ],
+    [
+      "python3",
+      "{verification_dir}/task_a_gates.py",
+      "--repo",
+      ".",
+      "--base",
+      "{base_commit}",
+      "--out",
+      "{validation_dir}/submitted"
+    ]
+  ],
+  "settings": {
+    "model": "gemma4:26b",
+    "temperature": 0,
+    "context_tokens": 98304,
+    "max_output_tokens": 4000,
+    "max_calls": 40,
+    "token_budget": 300000,
+    "timeout_seconds": 900,
+    "cache": "verified model unload before every generation",
+    "mode": "local only; hosted cost unmeasured"
+  },
+  "check_timeout": 900,
+  "prompt_file": "task-set-a-prompt.md",
+  "verification_files": [
+    "course_acceptance.mjs",
+    "task_a_gates.py",
+    "node_test_reporter.mjs"
+  ],
+  "agent_command": [
+    "python3",
+    "-B",
+    "{harness_dir}/coding_agent.py",
+    "--variant",
+    "relevant_context"
+  ],
+  "agent_timeout": 5400,
+  "version": "v7.12.1",
+  "implementation_steps": [
+    {
+      "path": "packages/axc/domain/src/course.ts",
+      "instruction": "Define the Course contract, modality/status constants and repository interface in domain; no delivery or persistence imports.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/domain/src/index.ts",
+      "instruction": "Expose Course contracts through the existing package root, preserving all original exports.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/persistence/package.json",
+      "instruction": "Declare the existing domain workspace package as a dependency. Preserve all existing fields and scripts.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/persistence/tsconfig.json",
+      "instruction": "Add the domain project reference using existing strict compiler conventions; preserve existing options and references.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/persistence/src/courses.ts",
+      "instruction": "Implement an in-memory fixture repository with at least twelve varied courses and isolated snapshots; use the public domain contract.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/persistence/src/index.ts",
+      "instruction": "Expose the fixture repository through the public package root and preserve original exports.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/application-services/package.json",
+      "instruction": "Declare the domain workspace dependency while preserving original fields and scripts.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/application-services/tsconfig.json",
+      "instruction": "Add the domain project reference without changing compiler rules.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/application-services/src/courses.ts",
+      "instruction": "Use an injected repository to filter, sort and paginate courses against the exact specification; return pageSize, not size.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/application-services/src/index.ts",
+      "instruction": "Expose the typed course service via the existing factory; preserve health and all original public exports. Inject the repository instead of importing fixtures.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/rest/src/course-query.ts",
+      "instruction": "Validate raw query parameters and return typed queries or the specified error envelope; reject malformed/out-of-range integers and unsupported enum values.",
+      "stage": "implementation"
+    },
+    {
+      "path": "packages/axc/rest/src/index.ts",
+      "instruction": "Add GET /api/courses using the query parser and injected application service; preserve health and Authorization forwarding.",
+      "stage": "implementation"
+    },
+    {
+      "path": "apps/api/package.json",
+      "instruction": "Declare the existing persistence workspace dependency; preserve all original scripts, dependencies and exports.",
+      "stage": "implementation"
+    },
+    {
+      "path": "apps/api/tsconfig.json",
+      "instruction": "Add the persistence project reference without changing compiler rules.",
+      "stage": "implementation"
+    },
+    {
+      "path": "apps/api/src/index.ts",
+      "instruction": "Inject the fixture repository through the existing application-service factory; register the courses Azure HTTP function without changing health or startup.",
+      "stage": "implementation"
+    },
+    {
+      "path": "apps/docs/docs/courses.md",
+      "instruction": "Document the endpoint, every query/default, exact success and error envelopes, package responsibilities and actual validation limitations.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "apps/docs/sidebars.ts",
+      "instruction": "Register the courses documentation in the existing sidebar; preserve current documentation entries.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "packages/axc-verification/archunit-tests/package.json",
+      "instruction": "Declare the existing application/domain/persistence/rest workspace dev dependencies and add a separate catalog test script; preserve original architecture scripts.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "packages/axc-verification/archunit-tests/tsconfig.json",
+      "instruction": "Add project references needed by catalog tests without weakening strict compiler options.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "packages/axc-verification/archunit-tests/vitest.catalog.config.ts",
+      "instruction": "Create a separate catalog test configuration using the existing Node/Vitest conventions.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "packages/axc-verification/archunit-tests/src/catalog.test.ts",
+      "instruction": "Add executable endpoint and repository/service tests for every acceptance criterion, two filter combinations and invalid pagination/enums. Use public workspace exports; no running localhost prerequisite.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "packages/axc-verification/acceptance-api/src/features/courses.feature",
+      "instruction": "Add course success, filtering/pagination and validation scenarios through the actual hosted API.",
+      "stage": "deliverables"
+    },
+    {
+      "path": "packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts",
+      "instruction": "Implement the course steps using the existing Serenity infrastructure and actual API host, not a substitute Hono app.",
+      "stage": "deliverables"
+    }
+  ],
+  "repair_targets": {
+    "independent_api": "packages/axc/rest/src/course-query.ts",
+    "submitted_tests": "packages/axc-verification/archunit-tests/src/catalog.test.ts"
+  },
+  "repository_contracts": true,
+  "always_context": [
+    "packages/axc/README.md"
+  ],
+  "context_groups": {
+    "packages/axc/domain/src/course.ts": [
+      "packages/axc/domain/src/index.ts"
+    ],
+    "packages/axc/domain/src/index.ts": [
+      "packages/axc/domain/src/course.ts"
+    ],
+    "packages/axc/persistence/package.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/persistence/tsconfig.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/persistence/src/courses.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/persistence/src/index.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts"
+    ],
+    "packages/axc/application-services/package.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/application-services/tsconfig.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/application-services/src/courses.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/application-services/src/index.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/persistence/src/index.ts"
+    ],
+    "packages/axc/rest/src/course-query.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts"
+    ],
+    "packages/axc/rest/src/index.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "apps/api/src/index.ts"
+    ],
+    "apps/api/package.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts"
+    ],
+    "apps/api/tsconfig.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts"
+    ],
+    "apps/api/src/index.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts"
+    ],
+    "apps/docs/docs/courses.md": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts"
+    ],
+    "apps/docs/sidebars.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts"
+    ],
+    "packages/axc-verification/archunit-tests/package.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc-verification/archunit-tests/vitest.config.ts",
+      "packages/axc-verification/acceptance-api/src/infrastructure.ts"
+    ],
+    "packages/axc-verification/archunit-tests/tsconfig.json": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc-verification/archunit-tests/package.json",
+      "packages/axc-verification/archunit-tests/vitest.config.ts",
+      "packages/axc-verification/acceptance-api/src/infrastructure.ts"
+    ],
+    "packages/axc-verification/archunit-tests/vitest.catalog.config.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc-verification/archunit-tests/package.json",
+      "packages/axc-verification/archunit-tests/vitest.config.ts",
+      "packages/axc-verification/acceptance-api/src/infrastructure.ts"
+    ],
+    "packages/axc-verification/archunit-tests/src/catalog.test.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc-verification/archunit-tests/package.json",
+      "packages/axc-verification/archunit-tests/vitest.config.ts",
+      "packages/axc-verification/acceptance-api/src/infrastructure.ts"
+    ],
+    "packages/axc-verification/acceptance-api/src/features/courses.feature": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc-verification/archunit-tests/package.json",
+      "packages/axc-verification/archunit-tests/vitest.config.ts",
+      "packages/axc-verification/acceptance-api/src/infrastructure.ts"
+    ],
+    "packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts": [
+      "packages/axc/domain/src/course.ts",
+      "packages/axc/domain/src/index.ts",
+      "packages/axc/application-services/src/courses.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/persistence/src/index.ts",
+      "packages/axc/rest/src/course-query.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc-verification/archunit-tests/package.json",
+      "packages/axc-verification/archunit-tests/vitest.config.ts",
+      "packages/axc-verification/acceptance-api/src/infrastructure.ts"
+    ]
+  },
+  "allow_workspace_dependencies": true,
+  "commit_checks": [
+    [
+      "pnpm",
+      "install",
+      "--frozen-lockfile"
+    ],
+    [
+      "pnpm",
+      "run",
+      "verify"
+    ]
+  ]
+}

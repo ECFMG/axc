@@ -1,0 +1,800 @@
+diff --git a/apps/api/package.json b/apps/api/package.json
+index a6e19fd..8fda053 100644
+--- a/apps/api/package.json
++++ b/apps/api/package.json
+@@ -6,6 +6,7 @@
+ 	"main": "dist/index.js",
+ 	"types": "dist/index.d.ts",
+ 	"scripts": {
++		"test": "tsgo --noEmit --project tsconfig.test.json && node --experimental-strip-types --test src/courses.test.ts",
+ 		"prebuild": "pnpm run lint",
+ 		"build": "tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs",
+ 		"typecheck": "tsgo --noEmit",
+diff --git a/apps/api/src/courses.test.ts b/apps/api/src/courses.test.ts
+new file mode 100644
+index 0000000..2602ea5
+--- /dev/null
++++ b/apps/api/src/courses.test.ts
+@@ -0,0 +1,151 @@
++import assert from 'node:assert/strict';
++import { describe, it } from 'node:test';
++import { buildApplicationServicesFactory, type CoursePage } from '@axc/application-services';
++import { createRestApp } from '@axc/rest';
++
++const app = createRestApp(buildApplicationServicesFactory({ environment: 'test' }));
++const request = (query = '') => app.request(`/api/courses${query ? `?${query}` : ''}`);
++async function page(query = ''): Promise<CoursePage> {
++	const response = await request(query);
++	assert.equal(response.status, 200);
++	assert.match(response.headers.get('content-type') ?? '', /application\/json/);
++	return response.json();
++}
++const ids = (result: CoursePage) => result.items.map((course) => course.id);
++
++describe('GET /api/courses', () => {
++	it('returns defaults and every required model field', async () => {
++		const result = await page();
++		assert.deepEqual({ ...result, items: [] }, { items: [], page: 1, pageSize: 10, totalItems: 12, totalPages: 2 });
++		assert.equal(result.items.length, 10);
++		assert.equal(result.items[0]?.title, 'AI Security Foundations');
++		for (const course of result.items) assert.deepEqual(Object.keys(course).sort(), ['createdAt', 'id', 'modality', 'status', 'summary', 'tags', 'title', 'updatedAt']);
++	});
++	for (const [keyword, expected] of [
++		['gArDeNiNg', ['course-002']],
++		['CoMpOsTiNg', ['course-002']],
++		['wCaG', ['course-003']],
++		['SeCuRiTy', ['course-001', 'course-008', 'course-012']],
++	] as const) {
++		it(`searches title, summary or tags case-insensitively: ${keyword}`, async () => assert.deepEqual(ids(await page(`q=${keyword}`)), expected));
++	}
++	for (const modality of ['online', 'in-person', 'hybrid']) {
++		it(`filters modality=${modality}`, async () => {
++			const result = await page(`modality=${modality}`);
++			assert.equal(result.totalItems, 4);
++			assert.ok(result.items.every((course) => course.modality === modality));
++		});
++	}
++	for (const [status, count] of [
++		['active', 7],
++		['draft', 3],
++		['retired', 2],
++	] as const) {
++		it(`filters status=${status}`, async () => {
++			const result = await page(`status=${status}`);
++			assert.equal(result.totalItems, count);
++			assert.ok(result.items.every((course) => course.status === status));
++		});
++	}
++	it('matches a whole tag case-insensitively', async () => {
++		assert.deepEqual(ids(await page('tag=AI')), ['course-001', 'course-012']);
++		assert.equal((await page('tag=secur')).totalItems, 0);
++	});
++	it('combines keyword, modality, status and tag with AND', async () => {
++		assert.deepEqual(ids(await page('q=security&modality=online&status=active&tag=ai')), ['course-001']);
++		assert.deepEqual(ids(await page('status=draft&modality=hybrid&tag=AI')), ['course-012']);
++		assert.equal((await page('q=security&modality=in-person&status=active')).totalItems, 0);
++	});
++	it('paginates without gaps or duplicates and reports totals before pagination', async () => {
++		const all = await page('pageSize=50');
++		const results = await Promise.all([1, 2, 3].map((number) => page(`page=${number}&pageSize=5`)));
++		assert.deepEqual(results.flatMap(ids), ids(all));
++		assert.deepEqual(
++			results.map((result) => result.items.length),
++			[5, 5, 2],
++		);
++		assert.ok(results.every((result) => result.totalItems === 12 && result.totalPages === 3));
++		assert.equal((await page('pageSize=1')).items.length, 1);
++		assert.deepEqual(await page('page=9007199254740991&pageSize=50'), { items: [], page: Number.MAX_SAFE_INTEGER, pageSize: 50, totalItems: 12, totalPages: 1 });
++	});
++	for (const sort of ['title', 'createdAt', 'updatedAt'] as const) {
++		it(`sorts ascending by ${sort}`, async () => {
++			const result = await page(`sort=${sort}&pageSize=50`);
++			const values = result.items.map((course) => course[sort].toLowerCase());
++			assert.deepEqual(values, [...values].sort());
++		});
++	}
++	it('returns valid empty metadata for no matches and whitespace-only keyword', async () => {
++		assert.deepEqual(await page('q=unfindable'), { items: [], page: 1, pageSize: 10, totalItems: 0, totalPages: 0 });
++		assert.equal((await page('q=%20%20')).totalItems, 12);
++	});
++	for (const query of [
++		'modality=remote',
++		'modality=Online',
++		'modality=',
++		'status=deleted',
++		'status=',
++		'sort=id',
++		'sort=',
++		'page=0',
++		'page=-1',
++		'page=1.5',
++		'page=1e2',
++		'page=NaN',
++		'page=9007199254740992',
++		'page=',
++		'pageSize=0',
++		'pageSize=51',
++		'pageSize=-1',
++		'pageSize=2.5',
++		'pageSize=Infinity',
++		'pageSize=',
++		'pageSize=%205',
++		'page=1&page=2',
++		'q=a&q=b',
++		'tag=ai&tag=data',
++	]) {
++		it(`rejects invalid query: ${query}`, async () => {
++			const response = await request(query);
++			assert.equal(response.status, 400);
++			const body = await response.json();
++			assert.deepEqual(Object.keys(body), ['error']);
++			assert.equal(body.error.code, 'INVALID_QUERY_PARAMETER');
++			assert.equal(body.error.message, 'One or more query parameters are invalid.');
++			assert.ok(body.error.details.length > 0);
++			assert.equal(body.error.details[0].field, query.split('=')[0]);
++			assert.equal(typeof body.error.details[0].message, 'string');
++		});
++	}
++	it('returns the exact specified envelope and validates before filtering', async () => {
++		const response = await request('q=unfindable&pageSize=51');
++		assert.equal(response.status, 400);
++		assert.deepEqual(await response.json(), { error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details: [{ field: 'pageSize', message: 'pageSize must be between 1 and 50.' }] } });
++	});
++	it('aggregates validation issues', async () => {
++		const response = await request('page=0&status=broken');
++		assert.equal(response.status, 400);
++		assert.deepEqual(
++			(await response.json()).error.details.map((issue: { field: string }) => issue.field),
++			['page', 'status'],
++		);
++	});
++	it('preserves the existing health endpoint', async () => {
++		const response = await app.request('/health');
++		assert.equal(response.status, 200);
++		assert.equal((await response.json()).service, 'agentCourses-api');
++	});
++	it('passes the existing authorization header through the factory', async () => {
++		const headers: (string | undefined)[] = [];
++		const factory = buildApplicationServicesFactory({ environment: 'test' });
++		const recordingApp = createRestApp({
++			forRequest: (header?: string) => {
++				headers.push(header);
++				return factory.forRequest(header);
++			},
++		});
++		assert.equal((await recordingApp.request('/api/courses', { headers: { Authorization: 'test-only' } })).status, 200);
++		assert.equal((await recordingApp.request('/api/courses')).status, 200);
++		assert.deepEqual(headers, ['test-only', undefined]);
++	});
++});
+diff --git a/apps/api/src/index.ts b/apps/api/src/index.ts
+index 91e9319..6d04f55 100644
+--- a/apps/api/src/index.ts
++++ b/apps/api/src/index.ts
+@@ -13,4 +13,5 @@ Cellix.initializeInfrastructureServices<ApiContext, ApplicationServices>((servic
+ 	})
+ 	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
+ 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+ 	.startUp();
+diff --git a/apps/api/tsconfig.test.json b/apps/api/tsconfig.test.json
+new file mode 100644
+index 0000000..da347ab
+--- /dev/null
++++ b/apps/api/tsconfig.test.json
+@@ -0,0 +1,9 @@
++{
++	"extends": "./tsconfig.json",
++	"compilerOptions": {
++		"noEmit": true,
++		"tsBuildInfoFile": "dist/tests.tsbuildinfo"
++	},
++	"include": ["src/**/*.ts"],
++	"exclude": []
++}
+diff --git a/apps/docs/docs/courses-evaluation-run-2026-10-12.md b/apps/docs/docs/courses-evaluation-run-2026-10-12.md
+new file mode 100644
+index 0000000..772981c
+--- /dev/null
++++ b/apps/docs/docs/courses-evaluation-run-2026-10-12.md
+@@ -0,0 +1,38 @@
++### Evaluation Run Record
++
++Verification date: October 12, 2026. This run verified an existing implementation; it is not a fresh implementation benchmark.
++
++| Field | Value |
++| --- | --- |
++| Team | OpenAI |
++| Developer / Operator | User (name not supplied); Codex executed validation |
++| Reviewer | |
++| Harness | Codex desktop; lean-build skill; no subagents |
++| Model | gpt-6.1-sol (from local session metadata) |
++| License / Plan | Unavailable |
++| Codebase | ECFMG/axc |
++| Task Set | A — TS-A-CATALOG-SEARCH |
++| Run Type | Final verification of existing implementation |
++| Harness Engineering Used | No new harness engineering; existing repository test/build tooling |
++| Config / Diff Notes | Original source checkout clean and unchanged. Isolated local clone, copied installed dependencies, no dependency install. Documentation updated with current results. First full-suite attempt hit sandbox socket restrictions; rerun with local-server access passed. MongoDB downloads disabled; installed binary used. |
++| Branch / Commit | `codex/task-set-a-evaluation-2026-10-12` in isolated clone. Feature commit `d6153e2f09645297fc17749a438e7728d9754fe0`; prior validation commit `c913767`; current validation documentation at branch HEAD. |
++| Requirements Completed / Attempted | 11 / 11 (A1–A11); all 12 prompt requirements satisfied by existing implementation |
++| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
++| Tests Passed / Failed | Final full suite: 646 unit/integration tests passed, 0 failed; 3 HTTP acceptance scenarios passed, 0 failed. Separately: 19 architecture checks passed. Course-specific coverage: 46 route tests, 3 application-service tests, 2 HTTP scenarios. Initial sandbox-restricted attempt failed during local-server startup; retained separately. |
++| Static Analysis / Security Findings | Lint passed (202 files); typecheck passed (21 tasks); architecture checks passed. No security scan or dependency audit performed; no security-assurance claim. |
++| Input Tokens | 951,606 through snapshot |
++| Cached Tokens | 913,792 (included in input) |
++| Output Tokens | 5,500 through snapshot; includes 1,578 reasoning tokens |
++| Total Tokens or Credits Used | 957,106 tokens through snapshot; credits unavailable |
++| Estimated Cost | Unavailable; no rate or billed charge exposed |
++| Elapsed Time | 4.7 minutes through record creation; task began 2026-10-12T15:30:15.134Z |
++| Number of Human Interventions / Redirects | 1 clarification to explicitly follow the supplied documents; no later redirects |
++| Reviewer Notes | |
++| Final Rubric Score | |
++| Recommendation | Candidate for Pilot (reviewer assessment pending) |
++
++Usage is a measured difference between the last cumulative token counter before authorization and the latest counter at 2026-10-12T15:34:01.308Z. It excludes later packaging work and the final assistant response. Counts are not monetary charges. The accompanying `usage.json` retains both counters and the calculation.
++
++The run includes logs for `pnpm test --force` (initial restricted attempt and successful rerun), `pnpm run lint`, `pnpm run build --force`, `pnpm run typecheck`, and `pnpm run test:arch`. The successful test command used runtime-only environment variables for installed MongoDB binary selection, disabled downloads, and telemetry opt-outs. No source or production configuration changes were required.
++
++Implementation limits: twelve read-only in-memory fixtures; case-insensitive substring search; exact tag matching; deterministic ascending sort with ID tie-break; no catalog mutation or database integration.
+diff --git a/apps/docs/docs/courses-implementation.md b/apps/docs/docs/courses-implementation.md
+new file mode 100644
+index 0000000..3f847de
+--- /dev/null
++++ b/apps/docs/docs/courses-implementation.md
+@@ -0,0 +1,25 @@
++# Course search implementation decisions
++
++## Decision
++
++Use the existing `apps/api` composition root, `@axc/rest` Hono handler and `@axc/application-services` request factory. The REST boundary validates query strings and returns the documented error envelope. The application service filters, orders and paginates immutable fixture records.
++
++`Course` is an application-service read model, following the existing `HealthStatus` pattern. This feature has no entity lifecycle or write invariants requiring a domain aggregate. Keeping the model and fixed fixtures with the read use case avoids an artificial repository, database implementation or new workspace dependency. The domain package remains independent of REST and infrastructure.
++
++No dependency declarations, lockfile, authentication logic, host configuration, production settings or unrelated feature code are changed. The 2026-10-08 validation run used the existing installed dependencies and local test runtimes.
++
++## Limits
++
++- Twelve immutable fixtures are scanned in memory. There is no persistence or mutation API. Replace the fixture source with indexed storage when catalog size or write requirements justify it.
++- Sorting is deterministic code-point ordering, not locale-aware collation. Fixed UTC timestamps sort chronologically as strings.
++- Keyword search is a substring within each field; it does not rank, stem words, tokenize phrases or perform fuzzy matching.
++- The endpoint exposes the fixture catalog using the same anonymous registration convention as health. This task does not introduce an authorization policy for a real private catalog.
++- Hono route tests prove the route contract. Host acceptance checks additionally require the repository's existing local Azure Functions tooling.
++
++## Coverage
++
++Application-service tests check fixture validity, uniqueness, immutability, stable ordering and duplicate-match behavior. Hono route tests cover defaults, all three searchable fields and case folding, every modality/status, positive AI tag matching, two filter combinations, all sorts, page boundaries, invalid numbers and enums, duplicate query parameters, exact errors, no matches and the existing health route. Cucumber covers one combined request and the invalid page-size envelope through HTTP.
++
++The 2026-10-08 validation run records command outputs and actual provider token counters in external run artifacts. Its usage record separates the projected estimate from measured Codex cumulative-counter differences and Ollama inference counts. Final-response usage remains pending until the original turn's final counters are recovered. No monetary charge or savings claim is inferred from token counts.
++
++See [validation results](courses-validation.md) for the passing full suite, local Azure-host acceptance scenarios, build, lint, type checks, and architecture checks.
+diff --git a/apps/docs/docs/courses-validation.md b/apps/docs/docs/courses-validation.md
+new file mode 100644
+index 0000000..db4e60e
+--- /dev/null
++++ b/apps/docs/docs/courses-validation.md
+@@ -0,0 +1,46 @@
++# Course search validation
++
++## Current validation: 2026-10-12
++
++Revalidated the existing implementation in an isolated local checkout on branch `codex/task-set-a-evaluation-2026-10-12`, using Node 24.21.0 and pnpm 11.9.0. No endpoint changes or new dependencies were needed. All A1–A11 requirements and A-AC1–A-AC12 acceptance criteria are satisfied by the implementation, tests, and documentation.
++
++| Check | Result |
++| --- | --- |
++| `pnpm test --force` | Passed: 26 tasks, zero cache hits; 646 unit/integration tests and 3 HTTP acceptance scenarios passed. |
++| `pnpm run lint` | Passed: 202 files checked. |
++| `pnpm run build --force` | Passed: 18 tasks, zero cache hits; API bundle and documentation built. |
++| `pnpm run typecheck` | Passed: 21 tasks. |
++| `pnpm run test:arch` | Passed: 9 AXC and 10 shared architecture checks; 15 tasks successful. |
++
++The first full-suite attempt was interrupted by the sandbox denying local socket access (`listen EPERM`). The successful rerun enabled local test servers and used the installed MongoDB binary with runtime downloads disabled. The existing acceptance harness generated test-only local settings in the isolated copy. No production configuration, authentication, dependencies, or vendored source was edited.
++
++The run's logs and measured usage snapshot accompany its deliverables. Usage excludes work after the recorded snapshot and the final response; monetary cost and account plan were unavailable. The [evaluation run record](courses-evaluation-run-2026-10-12.md) distinguishes this verification from a fresh baseline implementation run. Dependency audits and Snyk were outside this local evaluation.
++
++## Previous validation: 2026-10-08
++
++Validated the existing Task Set A implementation (`d6153e2`) with Node 24.21.0 and the repository-declared pnpm 11.9.0. The checkout was clean before validation. No endpoint code changes or new dependencies were needed.
++
++| Check | Result |
++| --- | --- |
++| `pnpm test --force` | Passed: all 26 tasks executed without cache, including MongoDB integration tests and Azure-host acceptance tests. |
++| `pnpm run lint` | Passed: 202 files checked, no fixes applied. |
++| `pnpm run build --force` | Passed: all 18 build tasks, including the API bundle and Docusaurus documentation. |
++| `pnpm run typecheck` | Passed: all 21 tasks. |
++| `pnpm run test:arch` | Passed: 9 AXC checks and 10 shared architecture checks; 15 tasks successful. |
++| `git diff --check` | Passed. |
++
++The course feature's 46 Hono route tests and three application-service tests pass. Route coverage includes default pagination, all searchable fields, case folding, every modality and status, exact tag matching, multiple filter combinations, all three sorts, pagination boundaries, validation failures, duplicate parameters, no matches, the health route, and authorization-header forwarding. The full application-service suite has 10 passing tests.
++
++All three Cucumber scenarios passed against the local Azure Functions host: combined course filtering, the invalid page-size response, and the existing health check. Serenity generated its HTML report. The shared MongoDB suite passed all 165 tests using the installed local test binary. No test exclusions were added. Acceptance criterion A-AC10 is now verified by the full test command.
++
++Validation outputs and this run's provider usage accounting are saved externally with the run artifacts. `usage.json` records Codex cumulative-counter differences and Ollama call counters separately from the planning estimate. No Ollama inference calls or subagents were used. The original final assistant response must be recovered from its completed turn before that usage record can be marked complete. Token totals are not monetary charges or evidence of savings.
++
++## Previous validation
++
++The 2026-09-29 run was marked NOT PASSED because its full suite could not access a MongoDB test binary and its environment lacked the Azure Functions host and Java runtime. Those earlier results are superseded by the successful local rerun above; no production configuration or vendored Cellix source changes were required to resolve them.
++
++## Reproduction
++
++With Node 24+, pnpm 11.9.0, the existing lockfile dependencies, a local MongoDB test binary, Azure Functions Core Tools v4, and a Java runtime, run the commands in the table from the repository root. The course fixtures require no production data or application credentials. The existing acceptance harness creates its generated local test settings and reports.
++
++The endpoint remains a read-only catalog of twelve immutable fixtures. Full verification workflows involving dependency audits, Snyk, or external network analysis were outside this local task run.
+diff --git a/apps/docs/docs/courses.md b/apps/docs/docs/courses.md
+new file mode 100644
+index 0000000..1053677
+--- /dev/null
++++ b/apps/docs/docs/courses.md
+@@ -0,0 +1,87 @@
++# Course catalog search
++
++`GET /api/courses` searches a fixed local catalog of twelve courses. Filters combine with AND. No database, account, credentials or external service is required for this read-only fixture catalog. The endpoint uses the application's existing anonymous route convention; authentication behavior elsewhere is unchanged.
++
++## Query parameters
++
++| Parameter | Behavior | Default |
++| --- | --- | --- |
++| `q` | Case-insensitive substring search within title, summary or any tag. Whitespace is trimmed. An empty keyword imposes no keyword filter. | None |
++| `modality` | Exactly `online`, `in-person` or `hybrid`. | Any |
++| `status` | Exactly `draft`, `active` or `retired`. | Any |
++| `tag` | Case-insensitive whole-tag match, with surrounding whitespace trimmed. An empty tag matches no fixtures. | Any |
++| `page` | Positive safe integer, written as decimal digits. | `1` |
++| `pageSize` | Integer from `1` to `50`, written as decimal digits. | `10` |
++| `sort` | `title`, `createdAt` or `updatedAt`. Ascending; title compares case-insensitively. Equal values use ascending ID as a stable tie-break. | `title` |
++
++Repeated recognized parameters return 400. Unknown parameters are ignored. Enum values are case-sensitive. Negative, fractional, scientific-notation, whitespace-padded and unsafe integer values are rejected. Pages beyond the final page return empty items with the requested page and correct totals.
++
++## Success response
++
++```http
++GET /api/courses?q=security&modality=online&status=active&tag=ai&page=1&pageSize=5&sort=title
++```
++
++HTTP 200, `Content-Type: application/json`:
++
++```json
++{
++  "items": [
++    {
++      "id": "course-001",
++      "title": "AI Security Foundations",
++      "summary": "Introductory course on secure AI-assisted development.",
++      "modality": "online",
++      "status": "active",
++      "tags": ["ai", "security"],
++      "createdAt": "2026-01-15T00:00:00.000Z",
++      "updatedAt": "2026-06-01T00:00:00.000Z"
++    }
++  ],
++  "page": 1,
++  "pageSize": 5,
++  "totalItems": 1,
++  "totalPages": 1
++}
++```
++
++Every course has all eight fields above. IDs are unique. Dates are UTC ISO strings. `totalItems` counts matches before pagination; `totalPages` is the ceiling of total items divided by page size.
++
++No matches return HTTP 200:
++
++```json
++{"items": [], "page": 1, "pageSize": 10, "totalItems": 0, "totalPages": 0}
++```
++
++## Error response
++
++Invalid `modality`, `status`, `page`, `pageSize` or `sort` values return HTTP 400. Validation runs even when other filters would produce no matches. Multiple errors can be included in `details`.
++
++For `GET /api/courses?pageSize=51`:
++
++```json
++{
++  "error": {
++    "code": "INVALID_QUERY_PARAMETER",
++    "message": "One or more query parameters are invalid.",
++    "details": [
++      {"field": "pageSize", "message": "pageSize must be between 1 and 50."}
++    ]
++  }
++}
++```
++
++## Local use and tests
++
++From the repository root, use the existing Node 24+ and pnpm setup. Install the existing lockfile with `pnpm install --frozen-lockfile`. Start the API using the documented local development workflow, then request:
++
++```sh
++curl 'http://127.0.0.1:7071/api/courses?tag=ai'
++pnpm test
++pnpm run lint
++pnpm run build
++pnpm run typecheck
++pnpm run test:arch
++```
++
++The `@apps/api` tests exercise the actual Hono app in memory after workspace dependencies build; they need no listening port or Azure Functions host. Cucumber scenarios separately exercise the host through HTTP. See [implementation notes](courses-implementation.md) for scope and limitations.
+diff --git a/apps/docs/sidebars.ts b/apps/docs/sidebars.ts
+index e26a872..ff25c0a 100644
+--- a/apps/docs/sidebars.ts
++++ b/apps/docs/sidebars.ts
+@@ -1,7 +1,7 @@
+ type SidebarsConfig = import('@docusaurus/plugin-content-docs').SidebarsConfig;
+ 
+ const sidebars = {
+-	docs: ['intro', 'healthcheck'],
++	docs: ['intro', 'healthcheck', 'courses', 'courses-implementation'],
+ } satisfies SidebarsConfig;
+ 
+ module.exports = sidebars;
+diff --git a/packages/axc-verification/acceptance-api/src/features/courses.feature b/packages/axc-verification/acceptance-api/src/features/courses.feature
+new file mode 100644
+index 0000000..d8ae136
+--- /dev/null
++++ b/packages/axc-verification/acceptance-api/src/features/courses.feature
+@@ -0,0 +1,12 @@
++Feature: Course catalog search
++  Clients can search the local training catalog through the API host.
++
++  Scenario: Combined search returns an active online AI security course
++    When the client searches courses with "q=security&modality=online&status=active&tag=ai&pageSize=5"
++    Then the course search responds with status 200
++    And the course results contain only "course-001" with page size 5
++
++  Scenario: Invalid page size returns the documented error
++    When the client searches courses with "pageSize=51"
++    Then the course search responds with status 400
++    And the course search reports an invalid page size
+diff --git a/packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts b/packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts
+new file mode 100644
+index 0000000..6d83ee5
+--- /dev/null
++++ b/packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts
+@@ -0,0 +1,27 @@
++import assert from 'node:assert/strict';
++import { Then, When } from '@cucumber/cucumber';
++import { actorCalled } from '@serenity-js/core';
++import { GetRequest, LastResponse, Send } from '@serenity-js/rest';
++
++const actor = () => actorCalled('API client');
++
++When('the client searches courses with {string}', (query: string) => actor().attemptsTo(Send.a(GetRequest.to(`/api/courses?${query}`))));
++
++Then('the course search responds with status {int}', async (status: number) => {
++	assert.equal(await actor().answer(LastResponse.status()), status);
++});
++
++Then('the course results contain only {string} with page size {int}', async (id: string, pageSize: number) => {
++	const body = await actor().answer(LastResponse.body<{ items: { id: string }[]; page: number; pageSize: number; totalItems: number; totalPages: number }>());
++	assert.deepEqual(
++		body.items.map((course) => course.id),
++		[id],
++	);
++	assert.deepEqual({ ...body, items: [] }, { items: [], page: 1, pageSize, totalItems: 1, totalPages: 1 });
++});
++
++Then('the course search reports an invalid page size', async () => {
++	assert.deepEqual(await actor().answer(LastResponse.body()), {
++		error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details: [{ field: 'pageSize', message: 'pageSize must be between 1 and 50.' }] },
++	});
++});
+diff --git a/packages/axc/application-services/src/courses.test.ts b/packages/axc/application-services/src/courses.test.ts
+new file mode 100644
+index 0000000..ad5bb47
+--- /dev/null
++++ b/packages/axc/application-services/src/courses.test.ts
+@@ -0,0 +1,35 @@
++import { describe, expect, it } from 'vitest';
++import { type CourseQuery, courses, searchCourses } from './courses.ts';
++
++const defaults: CourseQuery = { page: 1, pageSize: 10, sort: 'title' };
++
++describe('course search use case', () => {
++	it('has twelve immutable, valid, mixed fixtures with unique IDs', () => {
++		expect(courses).toHaveLength(12);
++		expect(new Set(courses.map((course) => course.id)).size).toBe(12);
++		expect(new Set(courses.map((course) => course.modality)).size).toBe(3);
++		expect(new Set(courses.map((course) => course.status)).size).toBe(3);
++		for (const course of courses) {
++			expect(Object.isFrozen(course)).toBe(true);
++			expect(Object.isFrozen(course.tags)).toBe(true);
++			expect(new Date(course.createdAt).toISOString()).toBe(course.createdAt);
++			expect(new Date(course.updatedAt).toISOString()).toBe(course.updatedAt);
++			expect(course.updatedAt >= course.createdAt).toBe(true);
++			expect(course.title.length).toBeGreaterThan(0);
++			expect(course.summary.length).toBeGreaterThan(0);
++		}
++	});
++	it('sorts case-insensitively with a stable ID tie-break and preserves source order', () => {
++		const first = courses[0];
++		if (!first) throw new Error('Fixture missing');
++		const catalog = [
++			{ ...first, id: 'z', title: 'same' },
++			{ ...first, id: 'a', title: 'SAME' },
++		];
++		expect(searchCourses(defaults, catalog).items.map((course) => course.id)).toEqual(['a', 'z']);
++		expect(catalog.map((course) => course.id)).toEqual(['z', 'a']);
++	});
++	it('does not return duplicate records when several fields match', () => {
++		expect(searchCourses({ ...defaults, q: 'security', modality: 'online', status: 'active' }).items.map((course) => course.id)).toEqual(['course-001']);
++	});
++});
+diff --git a/packages/axc/application-services/src/courses.ts b/packages/axc/application-services/src/courses.ts
+new file mode 100644
+index 0000000..6f74335
+--- /dev/null
++++ b/packages/axc/application-services/src/courses.ts
+@@ -0,0 +1,177 @@
++/** Read model for the local, read-only course catalog. */
++export interface Course {
++	id: string;
++	title: string;
++	summary: string;
++	modality: 'online' | 'in-person' | 'hybrid';
++	status: 'draft' | 'active' | 'retired';
++	tags: readonly string[];
++	createdAt: string;
++	updatedAt: string;
++}
++
++export interface CourseQuery {
++	q?: string;
++	modality?: Course['modality'];
++	status?: Course['status'];
++	tag?: string;
++	page: number;
++	pageSize: number;
++	sort: 'title' | 'createdAt' | 'updatedAt';
++}
++
++export interface CoursePage {
++	items: readonly Course[];
++	page: number;
++	pageSize: number;
++	totalItems: number;
++	totalPages: number;
++}
++
++// Fixed fixtures keep tests independent of services, clocks and production data.
++export const courses: readonly Readonly<Course>[] = Object.freeze(
++	(
++		[
++			{
++				id: 'course-001',
++				title: 'AI Security Foundations',
++				summary: 'Introductory course on secure AI-assisted development.',
++				modality: 'online',
++				status: 'active',
++				tags: ['ai', 'security'],
++				createdAt: '2026-01-15T00:00:00.000Z',
++				updatedAt: '2026-06-01T00:00:00.000Z',
++			},
++			{
++				id: 'course-002',
++				title: 'Urban Gardening',
++				summary: 'Grow herbs and learn composting in small spaces.',
++				modality: 'in-person',
++				status: 'active',
++				tags: ['sustainability', 'community'],
++				createdAt: '2026-01-12T00:00:00.000Z',
++				updatedAt: '2026-03-02T00:00:00.000Z',
++			},
++			{
++				id: 'course-003',
++				title: 'Web Accessibility',
++				summary: 'Make digital experiences work for everyone.',
++				modality: 'hybrid',
++				status: 'active',
++				tags: ['design', 'WCAG'],
++				createdAt: '2026-01-03T00:00:00.000Z',
++				updatedAt: '2026-03-18T00:00:00.000Z',
++			},
++			{
++				id: 'course-004',
++				title: 'Intro to Pottery',
++				summary: 'Shape clay using hand-building techniques.',
++				modality: 'in-person',
++				status: 'draft',
++				tags: ['art', 'hands-on'],
++				createdAt: '2026-02-14T00:00:00.000Z',
++				updatedAt: '2026-03-08T00:00:00.000Z',
++			},
++			{
++				id: 'course-005',
++				title: 'Data Storytelling',
++				summary: 'Turn numerical findings into clear visual explanations.',
++				modality: 'online',
++				status: 'active',
++				tags: ['data', 'communication'],
++				createdAt: '2026-01-25T00:00:00.000Z',
++				updatedAt: '2026-04-06T00:00:00.000Z',
++			},
++			{
++				id: 'course-006',
++				title: 'Project Leadership',
++				summary: 'Coordinate teams, milestones and practical delivery plans.',
++				modality: 'hybrid',
++				status: 'retired',
++				tags: ['management', 'communication'],
++				createdAt: '2025-12-10T00:00:00.000Z',
++				updatedAt: '2026-02-20T00:00:00.000Z',
++			},
++			{
++				id: 'course-007',
++				title: 'Conversational Spanish',
++				summary: 'Practice everyday dialogue and listening skills.',
++				modality: 'in-person',
++				status: 'active',
++				tags: ['language', 'beginner'],
++				createdAt: '2026-02-02T00:00:00.000Z',
++				updatedAt: '2026-04-04T00:00:00.000Z',
++			},
++			{
++				id: 'course-008',
++				title: 'Cybersecurity Basics',
++				summary: 'Recognize common threats and protect personal devices.',
++				modality: 'online',
++				status: 'draft',
++				tags: ['security', 'technology'],
++				createdAt: '2026-02-20T00:00:00.000Z',
++				updatedAt: '2026-04-03T00:00:00.000Z',
++			},
++			{
++				id: 'course-009',
++				title: 'Photography Fieldwork',
++				summary: 'Explore composition and natural light through guided practice.',
++				modality: 'hybrid',
++				status: 'active',
++				tags: ['art', 'photography'],
++				createdAt: '2026-02-05T00:00:00.000Z',
++				updatedAt: '2026-03-25T00:00:00.000Z',
++			},
++			{
++				id: 'course-010',
++				title: 'Mindful Movement',
++				summary: 'Combine gentle activity with focused breathing.',
++				modality: 'in-person',
++				status: 'retired',
++				tags: ['wellness', 'beginner'],
++				createdAt: '2025-12-21T00:00:00.000Z',
++				updatedAt: '2026-02-25T00:00:00.000Z',
++			},
++			{
++				id: 'course-011',
++				title: 'Python for Analysts',
++				summary: 'Analyze tables and automate repeatable reports.',
++				modality: 'online',
++				status: 'active',
++				tags: ['data', 'technology'],
++				createdAt: '2026-03-01T00:00:00.000Z',
++				updatedAt: '2026-04-01T00:00:00.000Z',
++			},
++			{
++				id: 'course-012',
++				title: 'Responsible Automation',
++				summary: 'Compare security controls for automated systems.',
++				modality: 'hybrid',
++				status: 'draft',
++				tags: ['ai', 'science'],
++				createdAt: '2026-03-10T00:00:00.000Z',
++				updatedAt: '2026-04-07T00:00:00.000Z',
++			},
++		] satisfies Course[]
++	).map((course) => Object.freeze({ ...course, tags: Object.freeze(course.tags) })),
++);
++
++const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
++
++export function searchCourses(query: CourseQuery, catalog: readonly Course[] = courses): CoursePage {
++	const q = query.q?.trim().toLowerCase() ?? '';
++	const tag = query.tag?.trim().toLowerCase();
++	// ponytail: linear scan suits this fixed catalog; use indexed persistence when the catalog grows.
++	const matches = catalog.filter(
++		(course) =>
++			(!query.modality || course.modality === query.modality) &&
++			(!query.status || course.status === query.status) &&
++			(tag === undefined || course.tags.some((value) => value.toLowerCase() === tag)) &&
++			(!q || [course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(q))),
++	);
++	matches.sort((a, b) => compare(query.sort === 'title' ? a.title.toLowerCase() : a[query.sort], query.sort === 'title' ? b.title.toLowerCase() : b[query.sort]) || compare(a.id, b.id));
++	const totalItems = matches.length;
++	const totalPages = Math.ceil(totalItems / query.pageSize);
++	const start = query.page > totalPages ? totalItems : (query.page - 1) * query.pageSize;
++	return { items: matches.slice(start, start + query.pageSize), page: query.page, pageSize: query.pageSize, totalItems, totalPages };
++}
+diff --git a/packages/axc/application-services/src/index.ts b/packages/axc/application-services/src/index.ts
+index 726861c..9cc6ffc 100644
+--- a/packages/axc/application-services/src/index.ts
++++ b/packages/axc/application-services/src/index.ts
+@@ -1,3 +1,7 @@
++import { type CoursePage, type CourseQuery, searchCourses } from './courses.ts';
++
++export type { Course, CoursePage, CourseQuery } from './courses.ts';
++
+ export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
+ export const HEALTH_PROJECT_CODE = 'axc' as const;
+ 
+@@ -16,6 +20,9 @@ export interface ApiContext {
+ }
+ 
+ export interface ApplicationServices {
++	courses: {
++		search(query: CourseQuery): CoursePage;
++	};
+ 	health: {
+ 		getStatus(): HealthStatus;
+ 	};
+@@ -38,6 +45,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
+ export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+ 	const forRequest = (): Promise<ApplicationServices> =>
+ 		Promise.resolve({
++			courses: { search: searchCourses },
+ 			health: {
+ 				getStatus(): HealthStatus {
+ 					return {
+diff --git a/packages/axc/rest/src/course-query.ts b/packages/axc/rest/src/course-query.ts
+new file mode 100644
+index 0000000..14e7d83
+--- /dev/null
++++ b/packages/axc/rest/src/course-query.ts
+@@ -0,0 +1,38 @@
++import type { CourseQuery } from '@axc/application-services';
++
++interface QueryIssue {
++	field: string;
++	message: string;
++}
++
++export function parseCourseQuery(params: URLSearchParams): { query: CourseQuery; issues: QueryIssue[] } {
++	const issues: QueryIssue[] = [];
++	for (const field of ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort']) {
++		if (params.getAll(field).length > 1) issues.push({ field, message: `${field} must be supplied at most once.` });
++	}
++	function choice<T extends string>(field: string, allowed: readonly T[], fallback: T): T {
++		const value = params.get(field);
++		if (value === null) return fallback;
++		if (allowed.includes(value as T)) return value as T;
++		issues.push({ field, message: `${field} must be one of: ${allowed.join(', ')}.` });
++		return fallback;
++	}
++	function integer(field: string, fallback: number, maximum: number, message: string): number {
++		const raw = params.get(field);
++		if (raw === null) return fallback;
++		const value = Number(raw);
++		if (/^\d+$/.test(raw) && Number.isSafeInteger(value) && value >= 1 && value <= maximum) return value;
++		issues.push({ field, message });
++		return fallback;
++	}
++	const query: CourseQuery = {
++		page: integer('page', 1, Number.MAX_SAFE_INTEGER, 'page must be a positive safe integer.'),
++		pageSize: integer('pageSize', 10, 50, 'pageSize must be between 1 and 50.'),
++		sort: choice('sort', ['title', 'createdAt', 'updatedAt'], 'title'),
++	};
++	if (params.has('modality')) query.modality = choice('modality', ['online', 'in-person', 'hybrid'], 'online');
++	if (params.has('status')) query.status = choice('status', ['draft', 'active', 'retired'], 'active');
++	if (params.has('q')) query.q = params.get('q') ?? '';
++	if (params.has('tag')) query.tag = params.get('tag') ?? '';
++	return { query, issues };
++}
+diff --git a/packages/axc/rest/src/index.ts b/packages/axc/rest/src/index.ts
+index def5a5f..32b263d 100644
+--- a/packages/axc/rest/src/index.ts
++++ b/packages/axc/rest/src/index.ts
+@@ -2,9 +2,19 @@ import type { ApplicationServicesFactory } from '@axc/application-services';
+ import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functions';
+ import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
+ import { Hono } from 'hono';
++import { parseCourseQuery } from './course-query.ts';
+ 
+ export function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {
+ 	const app = new Hono();
++	app.get('/api/courses', async (c) => {
++		const { query, issues } = parseCourseQuery(new URL(c.req.url).searchParams);
++		if (issues.length) {
++			return c.json({ error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details: issues } }, 400);
++		}
++		const authorization = c.req.header('Authorization');
++		const services = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
++		return c.json(services.courses.search(query));
++	});
+ 
+ 	app.get('/health', async (c) => {
+ 		const authorization = c.req.header('Authorization');

@@ -1,0 +1,28 @@
+{
+  "version": "v7.12.1",
+  "parent_version": "v7.12",
+  "comparison_reference": "no_harness",
+  "parent_release_archive_sha256": "368dd567252cb4a4b8dc77ef537f1fd8450f2d6101cc45ac65d2ba7616cd1c6f",
+  "architecture_reference": {
+    "repository": "https://github.com/ECFMG/axc",
+    "branch": "hac-oai-0-a-out",
+    "commit": "509326658517e3b94482415a0bdd7469db702fc8",
+    "usage": "structure and commit workflow only; no solution code injected"
+  },
+  "fixed_inputs": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "live_task_a_savings_verified": false,
+  "live_adapter_checks_passed": false,
+  "new_changes": [
+    "Reference-aligned domain/persistence/service/REST/composition plan",
+    "Additive existing workspace dependencies only",
+    "Complete-file controller actions and prioritized repairs",
+    "Full registered tests after implementation wiring",
+    "Snapshot-checked baseline commit with explicit failure preservation",
+    "Repository check logs and one-commit hook bypass; no automatic push",
+    "Forty-call ceiling with unchanged 300000-token ceiling; fresh matched trials required"
+  ]
+}

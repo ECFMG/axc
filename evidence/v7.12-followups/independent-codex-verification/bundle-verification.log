@@ -1,0 +1,6 @@
+../../outputs/task-set-a-evaluation/task-set-a.bundle is okay
+The bundle contains this ref:
+903af4937a31972d48139576d13cf5e15fda6c09 refs/heads/codex/task-set-a-evaluation-2026-10-12
+The bundle requires this ref:
+fe47c38d32376c5e8bcd1d67838160064fd5de99 
+The bundle uses this hash algorithm: sha1

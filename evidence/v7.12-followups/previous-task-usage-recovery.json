@@ -1,0 +1,18 @@
+{
+  "scope": "Recovered earlier commit-verification task, excluded from current task total",
+  "original_turn": "01a1309c-8f6c-7741-9fca-9f4db1b9bd1c",
+  "recorded_through": "2026-10-12T15:00:55.238Z",
+  "final_response_accounted": true,
+  "recorded": {
+    "input_tokens": 1185721,
+    "cached_input_tokens": 1130368,
+    "output_tokens": 9365,
+    "reasoning_output_tokens": 1536,
+    "total_tokens": 1195086
+  },
+  "remaining_missing_usage": [
+    "Interrupted startup turn 01a1309c-0de1-7f80-8813-d27bc9fe2998 at 2026-10-12T14:54:55.975Z has token_count info=null and no recorded cumulative counters; any Codex generation in that turn is unmeasured."
+  ],
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T10-55-29-01a1309b-d549-7233-a387-6da82ea6a0c3_01a1309c-8efb-7213-ad0a-86384b85a7fc.jsonl",
+  "independent_codex_verification_usage": "Original snapshot retained; its source session log was not available for final-response recovery. No estimate substituted."
+}

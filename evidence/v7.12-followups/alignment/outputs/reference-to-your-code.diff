@@ -1,0 +1,1670 @@
+diff --git a/.github/workflows/verify.yml b/.github/workflows/verify.yml
+index 1652d87..aff59b2 100644
+--- a/.github/workflows/verify.yml
++++ b/.github/workflows/verify.yml
+@@ -11,7 +11,7 @@ jobs:
+       - uses: actions/checkout@v4
+       - uses: pnpm/action-setup@v4
+         with:
+-          version: 11.11.0
++          version: 11.9.0
+       - uses: actions/setup-node@v4
+         with:
+           node-version-file: .nvmrc
+diff --git a/apps/api/package.json b/apps/api/package.json
+index 12227f6..a6e19fd 100644
+--- a/apps/api/package.json
++++ b/apps/api/package.json
+@@ -22,8 +22,7 @@
+ 	"dependencies": {
+ 		"@axc/application-services": "workspace:*",
+ 		"@axc/rest": "workspace:*",
+-		"@cellix/api-core": "workspace:*",
+-		"@axc/persistence": "workspace:*"
++		"@cellix/api-core": "workspace:*"
+ 	},
+ 	"devDependencies": {
+ 		"@cellix/config-rolldown": "workspace:*",
+diff --git a/apps/api/src/index.ts b/apps/api/src/index.ts
+index 3c0dca9..6d04f55 100644
+--- a/apps/api/src/index.ts
++++ b/apps/api/src/index.ts
+@@ -1,5 +1,4 @@
+ import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';
+-import { createFixtureCourseRepository } from '@axc/persistence';
+ import { restHandlerCreator } from '@axc/rest';
+ import { Cellix } from '@cellix/api-core';
+ import * as RuntimeConfig from './service-config/runtime/index.ts';
+@@ -12,7 +11,7 @@ Cellix.initializeInfrastructureServices<ApiContext, ApplicationServices>((servic
+ 			environment: RuntimeConfig.environment,
+ 		};
+ 	})
+-	.initializeApplicationServices((context) => buildApplicationServicesFactory(context, createFixtureCourseRepository()))
++	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
+ 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+ 	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+ 	.startUp();
+diff --git a/apps/api/test/courses.test.mjs b/apps/api/test/courses.test.mjs
+new file mode 100644
+index 0000000..2e9b64e
+--- /dev/null
++++ b/apps/api/test/courses.test.mjs
+@@ -0,0 +1,123 @@
++import assert from 'node:assert/strict';
++import { describe, test } from 'node:test';
++import fetch from 'node-fetch';
++
++// Note: These tests assume the local API is running on port 7071
++// In a real CI environment, we would use a lifecycle hook to start/stop the host.
++const BASE_URL = 'http://localhost:7071/api/courses';
++
++describe('Course Catalog API Integration Tests', () => {
++	test('GET /api/courses returns default paginated list', async () => {
++		const res = await fetch(BASE_URL);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		assert.ok(Array.isArray(data.items));
++		assert.strictEqual(data.page, 1);
++		assert.strictEqual(data.pageSize, 10);
++		assert.ok(typeof data.totalItems === 'number');
++	});
++
++	test('GET /api/courses with keyword search (q)', async () => {
++		// Searching for 'security' which exists in fixtures
++		const res = await fetch(`${BASE_URL}?q=security`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		assert.ok(data.items.length > 0);
++		data.items.forEach((item) => {
++			const searchStr = `${item.title} ${item.summary} ${item.tags.join(' ')}`.toLowerCase();
++			assert.ok(searchStr.includes('security'));
++		});
++	});
++
++	test('GET /api/courses with modality filter', async () => {
++		const res = await fetch(`${BASE_URL}?modality=online`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		data.items.forEach((item) => {
++			assert.strictEqual(item.modality, 'online');
++		});
++	});
++
++	test('GET /api/courses with status filter', async () => {
++		const res = await fetch(`${BASE_URL}?status=active`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		data.items.forEach((item) => {
++			assert.strictEqual(item.status, 'active');
++		});
++	});
++
++	test('GET /api/courses with tag filter', async () => {
++		const res = await fetch(`${BASE_URL}?tag=ai`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		data.items.forEach((item) => {
++			assert.ok(item.tags.some((t) => t.toLowerCase() === 'ai'));
++		});
++	});
++
++	test('GET /api/courses with combined filters', async () => {
++		const res = await fetch(`${BASE_URL}?q=security&modality=online&status=active`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		data.items.forEach((item) => {
++			assert.strictEqual(item.modality, 'online');
++			assert.strictEqual(item.status, 'active');
++			const searchStr = `${item.title} ${item.summary} ${item.tags.join(' ')}`.toLowerCase();
++			assert.ok(searchStr.includes('security'));
++		});
++	});
++
++	test('GET /api/courses with pagination', async () => {
++		const pageSize = 5;
++		const res = await fetch(`${BASE_URL}?pageSize=${pageSize}&page=1`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		assert.strictEqual(data.pageSize, pageSize);
++		assert.ok(data.items.length <= pageSize);
++	});
++
++	test('GET /api/courses with sorting', async () => {
++		const res = await fetch(`${BASE_URL}?sort=createdAt`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		const dates = data.items.map((i) => new Date(i.createdAt).getTime());
++		const sortedDates = [...dates].sort((a, b) => a - b);
++		assert.deepStrictEqual(dates, sortedDates);
++	});
++
++	test('GET /api/courses returns empty list for no matches', async () => {
++		const res = await fetch(`${BASE_URL}?q=nonexistent_keyword_xyz`);
++		assert.strictEqual(res.status, 200);
++		const data = await res.json();
++
++		assert.strictEqual(data.items.length, 0);
++		assert.strictEqual(data.totalItems, 0);
++	});
++
++	test('GET /api/courses returns 400 for invalid pageSize', async () => {
++		const res = await fetch(`${BASE_URL}?pageSize=100`);
++		assert.strictEqual(res.status, 400);
++		const data = await res.json();
++
++		assert.strictEqual(data.error.code, 'INVALID_QUERY_PARAMETER');
++		assert.ok(data.error.details.some((d) => d.field === 'pageSize'));
++	});
++
++	test('GET /api/courses returns 400 for invalid modality', async () => {
++		const res = await fetch(`${BASE_URL}?modality=invalid_modality`);
++		assert.strictEqual(res.status, 400);
++		const data = await res.json();
++
++		assert.strictEqual(data.error.code, 'INVALID_QUERY_PARAMETER');
++		assert.ok(data.error.details.some((d) => d.field === 'modality'));
++	});
++});
+diff --git a/apps/api/tsconfig.json b/apps/api/tsconfig.json
+index 7c65fee..f979bab 100644
+--- a/apps/api/tsconfig.json
++++ b/apps/api/tsconfig.json
+@@ -9,18 +9,5 @@
+ 		"tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+ 	},
+ 	"include": ["src"],
+-	"references": [
+-		{
+-			"path": "../../packages/cellix/api-core"
+-		},
+-		{
+-			"path": "../../packages/axc/application-services"
+-		},
+-		{
+-			"path": "../../packages/axc/rest"
+-		},
+-		{
+-			"path": "../../packages/axc/persistence"
+-		}
+-	]
++	"references": [{ "path": "../../packages/cellix/api-core" }, { "path": "../../packages/axc/application-services" }, { "path": "../../packages/axc/rest" }]
+ }
+diff --git a/apps/docs/docs/courses.md b/apps/docs/docs/courses.md
+deleted file mode 100644
+index c8f20bf..0000000
+--- a/apps/docs/docs/courses.md
++++ /dev/null
+@@ -1,72 +0,0 @@
+-# Course catalog
+-
+-`GET /api/courses` searches the sample training catalog. No database or external service is required. The API composition root injects an in-memory repository containing 12 courses.
+-
+-## Query parameters
+-
+-| Parameter | Values / behavior | Default |
+-| --- | --- | --- |
+-| `q` | Case-insensitive substring in title, summary, or any tag | No keyword filter |
+-| `modality` | `online`, `in-person`, `hybrid` (case-sensitive) | All modalities |
+-| `status` | `draft`, `active`, `retired` (case-sensitive) | All statuses |
+-| `tag` | Case-insensitive exact tag match | All tags |
+-| `page` | Positive safe integer in decimal digits | `1` |
+-| `pageSize` | Integer from `1` through `50` | `10` |
+-| `sort` | `title`, `createdAt`, `updatedAt` | `title` |
+-
+-Filters combine with AND. `q` and `tag` are trimmed; empty or whitespace-only values mean no filter. Sorting is ascending, with course ID breaking ties. Filtering and sorting happen before pagination. Unknown or repeated parameters return 400; unsupported enum values and malformed or out-of-range numbers also return 400.
+-
+-## Example
+-
+-```http
+-GET /api/courses?q=security&modality=online&status=active&tag=ai&page=1&pageSize=5&sort=title
+-```
+-
+-HTTP 200:
+-
+-```json
+-{
+-  "items": [
+-    {
+-      "id": "course-001",
+-      "title": "AI Security Foundations",
+-      "summary": "Introductory course on secure AI-assisted development.",
+-      "modality": "online",
+-      "status": "active",
+-      "tags": ["ai", "security"],
+-      "createdAt": "2026-01-15T00:00:00.000Z",
+-      "updatedAt": "2026-06-01T00:00:00.000Z"
+-    }
+-  ],
+-  "page": 1,
+-  "pageSize": 5,
+-  "totalItems": 1,
+-  "totalPages": 1
+-}
+-```
+-
+-`totalItems` counts matches before pagination. No matches return HTTP 200 with `items: []`, `totalItems: 0`, and `totalPages: 0`. Pages beyond the last page also return an empty array while retaining the match totals.
+-
+-## Invalid request
+-
+-`GET /api/courses?pageSize=51` returns HTTP 400:
+-
+-```json
+-{
+-  "error": {
+-    "code": "INVALID_QUERY_PARAMETER",
+-    "message": "One or more query parameters are invalid.",
+-    "details": [
+-      { "field": "pageSize", "message": "pageSize must be between 1 and 50." }
+-    ]
+-  }
+-}
+-```
+-
+-Multiple invalid fields are reported together in `details`.
+-
+-## Implementation notes
+-
+-The domain owns the Course contract and repository interface. Persistence provides isolated fixture snapshots; application services search, sort, and paginate; REST validates the query and serializes the response. `apps/api` supplies the repository and registers the Azure Functions route. The existing host has an empty route prefix, so the registration uses `api/courses` explicitly.
+-
+-This read-only sample lists draft and retired courses unless filtered. The fixture is reset with each process and is not a production database adapter. No external dependencies were added; internal workspace dependencies declare the new layer connections. The root lockfile is outside the task's allowed write boundary, so it was preserved; a future permitted workspace install must refresh its importer entries before using frozen-lockfile installation.
+diff --git a/apps/docs/sidebars.ts b/apps/docs/sidebars.ts
+index 31dcc50..e26a872 100644
+--- a/apps/docs/sidebars.ts
++++ b/apps/docs/sidebars.ts
+@@ -1,7 +1,7 @@
+ type SidebarsConfig = import('@docusaurus/plugin-content-docs').SidebarsConfig;
+ 
+ const sidebars = {
+-	docs: ['intro', 'healthcheck', 'courses'],
++	docs: ['intro', 'healthcheck'],
+ } satisfies SidebarsConfig;
+ 
+ module.exports = sidebars;
+diff --git a/package.json b/package.json
+index 9dca98c..6333575 100644
+--- a/package.json
++++ b/package.json
+@@ -2,7 +2,7 @@
+ 	"name": "agentcourses",
+ 	"version": "0.0.0",
+ 	"private": true,
+-	"packageManager": "pnpm@11.11.0",
++	"packageManager": "pnpm@11.9.0",
+ 	"engines": {
+ 		"node": ">=24"
+ 	},
+diff --git a/packages/axc-verification/acceptance-api/src/features/courses.feature b/packages/axc-verification/acceptance-api/src/features/courses.feature
+deleted file mode 100644
+index 3b75303..0000000
+--- a/packages/axc-verification/acceptance-api/src/features/courses.feature
++++ /dev/null
+@@ -1,16 +0,0 @@
+-Feature: Course catalog
+-
+-  Scenario: List the seeded catalog through the Azure Functions route
+-    When the catalog client requests "/api/courses"
+-    Then the catalog response status is 200
+-    And the catalog response contains 10 items and 12 total matches
+-
+-  Scenario: Combine search and filters through the Azure Functions route
+-    When the catalog client requests "/api/courses?q=SECURITY&modality=online&status=active&tag=AI&pageSize=5"
+-    Then the catalog response status is 200
+-    And the catalog response contains 1 items and 1 total matches
+-
+-  Scenario: Reject invalid pagination through the Azure Functions route
+-    When the catalog client requests "/api/courses?pageSize=51"
+-    Then the catalog response status is 400
+-    And the catalog response reports an invalid query parameter
+diff --git a/packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts b/packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts
+deleted file mode 100644
+index cbb158c..0000000
+--- a/packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts
++++ /dev/null
+@@ -1,31 +0,0 @@
+-import { Then, When } from '@cucumber/cucumber';
+-import { Ensure, equals } from '@serenity-js/assertions';
+-import { type Answerable, actorCalled, Question } from '@serenity-js/core';
+-import { GetRequest, LastResponse, Send } from '@serenity-js/rest';
+-
+-const resolved = <T>(answerable: Answerable<Promise<T>>): Answerable<T> => answerable as unknown as Answerable<T>;
+-const actor = () => actorCalled('Catalog client');
+-
+-When('the catalog client requests {string}', (url: string) => actor().attemptsTo(Send.a(GetRequest.to(url))));
+-
+-Then('the catalog response status is {int}', (status: number) => actor().attemptsTo(Ensure.that(resolved(LastResponse.status()), equals(status))));
+-
+-Then('the catalog response contains {int} items and {int} total matches', (count: number, total: number) => {
+-	const itemCount = Question.about('catalog page item count', async (currentActor) => {
+-		const body = await currentActor.answer(LastResponse.body<{ items: unknown[] }>());
+-		return body.items.length;
+-	});
+-	const totalItems = Question.about('catalog total matches', async (currentActor) => {
+-		const body = await currentActor.answer(LastResponse.body<{ totalItems: number }>());
+-		return body.totalItems;
+-	});
+-	return actor().attemptsTo(Ensure.that(resolved(itemCount), equals(count)), Ensure.that(resolved(totalItems), equals(total)));
+-});
+-
+-Then('the catalog response reports an invalid query parameter', () => {
+-	const errorCode = Question.about('catalog validation error code', async (currentActor) => {
+-		const body = await currentActor.answer(LastResponse.body<{ error: { code: string } }>());
+-		return body.error.code;
+-	});
+-	return actor().attemptsTo(Ensure.that(resolved(errorCode), equals('INVALID_QUERY_PARAMETER')));
+-});
+diff --git a/packages/axc-verification/archunit-tests/package.json b/packages/axc-verification/archunit-tests/package.json
+index c77c460..c5c4940 100644
+--- a/packages/axc-verification/archunit-tests/package.json
++++ b/packages/axc-verification/archunit-tests/package.json
+@@ -10,8 +10,7 @@
+ 		"typecheck": "tsgo --noEmit",
+ 		"lint": "biome lint",
+ 		"format": "biome format --write",
+-		"format:check": "biome format .",
+-		"test": "vitest run --config vitest.catalog.config.ts"
++		"format:check": "biome format ."
+ 	},
+ 	"devDependencies": {
+ 		"@cellix/archunit-tests": "workspace:*",
+@@ -20,10 +19,6 @@
+ 		"@types/node": "catalog:",
+ 		"archunit": "catalog:",
+ 		"typescript": "catalog:",
+-		"vitest": "catalog:",
+-		"@axc/domain": "workspace:*",
+-		"@axc/application-services": "workspace:*",
+-		"@axc/persistence": "workspace:*",
+-		"@axc/rest": "workspace:*"
++		"vitest": "catalog:"
+ 	}
+ }
+diff --git a/packages/axc-verification/archunit-tests/src/catalog.test.ts b/packages/axc-verification/archunit-tests/src/catalog.test.ts
+deleted file mode 100644
+index b479680..0000000
+--- a/packages/axc-verification/archunit-tests/src/catalog.test.ts
++++ /dev/null
+@@ -1,172 +0,0 @@
+-import { buildApplicationServicesFactory, type CoursePage } from '@axc/application-services';
+-import type { Course } from '@axc/domain';
+-import { createFixtureCourseRepository } from '@axc/persistence';
+-import { createRestApp } from '@axc/rest';
+-import { describe, expect, it } from 'vitest';
+-
+-const repository = createFixtureCourseRepository();
+-const app = createRestApp(buildApplicationServicesFactory({ environment: 'test' }, repository));
+-async function request(query = ''): Promise<CoursePage> {
+-	const response = await app.request(`/api/courses${query}`);
+-	expect(response.status).toBe(200);
+-	expect(response.headers.get('content-type')).toContain('application/json');
+-	return (await response.json()) as CoursePage;
+-}
+-
+-const ids = (courses: readonly Course[]) => courses.map((course) => course.id);
+-
+-describe('GET /api/courses', () => {
+-	it('returns the default sorted page with complete course records', async () => {
+-		const body = await request();
+-		expect(body).toMatchObject({ page: 1, pageSize: 10, totalItems: 12, totalPages: 2 });
+-		expect(body.items).toHaveLength(10);
+-		expect(body.items.map((c) => c.title)).toEqual(body.items.map((c) => c.title).sort((a, b) => a.localeCompare(b)));
+-		expect(body.items[0]).toEqual({
+-			id: 'course-001',
+-			title: 'AI Security Foundations',
+-			summary: 'Introductory course on secure AI-assisted development.',
+-			modality: 'online',
+-			status: 'active',
+-			tags: ['ai', 'security'],
+-			createdAt: '2026-01-15T00:00:00.000Z',
+-			updatedAt: '2026-06-01T00:00:00.000Z',
+-		});
+-	});
+-
+-	it.each([
+-		['AI SECURITY', ['course-001']],
+-		['PERSONAL DATA', ['course-003']],
+-		['QUALITY', ['course-009']],
+-	])('searches title, summary and tags case-insensitively: %s', async (keyword, expected) => {
+-		expect(ids((await request(`?q=${encodeURIComponent(keyword)}`)).items)).toEqual(expected);
+-	});
+-
+-	it.each(['online', 'in-person', 'hybrid'])('filters modality %s', async (value) => {
+-		const body = await request(`?modality=${value}`);
+-		const expected = (await repository.list()).filter((c) => c.modality === value);
+-		expect(body.totalItems).toBe(expected.length);
+-		expect(new Set(ids(body.items))).toEqual(new Set(ids(expected)));
+-	});
+-
+-	it.each(['draft', 'active', 'retired'])('filters status %s', async (value) => {
+-		const body = await request(`?status=${value}`);
+-		expect(body.items.length).toBeGreaterThan(0);
+-		expect(body.items.every((c) => c.status === value)).toBe(true);
+-	});
+-
+-	it('matches tags exactly and case-insensitively', async () => {
+-		expect(ids((await request('?tag=AI')).items)).toEqual(['course-001', 'course-006']);
+-		expect((await request('?tag=secur')).items).toEqual([]);
+-	});
+-
+-	it.each([
+-		['?q=SECURITY&modality=online&status=active&tag=AI', ['course-001']],
+-		['?modality=hybrid&status=retired&tag=Security', ['course-011']],
+-	])('combines filters with AND: %s', async (query, expected) => {
+-		expect(ids((await request(query)).items)).toEqual(expected);
+-	});
+-
+-	it('paginates after filtering and sorting without overlap', async () => {
+-		const all = await request('?pageSize=50');
+-		const first = await request('?pageSize=5');
+-		const second = await request('?page=2&pageSize=5');
+-		const last = await request('?page=3&pageSize=5');
+-		expect(first).toMatchObject({ page: 1, pageSize: 5, totalItems: 12, totalPages: 3 });
+-		expect(second).toMatchObject({ page: 2, pageSize: 5 });
+-		expect(last.items).toHaveLength(2);
+-		expect(ids([...first.items, ...second.items, ...last.items])).toEqual(ids(all.items));
+-		expect((await request('?page=4&pageSize=5')).items).toEqual([]);
+-		expect((await request('?modality=online&pageSize=2&page=2')).totalPages).toBe(3);
+-	});
+-
+-	it.each(['title', 'createdAt', 'updatedAt'])('sorts ascending by %s with ID tie-breaking', async (sort) => {
+-		const body = await request(`?sort=${sort}&pageSize=50`);
+-		const field = sort as 'title' | 'createdAt' | 'updatedAt';
+-		const expected = [...(await repository.list())].sort((a, b) => a[field].localeCompare(b[field]) || a.id.localeCompare(b.id));
+-		expect(ids(body.items)).toEqual(ids(expected));
+-	});
+-
+-	it('returns valid empty metadata for no matches', async () => {
+-		expect(await request('?q=nonexistent')).toEqual({ items: [], page: 1, pageSize: 10, totalItems: 0, totalPages: 0 });
+-	});
+-
+-	it('treats blank search and tag as absent', async () => {
+-		expect(await request('?q=%20&tag=')).toEqual(await request());
+-	});
+-
+-	it.each([
+-		['modality', 'remote'],
+-		['modality', 'ONLINE'],
+-		['modality', ''],
+-		['status', 'published'],
+-		['sort', '-title'],
+-		['sort', ''],
+-		['page', '0'],
+-		['page', '-1'],
+-		['page', '1.5'],
+-		['page', 'abc'],
+-		['page', ''],
+-		['page', '1e2'],
+-		['page', '0x10'],
+-		['page', '9007199254740992'],
+-		['page', ' 1'],
+-		['pageSize', '0'],
+-		['pageSize', '51'],
+-		['pageSize', '1.5'],
+-		['pageSize', 'NaN'],
+-		['pageSize', 'Infinity'],
+-		['pageSize', ''],
+-		['unknown', 'x'],
+-	])('rejects invalid %s=%s', async (field, value) => {
+-		const response = await app.request(`/api/courses?${field}=${encodeURIComponent(value)}`);
+-		expect(response.status).toBe(400);
+-		expect(await response.json()).toEqual({
+-			error: {
+-				code: 'INVALID_QUERY_PARAMETER',
+-				message: 'One or more query parameters are invalid.',
+-				details: [{ field, message: expect.any(String) }],
+-			},
+-		});
+-	});
+-
+-	it.each(['q', 'tag', 'modality', 'status', 'page', 'pageSize', 'sort'])('rejects repeated %s parameters', async (field) => {
+-		expect((await app.request(`/api/courses?${field}=1&${field}=2`)).status).toBe(400);
+-	});
+-
+-	it('reports multiple validation failures together', async () => {
+-		const response = await app.request('/api/courses?modality=bad&page=0&pageSize=51');
+-		const body = (await response.json()) as { error: { details: { field: string }[] } };
+-		expect(response.status).toBe(400);
+-		expect(body.error.details.map((d) => d.field)).toEqual(['modality', 'page', 'pageSize']);
+-	});
+-
+-	it('retains the existing health route', async () => {
+-		expect((await app.request('/health')).status).toBe(200);
+-	});
+-});
+-
+-describe('catalog storage and application service', () => {
+-	it('keeps repository snapshots isolated from caller mutation', async () => {
+-		const first = await repository.list();
+-		const course = first[0];
+-		if (!course) throw new Error('Missing course fixture');
+-		(course.tags as string[]).push('unexpected');
+-		expect((await repository.list())[0]?.tags).not.toContain('unexpected');
+-	});
+-
+-	it('uses the injected repository and breaks equal-title ties by ID', async () => {
+-		const sample = (await repository.list())[0];
+-		if (!sample) throw new Error('Missing course fixture');
+-		const services = await buildApplicationServicesFactory(
+-			{ environment: 'test' },
+-			{
+-				list: () =>
+-					Promise.resolve([
+-						{ ...sample, id: 'b' },
+-						{ ...sample, id: 'a' },
+-					]),
+-			},
+-		).forRequest();
+-		expect(ids((await services.courses.search({ page: 1, pageSize: 10, sort: 'title' })).items)).toEqual(['a', 'b']);
+-	});
+-});
+diff --git a/packages/axc-verification/archunit-tests/tsconfig.json b/packages/axc-verification/archunit-tests/tsconfig.json
+index 033f663..da021cf 100644
+--- a/packages/axc-verification/archunit-tests/tsconfig.json
++++ b/packages/axc-verification/archunit-tests/tsconfig.json
+@@ -2,23 +2,8 @@
+ 	"extends": "@cellix/config-typescript/node",
+ 	"compilerOptions": {
+ 		"noEmit": true,
+-		"rootDir": "src",
+-		"lib": ["ES2023", "DOM"]
++		"rootDir": "src"
+ 	},
+ 	"include": ["src/**/*.ts"],
+-	"exclude": [],
+-	"references": [
+-		{
+-			"path": "../../axc/domain"
+-		},
+-		{
+-			"path": "../../axc/application-services"
+-		},
+-		{
+-			"path": "../../axc/persistence"
+-		},
+-		{
+-			"path": "../../axc/rest"
+-		}
+-	]
++	"exclude": []
+ }
+diff --git a/packages/axc-verification/archunit-tests/vitest.catalog.config.ts b/packages/axc-verification/archunit-tests/vitest.catalog.config.ts
+deleted file mode 100644
+index def03d1..0000000
+--- a/packages/axc-verification/archunit-tests/vitest.catalog.config.ts
++++ /dev/null
+@@ -1,3 +0,0 @@
+-import { defineConfig } from 'vitest/config';
+-
+-export default defineConfig({ test: { environment: 'node', include: ['src/catalog.test.ts'] } });
+diff --git a/packages/axc-verification/archunit-tests/vitest.config.ts b/packages/axc-verification/archunit-tests/vitest.config.ts
+index e9e46cf..c46d9d8 100644
+--- a/packages/axc-verification/archunit-tests/vitest.config.ts
++++ b/packages/axc-verification/archunit-tests/vitest.config.ts
+@@ -5,7 +5,7 @@ export default mergeConfig(
+ 	archConfig,
+ 	defineConfig({
+ 		test: {
+-			include: ['src/dependency-rules.test.ts'],
++			include: ['src/**/*.test.ts'],
+ 		},
+ 	}),
+ );
+diff --git a/packages/axc/application-services/package.json b/packages/axc/application-services/package.json
+index 99bf94a..9124877 100644
+--- a/packages/axc/application-services/package.json
++++ b/packages/axc/application-services/package.json
+@@ -31,8 +31,5 @@
+ 		"rimraf": "catalog:",
+ 		"typescript": "catalog:",
+ 		"vitest": "catalog:"
+-	},
+-	"dependencies": {
+-		"@axc/domain": "workspace:*"
+ 	}
+ }
+diff --git a/packages/axc/application-services/src/course-fixtures.ts b/packages/axc/application-services/src/course-fixtures.ts
+new file mode 100644
+index 0000000..2409626
+--- /dev/null
++++ b/packages/axc/application-services/src/course-fixtures.ts
+@@ -0,0 +1,124 @@
++import { type Course, CourseModality, CourseStatus } from './course-types';
++
++export const COURSE_FIXTURES: Course[] = [
++	{
++		id: 'course-001',
++		title: 'AI Security Foundations',
++		summary: 'Introductory course on secure AI-assisted development.',
++		modality: 'online',
++		status: 'active',
++		tags: ['ai', 'security'],
++		createdAt: '2026-01-15T00:00:00.000Z',
++		updatedAt: '2026-06-01T00:00:00.000Z',
++	},
++	{
++		id: 'course-002',
++		title: 'Advanced TypeScript Patterns',
++		summary: 'Mastering complex types and utility patterns.',
++		modality: 'online',
++		status: 'active',
++		tags: ['typescript', 'programming'],
++		createdAt: '2026-02-10T00:00:00.000Z',
++		updatedAt: '2026-02-10T00:00:00.000Z',
++	},
++	{
++		id: 'course-003',
++		title: 'Cloud Native Architecture',
++		summary: 'Designing scalable systems on modern cloud platforms.',
++		modality: 'hybrid',
++		status: 'active',
++		tags: ['cloud', 'architecture'],
++		createdAt: '2026-03-05T00:00:00.000Z',
++		updatedAt: '2026-03-05T00:00:00.000Z',
++	},
++	{
++		id: 'course-004',
++		title: 'Introduction to UX Design',
++		summary: 'Principles of user-centric design and prototyping.',
++		modality: 'in-person',
++		status: 'draft',
++		tags: ['design', 'ux'],
++		createdAt: '2026-04-20T00:00:00.000Z',
++		updatedAt: '2026-04-20T00:00:00.000Z',
++	},
++	{
++		id: 'course-005',
++		title: 'Data Science with Python',
++		summary: 'Exploratory data analysis and machine learning basics.',
++		modality: 'online',
++		status: 'active',
++		tags: ['python', 'data-science', 'ai'],
++		createdAt: '2026-01-20T00:00:00.000Z',
++		updatedAt: '2026-05-15T00:00:00.000Z',
++	},
++	{
++		id: 'course-006',
++		title: 'DevOps Fundamentals',
++		summary: 'CI/CD pipelines, containerization, and orchestration.',
++		modality: 'hybrid',
++		status: 'active',
++		tags: ['devops', 'cloud', 'infrastructure'],
++		createdAt: '2026-02-28T00:00:00.000Z',
++		updatedAt: '2026-02-28T00:00:00.000Z',
++	},
++	{
++		id: 'course-007',
++		title: 'Legacy System Migration',
++		summary: 'Strategies for moving from monoliths to microservices.',
++		modality: 'in-person',
++		status: 'retired',
++		tags: ['architecture', 'migration'],
++		createdAt: '2025-12-01T00:00:00.000Z',
++		updatedAt: '2026-01-01T00:00:00.000Z',
++	},
++	{
++		id: 'course-008',
++		title: 'Cybersecurity Essentials',
++		summary: 'Protecting networks and applications from threats.',
++		modality: 'online',
++		status: 'active',
++		tags: ['security', 'networking'],
++		createdAt: '2026-03-15T00:00:00.000Z',
++		updatedAt: '2026-03-15T00:00:00.000Z',
++	},
++	{
++		id: 'course-009',
++		title: 'Frontend Frameworks Deep Dive',
++		summary: 'React, Vue, and Angular internals.',
++		modality: 'hybrid',
++		status: 'draft',
++		tags: ['javascript', 'frontend'],
++		createdAt: '2026-05-01T00:00:00.000Z',
++		updatedAt: '2026-05-01T00:00:00.000Z',
++	},
++	{
++		id: 'course-010',
++		title: 'Database Optimization',
++		summary: 'Indexing, query tuning, and scaling databases.',
++		modality: 'online',
++		status: 'active',
++		tags: ['database', 'sql'],
++		createdAt: '2026-01-05T00:00:00.000Z',
++		updatedAt: '2026-01-05T00:00:00.000Z',
++	},
++	{
++		id: 'course-011',
++		title: 'Mobile App Development',
++		summary: 'Building cross-platform apps with React Native.',
++		modality: 'in-person',
++		status: 'active',
++		tags: ['mobile', 'javascript'],
++		createdAt: '2026-04-10T00:00:00.000Z',
++		updatedAt: '2026-04-10T00:00:00.000Z',
++	},
++	{
++		id: 'course-012',
++		title: 'Machine Learning Operations',
++		summary: 'Deploying and monitoring ML models in production.',
++		modality: 'online',
++		status: 'active',
++		tags: ['ai', 'mlops', 'cloud'],
++		createdAt: '2026-02-01T00:00:00.000Z',
++		updatedAt: '2026-02-01T00:00:00.000Z',
++	},
++];
+diff --git a/packages/axc/application-services/src/course-search.test.ts b/packages/axc/application-services/src/course-search.test.ts
+new file mode 100644
+index 0000000..d0fddf5
+--- /dev/null
++++ b/packages/axc/application-services/src/course-search.test.ts
+@@ -0,0 +1,87 @@
++import { describe, expect, it } from 'vitest';
++import { COURSE_FIXTURES } from './course-fixtures.js';
++import { CourseSearchService } from './course-search.js';
++import type { CourseSearchQuery, CourseSortField } from './course-types.js';
++
++describe('CourseSearchService', () => {
++	const service = new CourseSearchService();
++
++	describe('Keyword Search (q)', () => {
++		it('returns courses matching title case-insensitively', async () => {
++			const result = await service.searchCourses({ q: 'SECURITY' });
++			expect(result.items.length).toBeGreaterThan(0);
++			expect(result.items.every((c) => c.title.toLowerCase().includes('security') || c.summary.toLowerCase().includes('security') || c.tags.some((t) => t.toLowerCase().includes('security')))).toBe(true);
++		});
++
++		it('returns empty list when no matches found', async () => {
++			const result = await service.searchCourses({ q: 'nonexistentkeyword123' });
++			expect(result.items).toEqual([]);
++			expect(result.totalItems).toBe(0);
++		});
++	});
++
++	describe('Filters', () => {
++		it('filters by modality', async () => {
++			const result = await service.searchCourses({ modality: 'online' });
++			expect(result.items.every((c) => c.modality === 'online')).toBe(true);
++		});
++
++		it('filters by status', async () => {
++			const result = await service.searchCourses({ status: 'retired' });
++			expect(result.items.every((c) => c.status === 'retired')).toBe(true);
++		});
++
++		it('filters by tag case-insensitively', async () => {
++			const result = await service.searchCourses({ tag: 'AI' });
++			expect(result.items.every((c) => c.tags.some((t) => t.toLowerCase() === 'ai'))).toBe(true);
++		});
++
++		it('combines q, modality, and status', async () => {
++			// Searching for 'ai' in 'online' 'active' courses
++			const result = await service.searchCourses({
++				q: 'ai',
++				modality: 'online',
++				status: 'active',
++			});
++
++			for (const course of result.items) {
++				const matchesQ = course.title.toLowerCase().includes('ai') || course.summary.toLowerCase().includes('ai') || course.tags.some((t) => t.toLowerCase().includes('ai'));
++				expect(matchesQ).toBe(true);
++				expect(course.modality).toBe('online');
++				expect(course.status).toBe('active');
++			}
++		});
++	});
++
++	describe('Pagination', () => {
++		it('uses default pagination (page 1, pageSize 10)', async () => {
++			const result = await service.searchCourses({});
++			expect(result.page).toBe(1);
++			expect(result.size).toBe(10);
++			expect(result.items.length).toBeLessThanOrEqual(10);
++		});
++
++		it('respects page and pageSize parameters', async () => {
++			const result = await service.searchCourses({ page: 2, pageSize: 5 });
++			expect(result.page).toBe(2);
++			expect(result.size).toBe(5);
++			expect(result.items.length).toBeLessThanOrEqual(5);
++		});
++	});
++
++	describe('Sorting', () => {
++		it('sorts by title by default', async () => {
++			const result = await service.searchCourses({});
++			const titles = result.items.map((c) => c.title);
++			const sortedTitles = [...titles].sort((a, b) => a.localeCompare(b));
++			expect(titles).toEqual(sortedTitles);
++		});
++
++		it('sorts by createdAt', async () => {
++			const result = await service.searchCourses({ sort: 'createdAt' });
++			const dates = result.items.map((c) => new Date(c.createdAt).getTime());
++			const sortedDates = [...dates].sort((a, b) => a - b);
++			expect(dates).toEqual(sortedDates);
++		});
++	});
++});
+diff --git a/packages/axc/application-services/src/course-search.ts b/packages/axc/application-services/src/course-search.ts
+new file mode 100644
+index 0000000..be46284
+--- /dev/null
++++ b/packages/axc/application-services/src/course-search.ts
+@@ -0,0 +1,64 @@
++import { COURSE_FIXTURES } from './course-fixtures.js';
++import type { Course, CourseSearchError, CourseSearchQuery, CourseSortField, PaginatedCourseResponse, ValidationError } from './course-types';
++
++export class CourseSearchService {
++	/**
++	 * Searches the course catalog using provided filters, keyword, and pagination.
++	 * This implementation is stateless and uses local fixtures.
++	 */
++	public async searchCourses(query: CourseSearchQuery): Promise<PaginatedCourseResponse> {
++		const { q, modality, status, tag, page = 1, pageSize = 10, sort = 'title' as CourseSortField } = query;
++
++		// 1. Filtering
++		const filtered = COURSE_FIXTURES.filter((course) => {
++			// Keyword search (q): title, summary, or tags (case-insensitive)
++			if (q) {
++				const searchStr = q.toLowerCase();
++				const matchesQ = course.title.toLowerCase().includes(searchStr) || course.summary.toLowerCase().includes(searchStr) || course.tags.some((t) => t.toLowerCase().includes(searchStr));
++				if (!matchesQ) return false;
++			}
++
++			// Modality filter
++			if (modality && course.modality !== modality) return false;
++
++			// Status filter
++			if (status && course.status !== status) return false;
++
++			// Tag filter (case-insensitive)
++			if (tag) {
++				theTag: const searchTag = tag.toLowerCase();
++				if (!course.tags.some((t) => t.toLowerCase() === searchTag)) return false;
++			}
++
++			return true;
++		});
++
++		// 2. Sorting
++		filtered.sort((a, b) => {
++			if (sort === 'title') {
++				return a.title.localeCompare(b.title);
++			}
++			if (sort === 'createdAt') {
++				return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
++			}
++			if (sort === 'updatedAt') {
++				return new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
++			}
++			return 0;
++		});
++
++		// 3. Pagination
++		const totalItems = filtered.length;
++		const totalPages = Math.ceil(totalItems / pageSize);
++		const startIndex = (page - 1) * pageSize;
++		const paginatedItems = filtered.slice(startIndex, startIndex + pageSize);
++
++		return {
++			items: paginatedItems,
++			page,
++			size: pageSize,
++			totalItems,
++			totalPages,
++		};
++	}
++}
+diff --git a/packages/axc/application-services/src/course-types.ts b/packages/axc/application-services/src/course-types.ts
+new file mode 100644
+index 0000000..723ffce
+--- /dev/null
++++ b/packages/axc/application-services/src/course-types.ts
+@@ -0,0 +1,47 @@
++export type CourseModality = 'online' | 'in-person' | 'hybrid';
++
++export type CourseStatus = 'draft' | 'active' | 'retired';
++
++export interface Course {
++	id: string;
++	title: string;
++	summary: string;
++	modality: CourseModality;
++	status: CourseStatus;
++	tags: string[];
++	createdAt: string;
++	updatedAt: string;
++}
++
++export type CourseSortField = 'title' | 'createdAt' | 'updatedAt';
++
++export interface CourseSearchQuery {
++	q?: string;
++	modality?: CourseModality;
++	status?: CourseStatus;
++	tag?: string;
++	page?: number;
++	pageSize?: number;
++	sort?: CourseSortField;
++}
++
++export interface PaginatedCourseResponse {
++	items: Course[];
++	page: number;
++	size: number;
++	totalItems: number;
++	totalPages: number;
++}
++
++export interface ValidationError {
++	field: string;
++	message: string;
++}
++
++export interface CourseSearchError {
++	error: {
++		code: 'INVALID_QUERY_PARAMETER';
++		message: string;
++		details: ValidationError[];
++	};
++}
+diff --git a/packages/axc/application-services/src/courses.ts b/packages/axc/application-services/src/courses.ts
+deleted file mode 100644
+index 92e2d05..0000000
+--- a/packages/axc/application-services/src/courses.ts
++++ /dev/null
+@@ -1,44 +0,0 @@
+-import type { Course, CourseRepository } from '@axc/domain';
+-
+-export interface CourseQuery {
+-	q?: string;
+-	modality?: Course['modality'];
+-	status?: Course['status'];
+-	tag?: string;
+-	page: number;
+-	pageSize: number;
+-	sort: 'title' | 'createdAt' | 'updatedAt';
+-}
+-
+-export interface CoursePage {
+-	items: Course[];
+-	page: number;
+-	pageSize: number;
+-	totalItems: number;
+-	totalPages: number;
+-}
+-
+-export function createCourseService(repository: CourseRepository) {
+-	return {
+-		async search(query: CourseQuery): Promise<CoursePage> {
+-			const keyword = query.q?.toLowerCase();
+-			const tag = query.tag?.toLowerCase();
+-			const courses = (await repository.list()).filter(
+-				(course) =>
+-					(!keyword || [course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(keyword))) &&
+-					(!query.modality || course.modality === query.modality) &&
+-					(!query.status || course.status === query.status) &&
+-					(!tag || course.tags.some((value) => value.toLowerCase() === tag)),
+-			);
+-			courses.sort((left, right) => left[query.sort].localeCompare(right[query.sort]) || left.id.localeCompare(right.id));
+-			const offset = (query.page - 1) * query.pageSize;
+-			return {
+-				items: courses.slice(offset, offset + query.pageSize),
+-				page: query.page,
+-				pageSize: query.pageSize,
+-				totalItems: courses.length,
+-				totalPages: Math.ceil(courses.length / query.pageSize),
+-			};
+-		},
+-	};
+-}
+diff --git a/packages/axc/application-services/src/index.ts b/packages/axc/application-services/src/index.ts
+index a3e87a0..3cd05d6 100644
+--- a/packages/axc/application-services/src/index.ts
++++ b/packages/axc/application-services/src/index.ts
+@@ -1,8 +1,3 @@
+-import type { CourseRepository } from '@axc/domain';
+-import { createCourseService } from './courses.ts';
+-
+-export type { CoursePage, CourseQuery } from './courses.ts';
+-
+ export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
+ export const HEALTH_PROJECT_CODE = 'axc' as const;
+ 
+@@ -20,11 +15,15 @@ export interface ApiContext {
+ 	environment: HealthEnvironment;
+ }
+ 
++import { type CourseSearchQuery, CourseSearchService, type PaginatedCourseResponse } from './course-search.js';
++
+ export interface ApplicationServices {
+-	courses: ReturnType<typeof createCourseService>;
+ 	health: {
+ 		getStatus(): HealthStatus;
+ 	};
++	courses: {
++		search(query: CourseSearchQuery): Promise<PaginatedCourseResponse>;
++	};
+ }
+ 
+ export interface ApplicationServicesFactory {
+@@ -41,10 +40,11 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
+ 	return 'local';
+ }
+ 
+-export function buildApplicationServicesFactory(context: ApiContext, courseRepository: CourseRepository = { list: () => Promise.resolve([]) }): ApplicationServicesFactory {
++export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
++	const courseSearchService = new CourseSearchService();
++
+ 	const forRequest = (): Promise<ApplicationServices> =>
+ 		Promise.resolve({
+-			courses: createCourseService(courseRepository),
+ 			health: {
+ 				getStatus(): HealthStatus {
+ 					return {
+@@ -56,6 +56,9 @@ export function buildApplicationServicesFactory(context: ApiContext, courseRepos
+ 					};
+ 				},
+ 			},
++			courses: {
++				search: async (query) => courseSearchService.searchCourses(query),
++			},
+ 		});
+ 
+ 	return { forRequest };
+diff --git a/packages/axc/application-services/tsconfig.json b/packages/axc/application-services/tsconfig.json
+index 6670466..5ed3c5e 100644
+--- a/packages/axc/application-services/tsconfig.json
++++ b/packages/axc/application-services/tsconfig.json
+@@ -5,10 +5,5 @@
+ 		"rootDir": "src",
+ 		"tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+ 	},
+-	"include": ["src/**/*.ts"],
+-	"references": [
+-		{
+-			"path": "../domain"
+-		}
+-	]
++	"include": ["src/**/*.ts"]
+ }
+diff --git a/packages/axc/domain/src/course.ts b/packages/axc/domain/src/course.ts
+deleted file mode 100644
+index 4bb4833..0000000
+--- a/packages/axc/domain/src/course.ts
++++ /dev/null
+@@ -1,17 +0,0 @@
+-export const courseModalities = ['online', 'in-person', 'hybrid'] as const;
+-export const courseStatuses = ['draft', 'active', 'retired'] as const;
+-
+-export interface Course {
+-	readonly id: string;
+-	readonly title: string;
+-	readonly summary: string;
+-	readonly modality: (typeof courseModalities)[number];
+-	readonly status: (typeof courseStatuses)[number];
+-	readonly tags: readonly string[];
+-	readonly createdAt: string;
+-	readonly updatedAt: string;
+-}
+-
+-export interface CourseRepository {
+-	list(): Promise<readonly Course[]>;
+-}
+diff --git a/packages/axc/domain/src/index.ts b/packages/axc/domain/src/index.ts
+index 33dedfc..cf9cd7d 100644
+--- a/packages/axc/domain/src/index.ts
++++ b/packages/axc/domain/src/index.ts
+@@ -2,5 +2,3 @@ import type { Repository } from '@cellix/domain-seedwork/repository';
+ 
+ /** Repositories added in this package implement the Cellix repository contract. */
+ export type DomainRepository<T> = Repository<T>;
+-
+-export { type Course, type CourseRepository, courseModalities, courseStatuses } from './course.ts';
+diff --git a/packages/axc/persistence/package.json b/packages/axc/persistence/package.json
+index 5fe5f91..6fffadc 100644
+--- a/packages/axc/persistence/package.json
++++ b/packages/axc/persistence/package.json
+@@ -23,8 +23,7 @@
+ 		"clean": "rimraf dist tsconfig.tsbuildinfo"
+ 	},
+ 	"dependencies": {
+-		"@cellix/domain-seedwork": "workspace:*",
+-		"@axc/domain": "workspace:*"
++		"@cellix/domain-seedwork": "workspace:*"
+ 	},
+ 	"devDependencies": {
+ 		"@cellix/config-typescript": "workspace:*",
+diff --git a/packages/axc/persistence/src/courses.ts b/packages/axc/persistence/src/courses.ts
+deleted file mode 100644
+index 7cfda38..0000000
+--- a/packages/axc/persistence/src/courses.ts
++++ /dev/null
+@@ -1,129 +0,0 @@
+-import type { Course, CourseRepository } from '@axc/domain';
+-
+-const fixtureCourses: readonly Course[] = [
+-	{
+-		id: 'course-001',
+-		title: 'AI Security Foundations',
+-		summary: 'Introductory course on secure AI-assisted development.',
+-		modality: 'online',
+-		status: 'active',
+-		tags: ['ai', 'security'],
+-		createdAt: '2026-01-15T00:00:00.000Z',
+-		updatedAt: '2026-06-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-002',
+-		title: 'Cloud Deployment Essentials',
+-		summary: 'Learn repeatable infrastructure delivery.',
+-		modality: 'hybrid',
+-		status: 'active',
+-		tags: ['cloud', 'operations'],
+-		createdAt: '2026-03-15T00:00:00.000Z',
+-		updatedAt: '2026-09-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-003',
+-		title: 'Data Privacy Workshop',
+-		summary: 'Practical security controls for personal data.',
+-		modality: 'in-person',
+-		status: 'active',
+-		tags: ['privacy', 'data'],
+-		createdAt: '2026-04-15T00:00:00.000Z',
+-		updatedAt: '2026-07-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-004',
+-		title: 'API Design Fundamentals',
+-		summary: 'Build reliable HTTP interfaces.',
+-		modality: 'online',
+-		status: 'draft',
+-		tags: ['api', 'design'],
+-		createdAt: '2026-05-15T00:00:00.000Z',
+-		updatedAt: '2026-08-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-005',
+-		title: 'Legacy Systems Maintenance',
+-		summary: 'Maintain established enterprise applications.',
+-		modality: 'in-person',
+-		status: 'retired',
+-		tags: ['maintenance'],
+-		createdAt: '2026-06-15T00:00:00.000Z',
+-		updatedAt: '2026-09-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-006',
+-		title: 'Responsible AI',
+-		summary: 'Assess fairness and transparency.',
+-		modality: 'hybrid',
+-		status: 'draft',
+-		tags: ['ai', 'ethics'],
+-		createdAt: '2026-01-15T00:00:00.000Z',
+-		updatedAt: '2026-07-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-007',
+-		title: 'Secure Code Review',
+-		summary: 'Review application changes with confidence.',
+-		modality: 'online',
+-		status: 'active',
+-		tags: ['security', 'review'],
+-		createdAt: '2026-02-15T00:00:00.000Z',
+-		updatedAt: '2026-08-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-008',
+-		title: 'Team Facilitation',
+-		summary: 'Guide productive technical discussions.',
+-		modality: 'in-person',
+-		status: 'draft',
+-		tags: ['leadership'],
+-		createdAt: '2026-03-15T00:00:00.000Z',
+-		updatedAt: '2026-09-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-009',
+-		title: 'Testing Strategies',
+-		summary: 'Design useful automated checks.',
+-		modality: 'hybrid',
+-		status: 'active',
+-		tags: ['testing', 'quality'],
+-		createdAt: '2026-04-15T00:00:00.000Z',
+-		updatedAt: '2026-07-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-010',
+-		title: 'Web Accessibility',
+-		summary: 'Create inclusive web experiences.',
+-		modality: 'online',
+-		status: 'active',
+-		tags: ['web', 'accessibility'],
+-		createdAt: '2026-05-15T00:00:00.000Z',
+-		updatedAt: '2026-08-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-011',
+-		title: 'Network Fundamentals',
+-		summary: 'Understand connected systems.',
+-		modality: 'hybrid',
+-		status: 'retired',
+-		tags: ['network', 'security'],
+-		createdAt: '2026-06-15T00:00:00.000Z',
+-		updatedAt: '2026-09-01T00:00:00.000Z',
+-	},
+-	{
+-		id: 'course-012',
+-		title: 'Python for Analysts',
+-		summary: 'Explore datasets using Python.',
+-		modality: 'online',
+-		status: 'retired',
+-		tags: ['python', 'data'],
+-		createdAt: '2026-01-15T00:00:00.000Z',
+-		updatedAt: '2026-07-01T00:00:00.000Z',
+-	},
+-];
+-
+-/** Isolated sample catalog; no database or external services required. */
+-export function createFixtureCourseRepository(): CourseRepository {
+-	return { list: () => Promise.resolve(fixtureCourses.map((course) => ({ ...course, tags: [...course.tags] }))) };
+-}
+diff --git a/packages/axc/persistence/src/index.ts b/packages/axc/persistence/src/index.ts
+index 362fd40..eee009c 100644
+--- a/packages/axc/persistence/src/index.ts
++++ b/packages/axc/persistence/src/index.ts
+@@ -1,3 +1 @@
+ export type { UnitOfWork } from '@cellix/domain-seedwork/unit-of-work';
+-
+-export { createFixtureCourseRepository } from './courses.ts';
+diff --git a/packages/axc/persistence/tsconfig.json b/packages/axc/persistence/tsconfig.json
+index c21c661..815d56f 100644
+--- a/packages/axc/persistence/tsconfig.json
++++ b/packages/axc/persistence/tsconfig.json
+@@ -6,12 +6,5 @@
+ 		"tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+ 	},
+ 	"include": ["src/**/*.ts"],
+-	"references": [
+-		{
+-			"path": "../../cellix/domain-seedwork"
+-		},
+-		{
+-			"path": "../domain"
+-		}
+-	]
++	"references": [{ "path": "../../cellix/domain-seedwork" }]
+ }
+diff --git a/packages/axc/rest/src/course-query.ts b/packages/axc/rest/src/course-query.ts
+deleted file mode 100644
+index 646972c..0000000
+--- a/packages/axc/rest/src/course-query.ts
++++ /dev/null
+@@ -1,38 +0,0 @@
+-import type { CourseQuery } from '@axc/application-services';
+-
+-const allowedFields = ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort'];
+-
+-export function parseCourseQuery(parameters: URLSearchParams): { query: CourseQuery; error?: never } | { query?: never; error: { code: 'INVALID_QUERY_PARAMETER'; message: string; details: { field: string; message: string }[] } } {
+-	const details: { field: string; message: string }[] = [];
+-	for (const field of new Set(parameters.keys())) {
+-		if (!allowedFields.includes(field)) details.push({ field, message: 'Unknown query parameter.' });
+-		else if (parameters.getAll(field).length > 1) details.push({ field, message: 'Query parameter must appear only once.' });
+-	}
+-	const enumValue = <T extends string>(field: string, allowed: readonly T[], fallback?: T): T | undefined => {
+-		const value = parameters.get(field);
+-		if (value === null) return fallback;
+-		const match = allowed.find((item) => item === value);
+-		if (match === undefined) details.push({ field, message: `${field} must be one of: ${allowed.join(', ')}.` });
+-		return match;
+-	};
+-	const integer = (field: string, fallback: number, max: number): number => {
+-		const value = parameters.get(field);
+-		if (value === null) return fallback;
+-		const number = Number(value);
+-		if (!/^[0-9]+$/.test(value) || !Number.isSafeInteger(number) || number < 1 || number > max) {
+-			details.push({ field, message: field === 'pageSize' ? 'pageSize must be between 1 and 50.' : 'page must be a positive safe integer.' });
+-		}
+-		return number;
+-	};
+-	const modality = enumValue('modality', ['online', 'in-person', 'hybrid'] as const);
+-	const status = enumValue('status', ['draft', 'active', 'retired'] as const);
+-	const sort = enumValue('sort', ['title', 'createdAt', 'updatedAt'] as const, 'title');
+-	const page = integer('page', 1, Number.MAX_SAFE_INTEGER);
+-	const pageSize = integer('pageSize', 10, 50);
+-	if (details.length > 0 || sort === undefined) {
+-		return { error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details } };
+-	}
+-	const q = parameters.get('q')?.trim();
+-	const tag = parameters.get('tag')?.trim();
+-	return { query: { page, pageSize, sort, ...(q ? { q } : {}), ...(tag ? { tag } : {}), ...(modality ? { modality } : {}), ...(status ? { status } : {}) } };
+-}
+diff --git a/packages/axc/rest/src/index.ts b/packages/axc/rest/src/index.ts
+index 7d5ac3e..6f1adab 100644
+--- a/packages/axc/rest/src/index.ts
++++ b/packages/axc/rest/src/index.ts
+@@ -2,7 +2,7 @@ import type { ApplicationServicesFactory } from '@axc/application-services';
+ import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functions';
+ import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
+ import { Hono } from 'hono';
+-import { parseCourseQuery } from './course-query.ts';
++import { z } from 'zod';
+ 
+ export function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {
+ 	const app = new Hono();
+@@ -14,11 +14,96 @@ export function createRestApp(applicationServicesFactory: ApplicationServicesFac
+ 	});
+ 
+ 	app.get('/api/courses', async (c) => {
+-		const parsed = parseCourseQuery(new URL(c.req.url).searchParams);
+-		if (parsed.error) return c.json({ error: parsed.error }, 400);
++		const queryParams = c.req.query();
++
++		const courseQuerySchema = z
++			.object({
++				q: z.string().optional(),
++				modality: z.enum(['online', 'in-person', 'hybrid']).optional(),
++				status: z.enum(['draft', 'active', 'retired']).optional(),
++				tag: z.string().optional(),
++				page: z
++					.string()
++					.transform((v) => parseInt(v, 10))
++					.optional(),
++				size: z
++					.string()
++					.transform((v) => parseInt(v, 10))
++					.optional(),
++				sort: z.enum(['title', 'createdAt', 'updatedAt']).optional(),
++			})
++			.refine(
++				(data) => {
++					if (data.page !== undefined && isNaN(data.page)) return false;
++					if (data.size !== undefined && isNaN(data.size)) return false;
++					return true;
++				},
++				{
++					eschema: 'INVALID_QUERY_PARAMETER',
++					message: 'One or more query parameters are invalid.',
++				},
++			);
++
++		// Manual validation to match the specific error envelope requirement
++		const errors: Array<{ field: string; message: string }> = [];
++
++		if (queryParams.modality && !['online', 'in-person', 'hybrid'].includes(queryParams.modality)) {
++			errors.push({ field: 'modality', message: 'Invalid modality.' });
++		}
++		if (queryParams.status && !['draft', 'active', 'retired'].includes(queryParams.status)) {
++			errors.push({ field: 'status', message: 'Invalid status.' });
++		}
++		if (queryParams.sort && !['title', 'createdAt', 'updatedAt'].includes(queryParams.sort)) {
++			errors.push({ field: 'sort', message: 'Invalid sort field.' });
++		}
++
++		const page = queryParams.page ? parseInt(queryParams.page, 10) : undefined;
++		if (page !== undefined && isNaN(page)) {
++			errors.push({ field: 'page', message: 'page must be a number.' });
++		}
++
++		const pageSize = queryParams.pageSize ? parseInt(queryParams.pageSize, 10) : undefined;
++		if (pageSize !== undefined) {
++			if (isNaN(pageSize)) {
++				errors.push({ field: 'pageSize', message: 'pageSize must be a number.' });
++			} else if (pageSize < 1 || pageSize > 50) {
++				errors.push({ field: 'pageSize', message: 'pageSize must be between 1 and 50.' });
++			}
++		}
++
++		if (errors.length > 0) {
++			return c.json(
++				{
++					error: {
++						code: 'INVALID_QUERY_PARAMETER',
++						message: 'One or more query parameters are invalid.',
++						details: errors,
++					},
++				},
++				{ status: 400 },
++			);
++		}
++
+ 		const authorization = c.req.header('Authorization');
+-		const services = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
+-		return c.json(await services.courses.search(parsed.query));
++		const applicationServices = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
++
++		const result = await applicationServices.courses.search({
++			q: queryParams.q,
++			modality: queryParams.modality as any,
++			status: queryParams.status as any,
++			tag: queryParams.tag,
++			page: page ?? 1,
++			pageSize: pageSize ?? 10,
++			sort: (queryParams.sort as any) ?? 'title',
++		});
++
++		return c.json({
++			items: result.items,
++			page: result.page,
++			size: result.size,
++			totalItems: result.totalItems,
++			totalPages: result.totalPages,
++		});
+ 	});
+ 
+ 	return app;
+diff --git a/pnpm-lock.yaml b/pnpm-lock.yaml
+index d9e850a..48a32c6 100644
+--- a/pnpm-lock.yaml
++++ b/pnpm-lock.yaml
+@@ -1,202 +1,3 @@
+----
+-lockfileVersion: '9.0'
+-
+-importers:
+-
+-  .:
+-    configDependencies: {}
+-    packageManagerDependencies:
+-      '@pnpm/exe':
+-        specifier: 11.11.0
+-        version: 11.11.0
+-      pnpm:
+-        specifier: 11.11.0
+-        version: 11.11.0
+-
+-packages:
+-
+-  '@pnpm/exe@11.11.0':
+-    resolution: {integrity: sha512-OpTrbkAU0Ur8gBwhAT6mbWwlA1bFU8zPcFNdp/img/RqFIc7Dn0j0crW9rz5hxTWo/UBQjy6Sb9jh+N5bRSd+g==}
+-    hasBin: true
+-
+-  '@pnpm/linux-arm64@11.11.0':
+-    resolution: {integrity: sha512-62K/kQY3jaoQ96MNUi0NLcTSSDO2QrtziOA2IK5R/m+DxpSwXbxFSQHYx8oOg0r1+MFVqwuDkFjXe6DyW3y58g==}
+-    cpu: [arm64]
+-    os: [linux]
+-
+-  '@pnpm/linux-x64@11.11.0':
+-    resolution: {integrity: sha512-rwMbNJR+PstRu+ymWoApei1CWrAnsnW3tm+3H8qOxbp8duiaj6u7DxlMzhKbVpFwylxcJdeGwZ5tReBFOVpsdw==}
+-    cpu: [x64]
+-    os: [linux]
+-
+-  '@pnpm/linuxstatic-arm64@11.11.0':
+-    resolution: {integrity: sha512-OcmrMw1hxNee7KTBpE0yToTZziH/SCmJWwjB7YN2NmsxZVPKM2vtOWFdZufW0YN5JffKMaHbPZ2ulgYBM5qAQw==}
+-    cpu: [arm64]
+-    os: [linux]
+-    libc: [musl]
+-
+-  '@pnpm/linuxstatic-x64@11.11.0':
+-    resolution: {integrity: sha512-pWeAYeS+PPah6mXcJbOr+nPwEpyQau4iPcsqNUhTK9G5/qpG5dU1m8oHeIH83PuUUvvdJddLE1PXUkGM+QCI6g==}
+-    cpu: [x64]
+-    os: [linux]
+-    libc: [musl]
+-
+-  '@pnpm/macos-arm64@11.11.0':
+-    resolution: {integrity: sha512-62P8Pe4yvMkdl2nxswCjM5X835i9Judk68CZvv8OnWsm7CVCEZ61SEBnNTpjJ4kXzdayFjRpPwE/jfJSvPaWww==}
+-    cpu: [arm64]
+-    os: [darwin]
+-
+-  '@pnpm/win-arm64@11.11.0':
+-    resolution: {integrity: sha512-yYAx+A1oT+mSgrIzysuAvdYYMYEfAa+z3/UCGY3L5VC9oabs9qi71LbTan1cDui/AadrIvD177k9mV4V38KAJg==}
+-    cpu: [arm64]
+-    os: [win32]
+-
+-  '@pnpm/win-x64@11.11.0':
+-    resolution: {integrity: sha512-ehTuyM5Rrp4ye0SdtAJkUS+9ykfwdDY9SPqiK3+bxXPx3LD5aeDw2EBksTh/xRTgqFdYmoFR86cABFt9yBr0GA==}
+-    cpu: [x64]
+-    os: [win32]
+-
+-  '@reflink/reflink-darwin-arm64@0.1.19':
+-    resolution: {integrity: sha512-ruy44Lpepdk1FqDz38vExBY/PVUsjxZA+chd9wozjUH9JjuDT/HEaQYA6wYN9mf041l0yLVar6BCZuWABJvHSA==}
+-    engines: {node: '>= 10'}
+-    cpu: [arm64]
+-    os: [darwin]
+-
+-  '@reflink/reflink-darwin-x64@0.1.19':
+-    resolution: {integrity: sha512-By85MSWrMZa+c26TcnAy8SDk0sTUkYlNnwknSchkhHpGXOtjNDUOxJE9oByBnGbeuIE1PiQsxDG3Ud+IVV9yuA==}
+-    engines: {node: '>= 10'}
+-    cpu: [x64]
+-    os: [darwin]
+-
+-  '@reflink/reflink-linux-arm64-gnu@0.1.19':
+-    resolution: {integrity: sha512-7P+er8+rP9iNeN+bfmccM4hTAaLP6PQJPKWSA4iSk2bNvo6KU6RyPgYeHxXmzNKzPVRcypZQTpFgstHam6maVg==}
+-    engines: {node: '>= 10'}
+-    cpu: [arm64]
+-    os: [linux]
+-    libc: [glibc]
+-
+-  '@reflink/reflink-linux-arm64-musl@0.1.19':
+-    resolution: {integrity: sha512-37iO/Dp6m5DDaC2sf3zPtx/hl9FV3Xze4xoYidrxxS9bgP3S8ALroxRK6xBG/1TtfXKTvolvp+IjrUU6ujIGmA==}
+-    engines: {node: '>= 10'}
+-    cpu: [arm64]
+-    os: [linux]
+-    libc: [musl]
+-
+-  '@reflink/reflink-linux-x64-gnu@0.1.19':
+-    resolution: {integrity: sha512-jbI8jvuYCaA3MVUdu8vLoLAFqC+iNMpiSuLbxlAgg7x3K5bsS8nOpTRnkLF7vISJ+rVR8W+7ThXlXlUQ93ulkw==}
+-    engines: {node: '>= 10'}
+-    cpu: [x64]
+-    os: [linux]
+-    libc: [glibc]
+-
+-  '@reflink/reflink-linux-x64-musl@0.1.19':
+-    resolution: {integrity: sha512-e9FBWDe+lv7QKAwtKOt6A2W/fyy/aEEfr0g6j/hWzvQcrzHCsz07BNQYlNOjTfeytrtLU7k449H1PI95jA4OjQ==}
+-    engines: {node: '>= 10'}
+-    cpu: [x64]
+-    os: [linux]
+-    libc: [musl]
+-
+-  '@reflink/reflink-win32-arm64-msvc@0.1.19':
+-    resolution: {integrity: sha512-09PxnVIQcd+UOn4WAW73WU6PXL7DwGS6wPlkMhMg2zlHHG65F3vHepOw06HFCq+N42qkaNAc8AKIabWvtk6cIQ==}
+-    engines: {node: '>= 10'}
+-    cpu: [arm64]
+-    os: [win32]
+-
+-  '@reflink/reflink-win32-x64-msvc@0.1.19':
+-    resolution: {integrity: sha512-E//yT4ni2SyhwP8JRjVGWr3cbnhWDiPLgnQ66qqaanjjnMiu3O/2tjCPQXlcGc/DEYofpDc9fvhv6tALQsMV9w==}
+-    engines: {node: '>= 10'}
+-    cpu: [x64]
+-    os: [win32]
+-
+-  '@reflink/reflink@0.1.19':
+-    resolution: {integrity: sha512-DmCG8GzysnCZ15bres3N5AHCmwBwYgp0As6xjhQ47rAUTUXxJiK+lLUxaGsX3hd/30qUpVElh05PbGuxRPgJwA==}
+-    engines: {node: '>= 10'}
+-
+-  detect-libc@2.1.2:
+-    resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
+-    engines: {node: '>=8'}
+-
+-  pnpm@11.11.0:
+-    resolution: {integrity: sha512-RGP2X9gO2A1pvB1L8WPulPYFxzgPwxi7Wy6+FfjNEtScUaTVnpUbQB52TTtsp1HL9RvFDtcAGmvLSTXmhMNIgg==}
+-    engines: {node: '>=22.13'}
+-    hasBin: true
+-
+-snapshots:
+-
+-  '@pnpm/exe@11.11.0':
+-    dependencies:
+-      '@reflink/reflink': 0.1.19
+-      detect-libc: 2.1.2
+-    optionalDependencies:
+-      '@pnpm/linux-arm64': 11.11.0
+-      '@pnpm/linux-x64': 11.11.0
+-      '@pnpm/linuxstatic-arm64': 11.11.0
+-      '@pnpm/linuxstatic-x64': 11.11.0
+-      '@pnpm/macos-arm64': 11.11.0
+-      '@pnpm/win-arm64': 11.11.0
+-      '@pnpm/win-x64': 11.11.0
+-
+-  '@pnpm/linux-arm64@11.11.0':
+-    optional: true
+-
+-  '@pnpm/linux-x64@11.11.0':
+-    optional: true
+-
+-  '@pnpm/linuxstatic-arm64@11.11.0':
+-    optional: true
+-
+-  '@pnpm/linuxstatic-x64@11.11.0':
+-    optional: true
+-
+-  '@pnpm/macos-arm64@11.11.0':
+-    optional: true
+-
+-  '@pnpm/win-arm64@11.11.0':
+-    optional: true
+-
+-  '@pnpm/win-x64@11.11.0':
+-    optional: true
+-
+-  '@reflink/reflink-darwin-arm64@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-darwin-x64@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-linux-arm64-gnu@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-linux-arm64-musl@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-linux-x64-gnu@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-linux-x64-musl@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-win32-arm64-msvc@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink-win32-x64-msvc@0.1.19':
+-    optional: true
+-
+-  '@reflink/reflink@0.1.19':
+-    optionalDependencies:
+-      '@reflink/reflink-darwin-arm64': 0.1.19
+-      '@reflink/reflink-darwin-x64': 0.1.19
+-      '@reflink/reflink-linux-arm64-gnu': 0.1.19
+-      '@reflink/reflink-linux-arm64-musl': 0.1.19
+-      '@reflink/reflink-linux-x64-gnu': 0.1.19
+-      '@reflink/reflink-linux-x64-musl': 0.1.19
+-      '@reflink/reflink-win32-arm64-msvc': 0.1.19
+-      '@reflink/reflink-win32-x64-msvc': 0.1.19
+-
+-  detect-libc@2.1.2: {}
+-
+-  pnpm@11.11.0: {}
+-
+----
+ lockfileVersion: '9.0'
+ 
+ settings:

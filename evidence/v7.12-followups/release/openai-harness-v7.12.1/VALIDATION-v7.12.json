@@ -1,0 +1,32 @@
+{
+  "version": "v7.12",
+  "unit_and_integration_tests": 171,
+  "test_seconds": 7.247,
+  "passed": true,
+  "skipped_tests": 0,
+  "checks": [
+    "Original v7 regressions",
+    "Single-file action and atomic patch failure checks",
+    "Failed provider usage preservation",
+    "Real Node test reporter execution and skipped/undiscovered test rejection",
+    "Real frozen CLI preparation/external evaluation/rechecks/source-tamper rejection",
+    "No-harness comparison quality/usage/conditions gates",
+    "Python syntax and Node syntax checks",
+    "Real installed TypeScript syntax/export/self-import contract checks and planned-target schema restriction",
+    "Per-target retrieval, paged logs and preserved diagnostics after reads/truncation"
+  ],
+  "live_task_a_trials_run": 0,
+  "token_savings_verified": false,
+  "live_model_limitation": "Four live adapter contract checks passed per version on Ollama 0.40.0/gemma4:26b. Full live Task A comparisons remain unrun.",
+  "live_adapter_checks_passed": 4,
+  "live_adapter_tokens": 514,
+  "ollama_version": "0.40.0",
+  "fixed_input_sha256": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "python": "3.9.6",
+  "node": "24.21.0",
+  "typescript_ast_tests": true
+}

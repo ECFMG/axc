@@ -1,0 +1,41 @@
+{
+  "scope": "Current authorized task through latest recorded token snapshot; excludes later work and final response.",
+  "model": "gpt-6.1-sol",
+  "task_start_utc": "2026-10-12T15:30:15.134Z",
+  "baseline": {
+    "timestamp": "2026-10-12T15:30:06.137Z",
+    "counts": {
+      "input_tokens": 37616,
+      "cached_input_tokens": 22784,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 77,
+      "reasoning_output_tokens": 26,
+      "total_tokens": 37693
+    }
+  },
+  "snapshot": {
+    "timestamp": "2026-10-12T15:34:01.308Z",
+    "counts": {
+      "input_tokens": 989222,
+      "cached_input_tokens": 936576,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 5577,
+      "reasoning_output_tokens": 1604,
+      "total_tokens": 994799
+    }
+  },
+  "task_delta": {
+    "input_tokens": 951606,
+    "cached_input_tokens": 913792,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 5500,
+    "reasoning_output_tokens": 1578,
+    "total_tokens": 957106
+  },
+  "record_created_utc": "2026-10-12T15:34:55.998515+00:00",
+  "elapsed_seconds_through_record_creation": 280.9,
+  "estimated_cost": null,
+  "cost_note": "Billed rates, credits and account plan not exposed; no monetary estimate inferred from token counts.",
+  "reasoning_note": "Reasoning output is a subset of output tokens; cached input is a subset of input tokens.",
+  "subagents_used": 0
+}

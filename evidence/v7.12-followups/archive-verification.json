@@ -1,0 +1,17 @@
+{
+  "verified_at": "2026-10-12T15:59:50.285464+00:00",
+  "destination_branch": "df-oai-0-a-out",
+  "reference_commit": "509326658517e3b94482415a0bdd7469db702fc8",
+  "reference_used_read_only": true,
+  "copied_source_files_verified": 138,
+  "baseline_manifest_entries_verified": 303,
+  "new_archive_manifest_entries_verified": 141,
+  "original_baseline_implementation_unchanged": true,
+  "current_application_unchanged": true,
+  "new_model_calls": 0,
+  "new_test_runs": 0,
+  "archive_validation": "Exact-byte source copies, checksum manifests, provider counter sums, named branch guard and reference commit guard passed.",
+  "earlier_usage_record_updated": "Earlier verification final response recovered; unknown interrupted startup remains disclosed.",
+  "historical_usage_missing": "Independent verification log unavailable; original pending snapshot retained.",
+  "commit_hook_policy": "Disable mutating hook for evidence-only commit to preserve exact historical files; recorded failures retained. No passing code validation claim made."
+}
