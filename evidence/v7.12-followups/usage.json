@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "record_updated_at": "2026-10-12T15:59:50.356822+00:00",
+  "record_updated_at": "2026-10-12T16:04:06.883727+00:00",
   "scope": "This archive/commit task: initial measurement inspection, all planning, inspection, packaging, verification, Git operations and reporting. Excludes earlier runs and later follow-up conversations.",
   "measurement": {
     "task_turn_id": "01a130d1-e608-7a80-9c14-d9a7af8043ab",
@@ -16,16 +16,16 @@
     "starting_counter_timestamp": "2026-10-12T15:53:44.721Z",
     "starting_counter_basis": "Fresh session boundary; no pre-task counters, reconstructed zero",
     "ending_cumulative_counters": {
-      "input_tokens": 1589324,
-      "cached_input_tokens": 1496064,
-      "output_tokens": 10232,
-      "reasoning_output_tokens": 1641,
-      "total_tokens": 1599556
+      "input_tokens": 2292912,
+      "cached_input_tokens": 2192000,
+      "output_tokens": 13679,
+      "reasoning_output_tokens": 2774,
+      "total_tokens": 2306591
     },
-    "recorded_through": "2026-10-12T15:59:20.694Z",
+    "recorded_through": "2026-10-12T16:01:29.419Z",
     "method": "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed",
-    "final_response_accounted": false,
-    "task_completed_at": null,
+    "final_response_accounted": true,
+    "task_completed_at": "2026-10-12T16:01:29.423Z",
     "follow_up_usage_excluded": true,
     "session_id": "01a130d1-2b49-77e2-9197-5c52961e9791",
     "baseline_captured_at": "2026-10-12T15:54:00.218415+00:00"
@@ -45,13 +45,13 @@
   "providers": {
     "codex": {
       "recorded": {
-        "input_tokens": 1589324,
-        "cached_input_tokens": 1496064,
-        "output_tokens": 10232,
-        "reasoning_output_tokens": 1641,
-        "total_tokens": 1599556
+        "input_tokens": 2292912,
+        "cached_input_tokens": 2192000,
+        "output_tokens": 13679,
+        "reasoning_output_tokens": 2774,
+        "total_tokens": 2306591
       },
-      "complete": false,
+      "complete": true,
       "cached_input_included_in_input": true,
       "reasoning_output_included_in_output": true
     },
@@ -71,12 +71,10 @@
     "used": false,
     "recorded_total_tokens": 0
   },
-  "combined_recorded_total_tokens": 1599556,
+  "combined_recorded_total_tokens": 2306591,
   "combined_total_label": "Sum across providers for this task; token quantity, not monetary cost. Imported historical measurements excluded.",
-  "completeness_status": "incomplete_final_response_pending",
-  "missing_usage": [
-    "Final assistant response and work after the latest token_count event are pending."
-  ],
+  "completeness_status": "complete",
+  "missing_usage": [],
   "imported_baseline_usage_excluded_from_task": {
     "calls": 19,
     "prompt_eval_count": 230100,

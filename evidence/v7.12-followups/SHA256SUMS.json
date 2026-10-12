@@ -38,6 +38,7 @@
   "independent-codex-verification/usage.json": "ec4e0baeb33f895554e5432e875a3fe1df4b7e448af84ffc685166aa2c425d22",
   "independent-codex-verification/validation-results.json": "e90f70d8ab9b714f2ed5781d0a20d8536684fc2f8db8ecea7e81246f5f78cf51",
   "previous-task-usage-recovery.json": "389e97cf05feaad969f1e213a34f9b60c6ab8d63ff9e2df2c8cb25c9898f68d6",
+  "record-update-usage.json": "1d40c7354e74c944bf395436db6e95240292bd329360c8f7274ec84a26aa8806",
   "release/openai-harness-v7.12.1/CHANGES.md": "e808640d913e6b8a6173434e3e0d69fc6f5b4c1e4e896769163b78e767d17a11",
   "release/openai-harness-v7.12.1/CHECKLIST.md": "d4126f81a93703d2992faff54cf42b89bec0bac2fb397a768a5751ee6ff31b06",
   "release/openai-harness-v7.12.1/CODING_TASKS.md": "a0b3a8db36b170af719a3d919d83fdc100839e68c15e802a450b88041c6f032a",
@@ -140,5 +141,5 @@
   "supplied-reference-material/evaluation-run-record-template.md": "481c2ff9d9852ff5a6dffeb2a7a606356d12618fe4b4bc9393fa50558153d5e8",
   "supplied-reference-material/prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
   "supplied-reference-material/requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
-  "usage.json": "5ea8ebd9319a97fbdf7368b4a68960d5a10a092afbd388d06d01ee110a5035c3"
+  "usage.json": "e015cb0ef7aa58cda0b091509b4c4b4a5b89403cde0284d0f44cec5f8b4f8f2a"
 }
