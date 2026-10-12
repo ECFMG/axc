@@ -12,6 +12,6 @@ if (version.status !== 0) {
 	process.exit(0);
 }
 
-console.log('Snyk: running snyk test --all-projects --org=agentcourses --policy-path=.snyk (local CLI, no monitor, no --remote-repo-url)');
-const test = spawnSync('snyk', ['test', '--all-projects', '--org=agentcourses', '--policy-path=.snyk'], { stdio: 'inherit' });
+console.log('Snyk: running snyk test --all-projects --policy-path=.snyk (local CLI, no monitor, no --remote-repo-url)');
+const test = spawnSync('snyk', ['test', '--all-projects', '--policy-path=.snyk'], { stdio: 'inherit' });
 process.exit(test.status ?? 1);
