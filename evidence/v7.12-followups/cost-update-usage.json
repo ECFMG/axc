@@ -70,5 +70,5 @@
     "Final response and work after latest token_count pending."
   ],
   "recovery": "On next user message run work/update_cost_usage.py before answering; only the original record-update turn is measured, excluding follow-up usage.",
-  "record_updated_at": "2026-10-12T16:10:32.143521+00:00"
+  "record_updated_at": "2026-10-12T16:11:49.119930+00:00"
 }
