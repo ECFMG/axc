@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "calculated_at": "2026-10-12T16:09:55.465713+00:00",
+  "model_rate_basis": "User-supplied GPT-6.1-Sol API list prices",
+  "rates_usd_per_million": {
+    "uncached_input": "2.00",
+    "cached_input": "0.10",
+    "output": "10.00"
+  },
+  "formula": "((input_tokens - cached_input_tokens) * 2.00 + cached_input_tokens * 0.10 + output_tokens * 10.00) / 1000000",
+  "counting_rules": "Cached input is a subset of input; reasoning output is a subset of output. Neither is added twice.",
+  "ollama_baseline_hypothetical_api_equivalent": {
+    "input_tokens": 230100,
+    "cached_input_tokens_used_for_estimate": 0,
+    "uncached_input_tokens": 230100,
+    "output_tokens": 25119,
+    "components_usd": {
+      "uncached_input": "0.4602",
+      "cached_input": "0.00",
+      "output": "0.25119"
+    },
+    "estimated_api_equivalent_usd": "0.71139",
+    "scope": "Historical v7.12 Task A Ollama run, 19 calls",
+    "cached_input_counter_available": false,
+    "assumption": "Use zero cached input for a conservative hypothetical GPT-6.1-Sol API comparison. This is not a measured Ollama hosting cost or billed OpenAI charge."
+  },
+  "completed_codex_archival_task": {
+    "input_tokens": 2292912,
+    "cached_input_tokens_used_for_estimate": 2192000,
+    "uncached_input_tokens": 100912,
+    "output_tokens": 13679,
+    "components_usd": {
+      "uncached_input": "0.201824",
+      "cached_input": "0.2192",
+      "output": "0.13679"
+    },
+    "estimated_api_equivalent_usd": "0.557814",
+    "source": "usage.json",
+    "task_turn_id": "01a130d1-e608-7a80-9c14-d9a7af8043ab",
+    "final_response_accounted": true
+  },
+  "completed_codex_record_update_task": {
+    "input_tokens": 882156,
+    "cached_input_tokens_used_for_estimate": 870656,
+    "uncached_input_tokens": 11500,
+    "output_tokens": 6276,
+    "components_usd": {
+      "uncached_input": "0.023",
+      "cached_input": "0.0870656",
+      "output": "0.06276"
+    },
+    "estimated_api_equivalent_usd": "0.1728256",
+    "source": "record-update-usage.json",
+    "task_turn_id": "01a130db-3fdc-70b2-a15d-7c1655e80c65",
+    "final_response_accounted": true
+  },
+  "two_completed_codex_tasks_combined_estimated_api_equivalent_usd": "0.7306396",
+  "combined_codex_total_tokens": 3195023,
+  "scope_exclusions": "Current cost-correction conversation, earlier tasks and historical Ollama baseline excluded from the combined Codex estimate.",
+  "actual_billed_cost_usd": null,
+  "estimate_note": "Prices are supplied by the user; monetary results are calculated estimates, separate from measured provider token counters."
+}

@@ -26,7 +26,7 @@ This record describes the original measured baseline at commit `5c3b8dc105bb8b3d
 | Cached Tokens | Provider counter unavailable; harness ledger records 0 with verified model unloads |
 | Output Tokens | 25,119; separate reasoning counter unavailable |
 | Total Tokens or Credits Used | 255,219 Ollama Task A tokens across 19 calls, including retries and rejected responses. Request 20 was blocked before inference. Codex coordination usage is separate. |
-| Estimated Cost | Unmeasured; no price inferred from token counts |
+| Estimated Cost | **$0.711390 (~$0.71)** hypothetical GPT-6.1-Sol API equivalent: 230,100 input × $2.00/1M + 25,119 output × $10.00/1M. Cached input was not reported, so this estimate assumes zero cached tokens. Actual local Ollama hosting cost is unmeasured. |
 | Elapsed Time | Agent execution: 1523.39s; total through evaluation since preparation: 1610.04s |
 | Number of Human Interventions / Redirects | Not independently counted for the original baseline. Later manual alignment is not attributed to that baseline. |
 | Reviewer Notes |  |
@@ -70,7 +70,7 @@ This is the operator task that archived existing evidence, not the model's origi
 | Cached Tokens | 2,192,000, included in input; uncached input 100,912 |
 | Output Tokens | 13,679, including 2,774 reasoning output tokens |
 | Total Tokens or Credits Used | 2,306,591 recorded Codex tokens. Zero Ollama calls in this task. Combined recorded task total: 2,306,591 tokens, a sum across providers rather than monetary cost. |
-| Estimated Cost | Approximately $0.558 at user-supplied API list prices ($2.00 uncached input / $0.10 cached input / $10.00 output per 1M tokens). Illustrative API equivalent, not measured ChatGPT billing or a charge. |
+| Estimated Cost | **$0.557814 (~$0.56)** GPT-6.1-Sol API equivalent: 100,912 uncached input × $2.00/1M + 2,192,000 cached input × $0.10/1M + 13,679 output × $10.00/1M. Illustrative estimate, not measured ChatGPT billing. |
 | Projected Token Estimate | 200,000–800,000 Codex tokens; assumed inspection, archival, relevant verification and committing, with no new Ollama inference. Actual usage exceeded the projection. Estimates are excluded from measured totals. |
 | Elapsed Time | 7m 44.702s, 2026-10-12 11:53:44.721–12:01:29.423 EDT, through final task completion |
 | Number of Human Interventions / Redirects | 1 clarification response selecting archival of existing runs/tests; no new baseline run |
@@ -81,3 +81,19 @@ This is the operator task that archived existing evidence, not the model's origi
 Accounting source: local JSONL session `01a130d1-2b49-77e2-9197-5c52961e9791`, original turn `01a130d1-e608-7a80-9c14-d9a7af8043ab`, log `/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T11-52-56-01a130d1-2b49-77e2-9197-5c52961e9791.jsonl`. Fresh-session starting counters were zero. Ending cumulative counters at `2026-10-12T16:01:29.419Z` minus those starting counters yield the recorded usage. Cumulative snapshots were not summed. Scope includes initial measurement inspection, planning, packaging, validation, Git operations and reporting, including the final assistant response. See [completed usage.json](evidence/v7.12-followups/usage.json).
 
 Other accounting remains separate: the original Ollama baseline reports 255,219 tokens; four historical adapter checks report 514 tokens. The overlapping shared retry-accounting aggregate is not added again. Ollama's separate cache/reasoning counters are unavailable. The earlier commit-verification task's final response has been recovered, but its interrupted startup remains unmeasured. The independent verification's original usage snapshot excludes packaging/final-response work and its source log was unavailable for recovery; it remains incomplete. See [earlier-task recovery](evidence/v7.12-followups/previous-task-usage-recovery.json). No missing counters were replaced by estimates.
+
+## Estimated API cost calculation
+
+Rates supplied by the user: **$2.00 input / $0.10 cached input / $10.00 output per 1M tokens**. Since cached tokens are already included in the input count, the calculation is:
+
+`((input − cached input) × 2.00 + cached input × 0.10 + output × 10.00) / 1,000,000`
+
+Reasoning output is already included in output tokens and is not charged again.
+
+| Recorded Scope | Uncached Input | Cached Input Used | Output | Input Cost | Cached Cost | Output Cost | Estimated API Equivalent |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Original v7.12 Ollama baseline, hypothetical GPT API comparison | 230,100 | 0 assumed; provider counter unavailable | 25,119 | $0.460200 | $0.000000 | $0.251190 | **$0.711390 (~$0.71)** |
+| Completed Codex archival task | 100,912 | 2,192,000 | 13,679 | $0.201824 | $0.219200 | $0.136790 | **$0.557814 (~$0.56)** |
+| Completed Codex evaluation-record update | 11,500 | 870,656 | 6,276 | $0.023000 | $0.0870656 | $0.062760 | **$0.1728256 (~$0.17)** |
+
+The two completed Codex tasks total **3,195,023 recorded tokens** and **$0.7306396 (~$0.73)** in estimated API equivalent cost. Both include their final assistant responses. This subtotal excludes the current cost-correction conversation and the separate Ollama baseline comparison. These are calculated estimates at the supplied rates; actual subscription charges and local hosting cost remain unmeasured. Full arithmetic, measurement scopes and assumptions are saved in [cost-estimates.json](evidence/v7.12-followups/cost-estimates.json).

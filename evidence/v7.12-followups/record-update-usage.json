@@ -15,16 +15,16 @@
     "starting_counter_timestamp": "2026-10-12T16:01:29.419Z",
     "starting_counter_basis": "Last pre-task cumulative event",
     "ending_cumulative_counters": {
-      "input_tokens": 2660085,
-      "cached_input_tokens": 2553984,
-      "output_tokens": 17582,
-      "reasoning_output_tokens": 3717,
-      "total_tokens": 2677667
+      "input_tokens": 3175068,
+      "cached_input_tokens": 3062656,
+      "output_tokens": 19955,
+      "reasoning_output_tokens": 4494,
+      "total_tokens": 3195023
     },
-    "recorded_through": "2026-10-12T16:06:00.850Z",
+    "recorded_through": "2026-10-12T16:07:24.146Z",
     "method": "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed",
-    "final_response_accounted": false,
-    "task_completed_at": null,
+    "final_response_accounted": true,
+    "task_completed_at": "2026-10-12T16:07:24.151Z",
     "follow_up_usage_excluded": true,
     "session_id": "01a130d1-2b49-77e2-9197-5c52961e9791"
   },
@@ -39,13 +39,13 @@
   "providers": {
     "codex": {
       "recorded": {
-        "input_tokens": 367173,
-        "cached_input_tokens": 361984,
-        "output_tokens": 3903,
-        "reasoning_output_tokens": 943,
-        "total_tokens": 371076
+        "input_tokens": 882156,
+        "cached_input_tokens": 870656,
+        "output_tokens": 6276,
+        "reasoning_output_tokens": 1720,
+        "total_tokens": 888432
       },
-      "complete": false,
+      "complete": true,
       "cached_input_included_in_input": true,
       "reasoning_output_included_in_output": true
     },
@@ -63,12 +63,10 @@
   "subagents": {
     "used": false
   },
-  "combined_recorded_total_tokens": 371076,
+  "combined_recorded_total_tokens": 888432,
   "combined_total_label": "Sum across providers for this record-update task; not a monetary cost. Original completed archival usage is separate.",
-  "completeness_status": "incomplete_final_response_pending",
-  "missing_usage": [
-    "Final response and work after latest token_count pending."
-  ],
+  "completeness_status": "complete",
+  "missing_usage": [],
   "recovery": "On next user message run work/update_record_usage.py before answering; only the original record-update turn is measured, excluding follow-up usage.",
-  "record_updated_at": "2026-10-12T16:06:43.836009+00:00"
+  "record_updated_at": "2026-10-12T16:08:19.911999+00:00"
 }
