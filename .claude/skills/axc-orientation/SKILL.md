@@ -45,11 +45,31 @@ packages/cellix/*              vendored framework — read, reuse, never edit
    factory builds. Everything a package exposes must be reachable from its `src/index.ts`
    (knip treats `src/index.ts` as the only entry for `packages/axc/*`).
 
+## Layering a new capability
+
+The repo is a DDD stack and every layer is pre-wired (deps, tsconfig references,
+vitest). Build a capability top-down through all of them:
+
+1. `packages/axc/domain` — the entity and its value objects, built on
+   `@cellix/domain-seedwork`. Pure: no IO, no framework imports (test:arch greps
+   every `.ts` under `domain/src`, tests included).
+2. `packages/axc/persistence` — the repository contract for that entity plus an
+   in-memory implementation. May import `@axc/domain`.
+3. `packages/axc/application-services` — the use case: extend
+   `ApplicationServices` and the factory object. May import `@axc/domain` and
+   `@axc/persistence` (already declared, no package.json change needed).
+4. `packages/axc/rest` — a thin Hono handler that only parses the request,
+   calls the service, shapes the response.
+
+Code that skips layers (query logic in the rest handler, entities inlined in
+application-services) will read as misplaced in review.
+
 ## Tests
 
 - Unit: vitest per package. `vitest.config.ts` is 9 lines using `@cellix/config-vitest`;
-  `application-services` already has one, so does `health.test.ts` as a pattern.
-  Run one package: `corepack pnpm --filter @axc/application-services run test`.
+  every `packages/axc/*` layer has one wired (domain, persistence, application-services);
+  `health.test.ts` in application-services is the pattern. Tests live next to the code in
+  the layer they test. Run one package: `corepack pnpm --filter @axc/domain run test`.
 - Acceptance: `packages/axc-verification/acceptance-api/src/features/*.feature` +
   `src/step-definitions/*.steps.ts`. `cucumber.yaml` already globs both — new files need no
   registration. Name the feature/step files after the capability under test (as `healthcheck.feature`
@@ -88,8 +108,9 @@ Cheap equivalents while iterating:
 `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter` (rest); `vitest` via
 `@cellix/config-vitest`; `@serenity-js/*`, `@cucumber/cucumber` (acceptance);
 `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`
-(service-mongoose). Adding a package writes `pnpm-lock.yaml`, which is outside every
-task boundary.
+(service-mongoose). Cross-layer imports (`@axc/domain`, `@axc/persistence`) are already
+declared where allowed. Adding a NEW package still writes `pnpm-lock.yaml`, which is
+outside every task boundary.
 
 ## Do not read `.claude/`
 

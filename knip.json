@@ -41,6 +41,12 @@
 			"project": ["src/**/*.ts"],
 			"ignoreUnresolved": ["progress-bar", "@serenity-js/cucumber", "tsx/cjs"],
 			"ignoreDependencies": ["@serenity-js/cucumber", "tsx"]
+		},
+		"packages/axc/application-services": {
+			"ignoreDependencies": ["@axc/domain", "@axc/persistence"]
+		},
+		"packages/axc/persistence": {
+			"ignoreDependencies": ["@axc/domain"]
 		}
 	},
 	"ignoreWorkspaces": ["packages/cellix/config-typescript"],
