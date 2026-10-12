@@ -31,5 +31,8 @@
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@axc/domain": "workspace:*"
 	}
 }

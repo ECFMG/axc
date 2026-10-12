@@ -1,3 +1,8 @@
+import type { CourseRepository } from '@axc/domain';
+import { createCourseService } from './courses.ts';
+
+export type { CoursePage, CourseQuery } from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -15,14 +20,10 @@ export interface ApiContext {
 	environment: HealthEnvironment;
 }
 
-import { type CourseSearchQuery, CourseSearchService, type PaginatedCourseResponse } from './course-search.js';
-
 export interface ApplicationServices {
+	courses: ReturnType<typeof createCourseService>;
 	health: {
 		getStatus(): HealthStatus;
-	};
-	courses: {
-		search(query: CourseSearchQuery): Promise<PaginatedCourseResponse>;
 	};
 }
 
@@ -40,11 +41,10 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 	return 'local';
 }
 
-export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
-	const courseSearchService = new CourseSearchService();
-
+export function buildApplicationServicesFactory(context: ApiContext, courseRepository: CourseRepository = { list: () => Promise.resolve([]) }): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			courses: createCourseService(courseRepository),
 			health: {
 				getStatus(): HealthStatus {
 					return {
@@ -55,9 +55,6 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						timestamp: new Date().toISOString(),
 					};
 				},
-			},
-			courses: {
-				search: async (query) => courseSearchService.searchCourses(query),
 			},
 		});
 

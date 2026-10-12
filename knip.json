@@ -44,7 +44,7 @@
 		}
 	},
 	"ignoreWorkspaces": ["packages/cellix/config-typescript"],
-	"ignore": ["**/fixtures/**", "**/*.test.ts", "**/*.spec.ts", "**/dist/**", "**/coverage/**", "**/tests/**", ".grok/**", ".github/**", "portless.config.cjs"],
+	"ignore": ["evidence/**", "**/fixtures/**", "**/*.test.ts", "**/*.spec.ts", "**/dist/**", "**/coverage/**", "**/tests/**", ".grok/**", ".github/**", "portless.config.cjs"],
 	"ignoreDependencies": ["@types/*", "ts-scope-trimmer-plugin", "@serenity-js/console-reporter"],
 	"ignoreIssues": {
 		"packages/cellix/archunit-tests/src/validate-compiler-options.ts": ["exports", "types"]

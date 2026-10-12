@@ -2,8 +2,23 @@
 	"extends": "@cellix/config-typescript/node",
 	"compilerOptions": {
 		"noEmit": true,
-		"rootDir": "src"
+		"rootDir": "src",
+		"lib": ["ES2023", "DOM"]
 	},
 	"include": ["src/**/*.ts"],
-	"exclude": []
+	"exclude": [],
+	"references": [
+		{
+			"path": "../../axc/domain"
+		},
+		{
+			"path": "../../axc/application-services"
+		},
+		{
+			"path": "../../axc/persistence"
+		},
+		{
+			"path": "../../axc/rest"
+		}
+	]
 }
