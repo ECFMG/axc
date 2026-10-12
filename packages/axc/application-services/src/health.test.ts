@@ -1,3 +1,4 @@
+import { createInMemoryDataSources } from '@axc/persistence';
 import { describe, expect, it } from 'vitest';
 import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
 
@@ -10,7 +11,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({ environment: 'test', dataSources: createInMemoryDataSources() }).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
@@ -18,5 +19,18 @@ describe('healthcheck', () => {
 		expect(status.projectCode).toBe('axc');
 		expect(status.environment).toBe('test');
 		expect(status.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+	});
+});
+
+describe('buildApplicationServicesFactory', () => {
+	it('exposes the course and enrollment request services for every request', async () => {
+		const factory = buildApplicationServicesFactory({ environment: 'test', dataSources: createInMemoryDataSources() });
+
+		const anonymous = await factory.forRequest();
+		const authorized = await factory.forRequest('Bearer sample-token');
+
+		expect(anonymous.courses.search).toBeTypeOf('function');
+		expect(anonymous.enrollmentRequests.create).toBeTypeOf('function');
+		expect(authorized.enrollmentRequests.list).toBeTypeOf('function');
 	});
 });
