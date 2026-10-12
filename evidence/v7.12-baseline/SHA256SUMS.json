@@ -1,6 +1,8 @@
 {
   "README.md": "cb53b6d3fd9b215bd5037d9e869b917dfd8bdfdfebcaed5f0a6272d489396379",
   "baseline-selection-original.json": "5ca1f0670ead55ff15fd7a50160b2a0631f08ecf55e4c374c1ffa61835519269",
+  "commit-verification-2026-10-12.json": "bd78d95e47199ebe3e3f2df09b5a7bf84a6fe2ff17e45426b108751b99f62d6c",
+  "commit-verification-usage-2026-10-12.json": "7dac1b15bfc7adf0b3d9985026e0040b80c3df30b8f284f8f4d3eaef810ecff7",
   "dependency-audit.json": "4b2d84ad540d33936eda7ee6477f0190f1940b6e255759b8109a552cf393af40",
   "dependency-audit.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "dependency-install.log": "54bd12acdad058bd5b6b138f0cb342a747be8d7326a3be461785d6e661ef98b8",
@@ -23,7 +25,6 @@
   "harness/README.md": "ef3c18682a5965caa7a8677d2e8805575e34e51e4cccadfbd604a8c36fdc9846",
   "harness/REFACTOR_AND_STRESS.md": "9c3ccd881c2252190539d2f8b01c2959b1603c725cda01d662f592047cb6e237",
   "harness/RUNTIME_SETUP.md": "8dcc59f50853c8ff48f0a00a81e41733953f2762bd0de68f66148a9b5294604b",
-  "harness/SHA256SUMS.json": "9438917b89e8f6a0d066513317c1faba25e1a898dbac2644447fc9a206361b2f",
   "harness/TEACHING_DEMO.md": "15df33b7631e650e817c16012423172ce1fa003efc43eb82e4b935f024d95f24",
   "harness/TEACHING_PROMPT.md": "a8aad8ae15e6f9a89ec26bef2539a605c0728a001529ffe7a9162c910ce36586",
   "harness/TEACHING_README.md": "4151847a872e5b8c75b60753358540422ff2783cf79929ae8c27a63d2526a8aa",
@@ -123,7 +124,6 @@
   "task-a/frozen/README.md": "ef3c18682a5965caa7a8677d2e8805575e34e51e4cccadfbd604a8c36fdc9846",
   "task-a/frozen/REFACTOR_AND_STRESS.md": "9c3ccd881c2252190539d2f8b01c2959b1603c725cda01d662f592047cb6e237",
   "task-a/frozen/RUNTIME_SETUP.md": "8dcc59f50853c8ff48f0a00a81e41733953f2762bd0de68f66148a9b5294604b",
-  "task-a/frozen/SHA256SUMS.json": "9438917b89e8f6a0d066513317c1faba25e1a898dbac2644447fc9a206361b2f",
   "task-a/frozen/TEACHING_DEMO.md": "15df33b7631e650e817c16012423172ce1fa003efc43eb82e4b935f024d95f24",
   "task-a/frozen/TEACHING_PROMPT.md": "a8aad8ae15e6f9a89ec26bef2539a605c0728a001529ffe7a9162c910ce36586",
   "task-a/frozen/TEACHING_README.md": "4151847a872e5b8c75b60753358540422ff2783cf79929ae8c27a63d2526a8aa",
@@ -298,7 +298,7 @@
   "task-a/task-definition.json": "c64c4cc6ae9b56154348fe79552dcfd81bed86eef88446fb95ccf5c7f5d04676",
   "task-a/trial.json": "af6cfe77909de8b505a1df59fa0954804778925e04fe315fefba116a245b2e1a",
   "task-a-execute.log": "8684aaaf4afb06d502ade094ff42c5efab8308a5e0d9f7587a3711ed18375521",
-  "usage.json": "2a39866e80d800dbf99201a2e4af1d1bb76ac5c8ae31ce305805af779c96b190",
+  "usage.json": "1b270149836e85759c5ffd6c29058bb0a997c4bf50d974dfb3b442d50f5a247f",
   "v7.12-regression-complete.log": "343620382620c5533a2d20ded1acb4b04e54ab3818ef02cc1d8084d7f98a7ef3",
   "v7.12-regression-current.log": "f88b6532b2524e354f10bc9e958f1bcc67688d44af6cbb97d30c3dd5f135e62f",
   "v7.12-regression-verified.log": "f6ed4dd1cba511cfef4662a894d534a6baafb8b827c84f4dcc38e6496efeaba4"

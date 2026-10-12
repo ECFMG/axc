@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "record_updated_at": "2026-10-12T13:35:59.255104+00:00",
+  "record_updated_at": "2026-10-12T14:52:20.355457+00:00",
   "scope": "This commit task: inspection, planning, packaging, validation, Git operations and reporting. Excludes previous chats, previously initiated independent baseline inference, and later follow-up turns.",
   "measurement": {
     "session_id": "01a13047-6a3b-7443-9023-96b5c4aeb892",
     "task_turn_id": "01a13048-550d-7e40-a897-d7f78798a9ae",
-    "source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T09-22-29-01a13047-6a3b-7443-9023-96b5c4aeb892.jsonl",
+    "source_log": "/Users/dfortun/.codex/archived_sessions/rollout-2026-10-12T09-22-29-01a13047-6a3b-7443-9023-96b5c4aeb892.jsonl",
     "task_started_at": "2026-10-12T13:23:29.347Z",
     "baseline_captured_at": "2026-10-12T13:23:51.699760+00:00",
     "starting_counter_source": "Fresh session; no pre-task token_count events. Initial total equals initial last_token_usage, confirming zero prior cumulative usage.",
-    "recorded_through": "2026-10-12T13:35:46.291Z",
+    "recorded_through": "2026-10-12T13:38:57.972Z",
     "starting_cumulative_counters": {
       "input_tokens": 0,
       "cached_input_tokens": 0,
@@ -18,15 +18,16 @@
       "total_tokens": 0
     },
     "ending_cumulative_counters": {
-      "input_tokens": 3226917,
-      "cached_input_tokens": 3125504,
-      "output_tokens": 15826,
-      "reasoning_output_tokens": 3848,
-      "total_tokens": 3242743
+      "input_tokens": 4228804,
+      "cached_input_tokens": 4115712,
+      "output_tokens": 20332,
+      "reasoning_output_tokens": 5638,
+      "total_tokens": 4249136
     },
     "method": "Ending cumulative counters minus starting cumulative counters; snapshots are not summed.",
-    "final_response_accounted": false,
-    "follow_up_usage_excluded": true
+    "final_response_accounted": true,
+    "follow_up_usage_excluded": true,
+    "source_log_at_original_capture": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T09-22-29-01a13047-6a3b-7443-9023-96b5c4aeb892.jsonl"
   },
   "projected_estimate": {
     "codex_total_tokens_range": [
@@ -42,13 +43,13 @@
   "providers": {
     "codex": {
       "recorded": {
-        "input_tokens": 3226917,
-        "cached_input_tokens": 3125504,
-        "output_tokens": 15826,
-        "reasoning_output_tokens": 3848,
-        "total_tokens": 3242743
+        "input_tokens": 4228804,
+        "cached_input_tokens": 4115712,
+        "output_tokens": 20332,
+        "reasoning_output_tokens": 5638,
+        "total_tokens": 4249136
       },
-      "complete": false,
+      "complete": true,
       "cached_input_is_subset_of_input": true,
       "reasoning_output_is_subset_of_output": true
     },
@@ -69,12 +70,10 @@
     "used": false,
     "recorded_total_tokens": 0
   },
-  "combined_recorded_total_tokens": 3242743,
+  "combined_recorded_total_tokens": 4249136,
   "combined_total_label": "Sum of recorded Codex and newly initiated Ollama tokens for this task; not a monetary cost. Imported baseline counters are separate.",
-  "completeness_status": "incomplete_final_response_pending",
-  "missing_usage": [
-    "Final assistant response and any model continuations after the last recorded token_count event are pending."
-  ],
+  "completeness_status": "complete",
+  "missing_usage": [],
   "recovery": "On the next user message, run work/update_usage.py. It restricts accounting to the original task boundary, excluding follow-up usage. Update committed copy separately if requested.",
   "imported_baseline_usage_not_in_task_total": {
     "scope": "Previously initiated v7.12 baseline Task A run, imported evidence; excluded from the current commit task token total.",
@@ -93,5 +92,19 @@
     "retries_and_rejected_responses_included": true,
     "per_call_counters_verified_against_saved_responses": true,
     "new_inference_calls_initiated_by_commit_task": 0
-  }
+  },
+  "imported_historical_adapter_usage_not_in_task_total": {
+    "passed": 4,
+    "total": 4,
+    "input_tokens": 405,
+    "output_tokens": 109,
+    "total_tokens": 514,
+    "source": "harness/LIVE_OLLAMA_CHECKS.json",
+    "separate_from_task_a": true
+  },
+  "combined_recorded_task_and_imported_baseline_tokens": 4504355,
+  "combined_task_and_imported_baseline_label": "Sum across providers and different scopes: this Codex commit task plus the complete previously initiated Ollama Task A baseline. Not a monetary cost or a same-boundary task total. Historical adapter checks excluded.",
+  "missing_provider_breakdowns": [
+    "Ollama baseline and historical adapter calls: independent provider cached-input and reasoning-output counters unavailable. Input/output totals are recorded."
+  ]
 }
