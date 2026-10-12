@@ -64,6 +64,24 @@ vitest). Build a capability top-down through all of them:
 Code that skips layers (query logic in the rest handler, entities inlined in
 application-services) will read as misplaced in review.
 
+House file shapes (how CellixJS codebases lay a context out — match these):
+
+```
+domain/src/domain/contexts/<context>/<entity>/
+  <entity>.aggregate.ts        class extends AggregateRoot; `<Entity>Props extends
+                               DomainEntityProps`; a readonly `<Entity>EntityReference` view
+  <entity>.value-objects.ts    one named class per constrained value; status/kind maps as
+                               `const X = {...} as const` + derived union type
+  <entity>.repository.ts       interface extending the seedwork `Repository<T>` with
+                               `getNewInstance(...)` and `getById(id)`
+  <entity>.aggregate.test.ts   colocated; same for value-objects
+  index.ts                     re-exports the folder
+```
+
+persistence implements the repository contract (in-memory here); application-services
+exposes one use-case entry per capability; rest stays a parser-caller-shaper, with its
+own unit test (rest is test-wired too).
+
 ## Tests
 
 - Unit: vitest per package. `vitest.config.ts` is 9 lines using `@cellix/config-vitest`;

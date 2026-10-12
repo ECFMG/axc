@@ -6,4 +6,6 @@ packages/axc/domain/vitest.config.ts
 packages/axc/persistence/package.json
 packages/axc/persistence/tsconfig.json
 packages/axc/persistence/vitest.config.ts
+packages/axc/rest/package.json
+packages/axc/rest/vitest.config.ts
 pnpm-lock.yaml
