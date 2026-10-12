@@ -1,0 +1,11 @@
+{
+  "kind": "hono-in-memory",
+  "checks": [
+    {
+      "name": "endpoint/setup",
+      "passed": false,
+      "error": "Expected successful course endpoint\n\n404 !== 200\n"
+    }
+  ],
+  "passed": false
+}

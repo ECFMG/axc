@@ -1,0 +1,18 @@
+{
+  "reference_url": "https://github.com/ECFMG/axc/tree/hac-oai-0-a-out",
+  "reference_branch": "hac-oai-0-a-out",
+  "reference_head_before": "509326658517e3b94482415a0bdd7469db702fc8",
+  "read_only": true,
+  "use": "Evaluation Run Record field structure only; no reference implementation or measurements reused.",
+  "destination_branch": "df-oai-0-a-out",
+  "destination_head_before": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "harness_version": "v7.12",
+  "harness_archive": "/Users/dfortun/Documents/Codex/2026-10-08/how-x20/outputs/openai-harness-v7.12.zip",
+  "harness_archive_sha256": "368dd567252cb4a4b8dc77ef537f1fd8450f2d6101cc45ac65d2ba7616cd1c6f",
+  "frozen_task_inputs": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943"
+  },
+  "repetitions": 1,
+  "historical_evidence_note": "Existing live adapter checks and regression results are preserved separately from the fresh Task A run."
+}

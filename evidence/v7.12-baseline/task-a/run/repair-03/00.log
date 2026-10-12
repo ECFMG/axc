@@ -1,0 +1,111 @@
+packages/axc/application-services/src/course-fixtures.ts:1:23 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━
+
+  ! Several of these imports are unused.
+  
+  > 1 │ import { type Course, CourseModality, CourseStatus } from './course-types';
+      │                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    2 │ 
+    3 │ export const COURSE_FIXTURES: Course[] = [
+  
+  i Unused imports might be the result of an incomplete refactoring.
+  
+  i Unsafe fix: Remove the unused imports.
+  
+    1 │ import·{·type·Course,·CourseModality,·CourseStatus·}·from·'./course-types';
+      │                       -----------------------------                        
+
+packages/axc/application-services/src/course-search.ts:29:5 lint/suspicious/noConfusingLabels ━━━━━━━━━━
+
+  ! Unexpected label.
+  
+    27 │ 			// Tag filter (case-insensitive)
+    28 │ 			if (tag) {
+  > 29 │ 				theTag: const searchTag = tag.toLowerCase();
+       │ 				^^^^^^
+    30 │ 				if (!course.tags.some((t) => t.toLowerCase() === searchTag)) return false;
+    31 │ 			}
+  
+  i Only loops should be labeled.
+    The use of labels for other statements is suspicious and unfamiliar.
+  
+
+packages/axc/application-services/src/course-search.ts:2:15 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━
+
+  ! Several of these imports are unused.
+  
+    1 │ import { COURSE_FIXTURES } from './course-fixtures.js';
+  > 2 │ import type { Course, CourseSearchError, CourseSearchQuery, CourseSortField, PaginatedCourseResponse, ValidationError } from './course-types';
+      │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    3 │ 
+    4 │ export class CourseSearchService {
+  
+  i Unused imports might be the result of an incomplete refactoring.
+  
+  i Unsafe fix: Remove the unused imports.
+  
+    2 │ import·type·{·Course,·CourseSearchError,·CourseSearchQuery,·CourseSortField,·PaginatedCourseResponse,·ValidationError·}·from·'./course-types';
+      │               ---------------------------                                                             ----------------                        
+
+packages/axc/application-services/src/course-search.ts:29:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Lexical declaration cannot appear in a single-statement context
+  
+    27 │ 			// Tag filter (case-insensitive)
+    28 │ 			if (tag) {
+  > 29 │ 				theTag: const searchTag = tag.toLowerCase();
+       │ 				        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    30 │ 				if (!course.tags.some((t) => t.toLowerCase() === searchTag)) return false;
+    31 │ 			}
+  
+  i Wrap this declaration in a block statement
+  
+
+packages/axc/application-services/src/course-search.ts:9:2 lint/suspicious/useAwait ━━━━━━━━━━━━━━━━
+
+  × This async function lacks an await expression.
+  
+     7 │ 	 * This implementation is stateless and uses local fixtures.
+     8 │ 	 */
+   > 9 │ 	public async searchCourses(query: CourseSearchQuery): Promise<PaginatedCourseResponse> {
+       │ 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 10 │ 		const { q, modality, status, tag, page = 1, pageSize = 10, sort = 'title' as CourseSortField } = query;
+        ...
+  > 62 │ 		};
+  > 63 │ 	}
+       │ 	^
+    64 │ }
+    65 │ 
+  
+  i Remove this async modifier, or add an await expression in the function.
+  
+     7 │ 	 * This implementation is stateless and uses local fixtures.
+     8 │ 	 */
+   > 9 │ 	public async searchCourses(query: CourseSearchQuery): Promise<PaginatedCourseResponse> {
+       │ 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 10 │ 		const { q, modality, status, tag, page = 1, pageSize = 10, sort = 'title' as CourseSortField } = query;
+        ...
+  > 62 │ 		};
+  > 63 │ 	}
+       │ 	^
+    64 │ }
+    65 │ 
+  
+  i Async functions without await expressions may not need to be declared async.
+  
+
+packages/axc/application-services/src/course-search.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Code formatting aborted due to parsing errors. To format code with errors, enable the 'formatter.formatWithErrors' option.
+  
+
+Skipped 5 suggested fixes.
+If you wish to apply the suggested (unsafe) fixes, use the command biome check --write --unsafe
+
+Checked 3 files in 16ms. No fixes applied.
+Found 3 errors.
+Found 3 warnings.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while applying fixes.
+  
+

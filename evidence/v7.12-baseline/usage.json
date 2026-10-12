@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "record_updated_at": "2026-10-12T13:35:59.255104+00:00",
+  "scope": "This commit task: inspection, planning, packaging, validation, Git operations and reporting. Excludes previous chats, previously initiated independent baseline inference, and later follow-up turns.",
+  "measurement": {
+    "session_id": "01a13047-6a3b-7443-9023-96b5c4aeb892",
+    "task_turn_id": "01a13048-550d-7e40-a897-d7f78798a9ae",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T09-22-29-01a13047-6a3b-7443-9023-96b5c4aeb892.jsonl",
+    "task_started_at": "2026-10-12T13:23:29.347Z",
+    "baseline_captured_at": "2026-10-12T13:23:51.699760+00:00",
+    "starting_counter_source": "Fresh session; no pre-task token_count events. Initial total equals initial last_token_usage, confirming zero prior cumulative usage.",
+    "recorded_through": "2026-10-12T13:35:46.291Z",
+    "starting_cumulative_counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "ending_cumulative_counters": {
+      "input_tokens": 3226917,
+      "cached_input_tokens": 3125504,
+      "output_tokens": 15826,
+      "reasoning_output_tokens": 3848,
+      "total_tokens": 3242743
+    },
+    "method": "Ending cumulative counters minus starting cumulative counters; snapshots are not summed.",
+    "final_response_accounted": false,
+    "follow_up_usage_excluded": true
+  },
+  "projected_estimate": {
+    "codex_total_tokens_range": [
+      800000,
+      2000000
+    ],
+    "assumptions": "Rough planning estimate for 20\u201340 model continuations reading repository/run records, packaging evidence, validation, commit and reporting; no inference-based estimation call. Estimated after initial inspection, not a pre-task estimate.",
+    "new_ollama_tokens": 0,
+    "assumptions_ollama": "No new inference calls planned. Existing v7.12 run continues independently; its recorded counters will be preserved separately.",
+    "existing_baseline_token_budget": 300000,
+    "existing_baseline_budget_is_estimate": false
+  },
+  "providers": {
+    "codex": {
+      "recorded": {
+        "input_tokens": 3226917,
+        "cached_input_tokens": 3125504,
+        "output_tokens": 15826,
+        "reasoning_output_tokens": 3848,
+        "total_tokens": 3242743
+      },
+      "complete": false,
+      "cached_input_is_subset_of_input": true,
+      "reasoning_output_is_subset_of_output": true
+    },
+    "ollama": {
+      "new_calls_initiated_by_this_task": 0,
+      "calls": [],
+      "recorded": {
+        "prompt_eval_count": 0,
+        "eval_count": 0,
+        "total_tokens": 0,
+        "cached_input_tokens": null
+      },
+      "complete": true,
+      "cached_input_note": "No task inference calls; provider cache counters are not applicable."
+    }
+  },
+  "subagents": {
+    "used": false,
+    "recorded_total_tokens": 0
+  },
+  "combined_recorded_total_tokens": 3242743,
+  "combined_total_label": "Sum of recorded Codex and newly initiated Ollama tokens for this task; not a monetary cost. Imported baseline counters are separate.",
+  "completeness_status": "incomplete_final_response_pending",
+  "missing_usage": [
+    "Final assistant response and any model continuations after the last recorded token_count event are pending."
+  ],
+  "recovery": "On the next user message, run work/update_usage.py. It restricts accounting to the original task boundary, excluding follow-up usage. Update committed copy separately if requested.",
+  "imported_baseline_usage_not_in_task_total": {
+    "scope": "Previously initiated v7.12 baseline Task A run, imported evidence; excluded from the current commit task token total.",
+    "source_ledger": "task-a/run/provider-usage.json",
+    "source_responses": "task-a/run/response-*.json",
+    "calls": 19,
+    "input_tokens": 230100,
+    "output_tokens": 25119,
+    "total_tokens": 255219,
+    "cached_tokens_in_harness_ledger": 0,
+    "provider_cached_input_tokens": null,
+    "cache_note": "Ledger records zero and verified unloads. Ollama does not supply an independent cached-input token counter.",
+    "reasoning_output_tokens": null,
+    "reasoning_note": "Included in model output when present; no separate provider counter supplied.",
+    "complete": true,
+    "retries_and_rejected_responses_included": true,
+    "per_call_counters_verified_against_saved_responses": true,
+    "new_inference_calls_initiated_by_commit_task": 0
+  }
+}

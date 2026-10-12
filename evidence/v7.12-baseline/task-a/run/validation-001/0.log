@@ -1,0 +1,266 @@
+$ turbo run test test:acceptance --env-mode=loose
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running test, test:acceptance in 21 packages
+   • Remote caching disabled
+
+@cellix/server-mongodb-memory-mock-seedwork:build: cache miss, executing a13cf53c0192c3c1
+@cellix/api-services-spec:build: cache hit, replaying logs c45c605256ad5f9e
+@cellix/config-vitest:build: cache hit, replaying logs 51cb58d9d5d991b5
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 5ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/archunit-tests:test: cache miss, executing 963e80fa62dd12bc
+@cellix/config-vitest:test: cache miss, executing 5cf075e3ae32626a
+@cellix/local-dev:test: cache miss, executing b647048694623074
+@cellix/config-rolldown:test: cache miss, executing 1d60a15287cf667a
+@cellix/domain-seedwork:test: cache miss, executing afa95f50e6fb7b97
+@cellix/api-core:test: cache miss, executing c9de1820fc5dab71
+@axc/application-services:test: cache miss, executing 04d15efe608f6282
+@cellix/api-core:build: cache hit, replaying logs f86d653698420813
+@cellix/domain-seedwork:build: cache miss, executing ac9a5a36778426ab
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 15ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/local-dev:build: cache hit, replaying logs ff7cb06cb242bea7
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 16ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs a9acb227c9d0ad20
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/archunit-tests:build: cache miss, executing 38a41880fadf9617
+@cellix/local-dev:test: $ vitest run --silent --reporter=dot
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/config-rolldown:test: $ vitest run --silent --reporter=dot
+@axc/application-services:test: $ vitest run --silent --reporter=dot
+@cellix/domain-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/archunit-tests:test: $ vitest run
+@cellix/api-core:test: $ vitest run --silent --reporter=dot
+@cellix/config-vitest:test: $ vitest run --silent --reporter=dot
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 72ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 24ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 6ms. No fixes applied.
+@axc/application-services:build: cache miss, executing 3b727c1acec6d548
+@cellix/domain-seedwork:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:build: cache miss, executing a6804a89433f958d
+@cellix/config-vitest:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-vitest:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/cellix/config-vitest
+@cellix/config-vitest:test: 
+@axc/application-services:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:test: cache miss, executing 93ea50d0b5d25d20
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/config-rolldown:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-rolldown:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/api-core:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/api-core:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@axc/application-services:test: Testing types with tsc and vue-tsc is an experimental feature.
+@axc/application-services:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/cellix/config-rolldown
+@cellix/config-rolldown:test: 
+@cellix/api-core:test: 
+@cellix/api-core:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/cellix/api-core
+@cellix/api-core:test: 
+@cellix/local-dev:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/local-dev:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/domain-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/domain-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@axc/application-services:test: 
+@axc/application-services:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services
+@axc/application-services:test: 
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/cellix/local-dev
+@cellix/local-dev:test: 
+@cellix/config-vitest:test: ··
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  Test Files  2 passed (2)
+@cellix/config-vitest:test:       Tests  2 passed (2)
+@cellix/config-vitest:test: Type Errors  no errors
+@cellix/config-vitest:test:    Start at  09:35:10
+@cellix/config-vitest:test:    Duration  618ms (transform 26ms, setup 0ms, import 50ms, tests 2ms, environment 0ms, typecheck 339ms)
+@cellix/config-vitest:test: 
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/cellix/archunit-tests
+@cellix/archunit-tests:test: 
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/cellix/domain-seedwork
+@cellix/domain-seedwork:test: 
+@cellix/serenity-framework:test: cache miss, executing b6ce5827872e9ba0
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: src/course-fixtures.ts:1:23 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   ! Several of these imports are unused.
+@axc/application-services:build:   
+@axc/application-services:build:   > 1 │ import { type Course, CourseModality, CourseStatus } from './course-types';
+@axc/application-services:build:       │                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:     2 │ 
+@axc/application-services:build:     3 │ export const COURSE_FIXTURES: Course[] = [
+@axc/application-services:build:   
+@axc/application-services:build:   i Unused imports might be the result of an incomplete refactoring.
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Remove the unused imports.
+@axc/application-services:build:   
+@axc/application-services:build:     1 │ import·{·type·Course,·CourseModality,·CourseStatus·}·from·'./course-types';
+@axc/application-services:build:       │                       -----------------------------                        
+@axc/application-services:build: 
+@axc/application-services:build: src/course-search.test.ts:2:8 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   ! This import is unused.
+@axc/application-services:build:   
+@axc/application-services:build:     1 │ import { describe, expect, it } from 'vitest';
+@axc/application-services:build:   > 2 │ import { COURSE_FIXTURES } from './course-fixtures.js';
+@axc/application-services:build:       │        ^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:     3 │ import { CourseSearchService } from './course-search.js';
+@axc/application-services:build:     4 │ import type { CourseSearchQuery, CourseSortField } from './course-types.js';
+@axc/application-services:build:   
+@axc/application-services:build:   i Unused imports might be the result of an incomplete refactoring.
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Remove the unused imports.
+@axc/application-services:build:   
+@axc/application-services:build:      1  1 │   import { describe, expect, it } from 'vitest';
+@axc/application-services:build:      2    │ - import·{·COURSE_FIXTURES·}·from·'./course-fixtures.js';
+@axc/application-services:build:      3  2 │   import { CourseSearchService } from './course-search.js';
+@axc/application-services:build:      4  3 │   import type { CourseSearchQuery, CourseSortField } from './course-types.js';
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/course-search.test.ts:4:13 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   ! This import is unused.
+@axc/application-services:build:   
+@axc/application-services:build:     2 │ import { COURSE_FIXTURES } from './course-fixtures.js';
+@axc/application-services:build:     3 │ import { CourseSearchService } from './course-search.js';
+@axc/application-services:build:   > 4 │ import type { CourseSearchQuery, CourseSortField } from './course-types.js';
+@axc/application-services:build:       │             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:     5 │ 
+@axc/application-services:build:     6 │ describe('CourseSearchService', () => {
+@axc/application-services:build:   
+@axc/application-services:build:   i Unused imports might be the result of an incomplete refactoring.
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Remove the unused imports.
+@axc/application-services:build:   
+@axc/application-services:build:      2  2 │   import { COURSE_FIXTURES } from './course-fixtures.js';
+@axc/application-services:build:      3  3 │   import { CourseSearchService } from './course-search.js';
+@axc/application-services:build:      4    │ - import·type·{·CourseSearchQuery,·CourseSortField·}·from·'./course-types.js';
+@axc/application-services:build:      5  4 │   
+@axc/application-services:build:      6  5 │   describe('CourseSearchService', () => {
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/course-search.ts:29:5 lint/suspicious/noConfusingLabels ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   ! Unexpected label.
+@axc/application-services:build:   
+@axc/application-services:build:     27 │ 			// Tag filter (case-insensitive)
+@axc/application-services:build:     28 │ 			if (tag) {
+@axc/application-services:build:   > 29 │ 				theTag: const searchTag = tag.toLowerCase();
+@axc/application-services:build:        │ 				^^^^^^
+@axc/application-services:build:     30 │ 				if (!course.tags.some((t) => t.toLowerCase() === searchTag)) return false;
+@axc/application-services:build:     31 │ 			}
+@axc/application-services:build:   
+@axc/application-services:build:   i Only loops should be labeled.
+@axc/application-services:build:     The use of labels for other statements is suspicious and unfamiliar.
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/course-search.ts:2:15 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   ! Several of these imports are unused.
+@axc/application-services:build:   
+@axc/application-services:build:     1 │ import { COURSE_FIXTURES } from './course-fixtures.js';
+@axc/application-services:build:   > 2 │ import type { Course, CourseSearchError, CourseSearchQuery, CourseSortField, PaginatedCourseResponse, ValidationError } from './course-types';
+@axc/application-services:build:       │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:     3 │ 
+@axc/application-services:build:     4 │ export class CourseSearchService {
+@axc/application-services:build:   
+@axc/application-services:build:   i Unused imports might be the result of an incomplete refactoring.
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Remove the unused imports.
+@axc/application-services:build:   
+@axc/application-services:build:     2 │ import·type·{·Course,·CourseSearchError,·CourseSearchQuery,·CourseSortField,·PaginatedCourseResponse,·ValidationError·}·from·'./course-types';
+@axc/application-services:build:       │               ---------------------------                                                             ----------------                        
+@axc/application-services:build: 
+@axc/application-services:build: src/course-search.ts:29:13 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   × Lexical declaration cannot appear in a single-statement context
+@axc/application-services:build:   
+@axc/application-services:build:     27 │ 			// Tag filter (case-insensitive)
+@axc/application-services:build:     28 │ 			if (tag) {
+@axc/application-services:build:   > 29 │ 				theTag: const searchTag = tag.toLowerCase();
+@axc/application-services:build:        │ 				        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:     30 │ 				if (!course.tags.some((t) => t.toLowerCase() === searchTag)) return false;
+@axc/application-services:build:     31 │ 			}
+@axc/application-services:build:   
+@axc/application-services:build:   i Wrap this declaration in a block statement
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/course-search.ts:9:2 lint/suspicious/useAwait ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   × This async function lacks an await expression.
+@axc/application-services:build:   
+@axc/application-services:build:      7 │ 	 * This implementation is stateless and uses local fixtures.
+@axc/application-services:build:      8 │ 	 */
+@axc/application-services:build:    > 9 │ 	public async searchCourses(query: CourseSearchQuery): Promise<PaginatedCourseResponse> {
+@axc/application-services:build:        │ 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:   > 10 │ 		const { q, modality, status, tag, page = 1, pageSize = 10, sort = 'title' as CourseSortField } = query;
+@axc/application-services:build:         ...
+@axc/application-services:build:   > 62 │ 		};
+@axc/application-services:build:   > 63 │ 	}
+@axc/application-services:build:        │ 	^
+@axc/application-services:build:     64 │ }
+@axc/application-services:build:     65 │ 
+@axc/application-services:build:   
+@axc/application-services:build:   i Remove this async modifier, or add an await expression in the function.
+@axc/application-services:build:   
+@axc/application-services:build:      7 │ 	 * This implementation is stateless and uses local fixtures.
+@axc/application-services:build:      8 │ 	 */
+@axc/application-services:build:    > 9 │ 	public async searchCourses(query: CourseSearchQuery): Promise<PaginatedCourseResponse> {
+@axc/application-services:build:        │ 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:   > 10 │ 		const { q, modality, status, tag, page = 1, pageSize = 10, sort = 'title' as CourseSortField } = query;
+@axc/application-services:build:         ...
+@axc/application-services:build:   > 62 │ 		};
+@axc/application-services:build:   > 63 │ 	}
+@axc/application-services:build:        │ 	^
+@axc/application-services:build:     64 │ }
+@axc/application-services:build:     65 │ 
+@axc/application-services:build:   
+@axc/application-services:build: Checked 6 files in 20ms. No fixes applied.
+@axc/application-services:build: Found 2 errors.
+@axc/application-services:build: Found 5 warnings.
+@axc/application-services:build:   i Async functions without await expressions may not need to be declared async.
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: lint ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   × Some errors were emitted while running checks.
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: [ELIFECYCLE] Command failed with exit code 1.
+@axc/application-services:build: [ELIFECYCLE] Command failed with exit code 1.
+@cellix/serenity-framework:build: cache miss, executing 4bf49c48690b4c82
+@cellix/event-bus-seedwork-node:build: [ELIFECYCLE] Command failed.
+@cellix/api-core:test: ··································[ELIFECYCLE] Test failed. See above for more details.
+@axc/application-services:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/config-rolldown:test: ····[ELIFECYCLE] Test failed. See above for more details.
+@cellix/domain-seedwork:test: ·[ELIFECYCLE] Test failed. See above for more details.
+@cellix/local-dev:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/archunit-tests:test: [ELIFECYCLE] Test failed. See above for more details.
+ ERROR  @axc/application-services#build: command (/Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services) /Users/dfortun/Documents/Codex/2026-09-28/bui/work/v7-tools/bin/pnpm run build exited (1)
+
+ Tasks:    9 successful, 20 total
+Cached:    5 cached, 20 total
+  Time:    3.139s 
+Failed:    @axc/application-services#build
+
+ ERROR  run failed: command  exited (1)
+[ELIFECYCLE] Test failed. See above for more details.

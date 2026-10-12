@@ -1,0 +1,39 @@
+$ knip
+Unlisted dependencies (2)
+node-fetch  apps/api/test/courses.test.mjs:3:20
+zod         packages/axc/rest/src/index.ts:5:20
+Configuration hints (33)
+**/*.test.ts                                                       knip.json  Remove from ignore                 
+**/*.spec.ts                                                       knip.json  Remove from ignore                 
+**/dist/**                                                         knip.json  Remove from ignore                 
+**/coverage/**                                                     knip.json  Remove from ignore                 
+**/tests/**                                                        knip.json  Remove from ignore                 
+.grok/**                                                           knip.json  Remove from ignore                 
+.github/**                                                         knip.json  Remove from ignore                 
+portless.config.cjs                                                knip.json  Remove from ignore                 
+@testing-library/react   packages/cellix/serenity-framework        knip.json  Remove from ignoreDependencies     
+playwright               packages/cellix/serenity-framework        knip.json  Remove from ignoreDependencies     
+react                    packages/cellix/serenity-framework        knip.json  Remove from ignoreDependencies     
+func                                                               knip.json  Remove from ignoreBinaries         
+serenity-bdd                                                       knip.json  Remove from ignoreBinaries         
+zip                                                                knip.json  Remove from ignoreBinaries         
+progress-bar             packages/axc-verification/acceptance-api  knip.json  Remove from ignoreUnresolved       
+@serenity-js/cucumber    packages/axc-verification/acceptance-api  knip.json  Remove from ignoreUnresolved       
+tsx/cjs                  packages/axc-verification/acceptance-api  knip.json  Remove from ignoreUnresolved       
+vitest.config.ts         packages/axc/service-mongoose             knip.json  Refine entry pattern (no matches)  
+vitest.config.ts         packages/axc/persistence                  knip.json  Refine entry pattern (no matches)  
+vitest.config.ts         packages/axc/domain                       knip.json  Refine entry pattern (no matches)  
+vitest.config.ts         packages/axc/rest                         knip.json  Refine entry pattern (no matches)  
+src/**/*.{ts,tsx}        apps/docs                                 knip.json  Refine project pattern (no matches)
+src/index.ts             packages/axc/service-mongoose             knip.json  Remove redundant entry pattern     
+src/index.ts             packages/cellix/mongoose-seedwork         knip.json  Remove redundant entry pattern     
+src/index.ts             apps/api                                  knip.json  Remove redundant entry pattern     
+vitest.config.ts         packages/axc-verification/archunit-tests  knip.json  Remove redundant entry pattern     
+src/index.ts             packages/axc/persistence                  knip.json  Remove redundant entry pattern     
+src/index.ts             packages/axc/domain                       knip.json  Remove redundant entry pattern     
+src/index.ts             packages/axc/rest                         knip.json  Remove redundant entry pattern     
+docusaurus.config.ts     apps/docs                                 knip.json  Remove redundant entry pattern     
+sidebars.ts              apps/docs                                 knip.json  Remove redundant entry pattern     
+src/index.ts             packages/axc/application-services         knip.json  Remove redundant entry pattern     
+...1 more similar hints                                                                                          
+[ELIFECYCLE] Command failed with exit code 1.

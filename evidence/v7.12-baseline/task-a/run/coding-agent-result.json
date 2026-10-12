@@ -1,0 +1,18 @@
+{
+  "variant": "relevant_context",
+  "passed_local_checks": false,
+  "reason": "Run token budget reached before next generation",
+  "calls": 19,
+  "usage_complete": true,
+  "changed_files": [
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.test.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "seconds": 1523.253756416
+}

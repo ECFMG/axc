@@ -1,0 +1,175 @@
+$ vitest run --silent --reporter=dot --reporter=json --outputFile=/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/validation-001/submitted/tests-01.json
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+
+ RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services
+
+x·xxxx··xx··
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/course-search.test.ts [ src/course-search.test.ts ]
+Error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mLexical declaration cannot appear in a single-statement context
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/course-search.ts:29:13 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m29 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249me[0m[38;5;249mT[0m[38;5;249ma[0m[38;5;249mg[0m[38;5;249m:[0m[38;5;249m [0mconst searchTag = tag.toLowerCase();
+ [38;5;240m   │[0m                   ──────────────────┬─────────────────  
+ [38;5;240m   │[0m                                     ╰─────────────────── 
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: Wrap this declaration in a block statement
+[38;5;246m────╯[0m
+
+  Plugin: vite:oxc
+  File: /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services/src/course-search.ts
+ ❯ transformWithOxc ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:7208:19
+ ❯ TransformPluginContext.transform ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:7280:26
+ ❯ EnvironmentPluginContainer.transform ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:8172:51
+ ❯ loadAndTransform ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:19634:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/11]⎯
+
+ FAIL  src/health.test.ts [ src/health.test.ts ]
+Error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mLexical declaration cannot appear in a single-statement context
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/course-search.ts:29:13 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m29 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249mt[0m[38;5;249mh[0m[38;5;249me[0m[38;5;249mT[0m[38;5;249ma[0m[38;5;249mg[0m[38;5;249m:[0m[38;5;249m [0mconst searchTag = tag.toLowerCase();
+ [38;5;240m   │[0m                   ──────────────────┬─────────────────  
+ [38;5;240m   │[0m                                     ╰─────────────────── 
+ [38;5;240m   │[0m 
+ [38;5;240m   │[0m [38;5;115mHelp[0m: Wrap this declaration in a block statement
+[38;5;246m────╯[0m
+
+  Plugin: vite:oxc
+  File: /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services/src/course-search.ts
+ ❯ transformWithOxc ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:7208:19
+ ❯ TransformPluginContext.transform ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:7280:26
+ ❯ EnvironmentPluginContainer.transform ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:8172:51
+ ❯ loadAndTransform ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:19634:26
+ ❯ fetchModule ../../../node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:35529:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/11]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Keyword Search (q) > returns courses matching title case-insensitively
+TypeCheckError: Parameter 'c' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:13:31
+     11|    const result = await service.searchCourses({ q: 'SECURITY' });
+     12|    expect(result.items.length).toBeGreaterThan(0);
+     13|    expect(result.items.every((c) => c.title.toLowerCase().includes('se…
+       |                               ^
+     14|   });
+     15|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Keyword Search (q) > returns courses matching title case-insensitively
+TypeCheckError: Parameter 't' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:13:144
+     11|    const result = await service.searchCourses({ q: 'SECURITY' });
+     12|    expect(result.items.length).toBeGreaterThan(0);
+     13|    expect(result.items.every((c) => c.title.toLowerCase().includes('se…
+       |                                                                                                                                                ^
+     14|   });
+     15|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Filters > filters by modality
+TypeCheckError: Parameter 'c' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:26:31
+     24|   it('filters by modality', async () => {
+     25|    const result = await service.searchCourses({ modality: 'online' });
+     26|    expect(result.items.every((c) => c.modality === 'online')).toBe(tru…
+       |                               ^
+     27|   });
+     28|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Filters > filters by status
+TypeCheckError: Parameter 'c' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:31:31
+     29|   it('filters by status', async () => {
+     30|    const result = await service.searchCourses({ status: 'retired' });
+     31|    expect(result.items.every((c) => c.status === 'retired')).toBe(true…
+       |                               ^
+     32|   });
+     33|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Filters > filters by tag case-insensitively
+TypeCheckError: Parameter 'c' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:36:31
+     34|   it('filters by tag case-insensitively', async () => {
+     35|    const result = await service.searchCourses({ tag: 'AI' });
+     36|    expect(result.items.every((c) => c.tags.some((t) => t.toLowerCase()…
+       |                               ^
+     37|   });
+     38|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Filters > filters by tag case-insensitively
+TypeCheckError: Parameter 't' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:36:50
+     34|   it('filters by tag case-insensitively', async () => {
+     35|    const result = await service.searchCourses({ tag: 'AI' });
+     36|    expect(result.items.every((c) => c.tags.some((t) => t.toLowerCase()…
+       |                                                  ^
+     37|   });
+     38|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Filters > combines q, modality, and status
+TypeCheckError: Parameter 't' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:48:132
+     46|
+     47|    for (const course of result.items) {
+     48|     const matchesQ = course.title.toLowerCase().includes('ai') || cour…
+       |                                                                                                                                    ^
+     49|     expect(matchesQ).toBe(true);
+     50|     expect(course.modality).toBe('online');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Sorting > sorts by title by default
+TypeCheckError: Parameter 'c' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:75:37
+     73|   it('sorts by title by default', async () => {
+     74|    const result = await service.searchCourses({});
+     75|    const titles = result.items.map((c) => c.title);
+       |                                     ^
+     76|    const sortedTitles = [...titles].sort((a, b) => a.localeCompare(b));
+     77|    expect(titles).toEqual(sortedTitles);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/11]⎯
+
+ FAIL  src/course-search.test.ts > CourseSearchService > Sorting > sorts by createdAt
+TypeCheckError: Parameter 'c' implicitly has an 'any' type.
+ ❯ src/course-search.test.ts:82:36
+     80|   it('sorts by createdAt', async () => {
+     81|    const result = await service.searchCourses({ sort: 'createdAt' });
+     82|    const dates = result.items.map((c) => new Date(c.createdAt).getTime…
+       |                                    ^
+     83|    const sortedDates = [...dates].sort((a, b) => a - b);
+     84|    expect(dates).toEqual(sortedDates);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/11]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  7 failed | 5 passed (12)
+Type Errors  7 failed
+   Start at  09:35:22
+   Duration  385ms (transform 66ms, setup 0ms, import 0ms, tests 0ms, environment 0ms, typecheck 174ms)
+
+JSON report written to /Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/validation-001/submitted/tests-01.json
+[ELIFECYCLE] Test failed. See above for more details.

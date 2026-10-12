@@ -1,0 +1,4 @@
+$ node scripts/snyk-verify.mjs
+Snyk: SKIPPED
+Reason: the snyk CLI is not available on PATH.
+This is NON-BLOCKING for the first scaffold only. Install the Snyk CLI and authenticate before treating security results as enforced.

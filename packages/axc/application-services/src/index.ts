@@ -15,9 +15,14 @@ export interface ApiContext {
 	environment: HealthEnvironment;
 }
 
+import { type CourseSearchQuery, CourseSearchService, type PaginatedCourseResponse } from './course-search.js';
+
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		search(query: CourseSearchQuery): Promise<PaginatedCourseResponse>;
 	};
 }
 
@@ -36,6 +41,8 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const courseSearchService = new CourseSearchService();
+
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -48,6 +55,9 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						timestamp: new Date().toISOString(),
 					};
 				},
+			},
+			courses: {
+				search: async (query) => courseSearchService.searchCourses(query),
 			},
 		});
 

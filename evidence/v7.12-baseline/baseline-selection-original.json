@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "effective_date": "2026-10-12",
+  "comparison_baseline": "v7.12",
+  "baseline_description": "v7.12 harness, explicitly selected by the user for df-oai-0-a-out on October 12, 2026.",
+  "baseline_archive": "/Users/dfortun/Documents/Codex/2026-10-08/how-x20/outputs/openai-harness-v7.12.zip",
+  "baseline_archive_sha256": "368dd567252cb4a4b8dc77ef537f1fd8450f2d6101cc45ac65d2ba7616cd1c6f",
+  "previous_comparison_baseline": "v7",
+  "candidate_versions": [
+    "v7.13"
+  ],
+  "comparison_policy": "Use v7.12 as the baseline for subsequent iterations. Preserve its exact Task A inputs, repository starting state, model, settings and validation checks; identify differences explicitly.",
+  "historical_evidence": "/Users/dfortun/Documents/Codex/2026-10-08/how-x20/outputs/v7-token-rundown.json",
+  "historical_evidence_policy": "Preserve existing recorded token counters and results. Older no-harness comparison labels reflect the previous baseline decision.",
+  "new_benchmark_run_performed": false,
+  "baseline_run_status": "running",
+  "destination_branch": "df-oai-0-a-out",
+  "reference_branch_read_only": "hac-oai-0-a-out",
+  "superseded_baseline_selection": {
+    "effective_date": "2026-10-12",
+    "comparison_baseline": "v7",
+    "baseline_archive": "/Users/dfortun/Downloads/openai-harness-v7.zip",
+    "baseline_archive_sha256": "d89db4e9618fdce093fcdc0f006f231a9792068fc5861b51531b211aed97351f"
+  }
+}

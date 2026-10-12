@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/coding_agent.py",
+    "--variant",
+    "relevant_context"
+  ],
+  "exit_code": 1,
+  "timeout": false,
+  "seconds": 1523.392798958
+}

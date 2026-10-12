@@ -1,0 +1,59 @@
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @axc/application-services, @axc/rest, @cellix/api-core, @cellix/api-services-spec, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/local-dev
+   • Running build in 9 packages
+   • Remote caching disabled
+
+@cellix/api-services-spec:build: cache hit, replaying logs c45c605256ad5f9e
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 5ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/config-vitest:build: cache hit, replaying logs 51cb58d9d5d991b5
+@cellix/config-vitest:build: $ tsgo --build
+@axc/application-services:build: cache miss, executing b141070df6d01141
+@cellix/api-core:build: cache hit, replaying logs f86d653698420813
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 15ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs a9acb227c9d0ad20
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/local-dev:build: cache hit, replaying logs ff7cb06cb242bea7
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 16ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: src/course-fixtures.ts:1:23 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   ! Several of these imports are unused.
+@axc/application-services:build:   
+@axc/application-services:build:   > 1 │ import { type Course, CourseModality, CourseStatus } from './course-types';
+@axc/application-services:build:       │                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+@axc/application-services:build:     2 │ 
+@axc/application-services:build:     3 │ export const COURSE_FIXTURES: Course[] = [
+@axc/application-services:build:   
+@axc/application-services:build:   i Unused imports might be the result of an incomplete refactoring.
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Remove the unused imports.
+@axc/application-services:build:   
+@axc/application-services:build:     1 │ import·{·type·Course,·CourseModality,·CourseStatus·}·from·'./course-types';
+@axc/application-services:build:       │                       -----------------------------                        
+@axc/application-services:build: 
+@axc/application-services:build: Checked 4 files in 8ms. No fixes applied.
+@axc/application-services:build: Found 1 warning.
+@axc/application-services:build: $ tsgo --build
+@axc/application-services:build: src/course-fixtures.ts(1,23): error TS6133: 'CourseModality' is declared but its value is never read.
+@axc/application-services:build: src/course-fixtures.ts(1,39): error TS6133: 'CourseStatus' is declared but its value is never read.
+@axc/application-services:build: src/course-fixtures.ts(1,59): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './course-types.js'?
+@axc/application-services:build: [ELIFECYCLE] Command failed with exit code 1.
+ ERROR  @axc/application-services#build: command (/Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services) /Users/dfortun/.local/share/mise/shims/pnpm run build exited (1)
+
+ Tasks:    5 successful, 6 total
+Cached:    5 cached, 6 total
+  Time:    1.042s 
+Failed:    @axc/application-services#build
+
+ ERROR  run failed: command  exited (1)
