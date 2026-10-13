@@ -1,4 +1,5 @@
 import { type CourseListQueryInput, type CourseListResult, listCourses } from './courses.ts';
+import { createEnrollmentRequestService, type EnrollmentRequestService } from './enrollment-requests.ts';
 
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
@@ -24,6 +25,7 @@ export interface ApplicationServices {
 	courses: {
 		list(query: CourseListQueryInput): CourseListResult;
 	};
+	enrollmentRequests: EnrollmentRequestService;
 }
 
 export interface ApplicationServicesFactory {
@@ -41,6 +43,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const enrollmentRequests = createEnrollmentRequestService();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -59,6 +62,7 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					return listCourses(query);
 				},
 			},
+			enrollmentRequests,
 		});
 
 	return { forRequest };
@@ -66,3 +70,5 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 
 export type { CourseListQueryInput, CourseListResult } from './courses.ts';
 export { InvalidQueryParameterError } from './courses.ts';
+export type { EnrollmentRequestListQueryInput } from './enrollment-requests.ts';
+export { ApplicationError } from './enrollment-requests.ts';
