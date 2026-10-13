@@ -1,3 +1,11 @@
+import { InMemoryCourseRepository, InMemoryEnrollmentRequestRepository } from '@axc/persistence';
+import { type CourseSearchResult, searchCourses } from './courses.ts';
+import { type EnrollmentRequestService, enrollmentRequestService } from './enrollment-requests.ts';
+
+export { DomainError } from '@axc/domain';
+export type { CourseSearchResult } from './courses.ts';
+export type { EnrollmentRequestService } from './enrollment-requests.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -19,6 +27,10 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: {
+		search(query: Record<string, string | undefined>): Promise<CourseSearchResult>;
+	};
+	enrollmentRequests: EnrollmentRequestService;
 }
 
 export interface ApplicationServicesFactory {
@@ -36,6 +48,9 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	// In-memory stores live for the process, so state survives across requests.
+	const courses = new InMemoryCourseRepository();
+	const enrollmentRequests = enrollmentRequestService(courses, new InMemoryEnrollmentRequestRepository());
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -49,6 +64,8 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses: { search: (query) => searchCourses(courses, query) },
+			enrollmentRequests,
 		});
 
 	return { forRequest };
