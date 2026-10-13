@@ -65,7 +65,10 @@ def main():
         cmd = strip_heredocs(raw)
         for pattern, reason in cfg.get("bash_deny", []):
             try:
-                if re.search(pattern, cmd, re.I):
+                # re.M: ^-anchored rules must also match after a newline —
+                # re.M: ^-anchored rules must also match after a newline;
+                # 'echo hi; <nl> git reset --hard' is two commands, not one.
+                if re.search(pattern, cmd, re.I | re.M):
                     vault_log("guard", f"BLOCKED `{cmd[:120]}` — {reason}")
                     deny(EVENT, f"Blocked by guard hook: {reason} "
                                 f"Ask the user to run it themselves.")
@@ -73,7 +76,7 @@ def main():
                 continue
         for pattern, reason in cfg.get("bash_ask", []):
             try:
-                if re.search(pattern, cmd, re.I):
+                if re.search(pattern, cmd, re.I | re.M):
                     ask(EVENT, f"Guard hook wants confirmation: {reason}")
             except re.error:
                 continue
@@ -127,9 +130,18 @@ def main():
                             f"{', '.join(boundary[:6])}. Boundary violations "
                             f"are scored — do the work inside the boundary or "
                             f"tell the user why it cannot be done there.")
+        # Path rules are matched against the project-relative path as well as
+        # the absolute one, so a rule can anchor on the repo root (^package\.json$)
+        # instead of matching every package.json in the tree.
+        try:
+            from _common import project_dir as _pd
+            _root = _pd(event).replace("\\", "/").rstrip("/")
+            _rel = norm[len(_root) + 1:] if norm.startswith(_root + "/") else norm
+        except Exception:
+            _rel = norm   # never let the relative-path convenience fail the hook open
         for pattern, reason in cfg.get("path_deny", []):
             try:
-                if re.search(pattern, norm, re.I):
+                if re.search(pattern, norm, re.I) or re.search(pattern, _rel, re.I):
                     vault_log("guard", f"BLOCKED write to `{path}` — {reason}")
                     deny(EVENT, f"Blocked by guard hook: {reason} "
                                 f"Path: {path}")
@@ -137,7 +149,7 @@ def main():
                 continue
         for pattern, reason in cfg.get("path_ask", []):
             try:
-                if re.search(pattern, norm, re.I):
+                if re.search(pattern, norm, re.I) or re.search(pattern, _rel, re.I):
                     ask(EVENT, f"Guard hook wants confirmation: {reason}")
             except re.error:
                 continue
