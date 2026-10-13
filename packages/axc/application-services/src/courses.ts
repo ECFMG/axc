@@ -288,6 +288,10 @@ function parseCourseListQuery(input: CourseListQueryInput): CourseListQuery {
 	return query;
 }
 
+export function getCourseById(id: string): Course | undefined {
+	return COURSE_CATALOG.find((course) => course.id === id);
+}
+
 export function listCourses(input: CourseListQueryInput): CourseListResult {
 	const query = parseCourseListQuery(input);
 	const matched = COURSE_CATALOG.filter((course) => matchesCourse(course, query)).sort((left, right) => compareCourses(left, right, query.sort));

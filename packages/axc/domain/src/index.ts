@@ -5,3 +5,5 @@ export type DomainRepository<T> = Repository<T>;
 
 export type { Course, CourseModality, CourseSortField, CourseStatus } from './course.ts';
 export { COURSE_MODALITIES, COURSE_SORT_FIELDS, COURSE_STATUSES } from './course.ts';
+export type { EnrollmentRequest, EnrollmentRequestStatus, StatusHistoryEntry } from './enrollment-request.ts';
+export { canTransitionEnrollmentStatus, isActiveEnrollmentRequestStatus, isEnrollmentRequestStatus } from './enrollment-request.ts';
