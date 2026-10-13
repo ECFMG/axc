@@ -32,6 +32,11 @@ ignore:
         reason: No upgrade or patch available
         expires: 2026-10-28T22:36:50.274Z
         created: 2026-09-28T22:36:50.278Z
+  SNYK-JS-URIJS-20341609:
+    - '*':
+        reason: No upgrade or patch available; latest published uri-js is 4.4.1
+        expires: 2026-10-28T22:36:50.274Z
+        created: 2026-10-13T14:37:00.000Z
   SNYK-JS-UUID-16133035:
     - '*':
         reason: uuid 11+ is ESM-only and breaks the Azure Functions bundle
