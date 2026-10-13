@@ -17,7 +17,7 @@ const FIELD_TYPES = new Set<FieldType>(['string', 'boolean', 'date', 'number', '
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CAMEL = /^[a-z][A-Za-z0-9]*$/;
 
-export interface ParsedArgs {
+interface ParsedArgs {
 	get(key: string): string | undefined;
 	list(key: string): string[];
 	has(key: string): boolean;
@@ -69,7 +69,7 @@ export function parsePermission(token: string): string {
 	return name;
 }
 
-export interface FeatureShapeInput {
+interface FeatureShapeInput {
 	fields: FieldSpec[];
 	permissions: string[];
 	nested: NestedSpec[];
@@ -174,7 +174,15 @@ function readList(value: unknown, key: string): unknown[] {
 	return value;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+interface JsonObject {
+	fields?: unknown;
+	permissions?: unknown;
+	nested?: unknown;
+	name?: unknown;
+	type?: unknown;
+}
+
+function isRecord(value: unknown): value is JsonObject {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 

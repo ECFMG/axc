@@ -10,20 +10,5 @@
 		"graphql": "packages/axc/graphql/src"
 	},
 	"apiComposition": "apps/api/src/index.ts",
-	"hostFunctions": ["buildApplicationServicesFactory", "resolveEnvironment"],
-	"agentAccess": {
-		"packages/cellix/**": false,
-		"apps/api/src/index.ts": true,
-		"apps/**": false
-	},
-	"writable": [
-		"packages/axc/domain/src/**",
-		"packages/axc/application-services/src/**",
-		"packages/axc/persistence/src/**",
-		"packages/axc/rest/src/**",
-		"packages/axc/graphql/src/**",
-		"packages/axc/data-sources-mongoose-models/src/models/**",
-		"package.json",
-		"packages/axc/**/package.json"
-	]
+	"hostFunctions": ["buildApplicationServicesFactory", "resolveEnvironment"]
 }

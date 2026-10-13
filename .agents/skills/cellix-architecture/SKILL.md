@@ -87,7 +87,7 @@ Then build:
 - The new service on the health host, `packages/axc/application-services/src/index.ts`. Add it beside `health` on `ApplicationServices` and return it from `buildApplicationServicesFactory`. Keep `health.getStatus`
 - The context factory's ports, when the action needs more than `DataSources`
 
-When that behavior is in place, run `pnpm run build`. Lint only checks file shape. The build is what shows the slice compiles. Generate finishing is not that check.
+When that behavior is in place, run `pnpm run verify`. That command runs Cellix lint, then typecheck and build. Lint only checks file shape. Generate finishing is not that check. `pnpm run verify` is the last check before the work is done.
 
 ## Testing
 
@@ -105,13 +105,9 @@ Edits outside that list are denied. Shell redirects, `rm`, `mv`, `cp`, `mkdir`, 
 
 ## After every edit
 
-```bash
-pnpm --filter @cellix/lint lint:cellix
-pnpm exec biome check --write <files>
-pnpm run build
-```
+The last check is `pnpm run verify`. It runs `pnpm run lint` first, which is Biome and `pnpm --filter @cellix/lint lint:cellix`, then typecheck, build, and the rest of the gate.
 
-`Cellix lint: ok` is the bar. A violation names the file, the rule, what was found, and the expected shape. Fix the file. Do not weaken the rule.
+`Cellix lint: ok` is the lint bar inside that command. A violation names the file, the rule, what was found, and the expected shape. Fix the file. Do not weaken the rule. Do not finish on lint or build alone.
 
 ## File body
 

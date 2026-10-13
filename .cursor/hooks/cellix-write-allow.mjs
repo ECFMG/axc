@@ -43,7 +43,7 @@ function deny(message) {
 
 function loadConfig(start) {
 	try {
-		return JSON.parse(readFileSync(path.join(start, 'cellix-lint.config.json'), 'utf8'));
+		return JSON.parse(readFileSync(path.join(start, 'ocom-write.config.json'), 'utf8'));
 	} catch {
 		return {};
 	}
