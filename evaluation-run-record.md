@@ -14,7 +14,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Run Type | Baseline |
 | Harness Engineering Used | None |
 | Config / Diff Notes | Usage is the Grok 4.7 high-fast dashboard delta. Before: cache read 5,802,112; cache write 0; input 377,545; output 98,290; total 6,277,947. After: cache read 11,607,808; cache write 0; input 619,339; output 161,605; total 12,388,752. |
-| Branch / Commit | eval/cursor-grok-ethan-n-task-a-baseline |
+| Branch / Commit | en-cur-0-a-out |
 | Requirements Completed / Attempted | 11 / 11 (A1–A11). `GET /api/courses` implements keyword, modality, status, and tag filters, default pagination (`page` 1, `pageSize` 10, max 50), sort (`title`, `createdAt`, `updatedAt`), HTTP 400 `INVALID_QUERY_PARAMETER`, a 12-course fixture, tests, and course documentation. |
 | Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12), from the implementation plus the passing acceptance and unit tests. |
 | Tests Passed / Failed | `pnpm run verify` exited 0. Acceptance: 8 course scenarios passed, 1 healthcheck passed, 0 failed. New unit tests: `@axc/rest` 14 passed, `@axc/application-services` 22 passed. Existing suite packages in the same run also passed, with 0 failures. |
