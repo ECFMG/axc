@@ -1,0 +1,27 @@
+Task A completed: TS-A-CATALOG-SEARCH
+
+Implementation: axc/ on branch task-a-catalog-search, commit f3fa66fdb2672b6817520e338a030ba1d8fcfb16
+Baseline: fe47c38d32376c5e8bcd1d67838160064fd5de99
+Portable source: task-a-source.zip. Reviewable change: task-a.patch.
+API documentation: axc/apps/docs/docs/courses.md (also linked in the docs sidebar).
+
+Requirements satisfied: A1-A11 and A-AC1 through A-AC12.
+- Course model with all eight required fields and twelve varied local fixtures.
+- GET /api/courses through Hono and the existing Azure Functions composition root.
+- Case-insensitive title/summary/tag keyword search; modality/status/exact-tag filters combined with AND.
+- Default pagination 1/10, maximum pageSize 50, filtered totals, no-match and beyond-last-page responses.
+- Ascending title/createdAt/updatedAt sorting; consistent 400 envelope for invalid query parameters.
+- Success, search-field isolation, every enum, two positive filter combinations, pagination, all sorts, validation, no matches, response independence, host integration and authorization forwarding tested.
+- Full API documentation including defaults, success/error bodies, edge behavior and local validation commands.
+
+Validation: all required checks pass. Full suite: 700 Vitest tests, 3 API Node tests, and 1 health acceptance scenario. Architecture: 19 tests. Independent oracle: 29 Hono checks and 29 Azure host checks. Submitted-test gate: 56 new Vitest cases and 3 Node cases, all executed and passed; documentation gate passes. Harness self-tests: 171 passed with no skips. Lint, build, type checking, format checks and diff checks pass. See validation.json and adjacent logs for commands and evidence.
+
+Source selection: the supplied ZIP is an evaluation harness, with no AXC application source. The local /Users/dfortun/axc repository already had an earlier implementation; this run uses an isolated clone of its immediately preceding baseline fe47c38. No prior Task A solution was copied. Harness configuration is reference material; its provider settings and model-generation workflow were not run. The two user-named Task A documents supplied the specification. provenance.json records source hashes and packaged-document comparisons. All archive manifest hashes match. Application changes stay inside allowed paths; no dependencies, protected configuration, authentication, vendored Cellix packages or external integrations changed.
+
+Limitations: the catalog intentionally uses local sample fixtures and an in-memory scan. Dependency restoration initially lacked an offline tarball, so validation reused the machine's existing installation while preserving workspace links and the lockfile. Local HTTP validation required localhost permission. No implementation or validation blockers remain.
+
+Projected usage: 250,000 total tokens (range 150,000-500,000), assuming one agent, a runnable local sample and roughly 10-20 model calls including context and reporting. This projection is separate from actual usage. Recorded input is substantially larger because repeated context across more calls was underestimated. No dollar cost or credits were measured.
+
+Actual Codex usage: usage.json contains cumulative starting and ending counters, their difference, timestamps, log/turn identifiers, scope and completeness. usage-snapshots.json preserves counter evidence without the conversation. Cached input is included in input; reasoning output is included in output. The initial baseline is the fresh session's zero origin; no explicit pre-task token_count snapshot exists. No subagents were used.
+
+The original final response counters were recovered on the next user message. usage.json now contains complete recorded usage for the original Task A turn, excluding all follow-up-turn usage. refresh-usage.py enforces the original turn boundary.

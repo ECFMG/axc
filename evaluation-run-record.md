@@ -97,3 +97,9 @@ Reasoning output is already included in output tokens and is not charged again.
 | Completed Codex evaluation-record update | 11,500 | 870,656 | 6,276 | $0.023000 | $0.0870656 | $0.062760 | **$0.1728256 (~$0.17)** |
 
 The two completed Codex tasks total **3,195,023 recorded tokens** and **$0.7306396 (~$0.73)** in estimated API equivalent cost. Both include their final assistant responses. This subtotal excludes the current cost-correction conversation and the separate Ollama baseline comparison. These are calculated estimates at the supplied rates; actual subscription charges and local hosting cost remain unmeasured. Full arithmetic, measurement scopes and assumptions are saved in [cost-estimates.json](evidence/v7.12-followups/cost-estimates.json).
+
+## October 14, 2026 — direct Codex Task A run
+
+A separate fresh implementation from `fe47c38` completed Task A using Codex `gpt-6.1-sol`; the supplied v7.12 checks were used for verification, without harness-driven generation or changes. Its full [Evaluation Run Record](evidence/task-a-2026-10-14-direct-codex/evaluation-run-record.md), validated source ZIP, implementation Git bundle, patch, logs, provenance, and usage are archived independently. The existing application and prior evaluation records on this branch are preserved.
+
+This run passed 12/12 acceptance criteria, 700 Vitest tests, 3 API Node tests, 1 health acceptance scenario, 19 architecture tests, and both 29-check independent endpoint suites. Complete recorded usage, including its original final response and excluding follow-ups, is **2,376,618 tokens**: 2,359,033 input (including 2,270,976 cached) and 17,585 output (including 2,393 reasoning). Calculated cost using the user's supplied rates is **$0.5790616 (~$0.58)**; actual billing is unmeasured. See [usage.json](evidence/task-a-2026-10-14-direct-codex/usage.json) and [cost-estimate.json](evidence/task-a-2026-10-14-direct-codex/cost-estimate.json).
