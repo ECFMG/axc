@@ -253,9 +253,6 @@ catalogs:
     graphql:
       specifier: ^16.10.0
       version: 16.14.2
-    hono:
-      specifier: 4.13.11
-      version: 4.13.11
     mongodb:
       specifier: 6.18.0
       version: 6.18.0
@@ -291,7 +288,7 @@ overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
-  hono: 4.13.10
+  hono: 4.13.11
   http-cache-semantics: 4.3.0
   postcss-selector-parser: 7.1.6
   serialize-javascript: 7.1.2
@@ -569,7 +566,7 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       hono:
-        specifier: 'catalog:'
+        specifier: 4.13.11
         version: 4.13.11
     devDependencies:
       '@cellix/config-typescript':
@@ -808,7 +805,7 @@ importers:
         version: 6.18.0
       mongodb-memory-server:
         specifier: ^10.1.4
-        version: 10.4.3
+        version: 10.4.3(supports-color@8.1.1)
       mongoose:
         specifier: 'catalog:'
         version: 8.24.1(supports-color@8.1.1)
@@ -896,7 +893,7 @@ importers:
     dependencies:
       mongodb-memory-server:
         specifier: 'catalog:'
-        version: 10.4.3(supports-color@8.1.1)
+        version: 10.4.3
       mongoose:
         specifier: 'catalog:'
         version: 8.24.1(supports-color@8.1.1)
@@ -12106,7 +12103,7 @@ snapshots:
       agent-base: 7.1.4
       axios: 1.20.0(supports-color@8.1.1)
       http-proxy-agent: 7.0.2(supports-color@8.1.1)
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       lru-cache: 11.5.2
       tiny-types: 2.0.5
     transitivePeerDependencies:
@@ -14596,7 +14593,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  https-proxy-agent@7.0.6:
+  https-proxy-agent@7.0.6(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -15655,9 +15652,9 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       mongodb: 6.21.0
-      new-find-package-json: 2.0.0
+      new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
       tar-stream: 3.2.1
       tslib: 2.8.1
@@ -15682,9 +15679,9 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3)
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       mongodb: 6.18.0
-      new-find-package-json: 2.0.0
+      new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
       tar-stream: 3.2.1
       tslib: 2.8.1
@@ -15709,9 +15706,9 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
-      https-proxy-agent: 7.0.6
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
       mongodb: 6.18.0
-      new-find-package-json: 2.0.0
+      new-find-package-json: 2.0.0(supports-color@8.1.1)
       semver: 7.8.5
       tar-stream: 3.2.1
       tslib: 2.8.1
@@ -15835,7 +15832,7 @@ snapshots:
     dependencies:
       content-type: 2.1.0
 
-  new-find-package-json@2.0.0:
+  new-find-package-json@2.0.0(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
