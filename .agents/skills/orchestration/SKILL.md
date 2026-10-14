@@ -36,6 +36,8 @@ Delegate bounded work to specialist subagents using their persona contracts.
 ## Efficiency
 
 - Pass concise handoffs and reference paths, not full agent transcripts.
+- Shell output may arrive trimmed. Use the kept failures, diagnostics, and
+  summary. Re-run a narrower command when a needed line was omitted.
 - Reuse planner decisions; avoid redundant research and validation.
 - Execute dependent slices in DAG order, parallelizing only when worthwhile.
 - Prefer targeted remediation over repeating entire workflow stages.
