@@ -5,6 +5,7 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
+		"test": "node --test tests/courses.test.mjs",
 		"test:acceptance": "rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features",
 		"typecheck": "tsgo --noEmit",
 		"lint": "biome lint",

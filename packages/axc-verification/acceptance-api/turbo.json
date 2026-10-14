@@ -1,0 +1,8 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"test": {
+			"dependsOn": ["^build", "@apps/api#build", "@cellix/config-vitest#build"]
+		}
+	}
+}
