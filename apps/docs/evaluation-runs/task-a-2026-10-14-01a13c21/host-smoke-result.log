@@ -1,0 +1,1 @@
+PASS: live Azure Functions GET /api/courses combined filters (200) and invalid query (400).

@@ -1,0 +1,20 @@
+
+
+Azure Functions Core Tools
+Core Tools Version:       4.15.2+007886fd6e869a96595c7fd7788d90397588725b (64-bit)
+Function Runtime Version: 4.1053.200.26403
+
+[2026-10-14T20:41:31.460Z] Cellix started
+[2026-10-14T20:41:31.487Z] Worker process started and initialized.
+
+Functions:
+
+	courses: [GET] http://localhost:7084/api/courses
+
+	health: [GET] http://localhost:7084/health
+
+For detailed output, run func with --verbose flag.
+[2026-10-14T20:41:31.962Z] Executing 'Functions.courses' (Reason='This function was programmatically called via the host APIs.', Id=a39982db-5453-436b-8f14-a169f3c3fe6b)
+[2026-10-14T20:41:32.006Z] Executed 'Functions.courses' (Succeeded, Id=a39982db-5453-436b-8f14-a169f3c3fe6b, Duration=54ms)
+[2026-10-14T20:41:32.018Z] Executing 'Functions.courses' (Reason='This function was programmatically called via the host APIs.', Id=a4a3dc4a-1c87-4dfc-a62e-61d55d383dfb)
+[2026-10-14T20:41:32.021Z] Executed 'Functions.courses' (Succeeded, Id=a4a3dc4a-1c87-4dfc-a62e-61d55d383dfb, Duration=3ms)
