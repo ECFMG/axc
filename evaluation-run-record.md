@@ -9,10 +9,10 @@ One record for the original Task A implementation run. Follow-up questions, cost
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
-| Developer / Operator | dfortun (local operator identifier); implementation by Codex |
+| Developer / Operator | Dane Fortun, [dfortun] (local operator identifier); implementation by Codex |
 | Reviewer | |
 | Harness | Codex Desktop direct implementation; openai-harness-v7.12 supplied checks used for independent verification |
-| Model | gpt-6.1-sol (recorded session model) |
+| Model | gpt-6.1-sol Medium Reasoning (recorded session model) |
 | License / Plan | Not independently verified; session rate-limit metadata labels plan as `self_serve_business_prolite` |
 | Codebase | ECFMG/axc |
 | Task Set | A — TS-A-CATALOG-SEARCH |
