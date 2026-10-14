@@ -1,0 +1,86 @@
+$ turbo run typecheck --env-mode=loose
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running typecheck in 21 packages
+   • Remote caching disabled
+
+@cellix/api-services-spec:build: cache hit, replaying logs c45c605256ad5f9e
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs a13cf53c0192c3c1
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 4ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 3ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/config-vitest:build: cache hit, replaying logs 51cb58d9d5d991b5
+@cellix/config-vitest:build: $ tsgo --build
+@axc/application-services:build: cache hit, replaying logs 8750ffe210529513
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: Checked 6 files in 7ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@cellix/api-core:build: cache hit, replaying logs f86d653698420813
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 17ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@axc/application-services:typecheck: cache miss, executing e77bac7dd4ffbb82
+@cellix/local-dev:build: cache hit, replaying logs ff7cb06cb242bea7
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 21ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs a9acb227c9d0ad20
+@cellix/config-rolldown:build: $ tsgo --build
+@axc/rest:typecheck: cache miss, executing 39faf880ea5ace0e
+@cellix/serenity-framework:build: cache hit, replaying logs 4bf49c48690b4c82
+@axc/rest:build: cache hit, replaying logs dd49f15890a9155f
+@axc/rest:build: $ pnpm run lint
+@axc/rest:build: $ biome lint
+@axc/rest:build: Checked 1 file in 5ms. No fixes applied.
+@axc/rest:build: $ tsgo --build
+@cellix/archunit-tests:build: cache hit, replaying logs 38a41880fadf9617
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 55ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 26ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@apps/api:typecheck: cache miss, executing 92f041270ad5ddbe
+@cellix/domain-seedwork:build: cache hit, replaying logs ac9a5a36778426ab
+@axc-verification/acceptance-api:typecheck: cache miss, executing d376397884b65f39
+@axc-verification/archunit-tests:typecheck: cache miss, executing 8e79c2826e441cb2
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 21ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@axc/domain:typecheck: cache miss, executing 7f94054194fcb202
+@axc/persistence:typecheck: cache miss, executing 6080c856c7f5abd8
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs a6804a89433f958d
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 12ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@cellix/mongoose-seedwork:build: cache hit, replaying logs f4b889cace0147c6
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 14ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@axc/service-mongoose:typecheck: cache miss, executing e7e67c93769a0363
+@axc-verification/acceptance-api:typecheck: $ tsgo --noEmit
+@axc/rest:typecheck: $ tsgo --noEmit
+@axc/service-mongoose:typecheck: $ tsgo --noEmit
+@axc-verification/archunit-tests:typecheck: $ tsgo --noEmit
+@axc/application-services:typecheck: $ tsgo --noEmit
+@apps/api:typecheck: $ tsgo --noEmit
+@axc/persistence:typecheck: $ tsgo --noEmit
+@axc/domain:typecheck: $ tsgo --noEmit
+
+ Tasks:    21 successful, 21 total
+Cached:    13 cached, 21 total
+  Time:    1.547s 
+

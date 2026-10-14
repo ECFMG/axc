@@ -1,0 +1,23 @@
+$ pnpm dlx @e18e/cli analyze --log-level error --quiet
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +37
++++++++++++++++++++++++++++++++++++++
+Progress: resolved 53, reused 10, downloaded 24, added 33
+Progress: resolved 53, reused 10, downloaded 27, added 37, done
+e18e (cli v0.7.0)
+
+┌  Analyzing...
+│
+●  Summary
+│  Package Name                agentcourses
+│  Version                     0.0.0
+│  Install Size                613.0 MB
+│  Dependencies                14 (0 production, 14 development)
+│  Duplicate Dependency Count  185
+│
+●  Results:
+│
+│  208 issue(s) hidden by --quiet (errors only in output). Omit --quiet or lower --report-level to see them.
+│
+└  Done!
+

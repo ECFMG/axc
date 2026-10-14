@@ -1,0 +1,12 @@
+{
+  "model": "gemma4:26b",
+  "ollama_version": "0.40.0",
+  "calls": 20,
+  "input_tokens": 2028,
+  "output_tokens": 566,
+  "total_tokens": 2594,
+  "failed_initial_calls": 2,
+  "cache_policy": "existing model state; no forced unload",
+  "task_a_trials": 0,
+  "token_savings_verified": false
+}

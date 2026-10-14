@@ -1,0 +1,33 @@
+{
+  "version": "v7.12.1",
+  "unit_and_integration_tests": 192,
+  "test_seconds": 10.555,
+  "passed": true,
+  "skipped_tests": 0,
+  "checks": [
+    "Complete inherited regression suite",
+    "Real Git commit and hook-mutation prevention",
+    "Failed validation stays failed after explicit preservation",
+    "Scope, specification, stale snapshot and branch protections",
+    "Git line-ending filter protection",
+    "Additive workspace dependency limits and implementation readiness",
+    "Full registered test invocation after complete wiring",
+    "Frozen prepare/check/commit CLI integration",
+    "Installed TypeScript AST rejection of original labeled const defect",
+    "Patch-version comparison quality gates",
+    "Python and Node syntax checks",
+    "Fixed prompt/specification/oracle byte identity against uploaded ZIP"
+  ],
+  "live_task_a_trials_run": 0,
+  "live_adapter_checks_run": 0,
+  "token_savings_verified": false,
+  "limitation": "Controller and Git workflow verified with regression fixtures. No new Ollama inference, full live model Task A run, performance improvement or savings is claimed. Historical v7.12 results are retained separately.",
+  "python": "3.9.6",
+  "node": "v24.21.0",
+  "typescript_ast_tests": true,
+  "fixed_input_sha256": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  }
+}

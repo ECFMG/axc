@@ -1,0 +1,34 @@
+$ vitest run --silent --reporter=dot
+failed to load config from /Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/packages/axc/application-services/vitest.config.ts
+
+⎯⎯⎯⎯⎯⎯⎯ Startup Error ⎯⎯⎯⎯⎯⎯⎯⎯
+Error: Build failed with 1 error:
+
+[plugin externalize-deps]
+Error: Failed to resolve entry for package "@cellix/config-vitest". The package may have incorrect main/module/exports specified in its package.json.
+    at packageEntryFailure (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:28884:30)
+    at resolvePackageEntry (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:28881:2)
+    at tryNodeResolve (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:28780:70)
+    at nodeResolveWithVite (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:29042:9)
+    at PluginContextImpl.handler (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:37392:19)
+    at plugin (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown/dist/shared/bindingify-input-options-D4l624og.mjs:1460:30)
+    at file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown/dist/shared/bindingify-input-options-D4l624og.mjs:1931:21
+    at plugin.<computed> (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown/dist/shared/bindingify-input-options-D4l624og.mjs:2128:18)
+    at aggregateBindingErrorsIntoJsError (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown/dist/shared/error-CGhV1ebk.mjs:48:18)
+    at unwrapBindingResult (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown/dist/shared/error-CGhV1ebk.mjs:18:128)
+    at #build (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown/dist/shared/rolldown-Ld3ZGGCt.mjs:133:34)
+    at async bundleConfigFile (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:37448:12)
+    at async bundleAndLoadConfigFile (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:37344:18)
+    at async loadConfigFromFile (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:37305:42)
+    at async resolveConfig (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:36906:22)
+    at async _createServer (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vite@8.3.0_@types+node@26.6.2_esbuild@0.28.2_jiti@2.7.0_terser@5.51.2_tsx@4.23.15_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:24268:65)
+    at async createViteServer (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vitest@4.1.11_@opentelemetry+api@1.9.0_@types+node@26.6.2_@vitest+browser-playwright@4._3fe5268a727a52758ca4fa19cfd4b3f7/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:8902:17)
+    at async createVitest (file:///Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/node_modules/.pnpm/vitest@4.1.11_@opentelemetry+api@1.9.0_@types+node@26.6.2_@vitest+browser-playwright@4._3fe5268a727a52758ca4fa19cfd4b3f7/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:14288:18) {
+  errors: [Getter/Setter]
+}
+
+
+
+/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/packages/axc/application-services:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @axc/application-services@1.0.0 test: `vitest run --silent --reporter=dot`
+Exit status 1

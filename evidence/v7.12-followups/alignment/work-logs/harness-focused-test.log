@@ -1,0 +1,32 @@
+test_all_repository_checks_are_attempted_and_failure_is_recorded (test_baseline_commit.BaselineCommitTests) ... ok
+test_branch_switch_requires_fresh_trial (test_baseline_commit.BaselineCommitTests) ... ok
+test_changed_tracked_file_requires_revalidation (test_baseline_commit.BaselineCommitTests) ... ok
+test_changed_untracked_file_requires_revalidation (test_baseline_commit.BaselineCommitTests) ... ok
+test_failed_baseline_requires_flag_and_stays_failed (test_baseline_commit.BaselineCommitTests) ... ok
+test_missing_check_results_cannot_be_bypassed (test_baseline_commit.BaselineCommitTests) ... ok
+test_no_commit_without_validation (test_baseline_commit.BaselineCommitTests) ... ok
+test_no_empty_baseline_commit (test_baseline_commit.BaselineCommitTests) ... ok
+test_passing_commit_bypasses_mutating_hook_and_records_identity (test_baseline_commit.BaselineCommitTests) ... ok
+test_repository_check_mutation_requires_revalidation (test_baseline_commit.BaselineCommitTests) ... ok
+test_scope_violation_cannot_be_bypassed (test_baseline_commit.BaselineCommitTests) ... ok
+test_specification_violation_cannot_be_bypassed (test_baseline_commit.BaselineCommitTests) ... ok
+test_stage_only_audited_paths_including_deleted_files (test_baseline_commit.BaselineCommitTests) ... ok
+test_only_additive_existing_workspace_dependencies_are_allowed (test_baseline_commit.WorkspaceAndReadinessTests) ... ok
+test_partial_wiring_checks_format_without_running_incomplete_build (test_baseline_commit.WorkspaceAndReadinessTests) ... ok
+test_reference_layers_and_dependencies_are_planned (test_baseline_commit.WorkspaceAndReadinessTests) ... ok
+test_ambiguous_package_relative_diagnostic_is_not_guessed (test_plan_features.PlanTests) ... ok
+test_command_arguments_do_not_select_a_false_diagnostic (test_plan_features.PlanTests) ... ok
+test_contracts_include_public_exports_and_manifest (test_plan_features.PlanTests) ... ok
+test_failed_written_file_is_repaired_before_next_file (test_plan_features.PlanTests) ... ok
+test_native_schema_restricts_writes_to_controller_target (test_plan_features.PlanTests) ... ok
+test_written_files_are_not_labeled_verified (test_plan_features.PlanTests) ... ok
+test_additive_source_and_exported_destructuring_pass (test_plan_features.SyntaxContractTests) ... ok
+test_export_loss_and_syntax_error_are_rejected (test_plan_features.SyntaxContractTests) ... ok
+test_original_baseline_labeled_const_is_rejected (test_plan_features.SyntaxContractTests) ... ok
+test_self_import_rejected (test_plan_features.SyntaxContractTests) ... ok
+test_prepare_external_score_recheck_and_reject_adapter (test_release_cli.ReleaseCLI) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 5.857s
+
+OK

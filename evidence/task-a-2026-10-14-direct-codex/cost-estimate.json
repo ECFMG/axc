@@ -1,0 +1,26 @@
+{
+  "currency": "USD",
+  "kind": "calculated estimate from recorded usage; not a verified invoice or measured charge",
+  "rate_source": "User-provided screenshot dated 2026-10-14; rates not independently verified",
+  "rates_per_million": {
+    "uncached_input": 2.0,
+    "cached_input": 0.1,
+    "output": 10.0,
+    "cache_write": 2.5
+  },
+  "usage_scope": "Original Task A turn including its final response; excludes follow-up turns",
+  "uncached_input_tokens": 88057,
+  "cached_input_tokens": 2270976,
+  "output_tokens": 17585,
+  "cache_write_input_tokens": 0,
+  "maximum_observed_input_tokens_per_call": 105910,
+  "long_context_multiplier_applies": false,
+  "calculated_costs": {
+    "uncached_input": 0.176114,
+    "cached_input": 0.2270976,
+    "output": 0.17585,
+    "cache_write": 0.0
+  },
+  "actual_billed_cost": null,
+  "estimated_total_usd": 0.5790616
+}

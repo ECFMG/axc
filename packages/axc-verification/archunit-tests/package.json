@@ -10,7 +10,8 @@
 		"typecheck": "tsgo --noEmit",
 		"lint": "biome lint",
 		"format": "biome format --write",
-		"format:check": "biome format ."
+		"format:check": "biome format .",
+		"test": "vitest run --config vitest.catalog.config.ts"
 	},
 	"devDependencies": {
 		"@cellix/archunit-tests": "workspace:*",
@@ -19,6 +20,10 @@
 		"@types/node": "catalog:",
 		"archunit": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "catalog:",
+		"@axc/domain": "workspace:*",
+		"@axc/application-services": "workspace:*",
+		"@axc/persistence": "workspace:*",
+		"@axc/rest": "workspace:*"
 	}
 }

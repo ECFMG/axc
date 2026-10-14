@@ -1,0 +1,3 @@
+{"type":"test:pass","file":"/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and/outputs/axc/apps/api/test/courses.test.mjs","name":"GET course response and combined filters through Azure registration","skipped":false,"suite":false}
+{"type":"test:pass","file":"/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and/outputs/axc/apps/api/test/courses.test.mjs","name":"GET validation response through Azure host","skipped":false,"suite":false}
+{"type":"test:pass","file":"/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and/outputs/axc/apps/api/test/courses.test.mjs","name":"Hono preserves authorization forwarding for courses and health","skipped":false,"suite":false}

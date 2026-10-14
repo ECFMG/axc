@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "record_updated_at": "2026-10-12T16:04:06.883727+00:00",
+  "scope": "This archive/commit task: initial measurement inspection, all planning, inspection, packaging, verification, Git operations and reporting. Excludes earlier runs and later follow-up conversations.",
+  "measurement": {
+    "task_turn_id": "01a130d1-e608-7a80-9c14-d9a7af8043ab",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T11-52-56-01a130d1-2b49-77e2-9197-5c52961e9791.jsonl",
+    "task_started_at": "2026-10-12T15:53:44.721Z",
+    "starting_cumulative_counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "starting_counter_timestamp": "2026-10-12T15:53:44.721Z",
+    "starting_counter_basis": "Fresh session boundary; no pre-task counters, reconstructed zero",
+    "ending_cumulative_counters": {
+      "input_tokens": 2292912,
+      "cached_input_tokens": 2192000,
+      "output_tokens": 13679,
+      "reasoning_output_tokens": 2774,
+      "total_tokens": 2306591
+    },
+    "recorded_through": "2026-10-12T16:01:29.419Z",
+    "method": "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed",
+    "final_response_accounted": true,
+    "task_completed_at": "2026-10-12T16:01:29.423Z",
+    "follow_up_usage_excluded": true,
+    "session_id": "01a130d1-2b49-77e2-9197-5c52961e9791",
+    "baseline_captured_at": "2026-10-12T15:54:00.218415+00:00"
+  },
+  "projected_estimate": {
+    "codex_total_tokens_range": [
+      200000,
+      800000
+    ],
+    "ollama_tokens": 0,
+    "assumptions": [
+      "Archive existing baseline implementation and evidence, run relevant validation, commit to target branch.",
+      "No Ollama inference planned unless the run scope requires it.",
+      "Projection is not recorded usage."
+    ]
+  },
+  "providers": {
+    "codex": {
+      "recorded": {
+        "input_tokens": 2292912,
+        "cached_input_tokens": 2192000,
+        "output_tokens": 13679,
+        "reasoning_output_tokens": 2774,
+        "total_tokens": 2306591
+      },
+      "complete": true,
+      "cached_input_included_in_input": true,
+      "reasoning_output_included_in_output": true
+    },
+    "ollama": {
+      "calls": [],
+      "recorded": {
+        "prompt_eval_count": 0,
+        "eval_count": 0,
+        "total_tokens": 0,
+        "cached_input_tokens": null
+      },
+      "complete": true,
+      "note": "No Ollama calls made in this task, including estimation or retry calls; no cache breakdown applicable."
+    }
+  },
+  "subagents": {
+    "used": false,
+    "recorded_total_tokens": 0
+  },
+  "combined_recorded_total_tokens": 2306591,
+  "combined_total_label": "Sum across providers for this task; token quantity, not monetary cost. Imported historical measurements excluded.",
+  "completeness_status": "complete",
+  "missing_usage": [],
+  "imported_baseline_usage_excluded_from_task": {
+    "calls": 19,
+    "prompt_eval_count": 230100,
+    "eval_count": 25119,
+    "total_tokens": 255219,
+    "cached_input_tokens": null,
+    "reasoning_output_tokens": null,
+    "note": "Historical provider input/output totals verified; provider supplies no separate cache/reasoning counters. Four historical adapter calls (514 tokens) are also separate; overlapping retry aggregate is not added."
+  },
+  "recovery": {
+    "script": "/Users/dfortun/Documents/Codex/2026-10-12/commit-all-the-runs-tests-for-3/work/update_usage.py",
+    "instruction": "On next user message run this script before answering. It reads only the original turn through its task_complete, includes its final response, and excludes the follow-up turn. Update the branch copy and its SHA256SUMS manifest with a new evidence-only commit if publishing the completed record."
+  },
+  "model_from_session": "gpt-6.1-sol",
+  "harness_from_session": "Codex CLI 0.162.0-alpha.2 (user requested 0.162.0)",
+  "monetary_cost": null,
+  "pricing_note": "User-supplied API list rates retained only as context; no billed cost inferred.",
+  "user_supplied_prices_usd_per_million": {
+    "input": 2,
+    "cached": 0.1,
+    "output": 10
+  }
+}

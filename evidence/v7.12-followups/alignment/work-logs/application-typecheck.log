@@ -1,0 +1,17 @@
+$ tsgo --noEmit
+src/course-fixtures.ts(1,23): error TS6133: 'CourseModality' is declared but its value is never read.
+src/course-fixtures.ts(1,39): error TS6133: 'CourseStatus' is declared but its value is never read.
+src/course-fixtures.ts(1,59): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './course-types.js'?
+src/course-search.ts(2,15): error TS6196: 'Course' is declared but never used.
+src/course-search.ts(2,23): error TS6196: 'CourseSearchError' is declared but never used.
+src/course-search.ts(2,103): error TS6196: 'ValidationError' is declared but never used.
+src/course-search.ts(2,126): error TS2835: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './course-types.js'?
+src/course-search.ts(17,142): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/course-search.ts(29,5): error TS1344: A label is not allowed here.
+src/course-search.ts(29,5): error TS7028: Unused label.
+src/course-search.ts(30,28): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/index.ts(18,15): error TS2459: Module '"./course-search.js"' declares 'CourseSearchQuery' locally, but it is not exported.
+src/index.ts(18,60): error TS2459: Module '"./course-search.js"' declares 'PaginatedCourseResponse' locally, but it is not exported.
+/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/axc/packages/axc/application-services:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @axc/application-services@1.0.0 typecheck: `tsgo --noEmit`
+Exit status 2

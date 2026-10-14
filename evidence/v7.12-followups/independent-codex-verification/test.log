@@ -1,0 +1,317 @@
+$ turbo run test test:acceptance --force
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running test, test:acceptance in 21 packages
+   • Remote caching disabled
+
+@cellix/server-mongodb-memory-mock-seedwork:build: cache bypass, force executing 14eb9439cd4f0a9c
+@cellix/api-services-spec:build: cache bypass, force executing 981e62472881deb5
+@cellix/config-vitest:build: cache bypass, force executing 5db2521eb7d93065
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/config-vitest:test: cache bypass, force executing 127867be72955b3a
+@cellix/config-rolldown:build: cache bypass, force executing b5aa24edcc7e39cb
+@cellix/domain-seedwork:build: cache bypass, force executing 407f779a7f869da0
+@cellix/local-dev:build: cache bypass, force executing 14c87dbc4a69c4eb
+@axc/application-services:build: cache bypass, force executing 3e94246275e4210d
+@cellix/domain-seedwork:test: cache bypass, force executing f1adcefeda7ca3e7
+@cellix/local-dev:test: cache bypass, force executing daa6bcd2251ea2da
+@cellix/archunit-tests:test: cache bypass, force executing bae9e03a22b20b28
+@cellix/api-services-spec:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/archunit-tests:test: $ vitest run
+@cellix/domain-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/config-vitest:test: $ vitest run --silent --reporter=dot
+@cellix/local-dev:test: $ vitest run --silent --reporter=dot
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/api-services-spec:build: Checked 1 file in 4ms. No fixes applied.
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ pnpm run lint
+@axc/application-services:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 4ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@axc/application-services:test: cache bypass, force executing 2c617d736d4344eb
+@cellix/config-rolldown:test: cache bypass, force executing f12cdfc9e0a290dc
+@cellix/archunit-tests:build: cache bypass, force executing 1764be29c771599a
+@cellix/domain-seedwork:build: $ biome lint
+@axc/application-services:build: $ biome lint
+@cellix/local-dev:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 17ms. No fixes applied.
+@axc/application-services:test: $ vitest run --silent --reporter=dot
+@cellix/domain-seedwork:build: $ tsgo --build
+@axc/application-services:build: Checked 4 files in 7ms. No fixes applied.
+@cellix/config-rolldown:test: $ vitest run --silent --reporter=dot
+@cellix/local-dev:build: Checked 25 files in 15ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@cellix/local-dev:build: $ tsgo --build
+@cellix/archunit-tests:build: $ biome lint
+@cellix/api-core:build: cache bypass, force executing ba2a634a7a4ffbb1
+@cellix/api-core:test: cache bypass, force executing 10d7e37c9931a0e5
+@cellix/serenity-framework:test: cache bypass, force executing 83a8cf4bacec90dd
+@cellix/archunit-tests:build: Checked 44 files in 46ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/config-vitest:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-vitest:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/config-vitest
+@cellix/config-vitest:test: 
+@cellix/serenity-framework:build: cache bypass, force executing 8aa707018ecfa881
+@cellix/api-core:test: $ vitest run --silent --reporter=dot
+@cellix/api-core:build: $ pnpm run lint
+@cellix/serenity-framework:test: $ vitest run --silent --reporter=dot
+@cellix/config-vitest:test: ··
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  Test Files  2 passed (2)
+@cellix/config-vitest:test:       Tests  2 passed (2)
+@cellix/config-vitest:test: Type Errors  no errors
+@cellix/config-vitest:test:    Start at  11:32:20
+@cellix/config-vitest:test:    Duration  553ms (transform 27ms, setup 0ms, import 43ms, tests 2ms, environment 0ms, typecheck 332ms)
+@cellix/config-vitest:test: 
+@cellix/event-bus-seedwork-node:test: cache bypass, force executing 5ac49649b77890d2
+@cellix/domain-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/domain-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/local-dev:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/local-dev:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/local-dev
+@cellix/local-dev:test: 
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/domain-seedwork
+@cellix/domain-seedwork:test: 
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/archunit-tests
+@cellix/archunit-tests:test: 
+@axc/application-services:test: Testing types with tsc and vue-tsc is an experimental feature.
+@axc/application-services:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@axc/application-services:test: 
+@axc/application-services:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/axc/application-services
+@axc/application-services:test: 
+@cellix/config-rolldown:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-rolldown:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/config-rolldown
+@cellix/config-rolldown:test: 
+@cellix/serenity-framework:build: $ pnpm run lint
+@axc/application-services:test: ··········
+@axc/application-services:test: 
+@axc/application-services:test:  Test Files  4 passed (4)
+@axc/application-services:test:       Tests  10 passed (10)
+@axc/application-services:test: Type Errors  no errors
+@axc/application-services:test:    Start at  11:32:21
+@axc/application-services:test:    Duration  699ms (transform 68ms, setup 0ms, import 114ms, tests 13ms, environment 0ms, typecheck 325ms)
+@axc/application-services:test: 
+@cellix/event-bus-seedwork-node:build: cache bypass, force executing a257a1c3f21b6048
+@cellix/api-core:build: $ biome lint
+@cellix/archunit-tests:test:  ✓ src/typescript-config-conventions.test.ts (1 test) 176ms
+@cellix/event-bus-seedwork-node:test: $ vitest run --silent --reporter=dot
+@cellix/api-core:build: Checked 5 files in 23ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/config-rolldown:test: ········
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  Test Files  2 passed (2)
+@cellix/config-rolldown:test:       Tests  8 passed (8)
+@cellix/config-rolldown:test: Type Errors  no errors
+@cellix/config-rolldown:test:    Start at  11:32:21
+@cellix/config-rolldown:test:    Duration  828ms (transform 201ms, setup 0ms, import 291ms, tests 89ms, environment 0ms, typecheck 261ms)
+@cellix/config-rolldown:test: 
+@cellix/local-dev:test: ······································
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  Test Files  2 passed (2)
+@cellix/local-dev:test:       Tests  38 passed (38)
+@cellix/local-dev:test: Type Errors  no errors
+@cellix/local-dev:test:    Start at  11:32:21
+@cellix/local-dev:test:    Duration  1.17s (transform 549ms, setup 0ms, import 674ms, tests 17ms, environment 0ms, typecheck 232ms)
+@cellix/local-dev:test: 
+@axc/rest:build: cache bypass, force executing 2ec1c823c848daf8
+@cellix/api-core:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/api-core:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/api-core:test: 
+@cellix/api-core:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/api-core
+@cellix/api-core:test: 
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 36ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ tsgo --build
+@cellix/serenity-framework:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/serenity-framework:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/serenity-framework:test: 
+@cellix/serenity-framework:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/serenity-framework
+@cellix/serenity-framework:test: 
+@axc/rest:build: $ pnpm run lint
+@cellix/api-core:test: ····································································
+@cellix/api-core:test: 
+@cellix/api-core:test:  Test Files  2 passed (2)
+@cellix/api-core:test:       Tests  68 passed (68)
+@cellix/api-core:test: Type Errors  no errors
+@cellix/api-core:test:    Start at  11:32:22
+@cellix/api-core:test:    Duration  709ms (transform 115ms, setup 0ms, import 163ms, tests 66ms, environment 0ms, typecheck 240ms)
+@cellix/api-core:test: 
+@cellix/domain-seedwork:test: ······························································································
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  Test Files  16 passed (16)
+@cellix/domain-seedwork:test:       Tests  94 passed (94)
+@cellix/domain-seedwork:test: Type Errors  no errors
+@cellix/domain-seedwork:test:    Start at  11:32:21
+@cellix/domain-seedwork:test:    Duration  1.95s (transform 5.70s, setup 0ms, import 9.35s, tests 42ms, environment 0ms, typecheck 252ms)
+@cellix/domain-seedwork:test: 
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 30ms. No fixes applied.
+@cellix/event-bus-seedwork-node:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/event-bus-seedwork-node:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/event-bus-seedwork-node
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@axc/rest:build: $ biome lint
+@cellix/mongoose-seedwork:test: cache bypass, force executing be0b39d3e1e200be
+@cellix/mongoose-seedwork:build: cache bypass, force executing baf6427cf0fb71f1
+@cellix/archunit-tests:test:  ✓ src/naming-conventions.cellix.test.ts (5 tests) 1256ms
+@cellix/archunit-tests:test:        ✓ service packages should follow naming pattern: service-{type}-{specificType} with optional -base/-mock  1253ms
+@axc/rest:build: Checked 2 files in 11ms. No fixes applied.
+@axc/rest:build: $ tsgo --build
+@cellix/archunit-tests:test:  ✓ src/cellix.test.ts (4 tests) 1348ms
+@cellix/archunit-tests:test:        ✓ packages should not have circular dependencies  1339ms
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  Test Files  3 passed (3)
+@cellix/archunit-tests:test:       Tests  10 passed (10)
+@cellix/archunit-tests:test:    Start at  11:32:21
+@cellix/archunit-tests:test:    Duration  2.49s (transform 922ms, setup 0ms, import 2.18s, tests 2.78s, environment 0ms)
+@cellix/archunit-tests:test: 
+@apps/api:test: cache bypass, force executing 1318fca274e63d1d
+@apps/api:build: cache bypass, force executing 90c6dbc7d7eb7b52
+@cellix/mongoose-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@apps/api:build: $ pnpm run lint
+@apps/api:test: $ tsgo --noEmit --project tsconfig.test.json && node --experimental-strip-types --test src/courses.test.ts
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 36ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@apps/api:build: $ biome lint
+@cellix/mongoose-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/mongoose-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/mongoose-seedwork
+@cellix/mongoose-seedwork:test: 
+@cellix/event-bus-seedwork-node:test: ·····························································································
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:test:  Test Files  6 passed (6)
+@cellix/event-bus-seedwork-node:test:       Tests  93 passed (93)
+@cellix/event-bus-seedwork-node:test: Type Errors  no errors
+@cellix/event-bus-seedwork-node:test:    Start at  11:32:23
+@cellix/event-bus-seedwork-node:test:    Duration  954ms (transform 862ms, setup 0ms, import 1.53s, tests 92ms, environment 0ms, typecheck 196ms)
+@cellix/event-bus-seedwork-node:test: 
+@apps/api:build: Checked 3 files in 15ms. No fixes applied.
+@apps/api:build: $ tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs
+@apps/api:test: ▶ GET /api/courses
+@apps/api:test:   ✔ returns defaults and every required model field (14.71625ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: gArDeNiNg (0.49125ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: CoMpOsTiNg (0.269ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: wCaG (0.22625ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: SeCuRiTy (0.262666ms)
+@apps/api:test:   ✔ filters modality=online (0.207167ms)
+@apps/api:test:   ✔ filters modality=in-person (0.167916ms)
+@apps/api:test:   ✔ filters modality=hybrid (0.17175ms)
+@apps/api:test:   ✔ filters status=active (0.238042ms)
+@apps/api:test:   ✔ filters status=draft (0.455459ms)
+@apps/api:test:   ✔ filters status=retired (0.190875ms)
+@apps/api:test:   ✔ matches a whole tag case-insensitively (0.284584ms)
+@apps/api:test:   ✔ combines keyword, modality, status and tag with AND (0.3595ms)
+@apps/api:test:   ✔ paginates without gaps or duplicates and reports totals before pagination (0.554542ms)
+@apps/api:test:   ✔ sorts ascending by title (0.149875ms)
+@apps/api:test:   ✔ sorts ascending by createdAt (0.104208ms)
+@apps/api:test:   ✔ sorts ascending by updatedAt (0.090709ms)
+@apps/api:test:   ✔ returns valid empty metadata for no matches and whitespace-only keyword (0.172167ms)
+@apps/api:test:   ✔ rejects invalid query: modality=remote (0.117875ms)
+@apps/api:test:   ✔ rejects invalid query: modality=Online (0.075166ms)
+@apps/api:test:   ✔ rejects invalid query: modality= (0.146375ms)
+@apps/api:test:   ✔ rejects invalid query: status=deleted (0.146834ms)
+@apps/api:test:   ✔ rejects invalid query: status= (0.087958ms)
+@apps/api:test:   ✔ rejects invalid query: sort=id (0.0755ms)
+@apps/api:test:   ✔ rejects invalid query: sort= (0.069417ms)
+@apps/api:test:   ✔ rejects invalid query: page=0 (0.081292ms)
+@apps/api:test:   ✔ rejects invalid query: page=-1 (0.185083ms)
+@apps/api:test:   ✔ rejects invalid query: page=1.5 (0.124ms)
+@apps/api:test:   ✔ rejects invalid query: page=1e2 (0.081125ms)
+@apps/api:test:   ✔ rejects invalid query: page=NaN (0.638708ms)
+@apps/api:test:   ✔ rejects invalid query: page=9007199254740992 (0.073333ms)
+@apps/api:test:   ✔ rejects invalid query: page= (0.064583ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=0 (0.069167ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=51 (0.056334ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=-1 (0.053292ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=2.5 (0.053875ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=Infinity (0.062167ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize= (0.052458ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=%205 (0.064833ms)
+@apps/api:test:   ✔ rejects invalid query: page=1&page=2 (0.117125ms)
+@apps/api:test:   ✔ rejects invalid query: q=a&q=b (0.119209ms)
+@apps/api:test:   ✔ rejects invalid query: tag=ai&tag=data (0.092917ms)
+@apps/api:test:   ✔ returns the exact specified envelope and validates before filtering (0.136625ms)
+@apps/api:test:   ✔ aggregates validation issues (0.096ms)
+@apps/api:test:   ✔ preserves the existing health endpoint (1.079417ms)
+@apps/api:test:   ✔ passes the existing authorization header through the factory (0.287917ms)
+@apps/api:test: ✔ GET /api/courses (24.695708ms)
+@apps/api:test: ℹ tests 46
+@apps/api:test: ℹ suites 1
+@apps/api:test: ℹ pass 46
+@apps/api:test: ℹ fail 0
+@apps/api:test: ℹ cancelled 0
+@apps/api:test: ℹ skipped 0
+@apps/api:test: ℹ todo 0
+@apps/api:test: ℹ duration_ms 115.745667
+@apps/api:build: <DIR>/index.js.map  asset │ size: 499.44 kB
+@apps/api:build: <DIR>/index.js      chunk │ size: 289.16 kB
+@apps/api:build: 
+@apps/api:build: ✔ rolldown v1.0.0-beta.55 Finished in 16.51 ms
+@apps/api:build: $ cellix-prepare-func-deploy
+@apps/api:build: Azure Functions package: /Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/apps/api/agentCourses-api.zip
+@axc-verification/acceptance-api:test:acceptance: cache bypass, force executing c0fdc549102b8c32
+@cellix/mongoose-seedwork:test: --------------------·················································································································································
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test: ⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  FAIL  tests/integration/mongo-unit-of-work.integration.test.ts > MongoUnitOfWork:Integration
+@cellix/mongoose-seedwork:test: Error: listen EPERM: operation not permitted 0.0.0.0
+@cellix/mongoose-seedwork:test:  ❯ ../../../node_modules/.pnpm/mongodb-memory-server-core@10.4.3_supports-color@8.1.1/node_modules/mongodb-memory-server-core/src/util/getport/index.ts:137:11
+@cellix/mongoose-seedwork:test:  ❯ tryPort ../../../node_modules/.pnpm/mongodb-memory-server-core@10.4.3_supports-color@8.1.1/node_modules/mongodb-memory-server-core/src/util/getport/index.ts:122:9
+@cellix/mongoose-seedwork:test:  ❯ getFreePort ../../../node_modules/.pnpm/mongodb-memory-server-core@10.4.3_supports-color@8.1.1/node_modules/mongodb-memory-server-core/src/util/getport/index.ts:73:28
+@cellix/mongoose-seedwork:test:  ❯ MongoMemoryServer.getNewPort ../../../node_modules/.pnpm/mongodb-memory-server-core@10.4.3_supports-color@8.1.1/node_modules/mongodb-memory-server-core/src/MongoMemoryServer.ts:401:38
+@cellix/mongoose-seedwork:test:  ❯ MongoMemoryServer.getStartOptions ../../../node_modules/.pnpm/mongodb-memory-server-core@10.4.3_supports-color@8.1.1/node_modules/mongodb-memory-server-core/src/MongoMemoryServer.ts:445:24
+@cellix/mongoose-seedwork:test:  ❯ MongoMemoryServer._startUpInstance ../../../node_modules/.pnpm/mongodb-memory-server-core@10.4.3_supports-color@8.1.1/node_modules/mongodb-memory-server-core/src/MongoMemoryServer.ts:527:48
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  FAIL  tests/integration/mongo-unit-of-work.integration.test.ts > MongoUnitOfWork:Integration
+@cellix/mongoose-seedwork:test: TypeError: Cannot read properties of undefined (reading 'stop')
+@cellix/mongoose-seedwork:test:  ❯ tests/integration/mongo-unit-of-work.integration.test.ts:172:21
+@cellix/mongoose-seedwork:test:     170|  afterAll(async () => {
+@cellix/mongoose-seedwork:test:     171|   await mongoose.disconnect();
+@cellix/mongoose-seedwork:test:     172|   await mongoServer.stop();
+@cellix/mongoose-seedwork:test:        |                     ^
+@cellix/mongoose-seedwork:test:     173|  });
+@cellix/mongoose-seedwork:test:     174|
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  Test Files  1 failed | 13 passed (14)
+@cellix/mongoose-seedwork:test:       Tests  145 passed | 20 skipped (165)
+@cellix/mongoose-seedwork:test: Type Errors  no errors
+@cellix/mongoose-seedwork:test:    Start at  11:32:24
+@cellix/mongoose-seedwork:test:    Duration  1.07s (transform 1.09s, setup 0ms, import 2.67s, tests 43ms, environment 0ms, typecheck 489ms)
+@cellix/mongoose-seedwork:test: 
+@axc-verification/acceptance-api:test:acceptance: $ rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features
+@cellix/mongoose-seedwork:test: [ELIFECYCLE] Test failed. See above for more details.
+@axc-verification/acceptance-api:test:acceptance: [ELIFECYCLE] Command failed.
+@cellix/serenity-framework:test: ······························································[ELIFECYCLE] Test failed. See above for more details.
+ ERROR  @cellix/mongoose-seedwork#test: command (/Users/dfortun/Documents/Codex/2026-10-12/bu/work/axc/packages/cellix/mongoose-seedwork) /Users/dfortun/.local/share/mise/shims/pnpm run test exited (1)
+
+ Tasks:    23 successful, 26 total
+Cached:    0 cached, 26 total
+  Time:    6.344s 
+Failed:    @cellix/mongoose-seedwork#test
+
+ ERROR  run failed: command  exited (1)
+[ELIFECYCLE] Test failed. See above for more details.

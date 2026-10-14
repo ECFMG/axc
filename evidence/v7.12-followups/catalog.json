@@ -1,0 +1,992 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-12T15:57:35.077199+00:00",
+  "destination_branch": "df-oai-0-a-out",
+  "reference_branch_read_only": "hac-oai-0-a-out",
+  "reference_commit": "509326658517e3b94482415a0bdd7469db702fc8",
+  "target_before": "6cd79ab763ef1dbe445851996a4159015836cb1d",
+  "baseline": "v7.12",
+  "supplied_patch_release": "v7.12.1",
+  "new_model_runs": 0,
+  "new_test_runs": 0,
+  "existing_baseline_manifest_files_verified": 303,
+  "existing_ollama_responses_verified": 19,
+  "imported_baseline_ollama_usage": {
+    "input_tokens": 230100,
+    "output_tokens": 25119,
+    "total_tokens": 255219
+  },
+  "new_files": [
+    {
+      "path": "alignment/outputs/alignment-verification.txt",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/alignment-verification.txt",
+      "sha256": "8e33a3a33ec29ac56bbad9a9c2c82c8dc59b995e36e638d639bc31800b140269",
+      "bytes": 66576,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/outputs/application-typecheck.txt",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/application-typecheck.txt",
+      "sha256": "d5ca45fdcafb6107cd931f51d20d4a856f906d35e976b945e28238c4ce59365b",
+      "bytes": 1677,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/outputs/harness-v7.12.1-README.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/harness-v7.12.1-README.md",
+      "sha256": "668c6b82120bd305859025cc5e6f932dc4b8487d9e1dad4796890e4c348cfa3d",
+      "bytes": 4085,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/outputs/harness-v7.12.1-test-results.txt",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/harness-v7.12.1-test-results.txt",
+      "sha256": "f171350b1b5e289eb5bbc0fbe92ba7224851ec692930d8a14f29c3d532535ce6",
+      "bytes": 19201,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/outputs/reference-to-your-code.diff",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/reference-to-your-code.diff",
+      "sha256": "5df55c87e28240343bdc24d971ab8a17609022555f73bd3d6c73f580cb088355",
+      "bytes": 59841,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/outputs/verification-diagnostics.json",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/verification-diagnostics.json",
+      "sha256": "afa4c85b91c11ea56c798302c40cdbe94411428570ef9dd1c2ca118007f30327",
+      "bytes": 43158,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/outputs/verification-diagnostics.txt",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/outputs/verification-diagnostics.txt",
+      "sha256": "41b55601ad2e1ff3140a18677b24ed182dfc3f47d39e2ffafdeb5a596260e8ed",
+      "bytes": 4428882,
+      "category": "reference-alignment follow-up; not measured v7.12 baseline"
+    },
+    {
+      "path": "alignment/work-logs/alignment-verify.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/alignment-verify.log",
+      "sha256": "8e33a3a33ec29ac56bbad9a9c2c82c8dc59b995e36e638d639bc31800b140269",
+      "bytes": 66576,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/application-test.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/application-test.log",
+      "sha256": "dd4b7b6a37b08856c96d5c96bf082f89506c865659ded628c2aec696c09e6f5d",
+      "bytes": 5599,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/application-typecheck.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/application-typecheck.log",
+      "sha256": "d5ca45fdcafb6107cd931f51d20d4a856f906d35e976b945e28238c4ce59365b",
+      "bytes": 1677,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/biome-diagnostics.json",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/biome-diagnostics.json",
+      "sha256": "afa4c85b91c11ea56c798302c40cdbe94411428570ef9dd1c2ca118007f30327",
+      "bytes": 43158,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/biome-stderr.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/biome-stderr.log",
+      "sha256": "be2060bf3de21faebf0302ab0a9108606da09c0d76a761b81188050f68a490d6",
+      "bytes": 449,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/harness-first-test.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/harness-first-test.log",
+      "sha256": "3df0af67cf2c565c5eea26c3d187c9b553fefdc2127e90789b7d85d4c49fcc34",
+      "bytes": 17070,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/harness-focused-test.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/harness-focused-test.log",
+      "sha256": "2e4548be588efe4fa4b644f91a78e77e5c0349acc8cf4fc956d935af45a2a69e",
+      "bytes": 2732,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/reference-biome.json",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/reference-biome.json",
+      "sha256": "ebafb3ca1703c89a7034e69c904fb2e062485c49e2cba2e638f6757b15a26567",
+      "bytes": 233,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/reference-biome.stderr",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/reference-biome.stderr",
+      "sha256": "12185f7730fa380f95bd4166d23005af3e8d28da402cd07d459a581a0425e7e8",
+      "bytes": 103,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "alignment/work-logs/verify-reproduction.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/ecord-actual-model-token-usage-for/work/verify-reproduction.log",
+      "sha256": "453a51a5db5f79f5dc758ee140628dc4718b8c105003a462fc93deebb2c36230",
+      "bytes": 209665,
+      "category": "alignment and harness-development checks; results preserved verbatim"
+    },
+    {
+      "path": "independent-codex-verification/README.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/README.md",
+      "sha256": "4a77993739f7f345c393d2a6d1f4eea4d2d7599b21ac5611c5e95c83a5d70458",
+      "bytes": 2714,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/architecture.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/architecture.log",
+      "sha256": "078cb75df331fd145f9f38c7cc6d31cfeb65910bc620cec73a4bd3188f1bcdd3",
+      "bytes": 6322,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/build.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/build.log",
+      "sha256": "a073602cb56fbeac58726d856bcbec0638d3f1e461525056e61628752c91b4c2",
+      "bytes": 6967,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/bundle-verification.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/bundle-verification.log",
+      "sha256": "c91f121c9a82ff946936a82c049e3c920a260c01dbcef799c079ebc2ff3cf244",
+      "bytes": 297,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/courses-implementation.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/courses-implementation.md",
+      "sha256": "77e8db1d9a685d9cb2451541f0a88ce5de0b4b83b156e145775d0e3e56fb6ece",
+      "bytes": 2849,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/courses-validation.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/courses-validation.md",
+      "sha256": "617525d8cfa3c5bf4a8db17a269a6d9dcaa762a8264785eef8971ac3cc5f4d8f",
+      "bytes": 4706,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/courses.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/courses.md",
+      "sha256": "ac76205c6b800f9971a9ddd29181c4f0571d058e2033c9b4bd51cdb53178edbc",
+      "bytes": 3506,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/diff-check.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/documentation-build.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/documentation-build.log",
+      "sha256": "6f9490137c797b39b254808f48f42487ec1099507c1d72b052ee5166e6b01846",
+      "bytes": 1020,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/evaluation-run-record.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/evaluation-run-record.md",
+      "sha256": "c87f595ddaefa0cefaea861399fc85721a5e3cf7f92d12c72921dd037127385c",
+      "bytes": 3615,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/lint.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/lint.log",
+      "sha256": "e99744e0016cb7012990a5982d1b4ad1a0fb6fc3cd9217c16b757cbb08b77837",
+      "bytes": 58,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/task-set-a.bundle",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/task-set-a.bundle",
+      "sha256": "79f8b7ce2fb7beb56a9a2fc8290cbfd380cca4af207c1ddb466b5cfd9c851de0",
+      "bytes": 19529,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/task-set-a.patch",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/task-set-a.patch",
+      "sha256": "4cf35b371f133ca4ffe24814e65dd3935a2fb2b932a3552c4d828dc055e35f18",
+      "bytes": 39832,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/test-local-servers.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/test-local-servers.log",
+      "sha256": "a43e78b28c758dfad18cb020e4e112f8d3737ea1271c1e313249b6f57265bab5",
+      "bytes": 27003,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/test.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/test.log",
+      "sha256": "a31a8621e038d98671d1a45432404e651937ad177d8c365500e32a29941fd1ee",
+      "bytes": 23089,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/typecheck.log",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/typecheck.log",
+      "sha256": "c98fab8216e7497002c7ed1265b8ca4ac5c1c988902cbb21b9b0213204661814",
+      "bytes": 5053,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/usage.json",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/usage.json",
+      "sha256": "ec4e0baeb33f895554e5432e875a3fe1df4b7e448af84ffc685166aa2c425d22",
+      "bytes": 1370,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "independent-codex-verification/validation-results.json",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-10-12/bu/outputs/task-set-a-evaluation/validation-results.json",
+      "sha256": "e90f70d8ab9b714f2ed5781d0a20d8536684fc2f8db8ecea7e81246f5f78cf51",
+      "bytes": 954,
+      "category": "independent verification of different existing implementation at 903af49; not v7.12 model baseline"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1.zip",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip",
+      "sha256": "c005d890f9ac6fcb8b28a0552e8af807c80cf989068de111b7c327e5dc2e4f0b",
+      "bytes": 287327,
+      "category": "patch release archive; no new model baseline run"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/CHANGES.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/CHANGES.md",
+      "sha256": "e808640d913e6b8a6173434e3e0d69fc6f5b4c1e4e896769163b78e767d17a11",
+      "bytes": 2282,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/CHECKLIST.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/CHECKLIST.md",
+      "sha256": "d4126f81a93703d2992faff54cf42b89bec0bac2fb397a768a5751ee6ff31b06",
+      "bytes": 4346,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/CODING_TASKS.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/CODING_TASKS.md",
+      "sha256": "a0b3a8db36b170af719a3d919d83fdc100839e68c15e802a450b88041c6f032a",
+      "bytes": 10506,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/COMPARE.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/COMPARE.md",
+      "sha256": "26624cb509fbeb1b000d2c585deab93ecf52deba51be36f1e4c19457272a4095",
+      "bytes": 8364,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/IMPROVEMENTS.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/IMPROVEMENTS.md",
+      "sha256": "568b843a6c8f092d45416c2154532dcb25316963fed102c8f7db1ae5bd72de92",
+      "bytes": 9395,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/LIVE_OLLAMA_CHECKS.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/LIVE_OLLAMA_CHECKS.json",
+      "sha256": "6b031ebae745a114a9afec6feaf3fbdee4a156832b8a272ba178de4899e95cca",
+      "bytes": 4417,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/OLLAMA.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/OLLAMA.md",
+      "sha256": "90d896d965c724b5fc5161837618721d43372061688d02ad9d0d83db4d679dbd",
+      "bytes": 9523,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/OLLAMA_RESULTS.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/OLLAMA_RESULTS.md",
+      "sha256": "b7c8ac3bba5244bf812bbb85bd7d622f219243b21ce2b818ee8485b1791b9178",
+      "bytes": 3142,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/OLLAMA_RETRY_ACCOUNTING.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/OLLAMA_RETRY_ACCOUNTING.json",
+      "sha256": "67c0251f8fc182e46d62c69500365b9626c191862e78c1c9870444883a908b9f",
+      "bytes": 291,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/QUALITY.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/QUALITY.md",
+      "sha256": "2f2aee0a979b2e33cffb552210338b890e62a1cf9c4ead474e1aded3dc7a956b",
+      "bytes": 7819,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/README.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/README.md",
+      "sha256": "668c6b82120bd305859025cc5e6f932dc4b8487d9e1dad4796890e4c348cfa3d",
+      "bytes": 4085,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/REFACTOR_AND_STRESS.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/REFACTOR_AND_STRESS.md",
+      "sha256": "9c3ccd881c2252190539d2f8b01c2959b1603c725cda01d662f592047cb6e237",
+      "bytes": 9975,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/RUNTIME_SETUP.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/RUNTIME_SETUP.md",
+      "sha256": "8dcc59f50853c8ff48f0a00a81e41733953f2762bd0de68f66148a9b5294604b",
+      "bytes": 4273,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/SHA256SUMS-v7.12.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/SHA256SUMS-v7.12.json",
+      "sha256": "9438917b89e8f6a0d066513317c1faba25e1a898dbac2644447fc9a206361b2f",
+      "bytes": 8610,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/SHA256SUMS.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/SHA256SUMS.json",
+      "sha256": "d5d251893637a929e3bfb248da91fa8aa079d83f36c19abb7b2c75c5618e4a61",
+      "bytes": 9085,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/TEACHING_DEMO.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/TEACHING_DEMO.md",
+      "sha256": "15df33b7631e650e817c16012423172ce1fa003efc43eb82e4b935f024d95f24",
+      "bytes": 3173,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/TEACHING_PROMPT.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/TEACHING_PROMPT.md",
+      "sha256": "a8aad8ae15e6f9a89ec26bef2539a605c0728a001529ffe7a9162c910ce36586",
+      "bytes": 2763,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/TEACHING_README.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/TEACHING_README.md",
+      "sha256": "4151847a872e5b8c75b60753358540422ff2783cf79929ae8c27a63d2526a8aa",
+      "bytes": 11680,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/TEST_RESULTS-v7.12.log",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/TEST_RESULTS-v7.12.log",
+      "sha256": "f660c9f905e1ccc73dba1d50b5516470ba4c4f8ca51e701f5891fe93a4fc48cb",
+      "bytes": 17070,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/TEST_RESULTS.log",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/TEST_RESULTS.log",
+      "sha256": "f171350b1b5e289eb5bbc0fbe92ba7224851ec692930d8a14f29c3d532535ce6",
+      "bytes": 19201,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/VALIDATION-v7.12.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/VALIDATION-v7.12.json",
+      "sha256": "ae27e0440cde186831f59d21ce83e9b855fbc628c2e1c2e3cf310c51659f61b2",
+      "bytes": 1466,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/VALIDATION.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/VALIDATION.json",
+      "sha256": "55a0c8993941f06d3ff84eb5d19e49f903eeea13ff2c12d8b7f74456229aa167",
+      "bytes": 1566,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/VERSION-v7.12.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/VERSION-v7.12.json",
+      "sha256": "1cff2e5cbf1c72a71ca7c3fe4169c754fdd58113f8c48f9084bd5a186188ab09",
+      "bytes": 1163,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/VERSION.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/VERSION.json",
+      "sha256": "45c79efe03a9cc135b1847e5b14d01f38b74df5db2f890fa557169138ec4019e",
+      "bytes": 1365,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/WORKFLOWS.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/WORKFLOWS.md",
+      "sha256": "75b924fc9c1d562eee67ac8f2f64cadeac6f134c02bbe4a2d6035e1d846c3ab2",
+      "bytes": 18597,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding-task-set-a.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding-task-set-a.json",
+      "sha256": "a0fa7c5285e3dca8a87162a08eddcc171760f6ef5a649325a095ec5f18b48c7d",
+      "bytes": 17124,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_actions.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_actions.py",
+      "sha256": "8e8cb7cc6292e9f49c784b9176a9307be19183d278305e66ed96989f50712094",
+      "bytes": 3786,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_agent.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_agent.py",
+      "sha256": "829b9f0e549924db3500be588ae675abf90628cb6f96158cdd24437fa0be9c54",
+      "bytes": 19633,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_benchmark.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_benchmark.py",
+      "sha256": "e193f57a17659b51ed9fb4132561992e3462d96edca1d09265664ba06efd7eb4",
+      "bytes": 6560,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_comparison.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_comparison.py",
+      "sha256": "70b837f76932d8827d9619bd7228cf0be25f599aa4ae4c436391a8c7cf3a48a0",
+      "bytes": 5226,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_context.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_context.py",
+      "sha256": "50504b3b0c2a27646e421cf439d85bdc0df6aed024e7ffc63a4020e814a56fa3",
+      "bytes": 3293,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_plan.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_plan.py",
+      "sha256": "05ac1dae4d95fba6512d7cd40430240b4f2dfa17f1ce89dfa5f57cb8bdf7d8c2",
+      "bytes": 4583,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/coding_task.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/coding_task.py",
+      "sha256": "8be8b2c0cd41fb378f5e0552d25042f5347450280ff93d0cc04c7518d03e7910",
+      "bytes": 19569,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/common.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/common.py",
+      "sha256": "5d2b54e2fef66a77abbf3aeee60f2348c16d91ef5030e1f1785008f831e148e0",
+      "bytes": 4432,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/compare_versions.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/compare_versions.py",
+      "sha256": "da5264592272735788617035e256b153b906aef9d774533132726871b96042b7",
+      "bytes": 5866,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/compatibility.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/compatibility.json",
+      "sha256": "b3ce1fa05bc36381f6de0d93869f8ed0f54925a4f6d689230677213cd3eaf9da",
+      "bytes": 45012,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/context.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/context.py",
+      "sha256": "f2bb4843a6d0e8be910e8aa43c68a4ad83cc210b0336416e858976b24978af43",
+      "bytes": 17381,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/course_acceptance.mjs",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/course_acceptance.mjs",
+      "sha256": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5",
+      "bytes": 9282,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/demo-report.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/demo-report.json",
+      "sha256": "2889a0f19b46f1cc9947dfd7f51f12a23b888e2406c66f15e7491465f2dd6ad2",
+      "bytes": 9222,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/example.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/example.json",
+      "sha256": "247dac377452bbc33f462423bb3a39a1908888502c7a2837f82afbcaf4d22993",
+      "bytes": 2748,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/hardened-config.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/hardened-config.json",
+      "sha256": "7e21435769f790517251ee015c6e13a03b174ac3ff1abc13eeee565036e3092e",
+      "bytes": 991,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/harness.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/harness.py",
+      "sha256": "3e8af6bfe7907d8c8a14a39f2336489d9cfd077f005e2183673f1fc2f91c3058",
+      "bytes": 29865,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/isolation.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/isolation.py",
+      "sha256": "4afa96bb6847fb868deee9c3e991c535f9b6a5ec11c6ba94bce9007db42dacba",
+      "bytes": 4336,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/model_adapters.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/model_adapters.py",
+      "sha256": "d2374e1e85d93a062aa561bd5910c9c79a91ee035cbf22788a929b06eeae5734",
+      "bytes": 8270,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/node_test_reporter.mjs",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/node_test_reporter.mjs",
+      "sha256": "9b94d3cf8168a3c84f1b5668e21081b6d855f7f65f328ca8ee1a25554a4d051c",
+      "bytes": 495,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/ollama-config.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/ollama-config.json",
+      "sha256": "10e971f76ec9c32fae02ec50d812171072ea1352c4cd79f016dc0fa6e997a54a",
+      "bytes": 978,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/ollama_adapter.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/ollama_adapter.py",
+      "sha256": "021399f5c132632a34b7c88cbca977df32e5708dfc05bf901f20262199fafb6f",
+      "bytes": 14527,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/quality.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/quality.py",
+      "sha256": "44736644b29a262d42ff667e33fc5e1ef26bd12430372d407197c743a8c1ba71",
+      "bytes": 7249,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/reporting.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/reporting.py",
+      "sha256": "e48b8c91e7d8d379edecff50305cc347872767021aab5ce2305dfc89baa5257b",
+      "bytes": 10518,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/run_task_a.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/run_task_a.py",
+      "sha256": "9d5a7b118c97c109c3bb254eaec8a86016909fe4ba6ec5d02c30adce980cbafb",
+      "bytes": 7052,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/source_contracts.mjs",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/source_contracts.mjs",
+      "sha256": "e8b49c8cc77aea29d26b2fedfc8b85512d3730feb534c1e3860f7fbba7cdc2e0",
+      "bytes": 3555,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/stress_test.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/stress_test.py",
+      "sha256": "798bdbb876d54ecbef101a1f3309a964f2003fd283effc2a8aed5f82d282f685",
+      "bytes": 16431,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/task-set-a-prompt.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/task-set-a-prompt.md",
+      "sha256": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+      "bytes": 2352,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/task-set-a-requirements.md",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/task-set-a-requirements.md",
+      "sha256": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+      "bytes": 7252,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/task_a_gates.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/task_a_gates.py",
+      "sha256": "64c173e953880adc4237030b9dc6a37ea79a052c4e30dd5f55a3f2a62e9f8a71",
+      "bytes": 7961,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/tasks-eval.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/tasks-eval.json",
+      "sha256": "e8fcb13f3592f141ca1a858849fff361d72aea265985f10ce92c88657b720000",
+      "bytes": 50970,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/tasks-tune.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/tasks-tune.json",
+      "sha256": "7f837cd843fd40975b06ac26bff0e43e212b2631154190830c61aa3d7c371a1c",
+      "bytes": 3113,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-broad-eval.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-broad-eval.json",
+      "sha256": "f58f9901f917bff43fd8ef7ee649b6cdaf2a91f717309812ee422f523277dcf6",
+      "bytes": 17459,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-demo-report.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-demo-report.json",
+      "sha256": "1502fc7f6bb2b95bec5add725a3da0c704a4e1e4750384b7f0c0533b03b0ca1c",
+      "bytes": 42975,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-eval-v2.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-eval-v2.json",
+      "sha256": "ad605205638a9a108319f21fc57027a8a5cc95ced955f92d64cf4c76686938bd",
+      "bytes": 10354,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-grader-development.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-grader-development.json",
+      "sha256": "c3fecca406d3d2a7a69b9d1f0d505ca01af59fa92403e60edbd51eeba1f9b533",
+      "bytes": 14450,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-holdout.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-holdout.json",
+      "sha256": "223d8035b1226435fe319659342b88905d27fbb7c187648376e4f2adb4faac90",
+      "bytes": 12972,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-quality-demo.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-quality-demo.json",
+      "sha256": "902ec901e441a150d8e53083b79cd5cd726ccdd4c7c8a12bad30d8b388129557",
+      "bytes": 6058,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-quality-eval.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-quality-eval.json",
+      "sha256": "111609a5fd86c3df2346bf68294e2f4bc6611841cfc77b8e04c5f3d8a96eb541",
+      "bytes": 10215,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-quality-tune.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-quality-tune.json",
+      "sha256": "40953a8ab33a3f0c4650407927445c02207a5636e6a5c36e34b37261090d8d1a",
+      "bytes": 10284,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-review-guide.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-review-guide.json",
+      "sha256": "9af096c8c750287f5d9a9ca76aeb2c0fa8b52d1554e40d96c1a073707d67014e",
+      "bytes": 2484,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-review-v2.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-review-v2.json",
+      "sha256": "c1d6ca60f861a5ad5850ed602b35ff50179eac639280f19f7c8f50ccd1da805c",
+      "bytes": 5891,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-sessions-demo-settings.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-sessions-demo-settings.json",
+      "sha256": "6e4e983af5dd4ddf0f86a774bd1d8e8288725a7033dc41c3dd924cd697721938",
+      "bytes": 181,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-sessions-demo.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-sessions-demo.json",
+      "sha256": "f034220a2c6c1cb794d12b1c3753cd4be5181cdb5970c39b62be85032926859c",
+      "bytes": 4981,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-sessions-holdout.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-sessions-holdout.json",
+      "sha256": "68ad94fbfa05e521e0977c23fd281c1de559e09866935321b34e71f68f11576c",
+      "bytes": 13841,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-sessions-local-settings.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-sessions-local-settings.json",
+      "sha256": "4a7d2c84f9a66d7ba18e8675a6dbdf82b5b9538ff8207667e3e53536dcd5d96f",
+      "bytes": 179,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching-tune-v2.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching-tune-v2.json",
+      "sha256": "7fdd69f9cb56cb9a777cbbf96575091728ed72227a43947ee131f2dc7b502581",
+      "bytes": 10415,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching.json",
+      "sha256": "59d59f6664e0da6e4d3e7a2be66f8c5778b8f422992eed364fab8a3fa733f2cf",
+      "bytes": 14222,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching_cache.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching_cache.py",
+      "sha256": "fb92a95379b8ca0ec77e8516219496bc760592dae600b8303e2c437f910e2ed1",
+      "bytes": 4774,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching_review.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching_review.py",
+      "sha256": "ff0493c2a287c1a41fc6e0317966cb3f84193e708e93140181b725d02685a6fb",
+      "bytes": 23091,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching_sessions.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching_sessions.py",
+      "sha256": "37e9ece1eb16b092fd45e4ec9b47b557b9e5c5131cce9d6401283f38597c2058",
+      "bytes": 11414,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching_study.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching_study.py",
+      "sha256": "70573a3c4091eacab597a009cc5a686453115d7738252472769af5629187bd73",
+      "bytes": 9561,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/teaching_validation.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/teaching_validation.py",
+      "sha256": "5ae61b5f10cda5e96ea06f9e0a2f794b38d7d2ce6bdce60f5bfb697825fc5272",
+      "bytes": 9499,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_adapter_contract.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_adapter_contract.py",
+      "sha256": "50c1e87da9ec3e81f91f439a50ede77cc940945acec6d340dd5361c7c686231c",
+      "bytes": 2643,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_baseline_commit.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_baseline_commit.py",
+      "sha256": "9ab5b9e337f750e695350baf1c6f731e0a9fc0034263b7e7ccabcd97d3a88da4",
+      "bytes": 11080,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_coding_agent.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_coding_agent.py",
+      "sha256": "976d96cb7e0594cc0c703962594c11e186d20e15c7dedd8e8b32edc6aa27bd9e",
+      "bytes": 5737,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_coding_comparison.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_coding_comparison.py",
+      "sha256": "9ceaacd6368c4422e747bf19326815d5aadb3ae2407b8ec2fb2d95db090a2939",
+      "bytes": 2809,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_coding_task.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_coding_task.py",
+      "sha256": "f5a70352d2cd93318e8abbd969bfb19f6284c6aa9d9b08bb753355e366a67626",
+      "bytes": 7289,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_compatibility.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_compatibility.py",
+      "sha256": "b53c3f3a6299c8d612e5de3724747ac660c67674487b02bef8f5e000ef213fc9",
+      "bytes": 2829,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_context_features.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_context_features.py",
+      "sha256": "a1a6757d4f13fd7292f24c766fc49f2705aeb447abf3d43fec286f21a2b77c43",
+      "bytes": 3935,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_harness.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_harness.py",
+      "sha256": "bcb5bb77c8372b212cfc61c2611feafe7086a591d0fa2c3feab154b4bced4b7b",
+      "bytes": 11091,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_improvements.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_improvements.py",
+      "sha256": "8c4e572ce5e1d6147f31142414f7e6b231905b67174195e9dadf437a1f70293a",
+      "bytes": 12116,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_iterations.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_iterations.py",
+      "sha256": "88b285fe8b56dcf5996f373d20fce308090c7cfd9fcc8b1c34953c4e1974571a",
+      "bytes": 12039,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_ollama.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_ollama.py",
+      "sha256": "fb079f160ebea23a649ae34b7d4e9a8e2fc13cadcdaf8fed74f5eadf44b3183b",
+      "bytes": 15097,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_plan_features.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_plan_features.py",
+      "sha256": "ce8dea0961c06bba10312fb72fa1c86000eae89c0b08ea95e2c3d2064618a7ca",
+      "bytes": 4519,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_quality.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_quality.py",
+      "sha256": "14ee74116257c951853a274f3bd01777a43e168dc9b5bee30262537b3a4c34f2",
+      "bytes": 12368,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_release_cli.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_release_cli.py",
+      "sha256": "3652b2f73b4414b126b578c632f5a5b5bce649fbc3351f2754d67dfc47ce9325",
+      "bytes": 4356,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_teaching_cache.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_teaching_cache.py",
+      "sha256": "0775b3cd410679018f2b631db5630ff4c61d4230494ff2ac24930aaa2f3885f6",
+      "bytes": 5757,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_teaching_focus.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_teaching_focus.py",
+      "sha256": "637967c5e262102737cd9456752ddb2b3ff6bbb4b4d47b379d0a8c38db2a1c41",
+      "bytes": 9297,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_teaching_study.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_teaching_study.py",
+      "sha256": "86b92f0bdb2e55c51fb65fad995a385db1a9f47f0715067f5c5b34f63cdf7187",
+      "bytes": 3343,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_teaching_validation.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_teaching_validation.py",
+      "sha256": "36f38504e4db6fa0666d6cbf7284625d26f81f7fc6ff0a978c408dcc31c77af5",
+      "bytes": 7326,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/test_workflow.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/test_workflow.py",
+      "sha256": "6bc3fb4269b0e76425b7bbe135d985a8d5b018465b1df47f38216c67431cea43",
+      "bytes": 18742,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/workflow-config.json",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/workflow-config.json",
+      "sha256": "5340f7d80ca059eabe157b097146c67b802d6f3aab299879f6eef4557a1388dc",
+      "bytes": 881,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "release/openai-harness-v7.12.1/workflow.py",
+      "source_path": "/Users/dfortun/Downloads/openai-harness-v7.12.1.zip!/openai-harness-v7.12.1/workflow.py",
+      "sha256": "e21a29418e6303fe75c0f70b8bcc5733dd6b171da9c077c361c557bb2a60c1e0",
+      "bytes": 23052,
+      "category": "exact supplied patch release member"
+    },
+    {
+      "path": "supplied-reference-material/requirements.md",
+      "source_path": "/Users/dfortun/axc/task-set-a-requirements.md",
+      "sha256": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+      "bytes": 7252,
+      "category": "user-supplied reference document; instructions treated as source material, not new task authorization"
+    },
+    {
+      "path": "supplied-reference-material/evaluation-run-record-template.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-09-28/bui/work/v8-completion-task-a-25/evaluation-run-record.md",
+      "sha256": "481c2ff9d9852ff5a6dffeb2a7a606356d12618fe4b4bc9393fa50558153d5e8",
+      "bytes": 999,
+      "category": "user-supplied reference document; instructions treated as source material, not new task authorization"
+    },
+    {
+      "path": "supplied-reference-material/prompt.md",
+      "source_path": "/Users/dfortun/Documents/Codex/2026-09-28/bui/outputs/v8-task-a-completion/smoke-23/frozen/task-set-a-prompt.md",
+      "sha256": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+      "bytes": 2352,
+      "category": "user-supplied reference document; instructions treated as source material, not new task authorization"
+    }
+  ],
+  "exclusions": [
+    "No reference implementation files copied into live application.",
+    "No local session transcripts, credentials, dependency folders or build caches exported.",
+    "Original baseline and later independent verification remain different runs."
+  ]
+}

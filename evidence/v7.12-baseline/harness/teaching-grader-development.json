@@ -1,0 +1,295 @@
+{
+  "split": "development",
+  "label_source": "ai_authored",
+  "note": "AI-authored challenge labels for developer regression testing; independent expert calibration pending.",
+  "cases": [
+    {
+      "id": "heat-reasoning",
+      "input": "Explain the supplied method; What would you check before using this method on a new example?",
+      "contexts": {
+        "full": "Constant specific heat and no phase change: m=.5kg, c=4000J/(kg*K). Heat capacity=2000J/K. For a10K rise, Q=20000J."
+      },
+      "rubric": {
+        "version": 2,
+        "require_sections": false,
+        "required": {
+          "constant": "(?:constant(?:e)?\\s+(?:specific heat|c)|c\\s+(?:is\\s+)?constant|capacité thermique massique.{0,20}constante)",
+          "no_phase": "no phase change|sans changement (?:de phase|d[’\\']état)",
+          "capacity_reason": "2000\\s*(?:J\\s*/\\s*K|joules per kelvin)|2000\\s*J[^.]{0,45}(?:1\\s*K|one kelvin)"
+        },
+        "forbidden": {
+          "wrong_interpretation": "2000[^.]{0,70}(?:represents|représente)[^.]{0,70}(?:energy|énergie)[^.]{0,60}1\\s*kg[^.]{0,25}10\\s*K"
+        },
+        "transfer_question": "What would you check before using this method on a new example?",
+        "transfer_answer": [
+          "TRANSFER_SOLUTION_LEAK"
+        ],
+        "numeric": {
+          "capacity": {
+            "pattern": "(?:heat capacity|capacité thermique du corps)\\s*(?:is|est|=|:)\\s*(?P<value>\\d+)\\s*(?P<unit>joules per kelvin|[A-Za-z]+(?:\\s*/\\s*[A-Za-z]+)?)",
+            "value": 2000,
+            "scope": "lesson",
+            "units": [
+              "J/K",
+              "joules per kelvin"
+            ]
+          },
+          "energy": {
+            "pattern": "Q\\s*=\\s*(?P<value>\\d+)\\s*(?P<unit>[A-Za-z]+(?:\\s*/\\s*[A-Za-z]+)?)",
+            "value": 20000,
+            "scope": "lesson",
+            "units": [
+              "J"
+            ]
+          }
+        }
+      },
+      "examples": [
+        {
+          "id": "english",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Correct quantity, units and applicability conditions."
+        },
+        {
+          "id": "french",
+          "text": "Sans changement d’état et avec c constant, la capacité thermique du corps est 2000 J/K. Pour élever ce corps de 0,5 kg de 10 K, Q = 20000 J.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Valid French synonym for phase change."
+        },
+        {
+          "id": "unit-alias",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 joules per kelvin. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Explicit unit alias."
+        },
+        {
+          "id": "wrong-step",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K. The number 2000 represents energy for 1 kg through 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Correct final answer with wrong intermediate interpretation."
+        },
+        {
+          "id": "wrong-unit",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J/K for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Right number, wrong dimension."
+        },
+        {
+          "id": "unexpected-unit",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J/s for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Unknown dimension is not accepted as joules."
+        },
+        {
+          "id": "conflicting-unit",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K. Later, Q = 20000 J/K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "The correct earlier claim does not erase a conflicting extra claim."
+        },
+        {
+          "id": "outside-example",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K. In conclusion, heat capacity = 2000 J.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Unit checks cover claims outside an Example heading."
+        },
+        {
+          "id": "missing-assumption",
+          "text": "With specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Constant-c assumption missing."
+        },
+        {
+          "id": "missing-phase",
+          "text": "With constant specific heat and a phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 20000 J for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Phase applicability condition missing."
+        },
+        {
+          "id": "wrong-number",
+          "text": "With constant specific heat and no phase change, heat capacity = 2000 J/K. It takes 2000 J to raise this .5 kg body by 1 K. Q = 2000 J for 10 K.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Incorrect final number."
+        }
+      ]
+    },
+    {
+      "id": "logic-proof",
+      "input": "Explain the supplied method; What would you check before using this method on a new example?",
+      "contexts": {
+        "full": "not(A and B) = (not A) or (not B); not both true means at least one false."
+      },
+      "rubric": {
+        "version": 2,
+        "require_sections": false,
+        "required": {
+          "negated_conjunction": "not\\s*\\(A and B\\)|not both true",
+          "justification": "at least one.{0,15}false"
+        },
+        "forbidden": {
+          "proof_by_example": "(?:one|single) example (?:proves|is enough)|both methods yield[^.]{0,45}proving they are equivalent"
+        },
+        "transfer_question": "What would you check before using this method on a new example?",
+        "transfer_answer": [
+          "TRANSFER_SOLUTION_LEAK"
+        ]
+      },
+      "examples": [
+        {
+          "id": "verbal",
+          "text": "Not both true means at least one is false. This explains the law.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Semantic paraphrase, no prescribed symbols."
+        },
+        {
+          "id": "symbolic",
+          "text": "not(A and B) = (not A) or (not B): at least one is false when both are not true together.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Correct law and reason."
+        },
+        {
+          "id": "counterclaim",
+          "text": "Not both true means at least one is false. One example does not prove a general equivalence.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Criticism of proof-by-example is not endorsement."
+        },
+        {
+          "id": "invalid-proof",
+          "text": "Not both true means at least one is false. Both methods yield true, proving they are equivalent.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "A single example cannot prove universal equivalence."
+        },
+        {
+          "id": "unsupported-law",
+          "text": "not(A and B) = (not A) or (not B).\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Correct formula with no required justification."
+        }
+      ]
+    },
+    {
+      "id": "sql-wording",
+      "input": "Explain the supplied method; What would you check before using this method on a new example?",
+      "contexts": {
+        "full": "COUNT(*) counts all rows; COUNT(v) excludes NULL. Values A,NULL,B give3 and2. v IS NULL finds the missing value."
+      },
+      "rubric": {
+        "version": 2,
+        "require_sections": false,
+        "required": {
+          "all_rows": "COUNT\\(\\*\\)[\\s\\S]{0,900}(?:returns|result\\s*:|=)\\s*3\\b",
+          "non_null": "COUNT\\(v\\)[\\s\\S]{0,900}(?:returns|result\\s*:|=)\\s*2\\b",
+          "predicate": "IS NULL",
+          "unknown": "unknown"
+        },
+        "forbidden": {},
+        "transfer_question": "What would you check before using this method on a new example?",
+        "transfer_answer": [
+          "TRANSFER_SOLUTION_LEAK"
+        ],
+        "numeric": {
+          "all_rows": {
+            "pattern": "COUNT\\(\\*\\)\\s*(?:returns|=)\\s*(?P<value>\\d+)",
+            "value": 3,
+            "scope": "lesson"
+          },
+          "non_null": {
+            "pattern": "COUNT\\(v\\)\\s*(?:returns|=)\\s*(?P<value>\\d+)",
+            "value": 2,
+            "scope": "lesson"
+          }
+        }
+      },
+      "examples": [
+        {
+          "id": "direct",
+          "text": "COUNT(*) returns 3 for A,NULL,B. COUNT(v) returns 2, excluding NULL. v=NULL is unknown; use IS NULL.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Direct counts and predicate."
+        },
+        {
+          "id": "spaced",
+          "text": "COUNT(*) returns 3 for A,NULL,B. COUNT(v) returns 2, excluding NULL. v=NULL is unknown; use IS NULL.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Formatting variation."
+        },
+        {
+          "id": "long-explanation",
+          "text": "COUNT(*) returns 3 because all three rows exist, regardless of whether a value is missing. COUNT(v) returns 2, excluding NULL. v=NULL is unknown; use IS NULL.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Do not grade by distance to an unrelated nearby number."
+        },
+        {
+          "id": "wrong-count",
+          "text": "COUNT(*) returns 3 for A,NULL,B. COUNT(v) returns 3, excluding NULL. v=NULL is unknown; use IS NULL.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Wrong non-NULL count."
+        },
+        {
+          "id": "conflicting-count",
+          "text": "COUNT(*) returns 3 for A,NULL,B. COUNT(v) returns 2, excluding NULL. v=NULL is unknown; use IS NULL. COUNT(*) returns 4.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "A conflicting additional numerical claim must fail."
+        },
+        {
+          "id": "wrong-predicate",
+          "text": "COUNT(*) returns 3 for A,NULL,B. COUNT(v) returns 2, excluding NULL. v=NULL is unknown; use EQUALS NULL.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "The required NULL test is absent."
+        }
+      ]
+    },
+    {
+      "id": "symbolic-assumption",
+      "input": "Explain the supplied method; What would you check before using this method on a new example?",
+      "contexts": {
+        "full": "For a!=0, a^(-n)=1/(a^n), for positive integer n. Zero has no reciprocal."
+      },
+      "rubric": {
+        "version": 2,
+        "require_sections": false,
+        "required": {
+          "nonzero": "a\\s*!=\\s*0|nonzero|non.zero|distinta de cero",
+          "reason": "(?:zero|cero)[^.]{0,30}(?:reciprocal|recíproco)|divid[^.]{0,20}(?:zero|cero)"
+        },
+        "forbidden": {},
+        "transfer_question": "What would you check before using this method on a new example?",
+        "transfer_answer": [
+          "TRANSFER_SOLUTION_LEAK"
+        ]
+      },
+      "examples": [
+        {
+          "id": "latex",
+          "text": "For $a\\neq 0$, a negative exponent takes the reciprocal. Zero has no reciprocal.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "LaTeX nonzero qualifier is valid."
+        },
+        {
+          "id": "unicode",
+          "text": "For a≠0, a negative exponent takes the reciprocal. Zero has no reciprocal.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Unicode nonzero qualifier."
+        },
+        {
+          "id": "spanish",
+          "text": "La base debe ser distinta de cero: no se puede dividir entre cero.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": true,
+          "reason": "Equivalent Spanish qualification and reason."
+        },
+        {
+          "id": "missing-reason",
+          "text": "For a!=0, take the reciprocal.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Restriction without explanation."
+        },
+        {
+          "id": "allows-zero",
+          "text": "For a=0, take the reciprocal. Zero has no reciprocal.\nCheck: What would you check before using this method on a new example?",
+          "acceptable": false,
+          "reason": "Missing nonzero condition cannot be supplied by unrelated words."
+        }
+      ]
+    }
+  ]
+}

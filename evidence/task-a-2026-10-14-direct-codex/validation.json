@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "command": "pnpm test --env-mode=loose",
+      "exit_code": 0,
+      "log": "test.log",
+      "vitest_tests_passed": 700,
+      "api_node_tests_passed": 3,
+      "health_acceptance_scenarios_passed": 1,
+      "turbo_tasks_successful": 26
+    },
+    {
+      "command": "pnpm run lint",
+      "exit_code": 0,
+      "log": "lint.log",
+      "files_checked": 201
+    },
+    {
+      "command": "pnpm run build --env-mode=loose",
+      "exit_code": 0,
+      "log": "build.log",
+      "turbo_tasks_successful": 18
+    },
+    {
+      "command": "pnpm run typecheck --env-mode=loose",
+      "exit_code": 0,
+      "log": "typecheck.log",
+      "turbo_tasks_successful": 21
+    },
+    {
+      "command": "pnpm run test:arch --env-mode=loose",
+      "exit_code": 0,
+      "log": "architecture.log",
+      "tests_passed": 19
+    },
+    {
+      "command": "node course_acceptance.mjs",
+      "exit_code": 0,
+      "log": "acceptance-hono.json",
+      "checks_passed": 29
+    },
+    {
+      "command": "node course_acceptance.mjs --host",
+      "exit_code": 0,
+      "log": "acceptance-host.json",
+      "checks_passed": 29
+    },
+    {
+      "command": "python3 -B task_a_gates.py --repo . --base fe47c38 --out ../submitted",
+      "exit_code": 0,
+      "log": "submitted/result.json",
+      "new_vitest_cases_passed": 56,
+      "new_node_cases_passed": 3,
+      "docs_passed": true
+    },
+    {
+      "command": "HARNESS_TEST_TYPESCRIPT=<resolved typescript/lib/typescript.js> python3 -B -m unittest discover -v",
+      "exit_code": 0,
+      "log": "harness-tests.log",
+      "tests_passed": 171,
+      "skipped": 0
+    },
+    {
+      "command": "git diff --check and Biome check of changed code/config",
+      "exit_code": 0
+    }
+  ],
+  "write_boundary": {
+    "passed": true,
+    "changed_files": [
+      "apps/api/package.json",
+      "apps/api/src/index.ts",
+      "apps/api/test/courses.test.mjs",
+      "apps/docs/docs/courses.md",
+      "apps/docs/sidebars.ts",
+      "packages/axc/application-services/src/course-fixtures.ts",
+      "packages/axc/application-services/src/course-search.test.ts",
+      "packages/axc/application-services/src/course-search.ts",
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/rest/src/index.ts"
+    ],
+    "new_dependencies": 0,
+    "vendored_cellix_changes": 0
+  },
+  "environment_notes": [
+    "Offline install failed due to missing cached tarball. Reused installed dependencies from local AXC through filesystem clones preserving workspace symlinks; lockfile unchanged.",
+    "Local server checks required execution outside sandbox after EPERM binding to localhost.",
+    "Initial sorting test assertion was corrected to compare lowercased titles.",
+    "Harness AST tests require resolved typescript/lib/typescript.js; all 171 pass with that setting."
+  ],
+  "remaining_blockers": []
+}

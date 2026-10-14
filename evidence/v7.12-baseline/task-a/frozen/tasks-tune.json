@@ -1,0 +1,50 @@
+{
+  "split": "tune",
+  "tasks": [
+    {
+      "id": "tune-basic",
+      "category": "short_request",
+      "request": "Prepare the lesson record. Requested fields: difficulty, lesson_count",
+      "history": [],
+      "documents": [
+        {
+          "id": "training-plan",
+          "text": "difficulty=\"introductory\"\nlesson_count=3",
+          "required": false
+        },
+        {
+          "id": "training-copy",
+          "text": "difficulty=\"introductory\"\nlesson_count=3",
+          "required": false
+        },
+        {
+          "id": "miscellaneous",
+          "text": "Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. Unrelated building maintenance notes. ",
+          "required": false
+        }
+      ],
+      "tool_results": [],
+      "expected": {
+        "difficulty": "introductory",
+        "lesson_count": 3
+      }
+    },
+    {
+      "id": "tune-tool",
+      "category": "large_tool_output",
+      "request": "Prepare the lesson record. Requested fields: selected_activity",
+      "history": [],
+      "documents": [],
+      "tool_results": [
+        {
+          "id": "activities",
+          "text": "note_00=\"Background information\"\nnote_01=\"Background information\"\nnote_02=\"Background information\"\nnote_03=\"Background information\"\nnote_04=\"Background information\"\nnote_05=\"Background information\"\nnote_06=\"Background information\"\nnote_07=\"Background information\"\nnote_08=\"Background information\"\nnote_09=\"Background information\"\nnote_10=\"Background information\"\nnote_11=\"Background information\"\nnote_12=\"Background information\"\nnote_13=\"Background information\"\nnote_14=\"Background information\"\nnote_15=\"Background information\"\nnote_16=\"Background information\"\nnote_17=\"Background information\"\nnote_18=\"Background information\"\nnote_19=\"Background information\"\nnote_20=\"Background information\"\nnote_21=\"Background information\"\nnote_22=\"Background information\"\nnote_23=\"Background information\"\nnote_24=\"Background information\"\nnote_25=\"Background information\"\nnote_26=\"Background information\"\nnote_27=\"Background information\"\nnote_28=\"Background information\"\nnote_29=\"Background information\"\nnote_30=\"Background information\"\nnote_31=\"Background information\"\nnote_32=\"Background information\"\nnote_33=\"Background information\"\nnote_34=\"Background information\"\nnote_35=\"Background information\"\nnote_36=\"Background information\"\nnote_37=\"Background information\"\nnote_38=\"Background information\"\nnote_39=\"Background information\"\nselected_activity=\"sorting cards\"",
+          "required_lines": []
+        }
+      ],
+      "expected": {
+        "selected_activity": "sorting cards"
+      }
+    }
+  ]
+}

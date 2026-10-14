@@ -1,0 +1,67 @@
+{
+  "session_id": "01a13bce-3595-72e2-9312-9d2093fecb08",
+  "turn_id": "01a13bcf-4777-7551-95a9-83ab897b5f64",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T15-05-32-01a13bce-3595-72e2-9312-9d2093fecb08.jsonl",
+  "task_start_timestamp": "2026-10-14T19:06:42.430Z",
+  "baseline": {
+    "timestamp": "2026-10-14T19:06:42.430Z",
+    "counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "basis": "New session: task_started is first event and no token_count events precede this task. Zero is the cumulative session origin, not an observed token_count snapshot."
+  },
+  "scope": "All inspection, planning, implementation, validation, reporting, and original final response in this turn; exclude subsequent follow-up turns.",
+  "estimate": {
+    "projected_total_tokens": 250000,
+    "range": [
+      150000,
+      500000
+    ],
+    "assumptions": [
+      "Single agent",
+      "Existing runnable sample or local fixture available",
+      "Approximately 10-20 model calls including supplied context, tool results, validation, and reporting"
+    ],
+    "recorded_at": "2026-10-14T19:07:00Z",
+    "kind": "projection, not measured usage"
+  },
+  "status": "complete",
+  "missing_usage": [],
+  "subagents": [],
+  "ending_snapshot": {
+    "timestamp": "2026-10-14T19:12:43.819Z",
+    "source_line": 236,
+    "counters": {
+      "input_tokens": 2359033,
+      "cached_input_tokens": 2270976,
+      "output_tokens": 17585,
+      "reasoning_output_tokens": 2393,
+      "total_tokens": 2376618
+    }
+  },
+  "measured_usage": {
+    "input_tokens": 2359033,
+    "cached_input_tokens": 2270976,
+    "output_tokens": 17585,
+    "reasoning_output_tokens": 2393,
+    "total_tokens": 2376618
+  },
+  "final_response_accounted_for": true,
+  "complete": true,
+  "measurement_label": "Complete recorded usage for the original Task A turn.",
+  "token_count_events_in_scope": 29,
+  "task_end_timestamp": "2026-10-14T19:12:43.900Z",
+  "accounting_rules": [
+    "Subtract ending cumulative counters minus starting counters; never sum snapshots.",
+    "Cached input tokens are included in input tokens.",
+    "Reasoning output tokens are included in output tokens.",
+    "Total tokens = input tokens + output tokens.",
+    "No subagents were used.",
+    "No dollar cost or credits were measured."
+  ],
+  "updated_at": "2026-10-14T19:14:54.073258+00:00"
+}

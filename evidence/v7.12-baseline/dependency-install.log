@@ -1,0 +1,61 @@
+Scope: all 22 workspace projects
+? Verifying lockfile against supply-chain policies (1731 entries)...
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1596
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1596, reused 0, downloaded 57, added 58
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │      Update available! 11.9.0 → 12.11.2.      │
+   │     Changelog: https://pnpm.io/v/12.11.2      │
+   │   To update, run: corepack use pnpm@12.11.2   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+Progress: resolved 1596, reused 0, downloaded 152, added 157
+Progress: resolved 1596, reused 0, downloaded 192, added 198
+Progress: resolved 1596, reused 0, downloaded 210, added 216
+Progress: resolved 1596, reused 0, downloaded 226, added 232
+Progress: resolved 1596, reused 0, downloaded 269, added 270
+Progress: resolved 1596, reused 0, downloaded 359, added 363
+Progress: resolved 1596, reused 0, downloaded 487, added 493
+Progress: resolved 1596, reused 0, downloaded 598, added 604
+Progress: resolved 1596, reused 0, downloaded 739, added 745
+Progress: resolved 1596, reused 0, downloaded 944, added 950
+Progress: resolved 1596, reused 0, downloaded 1138, added 1144
+Progress: resolved 1596, reused 0, downloaded 1227, added 1234
+Progress: resolved 1596, reused 0, downloaded 1319, added 1324
+Progress: resolved 1596, reused 0, downloaded 1381, added 1387
+Progress: resolved 1596, reused 0, downloaded 1467, added 1474
+Progress: resolved 1596, reused 0, downloaded 1537, added 1545
+Progress: resolved 1596, reused 0, downloaded 1579, added 1588
+Progress: resolved 1596, reused 0, downloaded 1583, added 1592
+Progress: resolved 1596, reused 0, downloaded 1584, added 1593
+Progress: resolved 1596, reused 0, downloaded 1585, added 1594
+Progress: resolved 1596, reused 0, downloaded 1586, added 1595
+✓ Lockfile passes supply-chain policies (1731 entries in 23.1s)
+Progress: resolved 1596, reused 0, downloaded 1587, added 1595
+Progress: resolved 1596, reused 0, downloaded 1587, added 1596, done
+
+optionalDependencies:
++ @rolldown/binding-darwin-arm64 1.2.9
+
+devDependencies:
++ @amiceli/vitest-cucumber 6.5.0
++ @biomejs/biome 2.4.10
++ @types/node 24.10.1
++ @types/react 19.2.7
++ @types/react-dom 19.2.3
++ @typescript/native-preview 7.0.0-dev.20260428.1
++ husky 9.1.7
++ knip 5.88.1
++ lint-staged 16.4.0
++ portless 0.11.1
++ ts-scope-trimmer-plugin 1.0.5
++ turbo 2.9.18
++ typescript 6.0.3
++ vitest 4.1.11
+
+Done in 29.9s using pnpm v11.9.0

@@ -1,0 +1,1 @@
+dependency script policy: ignore-scripts=true and allowBuilds does not enable dependency scripts

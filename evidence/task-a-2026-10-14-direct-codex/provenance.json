@@ -1,0 +1,25 @@
+{
+  "archive": {
+    "path": "/Users/dfortun/Downloads/openai-harness-v7.12.zip",
+    "sha256": "368dd567252cb4a4b8dc77ef537f1fd8450f2d6101cc45ac65d2ba7616cd1c6f",
+    "verified_manifest_files": 93,
+    "mismatches": []
+  },
+  "task_documents": [
+    {
+      "path": "/Users/dfortun/Documents/Codex/2026-10-08/before-making-changes-inspect-the-current/work/axc-validation/task-set-a-prompt.md",
+      "sha256": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+      "matches_packaged_bytes": true
+    },
+    {
+      "path": "/Users/dfortun/Documents/Codex/2026-09-28/bui/work/v7-package-verification/legacy-v6/course-task/task-set-a-requirements.md",
+      "sha256": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+      "matches_packaged_bytes": true
+    }
+  ],
+  "target_source": "/Users/dfortun/axc",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "implementation_commit": "f3fa66fdb2672b6817520e338a030ba1d8fcfb16",
+  "branch": "task-a-catalog-search",
+  "selection_note": "Archive contains evaluation harness, not application. Used local AXC history preceding earlier Task A implementation, in an isolated clone."
+}

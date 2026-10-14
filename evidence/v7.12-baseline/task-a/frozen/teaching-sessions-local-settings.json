@@ -1,0 +1,9 @@
+{
+  "adapter": "ollama",
+  "model": "gemma4:26b",
+  "temperature": 0,
+  "context_tokens": 16384,
+  "max_output_tokens": 1536,
+  "token_budget": 200000,
+  "timeout_seconds": 120
+}

@@ -1,0 +1,25 @@
+{
+  "verified_at": "2026-10-12T14:59:31.742965+00:00",
+  "destination_branch": "df-oai-0-a-out",
+  "verified_existing_commit": "026c0082af9d68628cfd0b0535360c8d66d9be9b",
+  "reference_branch": "hac-oai-0-a-out",
+  "reference_commit": "509326658517e3b94482415a0bdd7469db702fc8",
+  "reference_used_read_only": true,
+  "original_manifest_files_verified": 303,
+  "harness_archive_files_identical": 94,
+  "harness_archive_sha256": "368dd567252cb4a4b8dc77ef537f1fd8450f2d6101cc45ac65d2ba7616cd1c6f",
+  "ollama_responses_verified": 19,
+  "imported_baseline_ollama": {
+    "input_tokens": 230100,
+    "output_tokens": 25119,
+    "total_tokens": 255219
+  },
+  "task_a_validation_groups_passed": 0,
+  "task_a_validation_groups_total": 8,
+  "harness_regression_tests_passed": 171,
+  "new_model_runs": 0,
+  "new_test_runs": 0,
+  "verification_scope": "Committed evidence integrity and provider accounting; existing measured failures and generated output preserved. No implementation repairs or inference reruns.",
+  "prior_commit_task_usage_final_response_accounted": true,
+  "prior_commit_task_usage_total": 4249136
+}

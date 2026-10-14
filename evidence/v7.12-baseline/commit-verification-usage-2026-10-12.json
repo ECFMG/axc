@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "record_updated_at": "2026-10-12T15:59:20.576850+00:00",
+  "scope": "Current active commit-verification task: inspection, planning, evidence verification, accounting correction, Git operations, validation and reporting. Excludes prior tasks, imported Ollama runs, and future follow-up conversations. Interrupted startup attempt is listed as unmeasured.",
+  "measurement": {
+    "session_id": "01a1309b-d549-7233-a387-6da82ea6a0c3",
+    "task_turn_id": "01a1309c-8f6c-7741-9fca-9f4db1b9bd1c",
+    "task_started_at": "2026-10-12T14:55:29.142Z",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T10-55-29-01a1309b-d549-7233-a387-6da82ea6a0c3_01a1309c-8efb-7213-ad0a-86384b85a7fc.jsonl",
+    "baseline_captured_at": "2026-10-12T14:55:47Z",
+    "baseline_evidence": "work/start-usage-evidence.json; no earlier cumulative events; first cumulative equals first last_token_usage",
+    "starting_cumulative_counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "ending_cumulative_counters": {
+      "input_tokens": 1185721,
+      "cached_input_tokens": 1130368,
+      "output_tokens": 9365,
+      "reasoning_output_tokens": 1536,
+      "total_tokens": 1195086
+    },
+    "recorded_through": "2026-10-12T15:00:55.238Z",
+    "method": "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed",
+    "final_response_accounted": true,
+    "follow_up_usage_excluded": true,
+    "starting_counter_timestamp": "2026-10-12T14:55:29.142Z",
+    "starting_counter_basis": "Fresh session boundary; no pre-task counters, reconstructed zero",
+    "task_completed_at": "2026-10-12T15:00:55.242Z"
+  },
+  "projected_estimate": {
+    "codex_total_tokens_range": [
+      800000,
+      1800000
+    ],
+    "ollama_new_tokens": 0,
+    "assumptions": "Planning projection made after initial inspection: 15\u201330 continuations with repository and evidence reads, integrity checks, accounting correction, commit and report. No model estimation calls; imported runs are excluded."
+  },
+  "providers": {
+    "codex": {
+      "recorded": {
+        "input_tokens": 1185721,
+        "cached_input_tokens": 1130368,
+        "output_tokens": 9365,
+        "reasoning_output_tokens": 1536,
+        "total_tokens": 1195086
+      },
+      "complete": true,
+      "cached_input_is_subset_of_input": true,
+      "reasoning_output_is_subset_of_output": true
+    },
+    "ollama": {
+      "calls": [],
+      "recorded": {
+        "prompt_eval_count": 0,
+        "eval_count": 0,
+        "total_tokens": 0,
+        "cached_input_tokens": null
+      },
+      "complete": true,
+      "note": "No Ollama inference calls were made by this task; no cache counter applicable."
+    }
+  },
+  "subagents": {
+    "used": false,
+    "recorded_total_tokens": 0
+  },
+  "combined_recorded_total_tokens": 1195086,
+  "combined_total_label": "Sum across providers for the measured active task; not a monetary cost. Imported runs and unmeasured startup excluded.",
+  "completeness_status": "incomplete_startup_unmeasured",
+  "missing_usage": [
+    "Interrupted startup turn 01a1309c-0de1-7f80-8813-d27bc9fe2998 at 2026-10-12T14:54:55.975Z has token_count info=null and no recorded cumulative counters; any Codex generation in that turn is unmeasured."
+  ],
+  "imported_baseline_usage_excluded_from_current_task": {
+    "calls": 19,
+    "prompt_eval_count": 230100,
+    "eval_count": 25119,
+    "total_tokens": 255219,
+    "cached_input_tokens": null,
+    "reasoning_output_tokens": null,
+    "source": "evidence/v7.12-baseline/task-a/run/provider-usage.json; all 19 saved responses independently verified",
+    "complete_input_output_totals": true,
+    "missing_breakdowns": "Ollama provides no separate cached-input or reasoning-output counters here."
+  },
+  "recovery": "Original final response recovered through task_complete. Later turns and this recovery task excluded."
+}

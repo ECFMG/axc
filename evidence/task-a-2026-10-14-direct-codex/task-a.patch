@@ -1,0 +1,614 @@
+diff --git a/apps/api/package.json b/apps/api/package.json
+index a6e19fd..66e304d 100644
+--- a/apps/api/package.json
++++ b/apps/api/package.json
+@@ -17,7 +17,9 @@
+ 		"format:check": "biome format .",
+ 		"clean": "rimraf dist deploy",
+ 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
+-		"start": "node --experimental-strip-types scripts/start-host.ts"
++		"start": "node --experimental-strip-types scripts/start-host.ts",
++		"test:courses": "node --test test/courses.test.mjs",
++		"test": "pnpm run test:courses"
+ 	},
+ 	"dependencies": {
+ 		"@axc/application-services": "workspace:*",
+diff --git a/apps/api/src/index.ts b/apps/api/src/index.ts
+index 91e9319..6d04f55 100644
+--- a/apps/api/src/index.ts
++++ b/apps/api/src/index.ts
+@@ -13,4 +13,5 @@ Cellix.initializeInfrastructureServices<ApiContext, ApplicationServices>((servic
+ 	})
+ 	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
+ 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+ 	.startUp();
+diff --git a/apps/api/test/courses.test.mjs b/apps/api/test/courses.test.mjs
+new file mode 100644
+index 0000000..f54dbf0
+--- /dev/null
++++ b/apps/api/test/courses.test.mjs
+@@ -0,0 +1,88 @@
++import assert from 'node:assert/strict';
++import { spawn } from 'node:child_process';
++import { createServer } from 'node:net';
++import { after, before, test } from 'node:test';
++import { buildApplicationServicesFactory } from '@axc/application-services';
++import { createRestApp } from '@axc/rest';
++
++let child;
++let base;
++let hostOutput = '';
++before(
++	async () => {
++		const server = createServer();
++		await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
++		const port = server.address().port;
++		await new Promise((resolve) => server.close(resolve));
++		base = `http://127.0.0.1:${port}`;
++		child = spawn(process.execPath, ['--experimental-strip-types', 'scripts/start-host.ts'], {
++			cwd: new URL('../', import.meta.url),
++			detached: true,
++			stdio: ['ignore', 'pipe', 'pipe'],
++			env: { ...process.env, PORT: String(port), NODE_ENV: 'test' },
++		});
++		const capture = (data) => {
++			hostOutput = (hostOutput + data.toString()).slice(-10000);
++		};
++		child.stdout.on('data', capture);
++		child.stderr.on('data', capture);
++		for (let attempt = 0; attempt < 180; attempt++) {
++			if (child.exitCode !== null) throw new Error(hostOutput);
++			try {
++				const res = await fetch(`${base}/health`, { signal: AbortSignal.timeout(1000) });
++				if (res.status === 200) return;
++			} catch {
++				/* Wait for local Azure host startup. */
++			}
++			await new Promise((resolve) => setTimeout(resolve, 500));
++		}
++		throw new Error(`Host startup timed out: ${hostOutput}`);
++	},
++	{ timeout: 100000 },
++);
++after(() => {
++	if (child?.pid) {
++		try {
++			process.kill(-child.pid, 'SIGKILL');
++		} catch {
++			/* Already exited. */
++		}
++	}
++});
++
++test('GET course response and combined filters through Azure registration', async () => {
++	const response = await fetch(`${base}/api/courses?q=security&modality=online&status=active&pageSize=5`);
++	assert.equal(response.status, 200);
++	const body = await response.json();
++	assert.deepEqual(
++		body.items.map((c) => c.id),
++		['course-001', 'course-005'],
++	);
++	assert.deepEqual([body.page, body.pageSize, body.totalItems, body.totalPages], [1, 5, 2, 1]);
++});
++test('GET validation response through Azure host', async () => {
++	const response = await fetch(`${base}/api/courses?pageSize=51`);
++	assert.equal(response.status, 400);
++	assert.deepEqual(await response.json(), {
++		error: {
++			code: 'INVALID_QUERY_PARAMETER',
++			message: 'One or more query parameters are invalid.',
++			details: [{ field: 'pageSize', message: 'pageSize must be between 1 and 50.' }],
++		},
++	});
++});
++test('Hono preserves authorization forwarding for courses and health', async () => {
++	const headers = [];
++	const factory = buildApplicationServicesFactory({ environment: 'test' });
++	const app = createRestApp({
++		forRequest: (authorization) => {
++			headers.push(authorization);
++			return factory.forRequest(authorization);
++		},
++	});
++	for (const path of ['/api/courses', '/health']) {
++		assert.equal((await app.request(path, { headers: { Authorization: 'Bearer test-only' } })).status, 200);
++	}
++	assert.deepEqual(headers, ['Bearer test-only', 'Bearer test-only']);
++	assert.equal((await app.request('/api/courses', { method: 'POST' })).status, 404);
++});
+diff --git a/apps/docs/docs/courses.md b/apps/docs/docs/courses.md
+new file mode 100644
+index 0000000..a59500b
+--- /dev/null
++++ b/apps/docs/docs/courses.md
+@@ -0,0 +1,79 @@
++# Course catalog search
++
++`GET /api/courses` searches a local sample catalog of twelve courses. The API composition root registers the route with the existing Azure Functions adapter. It requires no external services or production data.
++
++## Query parameters
++
++| Parameter | Values and behavior | Default |
++| --- | --- | --- |
++| `q` | Case-insensitive substring across title, summary, or any tag. Trimmed; empty text matches all. | All courses |
++| `modality` | `online`, `in-person`, `hybrid` (case-sensitive) | All modalities |
++| `status` | `draft`, `active`, `retired` (case-sensitive) | All statuses |
++| `tag` | Case-insensitive complete tag; surrounding whitespace trimmed; cannot be blank | All tags |
++| `page` | Positive decimal safe integer, up to 9007199254740991 | `1` |
++| `pageSize` | Positive decimal integer from 1 through 50 | `10` |
++| `sort` | `title`, `createdAt`, `updatedAt` | `title` |
++
++Filters combine with AND. Sorting is ascending, using case-insensitive string order for title and ISO timestamp order for dates. Equal sort values use the ID as a deterministic tie-breaker. Pagination follows filtering and sorting. Unknown parameters, repeated parameters, blank enum/numeric values, signs, fractions, and exponent notation return 400.
++
++## Request and success response
++
++```http
++GET /api/courses?q=security&modality=online&status=active&tag=ai&page=1&pageSize=1&sort=title
++```
++
++HTTP `200`, JSON:
++
++```json
++{
++  "items": [
++    {
++      "id": "course-001",
++      "title": "AI Security Foundations",
++      "summary": "Introductory course on secure AI-assisted development.",
++      "modality": "online",
++      "status": "active",
++      "tags": ["ai", "security"],
++      "createdAt": "2026-01-15T00:00:00.000Z",
++      "updatedAt": "2026-06-01T00:00:00.000Z"
++    }
++  ],
++  "page": 1,
++  "pageSize": 1,
++  "totalItems": 2,
++  "totalPages": 2
++}
++```
++
++No matches return `200` with `items: []`, `totalItems: 0`, and `totalPages: 0`, retaining the requested pagination values. A page beyond the last page returns an empty array while retaining the filtered totals.
++
++## Validation error
++
++```http
++GET /api/courses?pageSize=51
++```
++
++HTTP `400`, JSON:
++
++```json
++{
++  "error": {
++    "code": "INVALID_QUERY_PARAMETER",
++    "message": "One or more query parameters are invalid.",
++    "details": [
++      {
++        "field": "pageSize",
++        "message": "pageSize must be between 1 and 50."
++      }
++    ]
++  }
++}
++```
++
++All invalid parameters use this envelope; `details` can contain several field errors.
++
++## Implementation and validation
++
++The application service owns validation and fixture search; Hono maps its typed result to HTTP. Fixtures are read without mutation and returned objects are copied. No dependencies were added. The sample uses an in-memory scan of twelve records; persistent storage is outside this task's scope.
++
++From the repository root, run `pnpm test --env-mode=loose`, `pnpm run lint`, `pnpm run build --env-mode=loose`, `pnpm run typecheck --env-mode=loose`, and `pnpm run test:arch --env-mode=loose`. `pnpm --filter @apps/api test:courses` runs the Azure HTTP integration tests after building; it requires locally installed Azure Functions Core Tools.
+diff --git a/apps/docs/sidebars.ts b/apps/docs/sidebars.ts
+index e26a872..31dcc50 100644
+--- a/apps/docs/sidebars.ts
++++ b/apps/docs/sidebars.ts
+@@ -1,7 +1,7 @@
+ type SidebarsConfig = import('@docusaurus/plugin-content-docs').SidebarsConfig;
+ 
+ const sidebars = {
+-	docs: ['intro', 'healthcheck'],
++	docs: ['intro', 'healthcheck', 'courses'],
+ } satisfies SidebarsConfig;
+ 
+ module.exports = sidebars;
+diff --git a/packages/axc/application-services/src/course-fixtures.ts b/packages/axc/application-services/src/course-fixtures.ts
+new file mode 100644
+index 0000000..1ac973d
+--- /dev/null
++++ b/packages/axc/application-services/src/course-fixtures.ts
+@@ -0,0 +1,125 @@
++import type { Course } from './course-types.ts';
++
++// Local sample catalog; no production data or external service is needed.
++export const courseFixtures: readonly Course[] = [
++	{
++		id: 'course-001',
++		title: 'AI Security Foundations',
++		summary: 'Introductory course on secure AI-assisted development.',
++		modality: 'online',
++		status: 'active',
++		tags: ['ai', 'security'],
++		createdAt: '2026-01-15T00:00:00.000Z',
++		updatedAt: '2026-06-01T00:00:00.000Z',
++	},
++	{
++		id: 'course-002',
++		title: 'Cloud Architecture',
++		summary: 'Design resilient infrastructure and disaster recovery.',
++		modality: 'hybrid',
++		status: 'active',
++		tags: ['cloud', 'architecture'],
++		createdAt: '2026-02-10T00:00:00.000Z',
++		updatedAt: '2026-05-04T00:00:00.000Z',
++	},
++	{
++		id: 'course-003',
++		title: 'Practical TypeScript',
++		summary: 'Build typed applications and reusable modules.',
++		modality: 'online',
++		status: 'active',
++		tags: ['typescript', 'development'],
++		createdAt: '2026-03-02T00:00:00.000Z',
++		updatedAt: '2026-07-10T00:00:00.000Z',
++	},
++	{
++		id: 'course-004',
++		title: 'Team Leadership',
++		summary: 'Coach teams through communication and feedback.',
++		modality: 'in-person',
++		status: 'active',
++		tags: ['leadership', 'people'],
++		createdAt: '2026-01-04T00:00:00.000Z',
++		updatedAt: '2026-04-08T00:00:00.000Z',
++	},
++	{
++		id: 'course-005',
++		title: 'Responsible Automation',
++		summary: 'Assess security risks in autonomous workflows.',
++		modality: 'online',
++		status: 'active',
++		tags: ['ai', 'governance'],
++		createdAt: '2026-04-05T00:00:00.000Z',
++		updatedAt: '2026-08-02T00:00:00.000Z',
++	},
++	{
++		id: 'course-006',
++		title: 'Model Evaluation Workshop',
++		summary: 'Compare models using repeatable experiments.',
++		modality: 'hybrid',
++		status: 'draft',
++		tags: ['ai', 'evaluation'],
++		createdAt: '2026-05-03T00:00:00.000Z',
++		updatedAt: '2026-09-01T00:00:00.000Z',
++	},
++	{
++		id: 'course-007',
++		title: 'Network Defense Lab',
++		summary: 'Practice incident response on isolated networks.',
++		modality: 'in-person',
++		status: 'draft',
++		tags: ['security', 'networking'],
++		createdAt: '2026-02-01T00:00:00.000Z',
++		updatedAt: '2026-06-02T00:00:00.000Z',
++	},
++	{
++		id: 'course-008',
++		title: 'Legacy Systems',
++		summary: 'Maintain earlier application platforms.',
++		modality: 'online',
++		status: 'retired',
++		tags: ['maintenance', 'development'],
++		createdAt: '2025-03-01T00:00:00.000Z',
++		updatedAt: '2026-01-02T00:00:00.000Z',
++	},
++	{
++		id: 'course-009',
++		title: 'Data Storytelling',
++		summary: 'Present analytical findings with visual clarity.',
++		modality: 'hybrid',
++		status: 'active',
++		tags: ['analytics', 'communication'],
++		createdAt: '2026-03-15T00:00:00.000Z',
++		updatedAt: '2026-05-08T00:00:00.000Z',
++	},
++	{
++		id: 'course-010',
++		title: 'Agile Facilitation',
++		summary: 'Guide collaborative planning sessions.',
++		modality: 'in-person',
++		status: 'retired',
++		tags: ['agile', 'people'],
++		createdAt: '2025-06-02T00:00:00.000Z',
++		updatedAt: '2026-02-07T00:00:00.000Z',
++	},
++	{
++		id: 'course-011',
++		title: 'Python Essentials',
++		summary: 'Learn scripting and automated data processing.',
++		modality: 'online',
++		status: 'draft',
++		tags: ['python', 'development'],
++		createdAt: '2026-04-11T00:00:00.000Z',
++		updatedAt: '2026-06-12T00:00:00.000Z',
++	},
++	{
++		id: 'course-012',
++		title: 'Service Design',
++		summary: 'Map customer journeys and improve workflows.',
++		modality: 'hybrid',
++		status: 'retired',
++		tags: ['design', 'research'],
++		createdAt: '2025-08-09T00:00:00.000Z',
++		updatedAt: '2026-03-04T00:00:00.000Z',
++	},
++];
+diff --git a/packages/axc/application-services/src/course-search.test.ts b/packages/axc/application-services/src/course-search.test.ts
+new file mode 100644
+index 0000000..7cc1215
+--- /dev/null
++++ b/packages/axc/application-services/src/course-search.test.ts
+@@ -0,0 +1,118 @@
++import { describe, expect, it } from 'vitest';
++import { searchCourses } from './course-search.ts';
++
++function search(query = '') {
++	const result = searchCourses(new URLSearchParams(query));
++	if (!result.ok) throw new Error(JSON.stringify(result.error));
++	return result.data;
++}
++
++describe('course catalog', () => {
++	it('returns the default title-sorted page and independent response objects', () => {
++		const page = search();
++		expect(page).toMatchObject({ page: 1, pageSize: 10, totalItems: 12, totalPages: 2 });
++		expect(page.items).toHaveLength(10);
++		expect(page.items.map((c) => c.title.toLowerCase())).toEqual([...page.items.map((c) => c.title.toLowerCase())].sort());
++		const first = page.items[0];
++		if (!first) throw new Error('Missing fixture');
++		first.title = 'changed';
++		first.tags.push('changed');
++		expect(search().items[0]).not.toEqual(first);
++	});
++	it('provides the complete model with unique IDs, mixed enums and valid timestamps', () => {
++		const items = search('pageSize=50').items;
++		expect(new Set(items.map((c) => c.id)).size).toBe(12);
++		expect(new Set(items.map((c) => c.modality)).size).toBe(3);
++		expect(new Set(items.map((c) => c.status)).size).toBe(3);
++		for (const course of items) {
++			expect(course.title).not.toBe('');
++			expect(course.summary).not.toBe('');
++			expect(course.tags.length).toBeGreaterThan(0);
++			expect(new Date(course.createdAt).toISOString()).toBe(course.createdAt);
++			expect(new Date(course.updatedAt).toISOString()).toBe(course.updatedAt);
++		}
++	});
++	it.each([
++		['AI SECURITY FOUNDATIONS', ['course-001']],
++		['DISASTER RECOVERY', ['course-002']],
++		['GOVERNANCE', ['course-005']],
++	])('searches case-insensitively across title, summary and tags: %s', (q, ids) => {
++		expect(search(`q=${encodeURIComponent(q)}`).items.map((c) => c.id)).toEqual(ids);
++	});
++	it.each(['online', 'in-person', 'hybrid'])('filters modality %s', (value) => {
++		const items = search(`modality=${value}`).items;
++		expect(items.length).toBeGreaterThan(0);
++		expect(items.every((c) => c.modality === value)).toBe(true);
++	});
++	it.each(['draft', 'active', 'retired'])('filters status %s', (value) => {
++		const items = search(`status=${value}`).items;
++		expect(items.length).toBeGreaterThan(0);
++		expect(items.every((c) => c.status === value)).toBe(true);
++	});
++	it('matches complete tags, case-insensitively', () => {
++		expect(search('tag=AI').items.map((c) => c.id)).toEqual(['course-001', 'course-006', 'course-005']);
++		expect(search('tag=secur').totalItems).toBe(0);
++	});
++	it.each([
++		['q=SECURITY&modality=online&status=active', ['course-001', 'course-005']],
++		['modality=hybrid&status=draft&tag=AI', ['course-006']],
++	])('combines all requested filters with AND: %s', (query, ids) => {
++		expect(search(query).items.map((c) => c.id)).toEqual(ids);
++	});
++	it('paginates without gaps or duplicates and retains metadata outside the catalog', () => {
++		const all = search('pageSize=50').items;
++		const pages = [1, 2, 3].map((p) => search(`page=${p}&pageSize=5`));
++		expect(pages.map((p) => p.items.length)).toEqual([5, 5, 2]);
++		expect(pages.flatMap((p) => p.items)).toEqual(all);
++		expect(pages[1]).toMatchObject({ page: 2, pageSize: 5, totalItems: 12, totalPages: 3 });
++		expect(search('page=999999&pageSize=50')).toEqual({ items: [], page: 999999, pageSize: 50, totalItems: 12, totalPages: 1 });
++		expect(search('pageSize=1').items).toHaveLength(1);
++		expect(search('page=9007199254740991&pageSize=50').items).toEqual([]);
++	});
++	it.each(['title', 'createdAt', 'updatedAt'] as const)('sorts %s ascending', (sort) => {
++		const values = search(`sort=${sort}&pageSize=50`).items.map((c) => c[sort].toLowerCase());
++		expect(values).toEqual([...values].sort());
++	});
++	it.each([
++		'modality=invalid',
++		'status=invalid',
++		'sort=invalid',
++		'modality=',
++		'status=',
++		'sort=',
++		'page=0',
++		'page=-1',
++		'page=1.5',
++		'page=bad',
++		'page=',
++		'page=1e2',
++		'page=9007199254740992',
++		'pageSize=0',
++		'pageSize=51',
++		'pageSize=bad',
++		'pageSize=1.5',
++		'pageSize=',
++		'pageSize=+2',
++		'tag=',
++		'tag=%20',
++		'unknown=x',
++		'q=a&q=b',
++		'page=1&page=2',
++	])('rejects invalid input consistently: %s', (query) => {
++		const result = searchCourses(new URLSearchParams(query));
++		expect(result.ok).toBe(false);
++		if (result.ok) throw new Error('Expected validation failure');
++		expect(result.error).toMatchObject({ code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.' });
++		expect(result.error.details).toContainEqual({ field: query.split('=')[0], message: expect.any(String) });
++	});
++	it('aggregates errors and preserves the required pageSize message', () => {
++		const result = searchCourses(new URLSearchParams('pageSize=51&status=bad'));
++		if (result.ok) throw new Error('Expected validation failure');
++		expect(result.error.details).toHaveLength(2);
++		expect(result.error.details).toContainEqual({ field: 'pageSize', message: 'pageSize must be between 1 and 50.' });
++	});
++	it('returns successful empty results and handles empty search text', () => {
++		expect(search('q=__missing__')).toEqual({ items: [], page: 1, pageSize: 10, totalItems: 0, totalPages: 0 });
++		expect(search('q=')).toEqual(search());
++	});
++});
+diff --git a/packages/axc/application-services/src/course-search.ts b/packages/axc/application-services/src/course-search.ts
+new file mode 100644
+index 0000000..1c78b65
+--- /dev/null
++++ b/packages/axc/application-services/src/course-search.ts
+@@ -0,0 +1,57 @@
++import { courseFixtures } from './course-fixtures.ts';
++import type { CourseQueryError, CourseSearchResult } from './course-types.ts';
++
++export function searchCourses(params: URLSearchParams): CourseSearchResult {
++	const details: CourseQueryError['details'] = [];
++	const fields = ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort'];
++	for (const field of new Set(params.keys())) {
++		if (!fields.includes(field)) details.push({ field, message: 'Unknown query parameter.' });
++		else if (params.getAll(field).length !== 1) details.push({ field, message: 'Parameter must be supplied once.' });
++	}
++	const modality = params.get('modality');
++	const status = params.get('status');
++	const sort = params.get('sort') ?? 'title';
++	if (modality !== null && !['online', 'in-person', 'hybrid'].includes(modality)) details.push({ field: 'modality', message: 'modality must be online, in-person, or hybrid.' });
++	if (status !== null && !['draft', 'active', 'retired'].includes(status)) details.push({ field: 'status', message: 'status must be draft, active, or retired.' });
++	if (sort !== 'title' && sort !== 'createdAt' && sort !== 'updatedAt') details.push({ field: 'sort', message: 'sort must be title, createdAt, or updatedAt.' });
++	const positiveInteger = (field: string, fallback: number, max: number): number => {
++		const raw = params.get(field);
++		if (raw === null) return fallback;
++		const value = Number(raw);
++		if (!/^[1-9]\d*$/.test(raw) || !Number.isSafeInteger(value) || value > max) {
++			details.push({ field, message: field === 'pageSize' ? 'pageSize must be between 1 and 50.' : 'page must be a positive safe integer.' });
++		}
++		return value;
++	};
++	const page = positiveInteger('page', 1, Number.MAX_SAFE_INTEGER);
++	const pageSize = positiveInteger('pageSize', 10, 50);
++	const tag = params.get('tag')?.trim().toLowerCase();
++	if (tag === '') details.push({ field: 'tag', message: 'tag must not be blank.' });
++	if (details.length || (sort !== 'title' && sort !== 'createdAt' && sort !== 'updatedAt')) {
++		return { ok: false, error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details } };
++	}
++	const q = params.get('q')?.trim().toLowerCase() ?? '';
++	const matches = courseFixtures.filter(
++		(course) =>
++			(!modality || course.modality === modality) &&
++			(!status || course.status === status) &&
++			(tag === undefined || course.tags.some((value) => value.toLowerCase() === tag)) &&
++			[course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(q)),
++	);
++	matches.sort((left, right) => {
++		const a = left[sort].toLowerCase();
++		const b = right[sort].toLowerCase();
++		return a < b ? -1 : a > b ? 1 : left.id.localeCompare(right.id);
++	});
++	const offset = (page - 1) * pageSize;
++	return {
++		ok: true,
++		data: {
++			items: matches.slice(offset, offset + pageSize).map((course) => ({ ...course, tags: [...course.tags] })),
++			page,
++			pageSize,
++			totalItems: matches.length,
++			totalPages: Math.ceil(matches.length / pageSize),
++		},
++	};
++}
+diff --git a/packages/axc/application-services/src/course-types.ts b/packages/axc/application-services/src/course-types.ts
+new file mode 100644
+index 0000000..f6bb901
+--- /dev/null
++++ b/packages/axc/application-services/src/course-types.ts
+@@ -0,0 +1,26 @@
++export interface Course {
++	id: string;
++	title: string;
++	summary: string;
++	modality: 'online' | 'in-person' | 'hybrid';
++	status: 'draft' | 'active' | 'retired';
++	tags: string[];
++	createdAt: string;
++	updatedAt: string;
++}
++
++export interface CoursePage {
++	items: Course[];
++	page: number;
++	pageSize: number;
++	totalItems: number;
++	totalPages: number;
++}
++
++export interface CourseQueryError {
++	code: 'INVALID_QUERY_PARAMETER';
++	message: 'One or more query parameters are invalid.';
++	details: { field: string; message: string }[];
++}
++
++export type CourseSearchResult = { ok: true; data: CoursePage } | { ok: false; error: CourseQueryError };
+diff --git a/packages/axc/application-services/src/index.ts b/packages/axc/application-services/src/index.ts
+index 726861c..7a0e395 100644
+--- a/packages/axc/application-services/src/index.ts
++++ b/packages/axc/application-services/src/index.ts
+@@ -1,3 +1,8 @@
++import { searchCourses } from './course-search.ts';
++import type { CourseSearchResult } from './course-types.ts';
++
++export type { Course, CoursePage, CourseQueryError, CourseSearchResult } from './course-types.ts';
++
+ export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
+ export const HEALTH_PROJECT_CODE = 'axc' as const;
+ 
+@@ -16,6 +21,7 @@ export interface ApiContext {
+ }
+ 
+ export interface ApplicationServices {
++	courses: { search(params: URLSearchParams): CourseSearchResult };
+ 	health: {
+ 		getStatus(): HealthStatus;
+ 	};
+@@ -38,6 +44,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
+ export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+ 	const forRequest = (): Promise<ApplicationServices> =>
+ 		Promise.resolve({
++			courses: { search: searchCourses },
+ 			health: {
+ 				getStatus(): HealthStatus {
+ 					return {
+diff --git a/packages/axc/rest/src/index.ts b/packages/axc/rest/src/index.ts
+index def5a5f..6f08387 100644
+--- a/packages/axc/rest/src/index.ts
++++ b/packages/axc/rest/src/index.ts
+@@ -12,6 +12,13 @@ export function createRestApp(applicationServicesFactory: ApplicationServicesFac
+ 		return c.json(applicationServices.health.getStatus());
+ 	});
+ 
++	app.get('/api/courses', async (c) => {
++		const authorization = c.req.header('Authorization');
++		const services = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
++		const result = services.courses.search(new URL(c.req.url).searchParams);
++		return result.ok ? c.json(result.data) : c.json({ error: result.error }, 400);
++	});
++
+ 	return app;
+ }
+ 

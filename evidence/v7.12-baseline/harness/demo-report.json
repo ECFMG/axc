@@ -1,0 +1,332 @@
+{
+  "mode": "synthetic_demo",
+  "model": "synthetic-demo",
+  "repeat": 1,
+  "min_pass_rate": 1.0,
+  "min_savings": 0.1,
+  "token_budget": 20000,
+  "suite": {
+    "variants": [
+      {
+        "name": "baseline",
+        "instructions": "You are a helpful operations assistant. Read the context carefully and find the owner of the service mentioned in the question. The context can contain unrelated details. Return only the exact owner name, with no introduction, explanation, punctuation, or formatting. If the owner is not in the context, return UNKNOWN. Never invent an owner.",
+        "context_key": "full",
+        "max_output_tokens": 256
+      },
+      {
+        "name": "compact",
+        "instructions": "Return the service's exact owner name from context, or UNKNOWN if absent. No other text.",
+        "context_key": "focused",
+        "max_output_tokens": 256
+      },
+      {
+        "name": "overtrimmed",
+        "instructions": "Return the owner name from context, or UNKNOWN if absent. No other text.",
+        "context_key": "empty",
+        "max_output_tokens": 256
+      }
+    ],
+    "cases": [
+      {
+        "id": "billing",
+        "input": "Who owns Billing?",
+        "contexts": {
+          "full": "Service directory, revised September 2026. This directory lists internal services and their responsible teams. Entries are reviewed quarterly.\nService: Billing\nOwner: Revenue Systems\nDeployment window: Tuesday 14:00 UTC. Dashboard refresh: every five minutes. Historical note: the service launched in 2021. For access requests use the internal help desk.",
+          "focused": "Service: Billing\nOwner: Revenue Systems",
+          "empty": "Service: Billing"
+        },
+        "expected": "Revenue Systems"
+      },
+      {
+        "id": "search",
+        "input": "Who owns Search?",
+        "contexts": {
+          "full": "Platform handbook. The following service is available in all production regions. Availability metrics are maintained separately from this directory.\nService: Search\nOwner: Discovery Team\nIndexing runs continuously. The original prototype was built in 2020. Maintenance announcements are posted in the status page. Contact the listed owner for changes.",
+          "focused": "Service: Search\nOwner: Discovery Team",
+          "empty": "Service: Search"
+        },
+        "expected": "Discovery Team"
+      },
+      {
+        "id": "unknown",
+        "input": "Who owns Archive?",
+        "contexts": {
+          "full": "Internal services directory. This entry is awaiting review after a recent reorganization. Do not use historical contacts as current owners.\nService: Archive\nAn owner has not been assigned. The service stores old audit exports. Access is read-only while migration is in progress. The directory will be updated when the organizational review finishes.",
+          "focused": "Service: Archive\nAn owner has not been assigned.",
+          "empty": "Service: Archive"
+        },
+        "expected": "UNKNOWN"
+      }
+    ]
+  },
+  "preflight": [
+    {
+      "variant": "baseline",
+      "case": "billing",
+      "input_tokens": 184,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "compact",
+      "case": "billing",
+      "input_tokens": 42,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "overtrimmed",
+      "case": "billing",
+      "input_tokens": 32,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "baseline",
+      "case": "search",
+      "input_tokens": 183,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "compact",
+      "case": "search",
+      "input_tokens": 41,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "overtrimmed",
+      "case": "search",
+      "input_tokens": 31,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "baseline",
+      "case": "unknown",
+      "input_tokens": 183,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "compact",
+      "case": "unknown",
+      "input_tokens": 44,
+      "max_output_tokens": 256
+    },
+    {
+      "variant": "overtrimmed",
+      "case": "unknown",
+      "input_tokens": 32,
+      "max_output_tokens": 256
+    }
+  ],
+  "rows": [
+    {
+      "input_tokens": 184,
+      "output_tokens": 4,
+      "total_tokens": 188,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "Revenue Systems",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "baseline",
+      "case": "billing",
+      "repeat": 1,
+      "latency_ms": 0.06,
+      "passed": true
+    },
+    {
+      "input_tokens": 42,
+      "output_tokens": 4,
+      "total_tokens": 46,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "Revenue Systems",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "compact",
+      "case": "billing",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": true
+    },
+    {
+      "input_tokens": 32,
+      "output_tokens": 2,
+      "total_tokens": 34,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "UNKNOWN",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "overtrimmed",
+      "case": "billing",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": false
+    },
+    {
+      "input_tokens": 41,
+      "output_tokens": 4,
+      "total_tokens": 45,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "Discovery Team",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "compact",
+      "case": "search",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": true
+    },
+    {
+      "input_tokens": 31,
+      "output_tokens": 2,
+      "total_tokens": 33,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "UNKNOWN",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "overtrimmed",
+      "case": "search",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": false
+    },
+    {
+      "input_tokens": 183,
+      "output_tokens": 4,
+      "total_tokens": 187,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "Discovery Team",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "baseline",
+      "case": "search",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": true
+    },
+    {
+      "input_tokens": 32,
+      "output_tokens": 2,
+      "total_tokens": 34,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "UNKNOWN",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "overtrimmed",
+      "case": "unknown",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": true
+    },
+    {
+      "input_tokens": 183,
+      "output_tokens": 2,
+      "total_tokens": 185,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "UNKNOWN",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "baseline",
+      "case": "unknown",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": true
+    },
+    {
+      "input_tokens": 44,
+      "output_tokens": 2,
+      "total_tokens": 46,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "output": "UNKNOWN",
+      "status": "completed",
+      "response_id": null,
+      "model": "synthetic-demo",
+      "variant": "compact",
+      "case": "unknown",
+      "repeat": 1,
+      "latency_ms": 0.01,
+      "passed": true
+    }
+  ],
+  "status": "completed",
+  "winner": "compact",
+  "planned_max_tokens": 3076,
+  "summary": [
+    {
+      "variant": "baseline",
+      "runs": 3,
+      "pass_rate": 1.0,
+      "case_passes": {
+        "billing": 1,
+        "search": 1,
+        "unknown": 1
+      },
+      "median_latency_ms": 0.01,
+      "input_tokens": 550,
+      "output_tokens": 10,
+      "total_tokens": 560,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "token_savings": 0.0,
+      "regressed_cases": [],
+      "eligible": false,
+      "decision": "baseline"
+    },
+    {
+      "variant": "compact",
+      "runs": 3,
+      "pass_rate": 1.0,
+      "case_passes": {
+        "billing": 1,
+        "search": 1,
+        "unknown": 1
+      },
+      "median_latency_ms": 0.01,
+      "input_tokens": 127,
+      "output_tokens": 10,
+      "total_tokens": 137,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "token_savings": 0.7553571428571428,
+      "regressed_cases": [],
+      "eligible": true,
+      "decision": "eligible"
+    },
+    {
+      "variant": "overtrimmed",
+      "runs": 3,
+      "pass_rate": 0.3333333333333333,
+      "case_passes": {
+        "billing": 0,
+        "search": 0,
+        "unknown": 1
+      },
+      "median_latency_ms": 0.01,
+      "input_tokens": 95,
+      "output_tokens": 6,
+      "total_tokens": 101,
+      "cached_tokens": 0,
+      "reasoning_tokens": 0,
+      "token_savings": 0.8196428571428571,
+      "regressed_cases": [
+        "billing",
+        "search"
+      ],
+      "eligible": false,
+      "decision": "quality gate failed"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "lint": {
+    "exit_code": 0,
+    "files_checked": 202
+  },
+  "build": {
+    "exit_code": 0,
+    "tasks_passed": 18,
+    "cached_tasks": 0
+  },
+  "test_initial_sandbox": {
+    "exit_code": 1,
+    "cause": "EPERM when opening local test sockets"
+  },
+  "test_final": {
+    "exit_code": 0,
+    "tasks_passed": 26,
+    "cached_tasks": 0,
+    "unit_integration_tests_passed": 646,
+    "http_scenarios_passed": 3
+  },
+  "typecheck": {
+    "exit_code": 0,
+    "tasks_passed": 21
+  },
+  "architecture": {
+    "exit_code": 0,
+    "checks_passed": 19,
+    "tasks_passed": 15
+  },
+  "acceptance_criteria_passed": 12,
+  "acceptance_criteria_total": 12,
+  "documentation_build_after_updates": {
+    "exit_code": 0
+  },
+  "diff_check": {
+    "exit_code": 0
+  },
+  "bundle_verification": {
+    "exit_code": 0
+  },
+  "source_write_boundary_check": "passed",
+  "original_checkout_unchanged": true,
+  "evaluation_commit": "903af4937a31972d48139576d13cf5e15fda6c09"
+}

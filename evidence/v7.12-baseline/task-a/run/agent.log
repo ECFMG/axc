@@ -1,0 +1,42 @@
+fatal: path 'packages/axc/application-services/src/course-types.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":1,"passed_local_checks":false,"tokens":10065,"variant":"relevant_context"}
+fatal: path 'packages/axc/application-services/src/course-fixtures.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":2,"passed_local_checks":false,"tokens":12066,"variant":"relevant_context"}
+fatal: path 'packages/axc/application-services/src/course-search.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":3,"passed_local_checks":false,"tokens":13888,"variant":"relevant_context"}
+{"call":4,"passed_local_checks":false,"tokens":13250,"variant":"relevant_context"}
+{"call":5,"passed_local_checks":false,"tokens":13277,"variant":"relevant_context"}
+{"call":6,"passed_local_checks":false,"tokens":14383,"variant":"relevant_context"}
+{"call":7,"passed_local_checks":false,"tokens":14190,"variant":"relevant_context"}
+{"call":8,"passed_local_checks":false,"tokens":12732,"variant":"relevant_context"}
+{"call":9,"passed_local_checks":false,"tokens":14331,"variant":"relevant_context"}
+{"call":10,"passed_local_checks":false,"tokens":12734,"variant":"relevant_context"}
+{"call":11,"passed_local_checks":false,"tokens":13191,"variant":"relevant_context"}
+{"call":12,"passed_local_checks":false,"tokens":12911,"variant":"relevant_context"}
+{"call":13,"passed_local_checks":false,"tokens":14341,"variant":"relevant_context"}
+{"call":14,"passed_local_checks":false,"tokens":13173,"variant":"relevant_context"}
+{"call":15,"passed_local_checks":false,"tokens":13400,"variant":"relevant_context"}
+{"call":16,"passed_local_checks":false,"tokens":13311,"variant":"relevant_context"}
+fatal: path 'packages/axc/application-services/src/course-search.test.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":17,"passed_local_checks":false,"tokens":15506,"variant":"relevant_context"}
+fatal: path 'apps/api/test/courses.test.mjs' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":18,"passed_local_checks":false,"tokens":15394,"variant":"relevant_context"}
+{"call":19,"passed_local_checks":false,"tokens":13076,"variant":"relevant_context"}
+{
+  "variant": "relevant_context",
+  "passed_local_checks": false,
+  "reason": "Run token budget reached before next generation",
+  "calls": 19,
+  "usage_complete": true,
+  "changed_files": [
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.test.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "seconds": 1523.253756416
+}

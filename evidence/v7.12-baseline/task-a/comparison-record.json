@@ -1,0 +1,622 @@
+{
+  "label": "v7.12",
+  "repetition": 1,
+  "execution": "version_adapter",
+  "conditions": {
+    "prompt_sha256": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "spec_sha256": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+    "model_identity": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+    "acceptance_sha256": "154fa2d192a2457f5952aae28d9b9fd144516279dbb0eadd7e2f5b791b58e08d",
+    "tool_versions": {
+      "node": "v24.21.0",
+      "pnpm": null,
+      "func": "4.15.2",
+      "java": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)"
+    },
+    "settings": {
+      "model": "gemma4:26b",
+      "temperature": 0,
+      "context_tokens": 98304,
+      "max_output_tokens": 4000,
+      "max_calls": 20,
+      "token_budget": 300000,
+      "timeout_seconds": 900,
+      "cache": "verified model unload before every generation",
+      "mode": "local only; hosted cost unmeasured"
+    },
+    "cache_policy": "cold"
+  },
+  "quality_passed": false,
+  "ledger": {
+    "complete": true,
+    "calls": [
+      {
+        "input_tokens": 9689,
+        "output_tokens": 376,
+        "total_tokens": 10065,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "generation",
+        "latency_ms": 42013.019125,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 7.99
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 21,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 42001678333,
+          "load_duration": 9107667,
+          "prompt_eval_duration": 30328136000,
+          "eval_duration": 11628389000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "packages/axc/application-services/src/course-types.ts"
+        ]
+      },
+      {
+        "input_tokens": 10107,
+        "output_tokens": 1959,
+        "total_tokens": 12066,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 75457.590709,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 174.87
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 932,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 75449810375,
+          "load_duration": 2887792,
+          "prompt_eval_duration": 23151716000,
+          "eval_duration": 52267639000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "packages/axc/application-services/src/course-fixtures.ts"
+        ]
+      },
+      {
+        "input_tokens": 12881,
+        "output_tokens": 1007,
+        "total_tokens": 13888,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 61244.955917,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 196.76
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1350,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 61236906500,
+          "load_duration": 2916667,
+          "prompt_eval_duration": 32485464000,
+          "eval_duration": 28721688000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "packages/axc/application-services/src/course-search.ts"
+        ]
+      },
+      {
+        "input_tokens": 12297,
+        "output_tokens": 953,
+        "total_tokens": 13250,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 54344.13966699998,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 158.1
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1403,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 54333197125,
+          "load_duration": 6720167,
+          "prompt_eval_duration": 29119566000,
+          "eval_duration": 25159151000
+        },
+        "status": "completed",
+        "action_error": "Source contract failed in packages/axc/application-services/src/index.ts: file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:47\nif (missing.length) throw new Error('Preserve original public exports: ' + missing.join(', '));\n                          ^\n\nError: Preserve original public exports: HEALTH_SERVICE_NAME, HEALTH_PROJECT_CODE, HealthEnvironment, HealthStatus, ApiContext, ApplicationServices, ApplicationServicesFactory, resolveEnvironment, buildApplicationServicesFactory\n    at file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:47:27\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.21.0\n"
+      },
+      {
+        "input_tokens": 12598,
+        "output_tokens": 679,
+        "total_tokens": 13277,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 49174.49254199999,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 167.98
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1630,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 49165016583,
+          "load_duration": 8041583,
+          "prompt_eval_duration": 30419878000,
+          "eval_duration": 18690405000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "packages/axc/application-services/src/index.ts"
+        ]
+      },
+      {
+        "input_tokens": 11585,
+        "output_tokens": 2798,
+        "total_tokens": 14383,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 100814.48004200001,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 168.55
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1414,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 100805789542,
+          "load_duration": 2960583,
+          "prompt_eval_duration": 27365634000,
+          "eval_duration": 73402242000
+        },
+        "status": "completed",
+        "action_error": "Anchor must match once in packages/axc/rest/src/index.ts; matches=0"
+      },
+      {
+        "input_tokens": 11611,
+        "output_tokens": 2579,
+        "total_tokens": 14190,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 104925.79045899998,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 153.38
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1434,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 104915049875,
+          "load_duration": 6639542,
+          "prompt_eval_duration": 31978447000,
+          "eval_duration": 72879430000
+        },
+        "status": "completed",
+        "action_error": "Use content OR edits, never both: packages/axc/rest/src/index.ts"
+      },
+      {
+        "input_tokens": 11610,
+        "output_tokens": 1122,
+        "total_tokens": 12732,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 69642.82270800004,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 167.36
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1433,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 69636226750,
+          "load_duration": 6556917,
+          "prompt_eval_duration": 31542105000,
+          "eval_duration": 38056252000
+        },
+        "status": "completed",
+        "action_error": "Source contract failed in packages/axc/rest/src/index.ts: file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:22\nif (proposed.parseDiagnostics.length) throw new Error(ts.flattenDiagnosticMessageText(proposed.parseDiagnostics[0].messageText, '\\n'));\n                                            ^\n\nError: ';' expected.\n    at file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:22:45\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.21.0\n"
+      },
+      {
+        "input_tokens": 11856,
+        "output_tokens": 2475,
+        "total_tokens": 14331,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 108488.05008300008,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 209.31
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1599,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 108482953667,
+          "load_duration": 3784375,
+          "prompt_eval_duration": 36790083000,
+          "eval_duration": 71670377000
+        },
+        "status": "completed",
+        "action_error": "Use content OR edits, never both: packages/axc/rest/src/index.ts"
+      },
+      {
+        "input_tokens": 11610,
+        "output_tokens": 1124,
+        "total_tokens": 12734,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 66880.53695900009,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 116.99
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1433,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 66874787167,
+          "load_duration": 3249750,
+          "prompt_eval_duration": 32559544000,
+          "eval_duration": 34283631000
+        },
+        "status": "completed",
+        "action_error": "Source contract failed in packages/axc/rest/src/index.ts: file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:22\nif (proposed.parseDiagnostics.length) throw new Error(ts.flattenDiagnosticMessageText(proposed.parseDiagnostics[0].messageText, '\\n'));\n                                            ^\n\nError: ';' expected.\n    at file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:22:45\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.21.0\n"
+      },
+      {
+        "input_tokens": 11856,
+        "output_tokens": 1335,
+        "total_tokens": 13191,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 71680.110291,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 156.06
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1599,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 71674951959,
+          "load_duration": 2800959,
+          "prompt_eval_duration": 31495578000,
+          "eval_duration": 40148089000
+        },
+        "status": "completed",
+        "action_error": "Source contract failed in packages/axc/rest/src/index.ts: file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:47\nif (missing.length) throw new Error('Preserve original public exports: ' + missing.join(', '));\n                          ^\n\nError: Preserve original public exports: createRestApp, restHandlerCreator\n    at file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:47:27\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.21.0\n"
+      },
+      {
+        "input_tokens": 11855,
+        "output_tokens": 1056,
+        "total_tokens": 12911,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 70146.01233299993,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 179.02
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1598,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 70138128500,
+          "load_duration": 8481750,
+          "prompt_eval_duration": 36078994000,
+          "eval_duration": 34015739000
+        },
+        "status": "completed",
+        "action_error": "Source contract failed in packages/axc/rest/src/index.ts: file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:22\nif (proposed.parseDiagnostics.length) throw new Error(ts.flattenDiagnosticMessageText(proposed.parseDiagnostics[0].messageText, '\\n'));\n                                            ^\n\nError: ';' expected.\n    at file:///Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/frozen/source_contracts.mjs:22:45\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.21.0\n"
+      },
+      {
+        "input_tokens": 11855,
+        "output_tokens": 2486,
+        "total_tokens": 14341,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 109176.7575419999,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 160.4
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1599,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 109163116459,
+          "load_duration": 5424500,
+          "prompt_eval_duration": 34200771999,
+          "eval_duration": 74913891000
+        },
+        "status": "completed",
+        "action_error": "Use content OR edits, never both: packages/axc/rest/src/index.ts"
+      },
+      {
+        "input_tokens": 11609,
+        "output_tokens": 1564,
+        "total_tokens": 13173,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 81384.66966600003,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 193.93
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 1433,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 81374783500,
+          "load_duration": 5895209,
+          "prompt_eval_duration": 33485866000,
+          "eval_duration": 47843490000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "packages/axc/rest/src/index.ts"
+        ]
+      },
+      {
+        "input_tokens": 13013,
+        "output_tokens": 387,
+        "total_tokens": 13400,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 47435.203,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 150.77
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 2903,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 47427743916,
+          "load_duration": 3191250,
+          "prompt_eval_duration": 35854937000,
+          "eval_duration": 11541651000
+        },
+        "status": "completed",
+        "action_error": "Use content OR edits, never both: apps/api/src/index.ts"
+      },
+      {
+        "input_tokens": 13035,
+        "output_tokens": 276,
+        "total_tokens": 13311,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 47702.36162500009,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 117.29
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 2919,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 47692617625,
+          "load_duration": 8028542,
+          "prompt_eval_duration": 39800090000,
+          "eval_duration": 7835872000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "apps/api/src/index.ts"
+        ]
+      },
+      {
+        "input_tokens": 14181,
+        "output_tokens": 1325,
+        "total_tokens": 15506,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 94941.96591699983,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 168.91
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 2909,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 94935931791,
+          "load_duration": 2754333,
+          "prompt_eval_duration": 48040793000,
+          "eval_duration": 46865739000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "packages/axc/application-services/src/course-search.test.ts"
+        ]
+      },
+      {
+        "input_tokens": 13878,
+        "output_tokens": 1516,
+        "total_tokens": 15394,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 96803.9625419999,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 167.46
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 2904,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 96792251167,
+          "load_duration": 10344625,
+          "prompt_eval_duration": 46638600000,
+          "eval_duration": 50095093000
+        },
+        "status": "completed",
+        "action": "write",
+        "changed_paths": [
+          "apps/api/test/courses.test.mjs"
+        ]
+      },
+      {
+        "input_tokens": 12974,
+        "output_tokens": 102,
+        "total_tokens": 13076,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "purpose": "repair_or_retrieval",
+        "latency_ms": 34742.39758399995,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+          "latency_ms": 187.35
+        },
+        "estimated_cost_usd": null,
+        "tool_result_tokens_estimate": 2912,
+        "tool_result_estimate_basis": "UTF-8 bytes divided by four; subset of input, not extra usage",
+        "provider_duration_ns": {
+          "total_duration": 34734422042,
+          "load_duration": 3567500,
+          "prompt_eval_duration": 31451413000,
+          "eval_duration": 3247292000
+        },
+        "status": "completed",
+        "action_error": "Preserve existing package script start: apps/api/package.json"
+      }
+    ]
+  },
+  "source_hashes": {
+    "test_teaching_cache.py": "0775b3cd410679018f2b631db5630ff4c61d4230494ff2ac24930aaa2f3885f6",
+    "teaching_validation.py": "5ae61b5f10cda5e96ea06f9e0a2f794b38d7d2ce6bdce60f5bfb697825fc5272",
+    "isolation.py": "4afa96bb6847fb868deee9c3e991c535f9b6a5ec11c6ba94bce9007db42dacba",
+    "test_release_cli.py": "a3d3b9643a36818da09be276e016193e966a143094d8dc2252aa3b2afa190186",
+    "coding_task.py": "0dbe5ab469ab775a615c50c067a144db7d4e378f75951550a92cfa14099ec237",
+    "run_task_a.py": "f4f308c5f34430791412c71022ba7f424650efdc8aa327c259b92944ff43a26a",
+    "coding_plan.py": "76592460219e909fb98887e91dff589b7b8083c54591acfaed45411fbda3105c",
+    "harness.py": "3e8af6bfe7907d8c8a14a39f2336489d9cfd077f005e2183673f1fc2f91c3058",
+    "test_compatibility.py": "b53c3f3a6299c8d612e5de3724747ac660c67674487b02bef8f5e000ef213fc9",
+    "coding_comparison.py": "70b837f76932d8827d9619bd7228cf0be25f599aa4ae4c436391a8c7cf3a48a0",
+    "test_harness.py": "bcb5bb77c8372b212cfc61c2611feafe7086a591d0fa2c3feab154b4bced4b7b",
+    "teaching_study.py": "70573a3c4091eacab597a009cc5a686453115d7738252472769af5629187bd73",
+    "coding_context.py": "50504b3b0c2a27646e421cf439d85bdc0df6aed024e7ffc63a4020e814a56fa3",
+    "test_plan_features.py": "733eb645dfef4eb6a0f2a205ac82b393f947d0d83e7ed61da9f1d05795f79cd2",
+    "test_teaching_validation.py": "36f38504e4db6fa0666d6cbf7284625d26f81f7fc6ff0a978c408dcc31c77af5",
+    "test_coding_agent.py": "976d96cb7e0594cc0c703962594c11e186d20e15c7dedd8e8b32edc6aa27bd9e",
+    "test_coding_task.py": "f5a70352d2cd93318e8abbd969bfb19f6284c6aa9d9b08bb753355e366a67626",
+    "model_adapters.py": "d2374e1e85d93a062aa561bd5910c9c79a91ee035cbf22788a929b06eeae5734",
+    "test_ollama.py": "fb079f160ebea23a649ae34b7d4e9a8e2fc13cadcdaf8fed74f5eadf44b3183b",
+    "teaching_review.py": "ff0493c2a287c1a41fc6e0317966cb3f84193e708e93140181b725d02685a6fb",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5",
+    "coding_agent.py": "3c3b0f0a696ce93dbda847ab73d78e0215cc95d57ad8995abcc46314ba92a534",
+    "test_workflow.py": "6bc3fb4269b0e76425b7bbe135d985a8d5b018465b1df47f38216c67431cea43",
+    "test_iterations.py": "3d066a140751662d4478c2ce0055661d8dfe4491cb13fc60b3666535098c9b56",
+    "test_teaching_study.py": "86b92f0bdb2e55c51fb65fad995a385db1a9f47f0715067f5c5b34f63cdf7187",
+    "context.py": "f2bb4843a6d0e8be910e8aa43c68a4ad83cc210b0336416e858976b24978af43",
+    "test_teaching_focus.py": "637967c5e262102737cd9456752ddb2b3ff6bbb4b4d47b379d0a8c38db2a1c41",
+    "common.py": "5d2b54e2fef66a77abbf3aeee60f2348c16d91ef5030e1f1785008f831e148e0",
+    "test_coding_comparison.py": "9ceaacd6368c4422e747bf19326815d5aadb3ae2407b8ec2fb2d95db090a2939",
+    "coding_benchmark.py": "e193f57a17659b51ed9fb4132561992e3462d96edca1d09265664ba06efd7eb4",
+    "stress_test.py": "798bdbb876d54ecbef101a1f3309a964f2003fd283effc2a8aed5f82d282f685",
+    "coding_actions.py": "8e8cb7cc6292e9f49c784b9176a9307be19183d278305e66ed96989f50712094",
+    "test_improvements.py": "8c4e572ce5e1d6147f31142414f7e6b231905b67174195e9dadf437a1f70293a",
+    "node_test_reporter.mjs": "9b94d3cf8168a3c84f1b5668e21081b6d855f7f65f328ca8ee1a25554a4d051c",
+    "compare_versions.py": "46dd19399fd5d470b3e20afd26ffc519e42451aeab79211a81d0e47654ba2c8f",
+    "test_adapter_contract.py": "50c1e87da9ec3e81f91f439a50ede77cc940945acec6d340dd5361c7c686231c",
+    "workflow.py": "e21a29418e6303fe75c0f70b8bcc5733dd6b171da9c077c361c557bb2a60c1e0",
+    "test_context_features.py": "a1a6757d4f13fd7292f24c766fc49f2705aeb447abf3d43fec286f21a2b77c43",
+    "task_a_gates.py": "64c173e953880adc4237030b9dc6a37ea79a052c4e30dd5f55a3f2a62e9f8a71",
+    "teaching_cache.py": "fb92a95379b8ca0ec77e8516219496bc760592dae600b8303e2c437f910e2ed1",
+    "teaching_sessions.py": "37e9ece1eb16b092fd45e4ec9b47b557b9e5c5131cce9d6401283f38597c2058",
+    "quality.py": "44736644b29a262d42ff667e33fc5e1ef26bd12430372d407197c743a8c1ba71",
+    "test_quality.py": "14ee74116257c951853a274f3bd01777a43e168dc9b5bee30262537b3a4c34f2",
+    "source_contracts.mjs": "9374d9b772ee4114e2cf70d4ea8cf6160de49847d3561eb584f96f99c5549f0b",
+    "reporting.py": "e48b8c91e7d8d379edecff50305cc347872767021aab5ce2305dfc89baa5257b",
+    "ollama_adapter.py": "021399f5c132632a34b7c88cbca977df32e5708dfc05bf901f20262199fafb6f"
+  },
+  "result": "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/result.json"
+}

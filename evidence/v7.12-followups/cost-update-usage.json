@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "scope": "This cost-correction task: inspection, exact price calculations, record and usage updates, validation, publication and reporting. Earlier completed tasks and later follow-ups excluded.",
+  "measurement": {
+    "task_turn_id": "01a130df-04da-7013-8920-96a8e8ee7cc4",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T12-08-04-01a130d1-2b49-77e2-9197-5c52961e9791_01a130df-0408-7a92-84cf-169e02656d49.jsonl",
+    "task_started_at": "2026-10-12T16:08:04.586Z",
+    "starting_cumulative_counters": {
+      "input_tokens": 3175068,
+      "cached_input_tokens": 3062656,
+      "output_tokens": 19955,
+      "reasoning_output_tokens": 4494,
+      "total_tokens": 3195023
+    },
+    "starting_counter_timestamp": "2026-10-12T16:07:24.146Z",
+    "starting_counter_basis": "Last cumulative counter before original cost task; resumed log inherits these cumulative counters",
+    "ending_cumulative_counters": {
+      "input_tokens": 3985641,
+      "cached_input_tokens": 3863936,
+      "output_tokens": 26186,
+      "reasoning_output_tokens": 6651,
+      "total_tokens": 4011827
+    },
+    "recorded_through": "2026-10-12T16:11:55.297Z",
+    "method": "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed",
+    "final_response_accounted": false,
+    "task_completed_at": null,
+    "follow_up_usage_excluded": true,
+    "session_id": "01a130d1-2b49-77e2-9197-5c52961e9791",
+    "original_task_turn_id": "01a130de-c576-7fa3-8606-dd0110c1f437",
+    "original_task_started_at": "2026-10-12T16:07:48.353Z",
+    "original_source_log": "/Users/dfortun/.codex/sessions/2026/10/12/rollout-2026-10-12T11-52-56-01a130d1-2b49-77e2-9197-5c52961e9791.jsonl"
+  },
+  "projected_estimate": {
+    "codex_total_tokens_range": [
+      300000,
+      700000
+    ],
+    "ollama_tokens": 0,
+    "assumptions": "Read archived records, revise documentation, verify arithmetic/manifests and publish. No model implementation or Ollama calls."
+  },
+  "providers": {
+    "codex": {
+      "recorded": {
+        "input_tokens": 810573,
+        "cached_input_tokens": 801280,
+        "output_tokens": 6231,
+        "reasoning_output_tokens": 2157,
+        "total_tokens": 816804
+      },
+      "complete": false,
+      "cached_input_included_in_input": true,
+      "reasoning_output_included_in_output": true
+    },
+    "ollama": {
+      "calls": [],
+      "recorded": {
+        "prompt_eval_count": 0,
+        "eval_count": 0,
+        "total_tokens": 0,
+        "cached_input_tokens": null
+      },
+      "complete": true
+    }
+  },
+  "subagents": {
+    "used": false
+  },
+  "combined_recorded_total_tokens": 816804,
+  "combined_total_label": "Sum across providers for this cost-correction task; not a monetary cost. Original completed archival usage is separate.",
+  "completeness_status": "incomplete_final_response_pending",
+  "missing_usage": [
+    "Final response and work after latest token_count pending."
+  ],
+  "recovery": "On next user message run work/update_cost_usage.py before answering; only the original record-update turn is measured, excluding follow-up usage.",
+  "record_updated_at": "2026-10-12T16:12:27.845602+00:00"
+}

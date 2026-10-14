@@ -5,6 +5,7 @@
 		"ignoreUnknown": false,
 		"includes": [
 			"**",
+			"!**/evidence",
 			"!**/mock-oidc.users.local.json",
 			"!**/dist",
 			"!**/build",

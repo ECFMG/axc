@@ -1,0 +1,6 @@
+{"name": "script-policy", "argv": ["node", "scripts/check-script-policy.mjs"], "exit_code": 0, "status": "passed", "timeout": false, "started_at_epoch": 1791812145.07894, "seconds": 0.07649397850036621, "log": "script-policy.log"}
+{"name": "biome-check", "argv": ["pnpm", "exec", "biome", "check", "."], "exit_code": 1, "status": "failed", "timeout": false, "started_at_epoch": 1791812145.155948, "seconds": 0.5633280277252197, "log": "biome-check.log"}
+{"name": "knip", "argv": ["pnpm", "run", "knip"], "exit_code": 1, "status": "failed", "timeout": false, "started_at_epoch": 1791812145.719585, "seconds": 2.7985680103302, "log": "knip.log"}
+{"name": "e18e", "argv": ["pnpm", "run", "e18e"], "exit_code": 0, "status": "passed", "timeout": false, "started_at_epoch": 1791812148.518702, "seconds": 7.649815082550049, "log": "e18e.log"}
+{"name": "snyk", "argv": ["pnpm", "run", "snyk"], "exit_code": 0, "status": "skipped", "timeout": false, "started_at_epoch": 1791812156.1690218, "seconds": 0.4440321922302246, "log": "snyk.log"}
+{"name": "diff-check", "argv": ["git", "diff", "--check"], "exit_code": 0, "status": "passed", "timeout": false, "started_at_epoch": 1791812156.6135402, "seconds": 0.021391868591308594, "log": "diff-check.log"}

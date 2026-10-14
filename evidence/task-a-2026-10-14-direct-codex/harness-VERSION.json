@@ -1,0 +1,25 @@
+{
+  "version": "v7.12",
+  "harness_base": "v7",
+  "comparison_reference": "no_harness",
+  "cumulative_iterations": [
+    "v7.10",
+    "v7.11",
+    "v7.12"
+  ],
+  "new_changes": [
+    "Recomputes source context per target instead of accumulating all changed/requested files.",
+    "Source is rendered as readable text; repeated and successful diagnostic logs are omitted from requests.",
+    "Outstanding validation remains visible after reads, rejected actions and truncated generation.",
+    "Explicit reads/log pages last one request; original sources and logs remain retrievable, including beyond 50,000 characters."
+  ],
+  "source_archive_sha256": "d89db4e9618fdce093fcdc0f006f231a9792068fc5861b51531b211aed97351f",
+  "fixed_inputs": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "live_task_a_savings_verified": false,
+  "live_adapter_checks_passed": true,
+  "ollama_compatibility_version": "0.40.0"
+}

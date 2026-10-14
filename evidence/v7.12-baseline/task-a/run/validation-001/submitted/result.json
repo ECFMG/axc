@@ -1,0 +1,67 @@
+{
+  "submitted_tests": [
+    "apps/api/test/courses.test.mjs",
+    "packages/axc/application-services/src/course-search.test.ts"
+  ],
+  "executions": [
+    {
+      "package": "packages/axc/application-services",
+      "argv": [
+        "pnpm",
+        "run",
+        "test",
+        "--reporter=json",
+        "--outputFile=/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/validation-001/submitted/tests-01.json"
+      ],
+      "exit_code": 1,
+      "files": {
+        "/Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/packages/axc/application-services/src/course-search.test.ts": {
+          "passed_cases": 3,
+          "failed": true,
+          "skipped": true,
+          "discovered": true,
+          "passed": false
+        }
+      },
+      "report": "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/validation-001/submitted/tests-01.json",
+      "log": "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/validation-001/submitted/tests-01.log",
+      "passed": false
+    }
+  ],
+  "errors": [
+    {
+      "paths": [
+        "apps/api/test/courses.test.mjs"
+      ],
+      "message": "No supported registered runtime test script covers changed tests in /Users/dfortun/Documents/Codex/2026-10-12/have/work/df-oai-0-a-out/apps/api"
+    },
+    {
+      "paths": [
+        "packages/axc/application-services/src/course-search.test.ts"
+      ],
+      "message": "Tests failed, skipped, undiscovered or had zero executed cases"
+    }
+  ],
+  "documentation": {
+    "passed": false,
+    "files": [],
+    "missing_terms": [
+      "/api/courses",
+      "q",
+      "modality",
+      "status",
+      "tag",
+      "page",
+      "pageSize",
+      "sort",
+      "items",
+      "totalItems",
+      "totalPages",
+      "INVALID_QUERY_PARAMETER",
+      "details"
+    ]
+  },
+  "tests_passed": false,
+  "passed": false,
+  "limitations": "Execution evidence does not prove assertion adequacy. Documentation terms do not prove prose correctness. Independent endpoint checks and source review remain required."
+}

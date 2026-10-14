@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-12T13:35:59.171274+00:00",
+  "destination_branch": "df-oai-0-a-out",
+  "reference_branch_read_only": "hac-oai-0-a-out",
+  "reference_commit": "509326658517e3b94482415a0bdd7469db702fc8",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "harness": "v7.12",
+  "model": [
+    "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0"
+  ],
+  "task_a_passed": false,
+  "scope_audit_passed": true,
+  "fixed_spec_unchanged": true,
+  "checks": [
+    {
+      "argv": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 1,
+      "seconds": 3.9783536670000004,
+      "log": "validation-001/0.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "exit_code": 1,
+      "seconds": 0.620696583,
+      "log": "validation-001/1.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "run",
+        "build",
+        "--env-mode=loose"
+      ],
+      "exit_code": 1,
+      "seconds": 1.7981861670000008,
+      "log": "validation-001/2.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "run",
+        "typecheck",
+        "--env-mode=loose"
+      ],
+      "exit_code": 2,
+      "seconds": 1.4679407920000003,
+      "log": "validation-001/3.log"
+    },
+    {
+      "argv": [
+        "pnpm",
+        "run",
+        "test:arch",
+        "--env-mode=loose"
+      ],
+      "exit_code": 1,
+      "seconds": 1.7395626249999996,
+      "log": "validation-001/4.log"
+    },
+    {
+      "argv": [
+        "node",
+        "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/verification/course_acceptance.mjs"
+      ],
+      "exit_code": 1,
+      "seconds": 0.1324392500000009,
+      "log": "validation-001/5.log"
+    },
+    {
+      "argv": [
+        "node",
+        "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/verification/course_acceptance.mjs",
+        "--host"
+      ],
+      "exit_code": 1,
+      "seconds": 4.302626999999999,
+      "log": "validation-001/6.log"
+    },
+    {
+      "argv": [
+        "python3",
+        "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/verification/task_a_gates.py",
+        "--repo",
+        ".",
+        "--base",
+        "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+        "--out",
+        "/Users/dfortun/Documents/Codex/2026-10-12/have/work/v7.12-task-a-baseline/run/validation-001/submitted"
+      ],
+      "exit_code": 1,
+      "seconds": 1.5729712090000003,
+      "log": "validation-001/7.log"
+    }
+  ],
+  "validation_groups_passed": 0,
+  "validation_groups_total": 8,
+  "harness_regression": {
+    "tests": 171,
+    "passed": 171,
+    "failed": 0,
+    "skipped": 0,
+    "source": "v7.12-regression-verified.log",
+    "earlier_failed_and_skipped_runs_preserved": true
+  },
+  "historical_live_adapter_contract_checks": {
+    "passed": 4,
+    "total": 4,
+    "input_tokens": 405,
+    "output_tokens": 109,
+    "total_tokens": 514,
+    "source": "harness/LIVE_OLLAMA_CHECKS.json",
+    "separate_from_task_a": true
+  },
+  "shared_historical_retry_accounting": {
+    "source": "harness/OLLAMA_RETRY_ACCOUNTING.json",
+    "note": "20 calls and 2594 tokens span multiple release checks. They overlap the four v7.12 calls; do not add the aggregate again or attribute it entirely to v7.12."
+  },
+  "ollama_usage": {
+    "scope": "Previously initiated v7.12 baseline Task A run, imported evidence; excluded from the current commit task token total.",
+    "source_ledger": "task-a/run/provider-usage.json",
+    "source_responses": "task-a/run/response-*.json",
+    "calls": 19,
+    "input_tokens": 230100,
+    "output_tokens": 25119,
+    "total_tokens": 255219,
+    "cached_tokens_in_harness_ledger": 0,
+    "provider_cached_input_tokens": null,
+    "cache_note": "Ledger records zero and verified unloads. Ollama does not supply an independent cached-input token counter.",
+    "reasoning_output_tokens": null,
+    "reasoning_note": "Included in model output when present; no separate provider counter supplied.",
+    "complete": true,
+    "retries_and_rejected_responses_included": true,
+    "per_call_counters_verified_against_saved_responses": true,
+    "new_inference_calls_initiated_by_commit_task": 0
+  },
+  "elapsed_validation_seconds_since_preparation": 1610.0409018993378,
+  "changed_paths": [
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.test.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "acceptance_criteria_passed": null,
+  "acceptance_note": "No supported complete success claim. Use raw independent verifier and submitted-test gate output; do not substitute harness regression passes for Task A acceptance.",
+  "cost_usd": null,
+  "supplemental_checks": [
+    {
+      "name": "script-policy",
+      "argv": [
+        "node",
+        "scripts/check-script-policy.mjs"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started_at_epoch": 1791812145.07894,
+      "seconds": 0.07649397850036621,
+      "log": "script-policy.log"
+    },
+    {
+      "name": "biome-check",
+      "argv": [
+        "pnpm",
+        "exec",
+        "biome",
+        "check",
+        "."
+      ],
+      "exit_code": 1,
+      "status": "failed",
+      "timeout": false,
+      "started_at_epoch": 1791812145.155948,
+      "seconds": 0.5633280277252197,
+      "log": "biome-check.log"
+    },
+    {
+      "name": "knip",
+      "argv": [
+        "pnpm",
+        "run",
+        "knip"
+      ],
+      "exit_code": 1,
+      "status": "failed",
+      "timeout": false,
+      "started_at_epoch": 1791812145.719585,
+      "seconds": 2.7985680103302,
+      "log": "knip.log"
+    },
+    {
+      "name": "e18e",
+      "argv": [
+        "pnpm",
+        "run",
+        "e18e"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started_at_epoch": 1791812148.518702,
+      "seconds": 7.649815082550049,
+      "log": "e18e.log"
+    },
+    {
+      "name": "snyk",
+      "argv": [
+        "pnpm",
+        "run",
+        "snyk"
+      ],
+      "exit_code": 0,
+      "status": "skipped",
+      "timeout": false,
+      "started_at_epoch": 1791812156.1690218,
+      "seconds": 0.4440321922302246,
+      "log": "snyk.log"
+    },
+    {
+      "name": "diff-check",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "status": "passed",
+      "timeout": false,
+      "started_at_epoch": 1791812156.6135402,
+      "seconds": 0.021391868591308594,
+      "log": "diff-check.log"
+    }
+  ],
+  "termination_reason": "Run token budget reached before next generation",
+  "prepared_but_not_submitted_request": "task-a/run/request-20.json; blocked before inference, no response or tokens to charge",
+  "commit_hook_policy": "Bypass mutating lint-staged and aggregate verify hook to preserve the exact failed baseline and hashed original evidence. Required frozen validation and supplemental checks were run and recorded separately."
+}
