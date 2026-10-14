@@ -18,9 +18,13 @@ Do not modify existing `packages/cellix` files; they must match upstream CellixJ
 - Acceptance: `packages/axc-verification/acceptance-api/src/features/healthcheck.feature`, `packages/axc-verification/acceptance-api/src/step-definitions/healthcheck.steps.ts`
 - Boot stays: `packages/axc-verification/acceptance-api/src/infrastructure.ts`
 - Storage, open only if the feature stores data: `packages/axc/domain/src/index.ts`, `packages/axc/persistence/src/index.ts`, `packages/axc/service-mongoose/src/index.ts`
-- Layering (enforced by pnpm run test:arch): domain imports no other @axc package; application-services may use domain and persistence, never service-mongoose; rest never uses service-mongoose.
+- Layering (enforced by pnpm run test:arch): domain imports no other @axc package; application-services and rest never use service-mongoose; application-services may import only types from @axc/persistence.
 
 Each new endpoint needs a Hono route in `packages/axc/rest/src/index.ts` and a `registerAzureFunctionHttpHandler` entry in `apps/api/src/index.ts`. `host.json` `routePrefix` is empty, so register the full path.
+
+## Data access
+
+Application services get data through ApiContext, built in `apps/api/src/index.ts` `.setContext(...)`, the same way health gets `environment`. Persistence exports the implementation; apps/api creates it and puts it in the context. Unit tests pass an in-memory instance the same way.
 
 ## Cellix
 
