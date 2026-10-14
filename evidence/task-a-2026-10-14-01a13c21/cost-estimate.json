@@ -1,0 +1,27 @@
+{
+  "currency": "USD",
+  "source": "User-provided pricing screenshot in follow-up message; not independently verified pricing or actual billed charge",
+  "rates_per_million_tokens": {
+    "uncached_input": 2,
+    "cached_input": 0.1,
+    "output": 10,
+    "cache_writes": 2.5
+  },
+  "uncached_input_tokens": 131187,
+  "cached_input_tokens": 2155520,
+  "output_tokens": 17112,
+  "cache_write_tokens": 0,
+  "cache_write_source": "Final original-turn token_usage_record.turn_token_usage.cache_write_input_tokens",
+  "maximum_input_tokens_per_request": 93237,
+  "long_context_threshold": 272000,
+  "long_context_input_cache_multiplier": 2,
+  "long_context_multiplier_applied": false,
+  "components_usd": {
+    "uncached_input": 0.262374,
+    "cached_input": 0.215552,
+    "output": 0.17112,
+    "cache_writes": 0.0
+  },
+  "total_usd": 0.649046,
+  "note": "Cached input is deducted from total input before applying uncached rate; reasoning output is already included in output. Business Pro Lite subscription charge/credits are not inferred from API-equivalent rates. Follow-up usage excluded."
+}

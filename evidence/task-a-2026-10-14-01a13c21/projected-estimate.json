@@ -1,0 +1,4 @@
+{
+  "total_tokens": 500000,
+  "assumptions": "Cumulative API tokens across roughly 15-30 model calls with growing context, one local endpoint and focused validation; not unique context tokens or measured usage."
+}
