@@ -17,7 +17,8 @@
 		"format:check": "biome format .",
 		"clean": "rimraf dist deploy",
 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
-		"start": "node --experimental-strip-types scripts/start-host.ts"
+		"start": "node --experimental-strip-types scripts/start-host.ts",
+		"test": "vitest run --silent --reporter=dot"
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
