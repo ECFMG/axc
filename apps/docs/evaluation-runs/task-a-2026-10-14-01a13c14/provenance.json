@@ -1,0 +1,28 @@
+{
+  "source_archive": "/Users/dfortun/Downloads/openai-harness-v7.12.01.zip",
+  "archive_sha256": "399ad1ab6b0fe4b7790f5ef3957100b95509ad2eee7197cb3f81ffca1bc7b362",
+  "manifest_files_checked": 111,
+  "manifest_mismatches": [],
+  "application_source_in_archive": false,
+  "application_source_used": "/Users/dfortun/Documents/Codex/2026-10-08/before-making-changes-inspect-the-current/work/axc-validation",
+  "application_base": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "changed_paths": [
+    "apps/api/src/index.ts",
+    "apps/docs/docs/courses.md",
+    "apps/docs/sidebars.ts",
+    "packages/axc-verification/acceptance-api/package.json",
+    "packages/axc-verification/acceptance-api/tests/courses.test.mjs",
+    "packages/axc-verification/acceptance-api/turbo.json",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "allowed_boundary_passed": true,
+  "fixed_task_documents_unchanged": true,
+  "vendored_cellix_unchanged": true,
+  "dependencies_unchanged": true,
+  "harness_model_execution_used": false,
+  "harness_use": "Read source and reuse frozen independent endpoint and submitted-test/documentation checks. Implementation performed by current Codex session; no Ollama or hosted adapter calls."
+}

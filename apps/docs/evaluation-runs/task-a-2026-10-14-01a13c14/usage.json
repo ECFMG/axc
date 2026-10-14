@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "task": "TS-A-CATALOG-SEARCH",
+  "updated_at": "2026-10-14T20:40:07.579226+00:00",
+  "measurement_method": "Ending cumulative counters minus starting cumulative counters per session. Never sum cumulative snapshots. Input includes cached input; output includes reasoning output. Aggregate is sum of independent session deltas.",
+  "primary": {
+    "role": "primary",
+    "session_id": "01a13c14-a6c9-7c43-b596-6d801c221c69",
+    "turn_id": "01a13c15-ae0a-7d52-a2e6-4ed05d77872e",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-22-28-01a13c14-a6c9-7c43-b596-6d801c221c69.jsonl",
+    "task_start_timestamp": "2026-10-14T20:23:36.211Z",
+    "task_end_timestamp": "2026-10-14T20:34:43.944Z",
+    "baseline": {
+      "timestamp": "2026-10-14T20:23:36.211Z",
+      "counters": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "basis": "Zero at counter origin, proven by first scoped cumulative usage equaling first-call usage, with no earlier token_count. Forked metadata/task history does not carry earlier usage counters."
+    },
+    "first_scoped_snapshot_evidence": {
+      "timestamp": "2026-10-14T20:23:42.210Z",
+      "total_token_usage": {
+        "input_tokens": 45929,
+        "cached_input_tokens": 22784,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 147,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46076
+      },
+      "last_token_usage": {
+        "input_tokens": 45929,
+        "cached_input_tokens": 22784,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 147,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46076
+      }
+    },
+    "ending_snapshot": {
+      "timestamp": "2026-10-14T20:34:43.940Z",
+      "counters": {
+        "input_tokens": 2671497,
+        "cached_input_tokens": 2576256,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 22139,
+        "reasoning_output_tokens": 4516,
+        "total_tokens": 2693636
+      }
+    },
+    "measured_usage": {
+      "input_tokens": 2671497,
+      "cached_input_tokens": 2576256,
+      "output_tokens": 22139,
+      "reasoning_output_tokens": 4516,
+      "total_tokens": 2693636
+    },
+    "final_response_accounted_for": true,
+    "complete": true,
+    "missing_usage": [],
+    "scope": "Original turn only: inspection, planning, implementation, validation, reporting and final assistant response. Follow-up turns excluded by next task_started boundary."
+  },
+  "subagents": [
+    {
+      "role": "reviewer",
+      "session_id": "01a13c19-c40a-7170-94c4-d08afeb00755",
+      "turn_id": "01a13c19-c425-7de1-9d04-ab4fba1b7ca4",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-28-03-01a13c19-c40a-7170-94c4-d08afeb00755.jsonl",
+      "task_start_timestamp": "2026-10-14T20:28:04.023Z",
+      "task_end_timestamp": "2026-10-14T20:29:25.061Z",
+      "baseline": {
+        "timestamp": "2026-10-14T20:28:04.023Z",
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "Zero at counter origin, proven by first scoped cumulative usage equaling first-call usage, with no earlier token_count. Forked metadata/task history does not carry earlier usage counters."
+      },
+      "first_scoped_snapshot_evidence": {
+        "timestamp": "2026-10-14T20:28:10.500Z",
+        "total_token_usage": {
+          "input_tokens": 45865,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 49,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 45914
+        },
+        "last_token_usage": {
+          "input_tokens": 45865,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 49,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 45914
+        }
+      },
+      "ending_snapshot": {
+        "timestamp": "2026-10-14T20:29:25.055Z",
+        "counters": {
+          "input_tokens": 557682,
+          "cached_input_tokens": 491520,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1992,
+          "reasoning_output_tokens": 205,
+          "total_tokens": 559674
+        }
+      },
+      "measured_usage": {
+        "input_tokens": 557682,
+        "cached_input_tokens": 491520,
+        "output_tokens": 1992,
+        "reasoning_output_tokens": 205,
+        "total_tokens": 559674
+      },
+      "final_response_accounted_for": true,
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only: inspection, planning, implementation, validation, reporting and final assistant response. Follow-up turns excluded by next task_started boundary."
+    }
+  ],
+  "aggregate_recorded_usage": {
+    "input_tokens": 3229179,
+    "cached_input_tokens": 3067776,
+    "output_tokens": 24131,
+    "reasoning_output_tokens": 4721,
+    "total_tokens": 3253310
+  },
+  "complete": true,
+  "missing_usage": [],
+  "projection_file": "projection.json",
+  "monetary_cost": null,
+  "cost_limitation": "No verified pricing or billed-cost counters provided. No estimates replace measured token counters.",
+  "initial_capture": {
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-22-28-01a13c14-a6c9-7c43-b596-6d801c221c69.jsonl",
+    "session_id": "01a13c14-a6c9-7c43-b596-6d801c221c69",
+    "task_boundary": {
+      "timestamp": "2026-10-14T20:23:36.211Z",
+      "ordinal": 1,
+      "type": "event_msg",
+      "payload": {
+        "type": "task_started",
+        "turn_id": "01a13c15-ae0a-7d52-a2e6-4ed05d77872e",
+        "root_turn_id": "01a13c15-ae0a-7d52-a2e6-4ed05d77872e",
+        "started_at": 1792009416,
+        "model_context_window": 475000,
+        "collaboration_mode_kind": "default"
+      }
+    },
+    "capture_timestamp": "2026-10-14T20:24:00.882306+00:00",
+    "starting_snapshot": null
+  },
+  "recovery_instruction": "On next user message run this script before answering; original turn IDs remain fixed, excluding that follow-up usage."
+}

@@ -1,0 +1,12 @@
+{
+  "kind": "Projected estimate recorded before substantive work; not measured usage",
+  "recorded_at": "2026-10-14T20:24:00.882306+00:00",
+  "total_tokens": 45000,
+  "assumptions": [
+    "Two task specifications, archive inspection, focused implementation, validation, and report.",
+    "No subagents planned initially; estimate excludes cache discounts and is not measured usage."
+  ],
+  "limitations": [
+    "Initial estimate underestimated repeated context input and later reviewer delegation. Retained as original projection; not replaced by measured values."
+  ]
+}

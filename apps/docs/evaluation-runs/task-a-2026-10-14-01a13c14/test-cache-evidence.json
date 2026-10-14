@@ -1,0 +1,26 @@
+{
+  "source": "Original pnpm test --env-mode=loose --dry=json output, retained in local deliverables/validation/test-graph.json",
+  "taskId": "@axc-verification/acceptance-api#test",
+  "command": "node --test tests/courses.test.mjs",
+  "dependencies": [
+    "@apps/api#build",
+    "@cellix/config-typescript#build",
+    "@cellix/config-vitest#build",
+    "@cellix/local-dev#build",
+    "@cellix/serenity-framework#build"
+  ],
+  "input_paths": [
+    "cucumber.yaml",
+    "package.json",
+    "src/cucumber-lifecycle-hooks.ts",
+    "src/features/healthcheck.feature",
+    "src/infrastructure.ts",
+    "src/serenity.ts",
+    "src/step-definitions/healthcheck.steps.ts",
+    "src/world.ts",
+    "tests/courses.test.mjs",
+    "tsconfig.json",
+    "turbo.json"
+  ],
+  "course_test_in_cache_inputs": true
+}

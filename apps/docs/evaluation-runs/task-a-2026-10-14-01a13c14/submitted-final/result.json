@@ -1,0 +1,41 @@
+{
+  "submitted_tests": [
+    "packages/axc-verification/acceptance-api/tests/courses.test.mjs"
+  ],
+  "executions": [
+    {
+      "package": "packages/axc-verification/acceptance-api",
+      "argv": [
+        "node",
+        "--test",
+        "--test-reporter=/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/work/openai-harness-v7.12.01/node_test_reporter.mjs",
+        "--test-reporter-destination=/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/validation/submitted-final/tests-00.json",
+        "tests/courses.test.mjs"
+      ],
+      "exit_code": 0,
+      "files": {
+        "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/axc/packages/axc-verification/acceptance-api/tests/courses.test.mjs": {
+          "passed_cases": 46,
+          "failed": false,
+          "skipped": false,
+          "discovered": true,
+          "passed": true
+        }
+      },
+      "report": "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/validation/submitted-final/tests-00.json",
+      "log": "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/validation/submitted-final/tests-00.log",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "documentation": {
+    "passed": true,
+    "files": [
+      "apps/docs/docs/courses.md"
+    ],
+    "missing_terms": []
+  },
+  "tests_passed": true,
+  "passed": true,
+  "limitations": "Execution evidence does not prove assertion adequacy. Documentation terms do not prove prose correctness. Independent endpoint checks and source review remain required."
+}

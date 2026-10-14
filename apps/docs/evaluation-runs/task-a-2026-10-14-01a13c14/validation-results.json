@@ -1,0 +1,113 @@
+{
+  "task": "TS-A-CATALOG-SEARCH",
+  "branch": "task-a/catalog-search-v7.12.01",
+  "commit": "2aa3cd4a60269dfd2081b4243ecfc00e63c8909d",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "requirements_satisfied": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5",
+    "A6",
+    "A7",
+    "A8",
+    "A9",
+    "A10",
+    "A11"
+  ],
+  "acceptance_criteria_passed": [
+    "A-AC1",
+    "A-AC2",
+    "A-AC3",
+    "A-AC4",
+    "A-AC5",
+    "A-AC6",
+    "A-AC7",
+    "A-AC8",
+    "A-AC9",
+    "A-AC10",
+    "A-AC11",
+    "A-AC12"
+  ],
+  "checks": [
+    {
+      "command": "pnpm test --env-mode=loose",
+      "exit_code": 0,
+      "log": "test-final.log",
+      "result": "26/26 Turbo tasks; 590 unit/integration cases (46 new), one health acceptance scenario; no failures. Localhost permission required."
+    },
+    {
+      "command": "pnpm run lint",
+      "exit_code": 0,
+      "log": "lint-final.log",
+      "result": "201 files, no lint findings."
+    },
+    {
+      "command": "pnpm run build --env-mode=loose --force",
+      "exit_code": 0,
+      "log": "build-final.log",
+      "result": "18/18 tasks, zero Turbo cache hits; API and documentation built. Nonblocking Docusaurus update-check warning."
+    },
+    {
+      "command": "pnpm run typecheck --env-mode=loose",
+      "exit_code": 0,
+      "log": "typecheck-final.log",
+      "result": "21/21 tasks."
+    },
+    {
+      "command": "pnpm run test:arch --env-mode=loose",
+      "exit_code": 0,
+      "log": "architecture-final.log",
+      "result": "15/15 tasks; 19 architecture tests, including nine AXC rules."
+    },
+    {
+      "command": "node course_acceptance.mjs",
+      "exit_code": 0,
+      "log": "hono-oracle-final.json",
+      "result": "29/29 frozen independent Hono checks."
+    },
+    {
+      "command": "node course_acceptance.mjs --host",
+      "exit_code": 0,
+      "log": "azure-oracle-final.json",
+      "result": "29/29 frozen independent live Azure HTTP checks."
+    },
+    {
+      "command": "python3 task_a_gates.py --repo . --base fe47c38 --out ../validation/submitted-final",
+      "exit_code": 0,
+      "log": "submitted-final/result.json",
+      "result": "46 submitted tests discovered, executed and passed; documentation terms verified."
+    }
+  ],
+  "review": {
+    "finding": "P2: sibling course test was outside API test cache inputs.",
+    "resolution": "Registered test in its owning verification package; package Turbo config explicitly builds API first. Dry-run graph confirms test file in cache inputs.",
+    "remaining_findings": 0
+  },
+  "earlier_attempts": [
+    {
+      "log": "dependency-install.log",
+      "result": "Offline restore failed: missing cached @amiceli/vitest-cucumber 6.5.0 tarball. Existing locked local dependencies copied without downloads."
+    },
+    {
+      "log": "test.log",
+      "result": "Initial sandbox run blocked local listening sockets; rerun with localhost permission passed."
+    },
+    {
+      "log": "test-localhost.log",
+      "result": "Full suite passed before reviewer cache correction."
+    }
+  ],
+  "blockers": [],
+  "limitations": [
+    "Catalog uses local fixtures; editing and durable storage are outside Task A.",
+    "External security audits were not requested or run. No clean security audit is claimed."
+  ],
+  "usage_accounting": {
+    "complete": true,
+    "usage_file": "usage.json",
+    "follow_up_usage_excluded": true
+  },
+  "publication_branch": "df-oai-2-out"
+}
