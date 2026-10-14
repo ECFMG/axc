@@ -38,6 +38,12 @@ Use the project skills when applicable:
 - `tdd` for outside-in test-driven application development.
 - `serenity-tests` for Serenity/JS acceptance testing.
 - `run-validation` for development and final validation.
+- `orchestration` for planning, implementation delegation, adversarial review,
+  and validation of application-development tasks.
+
+For application-development tasks, use `orchestration` to coordinate the
+workflow. As the orchestrator, the primary agent owns workflow coordination, integration, and the
+final Git lifecycle.
 
 ## Completion
 
