@@ -8,7 +8,7 @@ Write only `apps/api/**`, `packages/axc/domain/**`, `packages/axc/persistence/**
 
 ## Bans
 
-Do not modify existing `packages/cellix` files; they must match upstream CellixJS. Do not port a new Cellix package unless the task cannot be done without it. Never edit `.env` or secrets. Never add or change authentication. Never edit deploy config, including `apps/api/host.json`. Do not add dependencies. Never edit `package.json` dependency fields, the lockfile (`pnpm-lock.yaml`), `.snyk`, or audit config. Never change biome, tsconfig, knip, vitest, cucumber, or archunit config to make a check pass. Add a biome-ignore only with a reason, matching existing ones.
+Do not modify existing `packages/cellix` files; they must match upstream CellixJS. Do not port a new Cellix package unless the task cannot be done without it. Never edit `.env` or secrets. Never add or change authentication. Never edit deploy config, including `apps/api/host.json`. Do not add third-party dependencies. You may add a `workspace:*` dependency on another `@axc/*` package, then run `pnpm install` to update `pnpm-lock.yaml`. Never otherwise edit dependency fields, the lockfile, `.snyk`, or audit config. Never change biome, tsconfig, knip, vitest, cucumber, or archunit config to make a check pass. Add a biome-ignore only with a reason, matching existing ones.
 
 ## Copy the health slice
 
@@ -18,6 +18,7 @@ Do not modify existing `packages/cellix` files; they must match upstream CellixJ
 - Acceptance: `packages/axc-verification/acceptance-api/src/features/healthcheck.feature`, `packages/axc-verification/acceptance-api/src/step-definitions/healthcheck.steps.ts`
 - Boot stays: `packages/axc-verification/acceptance-api/src/infrastructure.ts`
 - Storage, open only if the feature stores data: `packages/axc/domain/src/index.ts`, `packages/axc/persistence/src/index.ts`, `packages/axc/service-mongoose/src/index.ts`
+- Layering (enforced by pnpm run test:arch): domain imports no other @axc package; application-services may use domain and persistence, never service-mongoose; rest never uses service-mongoose.
 
 Each new endpoint needs a Hono route in `packages/axc/rest/src/index.ts` and a `registerAzureFunctionHttpHandler` entry in `apps/api/src/index.ts`. `host.json` `routePrefix` is empty, so register the full path.
 
