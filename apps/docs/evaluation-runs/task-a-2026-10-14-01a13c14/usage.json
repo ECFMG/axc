@@ -157,5 +157,13 @@
     "starting_snapshot": null
   },
   "recovery_instruction": "On next user message run this script before answering; original turn IDs remain fixed, excluding that follow-up usage.",
-  "cost_estimate_file": "cost-estimate.json"
+  "cost_estimate_file": "cost-estimate.json",
+  "run_identity": {
+    "human_operator": "Dane Fortun",
+    "seat": "Business Pro Lite",
+    "identity_source": "User confirmed in scoring follow-up",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "reasoning_evidence": "Original primary and reviewer turn_context.effort both record medium"
+  }
 }

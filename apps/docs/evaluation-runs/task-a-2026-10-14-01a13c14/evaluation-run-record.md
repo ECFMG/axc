@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
-| Developer / Operator | Codex; local account dfortun |
+| Developer / Operator | Dane Fortun (human operator); Codex executed implementation |
 | Reviewer |  |
 | Harness | Codex Desktop, direct implementation; openai-harness-v7.12.01 frozen independent validation checks |
-| Model | gpt-6.1-sol (primary and reviewer) |
-| License / Plan | Not recorded for this run |
+| Model | gpt-6.1-sol; medium reasoning (user confirmed and original primary/reviewer turn contexts verified) |
+| License / Plan | Business Pro Lite seat (user confirmed) |
 | Codebase | ECFMG/axc, pre-Task-A fe47c38 baseline |
 | Task Set | A — TS-A-CATALOG-SEARCH |
 | Run Type | Baseline feature implementation |
@@ -26,8 +26,8 @@
 | Elapsed Time | 667.733 seconds (11m 7.733s); original task 2026-10-14T20:23:36.211Z to 2026-10-14T20:34:43.944Z. Publication follow-ups excluded. |
 | Number of Human Interventions / Redirects | 0 redirects after initial request during implementation; localhost execution permitted by automatic approval review |
 | Reviewer Notes |  |
-| Final Rubric Score |  |
-| Recommendation | Candidate for Pilot, subject to human review; no rubric score assigned |
+| Final Rubric Score | 83.3/100 (25/30), equal-weight agent assessment; see [rubric assessment](rubric-assessment.md). Independent human review pending. |
+| Recommendation | Candidate for Pilot, subject to independent human review and improved context/call management |
 
 ## Reference and evidence
 

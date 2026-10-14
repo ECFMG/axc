@@ -62,7 +62,8 @@ underestimated repeated input context and later reviewer delegation. Using the
 supplied Standard-mode rates, [calculated token cost](cost-estimate.json) is
 $0.870894 combined: $0.669498 primary and $0.201396 reviewer. Zero cache writes
 are recorded; no individual request exceeds 272,000 input tokens. Actual billed
-charge remains unavailable. No rubric score was assigned.
+charge remains unavailable. Final [agent rubric assessment](rubric-assessment.md)
+is 83.3/100 (25/30); independent human review remains pending.
 
 Fixtures are sample data; durable storage and editing remain outside Task A.
 No implementation, validation, or original-task accounting blockers remain.
