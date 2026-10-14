@@ -1,6 +1,6 @@
 ### Evaluation Run Record
 
-Updated October 14, 2026. The selected model baseline remains **v7.12**. The supplied **v7.12.1** patch and subsequent checks are recorded separately below; no new v7.12.1 Task A model run was performed, only v7.12 for Task A.
+Updated October 14, 2026. The selected model baseline remains **v7.12**. Task A model run was performed on v7.12.
 
 ### Evaluation Run Record
 
