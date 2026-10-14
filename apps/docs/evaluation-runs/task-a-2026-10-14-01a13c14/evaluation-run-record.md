@@ -22,7 +22,7 @@
 | Cached Tokens | 3,067,776 combined; primary 2,576,256; reviewer 491,520; included in input |
 | Output Tokens | 24,131 combined; primary 22,139; reviewer 1,992. Includes 4,721 reasoning output (primary 4,516; reviewer 205). |
 | Total Tokens or Credits Used | 3,253,310 tokens; primary 2,693,636; reviewer 559,674. See [usage.json](usage.json); both original final responses included, all later follow-up turns excluded. |
-| Estimated Cost | Not calculated; verified rates and actual billed charge unavailable. Original projected token estimate 45,000 remains separate in [projection.json](projection.json). |
+| Estimated Cost | $0.870894 combined (primary $0.669498; reviewer $0.201396), using supplied Standard-mode rates. See [cost-estimate.json](cost-estimate.json). Actual billed charge unavailable; original 45,000-token [projection](projection.json) remains separate. |
 | Elapsed Time | 667.733 seconds (11m 7.733s); original task 2026-10-14T20:23:36.211Z to 2026-10-14T20:34:43.944Z. Publication follow-ups excluded. |
 | Number of Human Interventions / Redirects | 0 redirects after initial request during implementation; localhost execution permitted by automatic approval review |
 | Reviewer Notes |  |

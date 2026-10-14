@@ -1,0 +1,84 @@
+{
+  "kind": "Calculated Standard-mode API-equivalent token cost; not actual billed charge",
+  "model": "gpt-6.1-sol",
+  "rate_source": "User-supplied screenshot; checked against official model documentation",
+  "official_pricing_url": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+  "checked_at": "2026-10-14T20:55:19.118342+00:00",
+  "rates_usd_per_million": {
+    "input": 2,
+    "cached_input": 0.1,
+    "cache_write": 2.5,
+    "output": 10
+  },
+  "long_context_policy": {
+    "threshold_input_tokens": 272000,
+    "condition": "Applied per request, not cumulative task input.",
+    "input_and_cache_multiplier": 2,
+    "output_multiplier": 1.5,
+    "requests_exceeding_threshold": 0,
+    "adjustment_applied": false
+  },
+  "sessions": [
+    {
+      "role": "primary",
+      "session_id": "01a13c14-a6c9-7c43-b596-6d801c221c69",
+      "turn_id": "01a13c15-ae0a-7d52-a2e6-4ed05d77872e",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-22-28-01a13c14-a6c9-7c43-b596-6d801c221c69.jsonl",
+      "billable_token_buckets": {
+        "uncached_input_tokens": 95241,
+        "cached_input_tokens": 2576256,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 22139
+      },
+      "cost_components_usd": {
+        "uncached_input_tokens": "0.190482",
+        "cached_input_tokens": "0.2576256",
+        "cache_write_input_tokens": "0.00",
+        "output_tokens": "0.22139"
+      },
+      "estimated_usd_exact": "0.6694976",
+      "model_calls_recorded": 31,
+      "maximum_request_input_tokens": 113530,
+      "requests_over_272000_input_tokens": 0,
+      "cache_write_counter_basis": "Ending cumulative cache_write_input_tokens is zero; first cumulative usage equals first-call usage, establishing zero counter origin.",
+      "final_response_included": true
+    },
+    {
+      "role": "reviewer",
+      "session_id": "01a13c19-c40a-7170-94c4-d08afeb00755",
+      "turn_id": "01a13c19-c425-7de1-9d04-ab4fba1b7ca4",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-28-03-01a13c19-c40a-7170-94c4-d08afeb00755.jsonl",
+      "billable_token_buckets": {
+        "uncached_input_tokens": 66162,
+        "cached_input_tokens": 491520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1992
+      },
+      "cost_components_usd": {
+        "uncached_input_tokens": "0.132324",
+        "cached_input_tokens": "0.049152",
+        "cache_write_input_tokens": "0.00",
+        "output_tokens": "0.01992"
+      },
+      "estimated_usd_exact": "0.201396",
+      "model_calls_recorded": 10,
+      "maximum_request_input_tokens": 64730,
+      "requests_over_272000_input_tokens": 0,
+      "cache_write_counter_basis": "Ending cumulative cache_write_input_tokens is zero; first cumulative usage equals first-call usage, establishing zero counter origin.",
+      "final_response_included": true
+    }
+  ],
+  "estimated_usd_exact": "0.8708936",
+  "estimated_usd_rounded_6": "0.870894",
+  "actual_billed_usd": null,
+  "measured_usage_complete": true,
+  "scope": "Original Task A primary and reviewer turns, including final responses. All follow-up/publishing turns excluded.",
+  "formula": "(input_tokens - cached_input_tokens) * 2 / 1000000 + cached_input_tokens * 0.10 / 1000000 + output_tokens * 10 / 1000000. Cache-write charge is zero because recorded writes are zero.",
+  "assumptions": [
+    "Standard-mode rates requested by user; no Fast/Ultrafast, regional or other billing modifiers applied.",
+    "Reasoning output is included within output; cached input is included within input. Neither is added twice.",
+    "No request exceeds the long-context threshold.",
+    "Subscription fees, tool/service fees, tax, and other invoice-specific adjustments are outside this token-only estimate."
+  ],
+  "projection_file": "projection.json"
+}

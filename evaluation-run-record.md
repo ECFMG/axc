@@ -21,8 +21,8 @@
 | Input Tokens | 3,229,179 combined; primary 2,671,497; reviewer 557,682 |
 | Cached Tokens | 3,067,776 combined; primary 2,576,256; reviewer 491,520; included in input |
 | Output Tokens | 24,131 combined; primary 22,139; reviewer 1,992. Includes 4,721 reasoning output (primary 4,516; reviewer 205). |
-| Total Tokens or Credits Used | 3,253,310 tokens; primary 2,693,636; reviewer 559,674. See [usage.json](usage.json); both original final responses included, all later follow-up turns excluded. |
-| Estimated Cost | Not calculated; verified rates and actual billed charge unavailable. Original projected token estimate 45,000 remains separate in [projection.json](projection.json). |
+| Total Tokens or Credits Used | 3,253,310 tokens; primary 2,693,636; reviewer 559,674. See [usage.json](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/usage.json); both original final responses included, all later follow-up turns excluded. |
+| Estimated Cost | $0.870894 combined (primary $0.669498; reviewer $0.201396), using supplied Standard-mode rates. See [cost-estimate.json](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/cost-estimate.json). Actual billed charge unavailable; original 45,000-token [projection](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/projection.json) remains separate. |
 | Elapsed Time | 667.733 seconds (11m 7.733s); original task 2026-10-14T20:23:36.211Z to 2026-10-14T20:34:43.944Z. Publication follow-ups excluded. |
 | Number of Human Interventions / Redirects | 0 redirects after initial request during implementation; localhost execution permitted by automatic approval review |
 | Reviewer Notes |  |
@@ -33,9 +33,9 @@
 
 This record uses the format of the [df-oai-0-out evaluation record](https://github.com/ECFMG/axc/blob/df-oai-0-out/apps/docs/evaluation-runs/task-a-2026-10-14-01a13c21/evaluation-run-record.md). That record describes a separate run; its measurements, cost, and score are not reused here.
 
-- [Completion notes](completion-notes.md)
-- [Validation results](validation-results.json)
-- [Actual usage](usage.json) and [separate projection](projection.json)
-- [Source and write-boundary provenance](provenance.json)
+- [Completion notes](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/completion-notes.md)
+- [Validation results](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/validation-results.json)
+- [Actual usage](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/usage.json) and [separate projection](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/projection.json)
+- [Source and write-boundary provenance](apps/docs/evaluation-runs/task-a-2026-10-14-01a13c14/provenance.json)
 
 Original Task A token accounting is complete. No required token counters remain unmeasured. The primary counter timestamp is `2026-10-14T20:34:43.940Z`; reviewer counter timestamp is `2026-10-14T20:29:25.055Z`. Cached input is included in input; reasoning output is included in output.

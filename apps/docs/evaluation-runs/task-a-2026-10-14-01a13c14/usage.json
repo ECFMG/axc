@@ -136,7 +136,7 @@
   "missing_usage": [],
   "projection_file": "projection.json",
   "monetary_cost": null,
-  "cost_limitation": "No verified pricing or billed-cost counters provided. No estimates replace measured token counters.",
+  "cost_limitation": "Actual billed charge unavailable. See cost-estimate.json for a separate calculation using supplied Standard-mode rates; all follow-up turns excluded.",
   "initial_capture": {
     "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-22-28-01a13c14-a6c9-7c43-b596-6d801c221c69.jsonl",
     "session_id": "01a13c14-a6c9-7c43-b596-6d801c221c69",
@@ -156,5 +156,6 @@
     "capture_timestamp": "2026-10-14T20:24:00.882306+00:00",
     "starting_snapshot": null
   },
-  "recovery_instruction": "On next user message run this script before answering; original turn IDs remain fixed, excluding that follow-up usage."
+  "recovery_instruction": "On next user message run this script before answering; original turn IDs remain fixed, excluding that follow-up usage.",
+  "cost_estimate_file": "cost-estimate.json"
 }
