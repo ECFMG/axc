@@ -26,3 +26,6 @@ apps/api/agentCourses-api.zip
 # Docusaurus
 apps/docs/.docusaurus/
 apps/docs/build/
+
+# Local verification results
+.verification/
