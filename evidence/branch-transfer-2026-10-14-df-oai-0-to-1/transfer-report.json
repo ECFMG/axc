@@ -1,0 +1,78 @@
+{
+  "source_branch": "df-oai-0-a-out",
+  "source_commit": "2b5041782cd93ff2e36a53440e409f98ae5236af",
+  "destination_branch": "df-oai-1-a-out",
+  "destination_before_merge": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "common_base": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "selection_window": "October 11\u201314, 2026, America/New_York; all 16 source-only commits are October 12\u201314",
+  "source_commits": [
+    "026c0082af9d68628cfd0b0535360c8d66d9be9b 2026-10-12T09:37:13-04:00 chore(evaluation): record v7.12 Task A baseline runs and tests",
+    "5c3b8dc105bb8b3d81c86828d1e80f31fdd9bccd 2026-10-12T11:00:07-04:00 chore(evaluation): finalize baseline usage and verify committed evidence",
+    "6cd79ab763ef1dbe445851996a4159015836cb1d 2026-10-12T11:18:13-04:00 fix(courses): align implementation and tests with reference baseline",
+    "6e67bf84d69355a4190f3ee7357615f48f2987c5 2026-10-12T12:00:14-04:00 chore(evaluation): archive remaining v7.12 runs and follow-up tests",
+    "ee25c88945159064c74f39537f3bd78936ffa7b5 2026-10-12T12:06:57-04:00 docs(evaluation): update baseline record and completed archival usage",
+    "8fca69257c4bbd833a7c2de3d6f3fa9a9e8e8860 2026-10-12T12:10:32-04:00 docs(evaluation): calculate API cost from recorded token breakdowns",
+    "71a873952614760c7330d19986da227bb332a842 2026-10-12T12:11:49-04:00 chore(evaluation): account for resumed cost-update session",
+    "0b2b6749e69554390a6fc2a087d4cc75df2e87a4 2026-10-12T12:12:27-04:00 fix(evaluation): use inherited counters for resumed cost update",
+    "ca777b0a0d8526ad5407d8eeeb7d388b32e41c1e 2026-10-12T12:13:30-04:00 Update model information in evaluation record",
+    "4b65bac2ca22ac6dcd18acf2fd7ca527c9282b15 2026-10-14T15:21:06-04:00 docs(evaluation): archive October 14 Task A source validation usage and cost",
+    "a6eca501d2bccff797e32805c4ccdeaabfde4175 2026-10-14T15:24:42-04:00 Add final rubric score to evaluation run record",
+    "1f302c70d888d31f666e58eea930995c25ae5e18 2026-10-14T15:32:07-04:00 Enhance evaluation run record with rubric details",
+    "de641287079af8dc4d6372e81127c6fa0f3612b4 2026-10-14T15:33:15-04:00 Revise evaluation run record for October 14, 2026",
+    "e29dbee34084ef95c559122f9cfd9e990fafadf8 2026-10-14T15:34:00-04:00 Update developer and model information in record",
+    "06e9690b50f5c855af47bc875b702b522786e1fb 2026-10-14T15:41:20-04:00 Simplify description of Task A model run",
+    "2b5041782cd93ff2e36a53440e409f98ae5236af 2026-10-14T16:20:31-04:00 Revise evaluation run record for Task A implementation"
+  ],
+  "source_changed_files": 512,
+  "source_files_identical_after_merge": 511,
+  "exception": "pnpm-lock.yaml automatically merged: source workspace dependency links plus destination security-updated dependency versions",
+  "preserved_destination_files_verified": [
+    "package.json",
+    "pnpm-workspace.yaml",
+    ".snyk",
+    "scripts/snyk-verify.mjs"
+  ],
+  "conflicts": 0,
+  "historical_provenance": "Transferred run records retain original source branch, model, token usage, scores and costs. No historical result is relabeled as a new model run.",
+  "merge_commit": "10b75cdf6ec3ae7c64c71ef2d23b64bc8019eb3e",
+  "validation": {
+    "oracle_hono": {
+      "passed": true,
+      "passed_checks": 29,
+      "total_checks": 29,
+      "report": "transfer-oracle-hono-injected.json"
+    },
+    "oracle_host": {
+      "passed": true,
+      "passed_checks": 29,
+      "total_checks": 29,
+      "report": "transfer-oracle-host.json"
+    },
+    "original_hono_setup": {
+      "passed": false,
+      "report": "transfer-oracle-hono.json",
+      "reason": "Original oracle omits explicit repository injection; default service returns empty catalog. Rerun injects the same fixture repository as apps/api; all oracle assertions unchanged."
+    },
+    "build": {
+      "passed": true,
+      "log": "transfer-build.log"
+    },
+    "test": {
+      "passed": true,
+      "log": "transfer-test.log"
+    },
+    "lint": {
+      "passed": true,
+      "log": "transfer-lint.log"
+    },
+    "typecheck": {
+      "passed": true,
+      "log": "transfer-typecheck.log"
+    },
+    "architecture": {
+      "passed": true,
+      "log": "transfer-architecture.log"
+    },
+    "note": "Turbo cached successful tasks are identified in logs. No new original-model inference or token usage attributed to historical runs."
+  }
+}

@@ -1,0 +1,135 @@
+Scope: all 22 workspace projects
+? Verifying lockfile against supply-chain policies (1730 entries)...
+[WARN] GET https://registry.npmjs.org/@11ty%2Fgray-matter error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fautocomplete-shared error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@adobe%2Fcss-tools error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fautocomplete-plugin-algolia-insights error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fautocomplete-core error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-common error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-abtesting error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fabtesting error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-insights error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-analytics error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-personalization error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-query-suggestions error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fevents error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-search error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fingestion error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fmonitoring error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frequester-browser-xhr error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frecommend error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frequester-node-http error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fcache-control-types error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frequester-fetch error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fserver error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fusage-reporting-protobuf error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.createhash error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@amiceli%2Fvitest-cucumber error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.dropunuseddefinitions error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fprotobufjs error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fserver-gateway-interface error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.isnodelike error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.fetcher error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.keyvaluecache error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.logger error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.removealiases error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.printwithreducedwhitespace error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.sortast error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.stripsensitiveliterals error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.usagereporting error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.withrequired error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@azure%2Ffunctions-extensions-base error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fcode-frame error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@azure%2Ffunctions error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fcore error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-compilation-targets error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-globals error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fgenerator error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-annotate-as-pure error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-create-regexp-features-plugin error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-create-class-features-plugin error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fcompat-data error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-define-polyfill-provider error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+Lockfile is up to date, resolution step is skipped
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-optimise-call-expression error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-member-expression-to-functions error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-plugin-utils error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-remap-async-to-generator error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-module-transforms error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-string-parser error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-skip-transparent-expression-wrappers error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-replace-supers error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-module-imports error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-validator-option error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-validator-identifier error (ENOTFOUND). Will retry in 10 seconds. 2 retries left.
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1595
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1595, reused 1583, downloaded 0, added 124
+Progress: resolved 1595, reused 1583, downloaded 0, added 551
+Progress: resolved 1595, reused 1583, downloaded 0, added 1186
+Progress: resolved 1595, reused 1583, downloaded 0, added 1356
+Progress: resolved 1595, reused 1583, downloaded 0, added 1495
+Progress: resolved 1595, reused 1583, downloaded 0, added 1591
+Progress: resolved 1595, reused 1583, downloaded 0, added 1592
+[WARN] GET https://registry.npmjs.org/@11ty%2Fgray-matter error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fautocomplete-shared error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@adobe%2Fcss-tools error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fautocomplete-plugin-algolia-insights error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fautocomplete-core error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-common error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-abtesting error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fabtesting error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-insights error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-analytics error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-personalization error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-query-suggestions error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fevents error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fclient-search error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fingestion error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Fmonitoring error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frequester-browser-xhr error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frecommend error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frequester-node-http error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fcache-control-types error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@algolia%2Frequester-fetch error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fserver error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fusage-reporting-protobuf error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.createhash error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@amiceli%2Fvitest-cucumber error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.dropunuseddefinitions error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fprotobufjs error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Fserver-gateway-interface error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.isnodelike error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.fetcher error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.keyvaluecache error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.logger error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.removealiases error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.printwithreducedwhitespace error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.sortast error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.stripsensitiveliterals error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.usagereporting error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@apollo%2Futils.withrequired error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@azure%2Ffunctions-extensions-base error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fcode-frame error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@azure%2Ffunctions error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fcore error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-compilation-targets error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-globals error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fgenerator error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-annotate-as-pure error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-create-regexp-features-plugin error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-create-class-features-plugin error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fcompat-data error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-define-polyfill-provider error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-optimise-call-expression error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-member-expression-to-functions error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-plugin-utils error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-remap-async-to-generator error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-module-transforms error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-string-parser error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-skip-transparent-expression-wrappers error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-replace-supers error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-module-imports error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-validator-option error (ENOTFOUND). Will retry in 1 minute. 1 retries left.
+[WARN] GET https://registry.npmjs.org/@babel%2Fhelper-validator-identifier error (ENOTFOUND). Will retry in 1 minute. 1 retries left.

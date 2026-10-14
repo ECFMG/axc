@@ -1,0 +1,15 @@
+{
+  "transfer-build.log": "62e7340d5f3ac9f02207c6df6e740822114b213cd0ad813e1c5de6c43b49db3c",
+  "transfer-typecheck.log": "dbe5f76b259a902d9261e4f91d8706cafc44af39e611abaf3f0520d7a247bead",
+  "transfer-lint.log": "93ea88211b4a0b1a402ceed859b2fc7d842709d9c92a8681adae4ee45f2ceb67",
+  "transfer-oracle-hono.json": "b6002a17ae3f699621db81a6e1fa2b3590e0c53ef44b678bb7c824287c171395",
+  "transfer-install-online.log": "f297dffe7f036d755ec8aa72f0c4df2b87893fa7a5f27edc4cd6b3d1536a9383",
+  "transfer-test.log": "eef15d3867f5cf04fb0498b41d66794e6fd67f4a7cf1e1dd14642b2a61f8acac",
+  "transfer-report.json": "f691021760a6359b1c884595796e46a108bafeeb2819cf2a632fbcbd7bd67c48",
+  "README.md": "1f0497ecfa3b715060bb506c52d7c7e43409a945fab9ab5f46125556b43f9c86",
+  "course-acceptance-with-repository.mjs": "983e167cdc11fc68b879a34356ab770c5db3586dd20e1c872fe8016ff54803c7",
+  "transfer-install.log": "66fc64ea4d6084ae930371eae99184dfd244944f7c36edd6f569751873892cab",
+  "transfer-oracle-host.json": "2265db9b4c6fc2c4dfd43c8b9a6322ca22e765ad81b17c2fe716cc4cd22127e4",
+  "transfer-architecture.log": "6084ee303df9c7f4262a4392f255770283b352fe70a3b381b93ab53711c8fc3f",
+  "transfer-oracle-hono-injected.json": "d71a1f5374bd36ea2b62f4cceb7c009f63464ab5242aded017ef9b2811ab82a4"
+}

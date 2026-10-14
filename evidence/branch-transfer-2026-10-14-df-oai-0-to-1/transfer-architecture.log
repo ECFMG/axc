@@ -1,0 +1,102 @@
+$ turbo run test:arch --env-mode=loose
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running test:arch in 21 packages
+   • Remote caching disabled
+
+@cellix/api-services-spec:build: cache hit, replaying logs ad6608c3991a37bc
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 3ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/config-vitest:build: cache hit, replaying logs 08b8a07d5de92f4c
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs 3a1cf12634296d06
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 4ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/api-core:build: cache hit, replaying logs 885b24d5d9c92d56
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 31ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs ac881694c93d4c92
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/domain-seedwork:build: cache hit, replaying logs 1f8cf7daa84b450d
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 28ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@cellix/archunit-tests:build: cache hit, replaying logs bb81f6f1cbf055e3
+@cellix/local-dev:build: cache hit, replaying logs a8b63d08b23d7f99
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 31ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 26ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs 99938e4d2822484c
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 9ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@axc/domain:build: cache hit, replaying logs 2be81cc5029e70df
+@axc/domain:build: $ pnpm run lint
+@axc/domain:build: $ biome lint
+@axc/domain:build: Checked 2 files in 7ms. No fixes applied.
+@axc/domain:build: $ tsgo --build
+@cellix/serenity-framework:build: cache hit, replaying logs 246e758f0b371d2e
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 27ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@cellix/archunit-tests:test:arch: cache miss, executing dd23d2d5844863e8
+@axc/persistence:build: cache hit, replaying logs 85d943d699970e09
+@axc/persistence:build: $ pnpm run lint
+@axc/persistence:build: $ biome lint
+@axc/persistence:build: Checked 2 files in 3ms. No fixes applied.
+@axc/persistence:build: $ tsgo --build
+@cellix/mongoose-seedwork:build: cache hit, replaying logs f58ec73e66061550
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 26ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@axc/application-services:build: cache hit, replaying logs 349c5bc6a41e633b
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: Checked 3 files in 4ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@axc/rest:build: cache hit, replaying logs c12f349b61d29186
+@axc/rest:build: $ pnpm run lint
+@axc/rest:build: $ biome lint
+@axc/rest:build: Checked 2 files in 4ms. No fixes applied.
+@axc/rest:build: $ tsgo --build
+@axc-verification/archunit-tests:test:arch: cache miss, executing 60defc178f900ab8
+@cellix/archunit-tests:test:arch: $ vitest run
+@axc-verification/archunit-tests:test:arch: $ vitest run
+@cellix/archunit-tests:test:arch: 
+@cellix/archunit-tests:test:arch:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-2/outputs/axc-transfer/packages/cellix/archunit-tests
+@cellix/archunit-tests:test:arch: 
+@axc-verification/archunit-tests:test:arch: 
+@axc-verification/archunit-tests:test:arch:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-2/outputs/axc-transfer/packages/axc-verification/archunit-tests
+@axc-verification/archunit-tests:test:arch: 
+@cellix/archunit-tests:test:arch: 
+@cellix/archunit-tests:test:arch:  Test Files  3 passed (3)
+@cellix/archunit-tests:test:arch:       Tests  10 passed (10)
+@cellix/archunit-tests:test:arch:    Start at  16:38:00
+@cellix/archunit-tests:test:arch:    Duration  866ms (transform 92ms, setup 0ms, import 582ms, tests 1.06s, environment 0ms)
+@cellix/archunit-tests:test:arch: 
+@axc-verification/archunit-tests:test:arch: 
+@axc-verification/archunit-tests:test:arch:  Test Files  1 passed (1)
+@axc-verification/archunit-tests:test:arch:       Tests  9 passed (9)
+@axc-verification/archunit-tests:test:arch:    Start at  16:38:00
+@axc-verification/archunit-tests:test:arch:    Duration  1.18s (transform 104ms, setup 0ms, import 402ms, tests 631ms, environment 0ms)
+@axc-verification/archunit-tests:test:arch: 
+
+ Tasks:    17 successful, 17 total
+Cached:    15 cached, 17 total
+  Time:    2.542s 
+
