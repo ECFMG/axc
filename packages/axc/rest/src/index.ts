@@ -1,4 +1,4 @@
-import type { ApplicationServicesFactory } from '@axc/application-services';
+import { type ApplicationServicesFactory, InvalidQueryParameterError } from '@axc/application-services';
 import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functions';
 import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
 import { Hono } from 'hono';
@@ -10,6 +10,38 @@ export function createRestApp(applicationServicesFactory: ApplicationServicesFac
 		const authorization = c.req.header('Authorization');
 		const applicationServices = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
 		return c.json(applicationServices.health.getStatus());
+	});
+
+	app.get('/api/courses', async (c) => {
+		const authorization = c.req.header('Authorization');
+		const applicationServices = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
+		try {
+			return c.json(
+				applicationServices.courses.search({
+					q: c.req.query('q'),
+					modality: c.req.query('modality'),
+					status: c.req.query('status'),
+					tag: c.req.query('tag'),
+					page: c.req.query('page'),
+					pageSize: c.req.query('pageSize'),
+					sort: c.req.query('sort'),
+				}),
+			);
+		} catch (error) {
+			if (error instanceof InvalidQueryParameterError) {
+				return c.json(
+					{
+						error: {
+							code: error.code,
+							message: error.message,
+							details: error.details.map((detail) => ({ field: detail.field, message: detail.message })),
+						},
+					},
+					400,
+				);
+			}
+			throw error;
+		}
 	});
 
 	return app;

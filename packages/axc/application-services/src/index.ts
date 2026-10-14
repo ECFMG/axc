@@ -1,5 +1,11 @@
+import { listSeedCourses } from '@axc/persistence';
+import { type CoursePage, type CourseQueryInput, parseCourseQuery, searchCourses } from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
+
+export type { CoursePage, CourseQueryInput, QueryParameterDetail } from './courses.ts';
+export { InvalidQueryParameterError } from './courses.ts';
 
 export type HealthEnvironment = 'local' | 'test' | 'production';
 
@@ -18,6 +24,9 @@ export interface ApiContext {
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		search(query: CourseQueryInput): CoursePage;
 	};
 }
 
@@ -47,6 +56,11 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						environment: context.environment,
 						timestamp: new Date().toISOString(),
 					};
+				},
+			},
+			courses: {
+				search(query: CourseQueryInput): CoursePage {
+					return searchCourses(listSeedCourses(), parseCourseQuery(query));
 				},
 			},
 		});
