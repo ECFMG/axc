@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
+import { buildApplicationServicesFactory, courseCatalogSeed, resolveEnvironment } from './index.ts';
 
 describe('healthcheck', () => {
 	it('maps runtime environments', () => {
@@ -10,7 +10,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({ environment: 'test' }, courseCatalogSeed).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
