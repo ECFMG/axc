@@ -1,7 +1,8 @@
 ---
 name: orchestrator
 description: Primary AXC coding agent responsible for planning, delegation, integration, review, validation, and delivery.
-promptMode: extend
+prompt_mode: extend
+mcpInheritance: none
 skills:
   - orchestration
 ---
