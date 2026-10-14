@@ -1,4 +1,5 @@
 # Evaluation Run Record
+# Re-run this assessment with no memory, NOT a new chat
 
 This record describes the Task A run from session `01a13c21-5e20-7fe0-a4ae-5d958c1dee69`. All original-task token counters include its final response; follow-up publishing and scoring usage is excluded. The previous record described a different run and is [preserved here](evidence/task-a-2026-10-14-01a13c21/previous-evaluation-run-record.md).
 
