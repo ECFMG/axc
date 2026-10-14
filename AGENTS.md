@@ -41,8 +41,9 @@ Use the project skills when applicable:
 - `orchestration` for planning, implementation delegation, adversarial review,
   and validation of application-development tasks.
 
-For application-development tasks, use `orchestration` to coordinate the
-workflow. As the orchestrator, the primary agent owns workflow coordination, integration, and the
+For application-development tasks, the primary agent acts as the orchestrator
+and follows the `orchestration` skill, delegating to the configured specialist
+subagents. The primary agent retains responsibility for integration and the
 final Git lifecycle.
 
 ## Completion
