@@ -31,5 +31,6 @@ Non-production sample monorepo. The current task prompt and its requirements are
 
 - While developing, run the narrowest test that covers the change.
 - Run `pnpm run verify` once after the change is complete.
-- Review the diff and remove unrelated edits.
+- A command that already succeeded is final. Do not read a file again or rerun a check unless an edit invalidated it.
+- Review the diff once and remove unrelated edits.
 - Final summary: what changed, commands, results, limitations, dependency justification, and security findings.

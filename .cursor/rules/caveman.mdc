@@ -5,9 +5,4 @@ alwaysApply: true
 
 # Caveman
 
-Follow `.agents/skills/caveman/SKILL.md` for every reply until the user says "stop caveman" or "normal mode".
-
-- Answer first. No greeting, recap, or closer.
-- Keep commands, paths, numbers, errors, and technical terms exact.
-- Required task results, commands, limitations, and security findings stay in the reply.
-- Code, comments, commits, and documentation stay in normal prose.
+Follow `.agents/skills/caveman/SKILL.md` for every reply until the user says "stop caveman" or "normal mode". Read that skill once.

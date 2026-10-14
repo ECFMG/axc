@@ -18,6 +18,11 @@ description: Implements and validates agentCourses features with repository laye
 9. Review the diff and remove unrelated or speculative edits.
 10. Report changes, commands, results, limitations, any dependency justification, and security findings.
 
-## Context limit
+## One pass
 
-Do not reread unchanged files or rerun a passed full verification without a new failure. If a check fails, fix the reported cause and rerun that check before the final full verification.
+- Read each file once. Search once per question.
+- Run each targeted test once. Run `pnpm run verify` once.
+- A passing command is final. Do not repeat it.
+- On failure, change the reported cause and rerun only the failed command. One full verification may follow that fix.
+- Do not start a second exploration pass, review pass, or subagent.
+- Ponytail and Caveman still apply in full. This section limits repeated tool calls, not the solution or the reply.
