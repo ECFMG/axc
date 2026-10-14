@@ -1,0 +1,13 @@
+---
+description: Enforce agentCourses package layering and composition-root dependency injection
+globs: "{apps/api/**,packages/axc/**}"
+alwaysApply: false
+---
+
+# Package architecture
+
+- Domain cannot import application services, persistence, service-mongoose, REST, Hono, Azure Functions, or Mongoose.
+- Application services depend on domain contracts and cannot import or construct concrete persistence.
+- REST depends on application-service contracts and cannot import persistence.
+- `apps/api` is the composition root. Create concrete repositories and infrastructure there and inject them inward.
+- A legitimate package relationship uses the existing export and TypeScript project-reference pattern.

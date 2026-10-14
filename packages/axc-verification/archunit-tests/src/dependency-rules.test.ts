@@ -40,6 +40,62 @@ describe('domain import boundary', () => {
 	});
 });
 
+const concreteStorageSpecifiers = ['@axc/persistence', '@axc/service-mongoose'] as const;
+const concreteStorageRoots = [path.resolve(packageDir, '../../axc/persistence'), path.resolve(packageDir, '../../axc/service-mongoose')];
+
+describe('concrete storage boundary', () => {
+	it('application services do not import concrete storage', async () => {
+		await expectNoConcreteStorageImports(path.resolve(packageDir, '../../axc/application-services/src'));
+	});
+
+	it('rest does not import concrete storage', async () => {
+		await expectNoConcreteStorageImports(path.resolve(packageDir, '../../axc/rest/src'));
+	});
+});
+
+async function expectNoConcreteStorageImports(directory: string): Promise<void> {
+	const files = await listTypeScriptFiles(directory);
+	expect(files.length).toBeGreaterThan(0);
+	for (const file of files) {
+		const text = await readFile(file, 'utf8');
+		for (const specifier of moduleSpecifiers(text)) {
+			expect(forbiddenStorageTarget(file, specifier), `${path.relative(packageDir, file)} imports ${specifier}`).toBeUndefined();
+		}
+	}
+}
+
+function moduleSpecifiers(text: string): string[] {
+	const specifiers: string[] = [];
+	for (const match of text.matchAll(/(?:^|\n)\s*(?:import|export)\b[^'"\n]*['"]([^'"]+)['"]/g)) {
+		const specifier = match[1];
+		if (specifier !== undefined) {
+			specifiers.push(specifier);
+		}
+	}
+	for (const match of text.matchAll(/import\(\s*['"]([^'"]+)['"]\s*\)/g)) {
+		const specifier = match[1];
+		if (specifier !== undefined) {
+			specifiers.push(specifier);
+		}
+	}
+	return specifiers;
+}
+
+function forbiddenStorageTarget(file: string, specifier: string): string | undefined {
+	const packageTarget = concreteStorageSpecifiers.find((candidate) => specifier === candidate || specifier.startsWith(`${candidate}/`));
+	if (packageTarget !== undefined) {
+		return packageTarget;
+	}
+	if (!specifier.startsWith('.')) {
+		return undefined;
+	}
+	const resolved = path.resolve(path.dirname(file), specifier);
+	return concreteStorageRoots.find((root) => {
+		const relative = path.relative(root, resolved);
+		return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+	});
+}
+
 async function listTypeScriptFiles(directory: string): Promise<string[]> {
 	const entries = await readdir(directory, { withFileTypes: true });
 	const files = await Promise.all(

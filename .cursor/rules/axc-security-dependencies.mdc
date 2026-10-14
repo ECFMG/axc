@@ -1,0 +1,14 @@
+---
+description: Guard dependency additions, trust boundaries, secrets, and unrelated configuration
+globs: "{apps/api/**,packages/axc/**,package.json,pnpm-workspace.yaml}"
+alwaysApply: false
+---
+
+# Dependencies and security
+
+- Check repository code, platform APIs, and installed packages before adding a dependency.
+- Add a dependency only when it is necessary, and justify it in the final summary.
+- Validate and normalize untrusted input at the boundary.
+- Preserve established error contracts. Do not expose internal errors or secrets.
+- Do not add secrets or modify environment, production, deployment, authentication, or unrelated configuration unless the task explicitly includes it.
+- `pnpm run verify` is the required audit and security gate.
