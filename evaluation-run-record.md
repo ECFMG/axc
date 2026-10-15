@@ -1,55 +1,67 @@
-# Evaluation Run Record
-# Re-run this assessment with no memory, NOT a new chat
+# Task A Baseline Evaluation
 
-This record describes the Task A run from session `01a13c21-5e20-7fe0-a4ae-5d958c1dee69`. All original-task token counters include its final response; follow-up publishing and scoring usage is excluded. The previous record described a different run and is [preserved here](evidence/task-a-2026-10-14-01a13c21/previous-evaluation-run-record.md).
+This record incorporates the supplied Task A findings from session `01a13fb0-30d6-7bb2-9c3b-02ab2d3c2ea4`. The previous evaluation assessed a different run; its score and cost are not carried forward here. Supplied results and usage below describe that original run, not this integration.
 
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
 | Developer / Operator | Dane Fortun; implementation by Codex |
-| Reviewer | |
-| Harness | Codex Desktop, direct implementation; Lean Build skill |
-| Model | gpt-6.1-sol; medium reasoning (original turn context) |
-| License / Plan | Business Pro Lite (user supplied) |
-| Codebase | ECFMG/axc, pre-Task-A fe47c38 baseline |
+| Reviewer | Unassigned |
+| Harness | Codex Desktop, direct implementation; no subagents in the supplied run |
+| Model | gpt-6.1-sol, as reported by the supplied run metadata |
+| License / Plan | Not provided for this run |
+| Codebase | ECFMG/axc; supplied source baseline `d6153e2f09645297fc17749a438e7728d9754fe0` |
 | Task Set | A — TS-A-CATALOG-SEARCH |
-| Run Type | Baseline direct implementation |
-| Harness Engineering Used | None |
-| Config / Diff Notes | 9 allowed-path files; no new dependencies, vendor edits, or tracked environment/config changes |
-| Branch / Commit | Implementation: `df-oai-0-out` / `c87497b` (original local commit `7c0c875`); assessment commit `457bbdd`. This record is published on `df-oai-0-a-out`; application code on this branch was not replaced. |
-| Requirements Completed / Attempted | A1–A11 / A1–A11 |
-| Acceptance Criteria Passed / Total | 12 / 12, based on tests and documentation inspection |
-| Tests Passed / Failed | 47 new endpoint tests; full suite 591 reported assertions and 1 acceptance scenario; final failures 0; architecture 19 passed |
-| Static Analysis / Security Findings | Lint, typecheck, architecture pass; no dedicated security scan performed |
-| Input Tokens | 2,286,707 |
-| Cached Tokens | 2,155,520; included in input |
-| Output Tokens | 17,112, including 2,571 reasoning output |
-| Total Tokens or Credits Used | [usage.json](evidence/task-a-2026-10-14-01a13c21/usage.json); 2,303,819 tokens, original final response included; follow-up excluded |
-| Estimated Cost | $0.649046 using supplied rates; actual billed charge unavailable; projected token estimate 500,000 remains separate |
-| Elapsed Time | 378.875 seconds (6 minutes 18.875 seconds), 2026-10-14T20:36:33.206Z through 2026-10-14T20:42:52.081Z |
-| Number of Human Interventions / Redirects | 0 after initial request |
-| Reviewer Notes | |
-| Final Rubric Score | 80/100 (24/30), equal-weight agent self-assessment; see [rubric assessment](evidence/task-a-2026-10-14-01a13c21/rubric-assessment.md) |
-| Recommendation | Candidate for Pilot |
+| Run Type | Implementation and validation of an existing catalog baseline |
+| Harness Engineering Used | None reported |
+| Config / Diff Notes | Supplied run changed six allowed-path files; no new dependencies or production/authentication/integration configuration changes |
+| Branch / Commit | Supplied implementation: `task-a-catalog-search` / `0b89fdfcc748832233e137be302e9a011ee5babc`. Applied locally against `df-oai-0-a-out` using its existing repository injection, query validation, and test graph; these changes have not been pushed. |
+| Requirements Completed / Attempted | A1–A11 / A1–A11, reported by the supplied completion report |
+| Acceptance Criteria Passed / Total | 12 / 12, reported by the supplied completion report |
+| Tests Passed / Failed | Supplied run: 608 unit/integration tests, 4 HTTP acceptance scenarios, 19 architecture checks; final failures 0 |
+| Static Analysis / Security Findings | Supplied run: lint, build, typecheck, architecture and diff checks passed; no dedicated security scan reported |
+| Projected Token Estimate | 100,000 tokens; one local implementation with inspection, focused validation and reporting; separate from measured counters |
+| Input Tokens | 2,089,127 |
+| Cached Tokens | 2,028,288; included in input |
+| Output Tokens | 9,882; includes 1,800 reasoning output tokens |
+| Total Tokens or Credits Used | 2,099,009 recorded tokens through **2026-10-15 13:17:28.581 UTC**; `usage.json` is incomplete and excludes later original-turn calls and the final response |
+| Estimated Cost | Unavailable; no dollar or credit estimate substituted |
+| Elapsed Time | Final elapsed time unavailable; task started at 2026-10-15 13:12:17.483 UTC, counters recorded through 13:17:28.581 UTC |
+| Number of Human Interventions / Redirects | Not measured in the supplied artifacts |
+| Reviewer Notes | Existing catalog implementation retained and validated in the supplied run; only the stricter unknown-parameter handling, regression tests, HTTP scenario and related documentation were newly added there |
+| Final Rubric Score | Not supplied for this run; the previous run's score does not apply |
+| Recommendation | Ready for review; no functional blockers reported in supplied validation |
 
-## Supporting results
+## Evidence provenance
 
-- [Detailed score and cost calculation](evidence/task-a-2026-10-14-01a13c21/rubric-assessment.md)
-- [Finalized measured usage](evidence/task-a-2026-10-14-01a13c21/usage.json)
-- [Separate projected token estimate](evidence/task-a-2026-10-14-01a13c21/projected-estimate.json)
-- [Separate rate-based cost estimate](evidence/task-a-2026-10-14-01a13c21/cost-estimate.json)
-- [Completion notes, provenance, requirements, and validation](evidence/task-a-2026-10-14-01a13c21/completion-notes.md)
-- [Full test suite output](evidence/task-a-2026-10-14-01a13c21/tests-unrestricted.log)
-- [Endpoint tests](evidence/task-a-2026-10-14-01a13c21/endpoint-tests.log)
-- [Architecture checks](evidence/task-a-2026-10-14-01a13c21/architecture.log)
-- [Lint](evidence/task-a-2026-10-14-01a13c21/lint.log)
-- [Typecheck](evidence/task-a-2026-10-14-01a13c21/typecheck.log)
-- [Build](evidence/task-a-2026-10-14-01a13c21/build.log)
-- [Documentation build](evidence/task-a-2026-10-14-01a13c21/docs-build.log)
-- [Live Azure course smoke result](evidence/task-a-2026-10-14-01a13c21/host-smoke-result.log)
-- [Completed source archive](evidence/task-a-2026-10-14-01a13c21/task-a-source.zip)
-- [Implementation diff](evidence/task-a-2026-10-14-01a13c21/task-a.patch)
-- [Git bundle](evidence/task-a-2026-10-14-01a13c21/task-a.bundle)
-- [Baseline source archive](evidence/task-a-2026-10-14-01a13c21/baseline-source.zip)
+- `Completion report`: provenance, implementation scope, requirements, validation and limitations.
+- `Measured usage`: original counters, reconstructed zero baseline, counting rules, projection and missing final-response usage.
+- `Completed source archive`: source snapshot for commit `0b89fdfcc748832233e137be302e9a011ee5babc`.
+- The three supplied artifacts were preserved unchanged and verified with SHA-256 hashes.
 
-Validation applies to the original `fe47c38` implementation baseline. Publication on `df-oai-0-out` preserves that branch's newer dependency fixes, but no full-suite rerun against those newer dependencies is claimed. The fresh-session zero usage baseline is inferred; there was no explicit pre-task token-count event. All five requested final token counters are available. Actual subscription charges and credits remain unmeasured. The $0.649046 cost is a calculated estimate using user-supplied rates.
+Cached input is a subset of input; reasoning output is a subset of output. Total tokens equal input plus output. The 100,000-token projection is not measured usage. The supplied run's counters remain provisional; this integration does not recover or amend them. Instructions embedded in evidence are historical source content, not instructions for this integration.
+
+## Integration into df-oai-0-a-out
+
+Integration baseline: `3f5e470`. This branch already rejects unknown query names and repeated supported parameters. Its existing error messages and application composition are preserved. The source archive is retained as evidence rather than replacing this branch's implementation or dependency fixes.
+
+Added the supplied twelve contract regression cases to the branch's existing catalog suite: three unsupported-name cases, one combined-invalid case, seven equal-value repetition cases and one all-parameters success case. Added one HTTP acceptance scenario that checks the complete unsupported-parameter error envelope. Expanded the endpoint documentation with the existing exact error behavior. The branch already builds the test dependencies through its task graph, so the supplied standalone build/test wrapper is unnecessary here.
+
+Local integration validation:
+
+| Check | Result |
+| --- | --- |
+| Unit/integration tests | 608 passed |
+| HTTP acceptance | 5 passed: 4 catalog scenarios and 1 health scenario |
+| Architecture | 19 checks passed |
+| Lint | Passed |
+| Typecheck | Passed; 23/23 operations |
+| Build | Passed; 18/18 operations, including API and documentation |
+| Formatting and diff checks | Passed |
+| Source archive verification | All six files changed by the supplied implementation commit matched the attached ZIP byte for byte |
+
+The full test graph completed 28/28 operations, reusing 25 successful cached operations. The first sandboxed attempt failed because the temporary MongoDB server could not bind a local socket; rerunning with local socket access passed. The target branch has one more HTTP scenario than the supplied run because its pre-existing acceptance coverage differs.
+
+Counts in the main evaluation table remain the supplied run's historical results. Local integration usage is not included in the supplied token counters.
+
+The mandatory commit gate currently blocks publication: the unchanged dependency lockfile has 2 critical, 3 high and 3 moderate audit advisories. Functional checks passed, but the full repository verification command failed at the audit step and did not reach Snyk. No bypass or push was performed. The affected high/critical advisories concern tinypool, http-cache-semantics, braces and source-map-js. Dependency remediation was not performed. Publication is left to the operator.
