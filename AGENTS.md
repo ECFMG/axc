@@ -7,12 +7,21 @@ General conventions for working in this repository.
 - Do not add or change build, cache, or tooling config (e.g. `turbo.json`, tsconfig bases) unless the change cannot work without it. If you notice a pre-existing config gap, mention it in your summary instead of fixing it.
 - When adding entries to existing JSON or config (e.g. `package.json`, tsconfig `references`), keep the existing formatting of lines you are not changing.
 
+## Git
+- Work on the current branch and leave changes uncommitted. Do not create or switch branches, commit, or push; the operator handles git. If a task lists a branch as a deliverable, the current branch is that branch.
+
+## Plan before coding
+- Read the task and every spec file it references in full before editing.
+- List each requirement and acceptance criterion, and map it to the file that will implement it and the test that will prove it. Resolve ambiguities from the spec; ask only if the spec cannot answer them.
+- Find the closest existing feature in the repo and follow its structure, naming, wiring, and test setup.
+
 ## Architecture
 - This repo follows CellixJS layering: `packages/axc/domain` → `persistence` / `service-mongoose` → `application-services` → `rest` → `apps/api` (composition root). Dependencies point inward only.
 - `packages/cellix/**` is vendored from CellixJS/cellixjs. Never modify it.
 - Before adding new abstractions, look for existing ones in `packages/cellix` and `packages/axc/domain` (e.g. repository contracts, seedwork) and build on them.
 - Each concept has one source of truth. Import shared types and constants from the layer that owns them rather than redefining them.
 - HTTP concerns (request parsing, status codes, response/error bodies) belong in `rest`. Application services take typed inputs.
+- Dependencies a feature needs (repositories, catalogs, clients) are required parameters wired in the composition root. Do not make them optional or fall back to a silent default such as an empty implementation.
 - Put new implementations and data in their own modules and export them from `index.ts`. Do not move existing code out of `index.ts` unless the task requires it.
 
 ## Tests
@@ -38,6 +47,15 @@ General conventions for working in this repository.
 These rules apply only to what you write to the user. They do not limit how much you read, explore, or test.
 - Keep progress updates to one short line. Do not narrate plans or restate code you are about to write.
 - Keep the final summary concise: include what the task asks you to report, without repeating file contents or full command output.
+- End the summary with a compact table mapping each requirement and acceptance criterion to the test or file that covers it.
+
+## Self-check
+Before the review, check your diff for:
+- Every requirement and acceptance criterion from your plan implemented and tested.
+- Optional dependencies or silent fallbacks; duplicated types or constants.
+- Changes to unrelated lines, including formatting; new entries placed out of the existing order (e.g. alphabetical dependencies).
+- Leftover debug code, TODOs, or unused exports.
+- Documentation updated where the task or spec requires it.
 
 ## Adversarial review
 Before final verification, get an independent review of your change. Use a sub-agent, not self-review.
