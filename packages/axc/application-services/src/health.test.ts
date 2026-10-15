@@ -1,3 +1,4 @@
+import type { EnrollmentRequest } from '@axc/domain';
 import { describe, expect, it } from 'vitest';
 import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
 
@@ -10,7 +11,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({ environment: 'test' }, emptyCatalog()).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
@@ -20,3 +21,17 @@ describe('healthcheck', () => {
 		expect(status.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
 	});
 });
+
+function emptyCatalog() {
+	return {
+		courses: {
+			list: () => Promise.resolve([]),
+			getById: () => Promise.resolve(undefined),
+		},
+		enrollmentRequests: {
+			list: () => Promise.resolve([]),
+			getById: () => Promise.resolve(undefined),
+			save: (item: EnrollmentRequest) => Promise.resolve(item),
+		},
+	};
+}
