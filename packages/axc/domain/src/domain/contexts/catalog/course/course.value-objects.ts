@@ -1,0 +1,10 @@
+export const MODALITIES = ['online', 'in-person', 'hybrid'] as const;
+export type Modality = (typeof MODALITIES)[number];
+export const STATUSES = ['draft', 'active', 'retired'] as const;
+export type Status = (typeof STATUSES)[number];
+export const SORT_FIELDS = ['title', 'createdAt', 'updatedAt'] as const;
+export type SortField = (typeof SORT_FIELDS)[number];
+export const DEFAULT_PAGE = 1;
+export const DEFAULT_PAGE_SIZE = 10;
+export const MAX_PAGE_SIZE = 50;
+export const DEFAULT_SORT: SortField = 'title';
