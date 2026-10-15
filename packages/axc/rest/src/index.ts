@@ -12,6 +12,14 @@ export function createRestApp(applicationServicesFactory: ApplicationServicesFac
 		return c.json(applicationServices.health.getStatus());
 	});
 
+	app.get('/api/courses', async (c) => {
+		const authorization = c.req.header('Authorization');
+		const applicationServices = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
+		const result = applicationServices.courses.search(new URL(c.req.url).searchParams);
+		if (result.status === 400) return c.json(result.body, 400);
+		return c.json(result.body, 200);
+	});
+
 	return app;
 }
 
