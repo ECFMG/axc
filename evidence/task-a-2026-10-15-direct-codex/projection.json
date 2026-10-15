@@ -1,0 +1,8 @@
+{
+  "total_tokens": 3018000,
+  "output_tokens": 18000,
+  "assumptions": "Approximately 40 model calls averaging 75000 input tokens including cached context; 18000 output tokens. Projection recorded during initial inspection, before source extraction or implementation.",
+  "recorded_at": "2026-10-15T15:04:22.774289+00:00",
+  "initial_rounded_total_tokens": 3000000,
+  "arithmetic": "40 \u00d7 75,000 input + 18,000 output = 3,018,000 total; initial estimate rounded to about 3 million."
+}

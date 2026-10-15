@@ -1,0 +1,151 @@
+{
+  "all_required_final_checks_passed": true,
+  "acceptance_criteria_passed": 12,
+  "acceptance_criteria_total": 12,
+  "new_test_cases": 67,
+  "unit_runtime_and_type_cases_in_full_suite": 605,
+  "api_node_test_cases": 6,
+  "existing_acceptance_scenarios": 1,
+  "architecture_log": "validation/05-test:arch.log",
+  "independent_hono_checks": 29,
+  "independent_host_checks": 29,
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 9.1,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/01-test.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.57,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/02-lint.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "build",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 10.41,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/03-build.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.79,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/04-typecheck.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "run",
+        "test:arch",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 2.57,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/05-test:arch.log"
+    },
+    {
+      "command": [
+        "node",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/openai-harness-v7.12.02/course_acceptance.mjs"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.13,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/06-courses-hono.log"
+    },
+    {
+      "command": [
+        "node",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/openai-harness-v7.12.02/course_acceptance.mjs",
+        "--host"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 0.08,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/07-courses-host.log"
+    },
+    {
+      "command": [
+        "python3",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/openai-harness-v7.12.02/task_a_gates.py",
+        "--repo",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/axc",
+        "--base",
+        "fe47c38",
+        "--out",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/submitted"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.59,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/08-submitted.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 1,
+      "elapsed_seconds": 3.04,
+      "log": "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/09-test-retry.log"
+    },
+    {
+      "command": [
+        "node",
+        "course_acceptance.mjs",
+        "--host"
+      ],
+      "exit_code": 0,
+      "log": "validation/10-courses-host-retry.log",
+      "notes": "Retry with localhost permissions; 29/29 checks pass."
+    },
+    {
+      "command": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "log": "validation/11-test-final.log",
+      "notes": "Final full suite with localhost permissions; 26/26 Turbo tasks pass; 24 cached successful tasks."
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "biome",
+        "check",
+        "<changed source files>"
+      ],
+      "exit_code": 0,
+      "log": "validation/12-format-check.log"
+    }
+  ],
+  "review": {
+    "role": "Cavecrew reviewer",
+    "findings": 0
+  },
+  "resolved_failures": [
+    "Initial adapter integration test incorrectly parsed an asynchronous response stream; corrected test consumer.",
+    "Sandbox denied localhost binds for host/MongoDB integration; successful final runs used approved localhost permissions."
+  ],
+  "warnings": "Existing Serenity/Node deprecation warning remains; all checks pass. No security scanner was run; no security-clean claim is made."
+}

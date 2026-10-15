@@ -1,0 +1,32 @@
+{
+  "version": "v7.12.02",
+  "harness_base": "v7",
+  "comparison_reference": "no_harness",
+  "cumulative_iterations": [
+    "v7.10",
+    "v7.11",
+    "v7.12",
+    "v7.12.01",
+    "v7.12.02"
+  ],
+  "new_changes": [
+    "Guarded next-two-file actions with validation before any writes; legacy single-file actions retained",
+    "Paged source inventory and compact plan state in stateless per-target requests",
+    "Focused build/unit repair checks; independent endpoint oracle runs in unchanged mandatory final suite",
+    "Single finish command for optional execution, full final validation, reporting, review brief and evidence archive",
+    "Fresh-context bounded review packet with explicit truncation; no reviewer spawned or review success inferred",
+    "Per-call forecasts, actual-usage overrun status, duplicate-counter detection, original-turn recovery and separate subagent deltas",
+    "Explicit native-host preparation and focused host-context packets; no-harness controls remain separate"
+  ],
+  "fixed_inputs": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "live_task_a_savings_verified": false,
+  "live_adapter_checks_passed": false,
+  "ollama_compatibility_version": "0.40.0",
+  "parent_version": "v7.12.01",
+  "parent_source_archive_sha256": "399ad1ab6b0fe4b7790f5ef3957100b95509ad2eee7197cb3f81ffca1bc7b362",
+  "inherited_parent_live_adapter_checks_passed": false
+}

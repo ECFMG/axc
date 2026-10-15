@@ -1,0 +1,15 @@
+$ vitest run --silent --reporter=dot --reporter=json --outputFile=/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/submitted/tests-01.json
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+
+ RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/axc/packages/axc/application-services
+
+·································································
+
+ Test Files  4 passed (4)
+      Tests  65 passed (65)
+Type Errors  no errors
+   Start at  11:08:04
+   Duration  334ms (transform 56ms, setup 0ms, import 77ms, tests 14ms, environment 0ms, typecheck 167ms)
+
+JSON report written to /Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/validation/submitted/tests-01.json

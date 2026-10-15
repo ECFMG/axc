@@ -1,0 +1,216 @@
+{
+  "session_id": "01a14015-47d3-7ae1-a349-2262998a9c5b",
+  "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+  "scope": "Current edited task turn: inspection, planning, implementation, validation, reporting and final response; excludes prior superseded turn and later follow-ups.",
+  "start": {
+    "timestamp": "2026-10-15T15:03:52.176Z",
+    "cumulative_counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "basis": "Fresh rollout: no preceding token_count; first cumulative equals first last_token_usage. Zero established from fresh counter series."
+  },
+  "projection": {
+    "total_tokens": 3018000,
+    "output_tokens": 18000,
+    "assumptions": "Approximately 40 model calls averaging 75000 input tokens including cached context; 18000 output tokens. Projection recorded during initial inspection, before source extraction or implementation.",
+    "recorded_at": "2026-10-15T15:04:22.774289+00:00",
+    "initial_rounded_total_tokens": 3000000,
+    "arithmetic": "40 \u00d7 75,000 input + 18,000 output = 3,018,000 total; initial estimate rounded to about 3 million."
+  },
+  "status": "complete",
+  "missing_usage": [],
+  "subagents": [
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "start_timestamp": "2026-10-15T15:07:39.380Z",
+      "baseline_basis": "fresh rollout counter origin; no preceding snapshot; zero inferred",
+      "starting_cumulative_counters": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 371965,
+        "cached_input_tokens": 330368,
+        "output_tokens": 1174,
+        "reasoning_output_tokens": 87,
+        "total_tokens": 373139
+      },
+      "recorded_through": "2026-10-15T15:08:15.757Z",
+      "task_complete_timestamp": "2026-10-15T15:08:15.846Z",
+      "measured_usage": {
+        "input_tokens": 371965,
+        "cached_input_tokens": 330368,
+        "output_tokens": 1174,
+        "reasoning_output_tokens": 87,
+        "total_tokens": 373139
+      },
+      "complete": true,
+      "final_response_accounted": true,
+      "calculation": "ending cumulative counters minus starting cumulative counters; snapshots are not summed",
+      "role": "Cavecrew read-only code reviewer"
+    }
+  ],
+  "task_id": "TS-A-CATALOG-SEARCH",
+  "primary_agent": {
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+    "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+    "start_timestamp": "2026-10-15T15:03:52.176Z",
+    "baseline_basis": "fresh rollout counter origin; no preceding snapshot; zero inferred",
+    "starting_cumulative_counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "ending_cumulative_counters": {
+      "input_tokens": 2504708,
+      "cached_input_tokens": 2415872,
+      "output_tokens": 19505,
+      "reasoning_output_tokens": 3276,
+      "total_tokens": 2524213
+    },
+    "recorded_through": "2026-10-15T15:11:55.356Z",
+    "task_complete_timestamp": "2026-10-15T15:11:55.360Z",
+    "measured_usage": {
+      "input_tokens": 2504708,
+      "cached_input_tokens": 2415872,
+      "output_tokens": 19505,
+      "reasoning_output_tokens": 3276,
+      "total_tokens": 2524213
+    },
+    "complete": true,
+    "final_response_accounted": true,
+    "calculation": "ending cumulative counters minus starting cumulative counters; snapshots are not summed"
+  },
+  "auxiliary_agents": [
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401a-3b02-7702-9f0e-4448c3698079",
+      "start_timestamp": "2026-10-15T15:07:03.300Z",
+      "baseline_basis": "fresh rollout counter origin; no preceding snapshot; zero inferred",
+      "starting_cumulative_counters": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "recorded_through": "2026-10-15T15:07:06.737Z",
+      "task_complete_timestamp": "2026-10-15T15:07:06.741Z",
+      "measured_usage": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "complete": true,
+      "final_response_accounted": true,
+      "calculation": "ending cumulative counters minus starting cumulative counters; snapshots are not summed",
+      "role": "Automatic permission review; system-created auxiliary agent"
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401b-50ab-7581-a96f-1c417f4520c7",
+      "start_timestamp": "2026-10-15T15:08:14.381Z",
+      "baseline_basis": "preceding cumulative snapshot",
+      "starting_cumulative_counters": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 47825,
+        "cached_input_tokens": 25088,
+        "output_tokens": 275,
+        "reasoning_output_tokens": 150,
+        "total_tokens": 48100
+      },
+      "recorded_through": "2026-10-15T15:08:16.586Z",
+      "task_complete_timestamp": "2026-10-15T15:08:16.589Z",
+      "measured_usage": {
+        "input_tokens": 27581,
+        "cached_input_tokens": 19200,
+        "output_tokens": 116,
+        "reasoning_output_tokens": 52,
+        "total_tokens": 27697
+      },
+      "complete": true,
+      "final_response_accounted": true,
+      "calculation": "ending cumulative counters minus starting cumulative counters; snapshots are not summed",
+      "role": "Automatic permission review; system-created auxiliary agent"
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401b-8426-7782-9b9b-c40ad50fc053",
+      "start_timestamp": "2026-10-15T15:08:27.562Z",
+      "baseline_basis": "preceding cumulative snapshot",
+      "starting_cumulative_counters": {
+        "input_tokens": 47825,
+        "cached_input_tokens": 25088,
+        "output_tokens": 275,
+        "reasoning_output_tokens": 150,
+        "total_tokens": 48100
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 77632,
+        "cached_input_tokens": 52480,
+        "output_tokens": 380,
+        "reasoning_output_tokens": 191,
+        "total_tokens": 78012
+      },
+      "recorded_through": "2026-10-15T15:08:29.684Z",
+      "task_complete_timestamp": "2026-10-15T15:08:29.687Z",
+      "measured_usage": {
+        "input_tokens": 29807,
+        "cached_input_tokens": 27392,
+        "output_tokens": 105,
+        "reasoning_output_tokens": 41,
+        "total_tokens": 29912
+      },
+      "complete": true,
+      "final_response_accounted": true,
+      "calculation": "ending cumulative counters minus starting cumulative counters; snapshots are not summed",
+      "role": "Automatic permission review; system-created auxiliary agent"
+    }
+  ],
+  "aggregate_recorded_usage": {
+    "input_tokens": 2954305,
+    "cached_input_tokens": 2798720,
+    "output_tokens": 21059,
+    "reasoning_output_tokens": 3554,
+    "total_tokens": 2975364
+  },
+  "accounting_rules": "Cached input is included in input. Reasoning output is included in output. Total equals input plus output. Disjoint agent/turn deltas are added once.",
+  "final_response_accounted": true,
+  "recorded_through": "2026-10-15T15:11:55.356Z",
+  "measurement_captured_at": "2026-10-15T15:14:01.844487+00:00",
+  "excluded_usage": [
+    "Superseded original turn 01a14015-8ae8-75f1-ab6a-99e48197b34d and its checkout preparation",
+    "All turns following the original edited task turn, including usage-recovery follow-up conversations"
+  ],
+  "cost": {
+    "measured_dollars": null,
+    "reason": "No task-specific billed dollar counters available; no price estimate substituted."
+  },
+  "recovery": "Run outputs/recover_usage.py on the next user message before answering. It stops at original task_complete and excludes follow-up token events."
+}

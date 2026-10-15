@@ -1,0 +1,29 @@
+{
+  "publication_branch": "df-oai-3-out",
+  "publication_base": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "original_task_base": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "implementation_commit": "671f8a551d69014ba842523a9868a95020b6a2a0",
+  "implementation_files": [
+    "apps/api/package.json",
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "apps/docs/docs/courses.md",
+    "apps/docs/sidebars.ts",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.test.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "implementation_content_identical_to_original": true,
+  "df-oai-3": "Remains at clean baseline 9c890d75784ea7a18fe0c192cfacfdcdaa1ef111; not pushed or modified by publication.",
+  "validation": "validation-results.json",
+  "original_usage": "../task-a-2026-10-15-direct-codex/usage.json",
+  "usage_scope": "Original task remains frozen and complete; branch creation, transfer, publication checks and commits are excluded.",
+  "reference_structure": [
+    "https://github.com/ECFMG/axc/tree/df-oai-1-a-out",
+    "https://github.com/ECFMG/axc/blob/df-oai-2-out/evaluation-run-record.md"
+  ],
+  "original_checkout_preserved": true
+}

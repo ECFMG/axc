@@ -1,0 +1,31 @@
+{
+  "repository": "git@github.com:ECFMG/axc.git",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "branch": "harness/round-1",
+  "commits_created": 0,
+  "changed_files": [
+    "apps/api/package.json",
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "apps/docs/docs/courses.md",
+    "apps/docs/sidebars.ts",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.test.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "archive": {
+    "path": "/Users/dfortun/Downloads/openai-harness-v7.12.02.zip",
+    "contents": "Evaluation harness, not AXC source",
+    "sha256": "b6c6c0ae822e16caf0c68d427deaffd8afdbecaa5762447b9c493ddcd80e65bf",
+    "manifest_files_verified": 122,
+    "checksum_mismatches": 0
+  },
+  "source_basis": "Existing workspace AXC checkout from superseded turn. Changes implemented during current edited task turn.",
+  "write_boundary_passed": true,
+  "patch_reverse_apply_check_passed": true,
+  "protected_tracked_paths_unchanged": true,
+  "source_files_packaged": 395
+}

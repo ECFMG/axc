@@ -1,0 +1,47 @@
+Task A completed: Course Catalog Search Endpoint
+
+Deliverables
+- task-a-source.zip: complete source snapshot, without dependencies or Git history.
+- axc/: unpacked source snapshot.
+- task-a.patch: all 11 changed/new files, applicable to base fe47c38d32376c5e8bcd1d67838160064fd5de99.
+- axc/apps/docs/docs/courses.md: API documentation, linked in documentation navigation.
+- validation-results.json and validation/: command outcomes and full logs.
+- usage.json: authoritative recorded token counters, projections and measurement boundaries.
+- recover_usage.py: updates the original task's final counters without counting follow-up turns.
+- evaluation-run-record.json and provenance.json: evaluation metadata and source/archive provenance.
+
+Requirements satisfied
+A1: GET /api/courses is registered in Hono and the Azure Functions composition root.
+A2–A6: AND filtering; case-insensitive keyword search across title, summary and tags; modality/status enums; exact case-insensitive tag filter.
+A7: page defaults to 1; pageSize defaults to 10 and accepts 1–50; filtered metadata and empty out-of-range pages.
+A8: ascending title, createdAt and updatedAt sorts; deterministic ID tie-breaker; default title sort.
+A9: HTTP 400 with specified error envelope and field details. Raw numeric, duplicate and unknown parameters are validated.
+A10: 61 new application-service cases and 6 new Hono/adapter integration cases; two positive filter combinations, pagination, all sorts, validation and no-match cases.
+A11: endpoint path, all parameters/defaults, model, success and error examples documented.
+Course contract includes all eight required fields. Twelve fixed fixtures cover every modality/status with mixed tags. All twelve acceptance criteria pass.
+
+Implementation follows existing composition-root/application-services/REST boundaries. Local fixture search needs no database, new dependency or external service. Responses copy fixture records/tags to preserve request isolation. No unrelated refactoring was justified by the code-simplification pass. Existing health behavior and authorization-header forwarding remain covered.
+
+Validation
+PASS pnpm test --env-mode=loose: 26/26 Turbo tasks, including 605 Vitest runtime/type cases, 6 Node API tests and the existing health acceptance scenario. 24 tasks reused successful Turbo results from this task's earlier run; MongoDB and acceptance reran successfully with localhost permissions.
+PASS pnpm run lint.
+PASS pnpm run build --env-mode=loose: API bundle/deployment package and Docusaurus site built.
+PASS pnpm run typecheck --env-mode=loose.
+PASS pnpm run test:arch --env-mode=loose: 19 architecture cases, 15/15 Turbo tasks.
+PASS independent course_acceptance.mjs: 29/29 Hono checks.
+PASS independent course_acceptance.mjs --host: 29/29 checks against real local Azure Functions host.
+PASS task_a_gates.py: submitted tests execute, no skips or undiscovered cases; documentation evidence passes.
+PASS explicit Biome check on changed source and manifests; git diff --check; patch reverse-apply check; allowed write boundary.
+PASS Cavecrew read-only review: no findings.
+
+Initial failures were resolved: adapter test now consumes the asynchronous response stream; sandbox localhost restrictions were resolved through approved test execution. Existing Node/Serenity deprecation warning remains. No security scan was run.
+
+Source provenance and limits
+The attached ZIP contains the evaluation harness, not AXC source. All 122 manifest hashes verify. Implementation uses the existing workspace ECFMG/axc checkout at fe47c38. No commits, pushes or GitHub changes were made. The existing branch remains harness/round-1. No tracked authentication, environment, production, deployment or Cellix source changes are included.
+No implementation or validation blockers remain. The catalog is intentionally fixed, read-only and in memory, as allowed by the specification.
+
+Projection and measured usage
+Projection: 3,018,000 total tokens, assuming 40 calls averaging 75,000 input tokens plus 18,000 output tokens. This was recorded during initial inspection and is not measured usage.
+Recorded usage is in usage.json. Main-agent, code-review-agent and automatic approval-review deltas are separate; aggregate adds disjoint deltas once. Cached input is already included in input. Reasoning output is already included in output. No cumulative snapshots are summed.
+The edited task turn starts at 2026-10-15T15:03:52.176Z. Fresh-log zero baseline is inferred from the counter origin; no preceding cumulative snapshot exists. The superseded prior turn and all later follow-up turns are excluded.
+Accounting recovered and complete through 2026-10-15T15:11:55.356Z, including the original final response. Aggregate measured input: 2954305; cached input: 2798720; output: 21059; reasoning output: 3554; total: 2975364. Recovery excludes follow-up turn usage. No task-specific dollar counters are available.

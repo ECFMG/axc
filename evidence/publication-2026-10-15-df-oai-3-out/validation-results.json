@@ -1,0 +1,103 @@
+{
+  "purpose": "Publication validation on newer origin/main baseline. Original Task A measurements remain frozen.",
+  "base": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "commands": [
+    {
+      "name": "test",
+      "command": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "seconds": 25.168,
+      "log": "test.log"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "pnpm",
+        "run",
+        "lint"
+      ],
+      "exit_code": 0,
+      "seconds": 0.513,
+      "log": "lint.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "pnpm",
+        "run",
+        "build",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "seconds": 10.306,
+      "log": "build.log"
+    },
+    {
+      "name": "typecheck",
+      "command": [
+        "pnpm",
+        "run",
+        "typecheck",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "seconds": 1.852,
+      "log": "typecheck.log"
+    },
+    {
+      "name": "architecture",
+      "command": [
+        "pnpm",
+        "run",
+        "test:arch",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "seconds": 2.667,
+      "log": "architecture.log"
+    },
+    {
+      "name": "oracle-hono",
+      "command": [
+        "node",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/publish-axc/evidence/harness-v7.12.02/source/course_acceptance.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.133,
+      "log": "oracle-hono.log"
+    },
+    {
+      "name": "oracle-host",
+      "command": [
+        "node",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/publish-axc/evidence/harness-v7.12.02/source/course_acceptance.mjs",
+        "--host"
+      ],
+      "exit_code": 0,
+      "seconds": 4.356,
+      "log": "oracle-host.log"
+    },
+    {
+      "name": "submitted",
+      "command": [
+        "python3",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/publish-axc/evidence/harness-v7.12.02/source/task_a_gates.py",
+        "--repo",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/work/publish-axc",
+        "--base",
+        "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+        "--out",
+        "/Users/dfortun/Documents/Codex/2026-10-15/read-both-task-a-documents-and/outputs/publication-submitted"
+      ],
+      "exit_code": 0,
+      "seconds": 1.579,
+      "log": "submitted.log"
+    }
+  ],
+  "complete": true,
+  "passed": true
+}

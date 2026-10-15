@@ -1,0 +1,819 @@
+{
+  "note": "Raw token counters only. Snapshots are cumulative and must not be summed. Conversation content and rate-limit data omitted.",
+  "events": [
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:00.456Z",
+      "ordinal": 25,
+      "total_token_usage": {
+        "input_tokens": 46089,
+        "cached_input_tokens": 36096,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 119,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46208
+      },
+      "last_token_usage": {
+        "input_tokens": 46089,
+        "cached_input_tokens": 36096,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 119,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46208
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:09.339Z",
+      "ordinal": 32,
+      "total_token_usage": {
+        "input_tokens": 93979,
+        "cached_input_tokens": 82048,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 454,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 94433
+      },
+      "last_token_usage": {
+        "input_tokens": 47890,
+        "cached_input_tokens": 45952,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 335,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 48225
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:22.972Z",
+      "ordinal": 40,
+      "total_token_usage": {
+        "input_tokens": 152617,
+        "cached_input_tokens": 129792,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 968,
+        "reasoning_output_tokens": 34,
+        "total_tokens": 153585
+      },
+      "last_token_usage": {
+        "input_tokens": 58638,
+        "cached_input_tokens": 47744,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 514,
+        "reasoning_output_tokens": 34,
+        "total_tokens": 59152
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:30.841Z",
+      "ordinal": 48,
+      "total_token_usage": {
+        "input_tokens": 215255,
+        "cached_input_tokens": 188288,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1169,
+        "reasoning_output_tokens": 50,
+        "total_tokens": 216424
+      },
+      "last_token_usage": {
+        "input_tokens": 62638,
+        "cached_input_tokens": 58496,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 201,
+        "reasoning_output_tokens": 16,
+        "total_tokens": 62839
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:38.243Z",
+      "ordinal": 56,
+      "total_token_usage": {
+        "input_tokens": 282655,
+        "cached_input_tokens": 250752,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1426,
+        "reasoning_output_tokens": 75,
+        "total_tokens": 284081
+      },
+      "last_token_usage": {
+        "input_tokens": 67400,
+        "cached_input_tokens": 62464,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 257,
+        "reasoning_output_tokens": 25,
+        "total_tokens": 67657
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:46.992Z",
+      "ordinal": 66,
+      "total_token_usage": {
+        "input_tokens": 356061,
+        "cached_input_tokens": 317952,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1746,
+        "reasoning_output_tokens": 145,
+        "total_tokens": 357807
+      },
+      "last_token_usage": {
+        "input_tokens": 73406,
+        "cached_input_tokens": 67200,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 320,
+        "reasoning_output_tokens": 70,
+        "total_tokens": 73726
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:04:55.752Z",
+      "ordinal": 74,
+      "total_token_usage": {
+        "input_tokens": 436384,
+        "cached_input_tokens": 391168,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1948,
+        "reasoning_output_tokens": 173,
+        "total_tokens": 438332
+      },
+      "last_token_usage": {
+        "input_tokens": 80323,
+        "cached_input_tokens": 73216,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 202,
+        "reasoning_output_tokens": 28,
+        "total_tokens": 80525
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:05:10.070Z",
+      "ordinal": 81,
+      "total_token_usage": {
+        "input_tokens": 522188,
+        "cached_input_tokens": 471296,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2450,
+        "reasoning_output_tokens": 538,
+        "total_tokens": 524638
+      },
+      "last_token_usage": {
+        "input_tokens": 85804,
+        "cached_input_tokens": 80128,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 502,
+        "reasoning_output_tokens": 365,
+        "total_tokens": 86306
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:05:51.194Z",
+      "ordinal": 86,
+      "total_token_usage": {
+        "input_tokens": 609665,
+        "cached_input_tokens": 556928,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 4558,
+        "reasoning_output_tokens": 538,
+        "total_tokens": 614223
+      },
+      "last_token_usage": {
+        "input_tokens": 87477,
+        "cached_input_tokens": 85632,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2108,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 89585
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:08.061Z",
+      "ordinal": 96,
+      "total_token_usage": {
+        "input_tokens": 700710,
+        "cached_input_tokens": 644224,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8538,
+        "reasoning_output_tokens": 549,
+        "total_tokens": 709248
+      },
+      "last_token_usage": {
+        "input_tokens": 91045,
+        "cached_input_tokens": 87296,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3980,
+        "reasoning_output_tokens": 11,
+        "total_tokens": 95025
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:16.709Z",
+      "ordinal": 104,
+      "total_token_usage": {
+        "input_tokens": 795888,
+        "cached_input_tokens": 735104,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8746,
+        "reasoning_output_tokens": 617,
+        "total_tokens": 804634
+      },
+      "last_token_usage": {
+        "input_tokens": 95178,
+        "cached_input_tokens": 90880,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 208,
+        "reasoning_output_tokens": 68,
+        "total_tokens": 95386
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:26.289Z",
+      "ordinal": 114,
+      "total_token_usage": {
+        "input_tokens": 891886,
+        "cached_input_tokens": 830080,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9032,
+        "reasoning_output_tokens": 659,
+        "total_tokens": 900918
+      },
+      "last_token_usage": {
+        "input_tokens": 95998,
+        "cached_input_tokens": 94976,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 286,
+        "reasoning_output_tokens": 42,
+        "total_tokens": 96284
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:34.203Z",
+      "ordinal": 118,
+      "total_token_usage": {
+        "input_tokens": 988442,
+        "cached_input_tokens": 925952,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9347,
+        "reasoning_output_tokens": 659,
+        "total_tokens": 997789
+      },
+      "last_token_usage": {
+        "input_tokens": 96556,
+        "cached_input_tokens": 95872,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 315,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 96871
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:39.380Z",
+      "ordinal": 125,
+      "total_token_usage": {
+        "input_tokens": 1085369,
+        "cached_input_tokens": 1022336,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9521,
+        "reasoning_output_tokens": 671,
+        "total_tokens": 1094890
+      },
+      "last_token_usage": {
+        "input_tokens": 96927,
+        "cached_input_tokens": 96384,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 174,
+        "reasoning_output_tokens": 12,
+        "total_tokens": 97101
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:43.130Z",
+      "ordinal": 131,
+      "total_token_usage": {
+        "input_tokens": 1182491,
+        "cached_input_tokens": 1119104,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9636,
+        "reasoning_output_tokens": 671,
+        "total_tokens": 1192127
+      },
+      "last_token_usage": {
+        "input_tokens": 97122,
+        "cached_input_tokens": 96768,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 115,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 97237
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:07:52.340Z",
+      "ordinal": 139,
+      "total_token_usage": {
+        "input_tokens": 1282910,
+        "cached_input_tokens": 1216000,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9979,
+        "reasoning_output_tokens": 715,
+        "total_tokens": 1292889
+      },
+      "last_token_usage": {
+        "input_tokens": 100419,
+        "cached_input_tokens": 96896,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 343,
+        "reasoning_output_tokens": 44,
+        "total_tokens": 100762
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:08:04.338Z",
+      "ordinal": 146,
+      "total_token_usage": {
+        "input_tokens": 1384674,
+        "cached_input_tokens": 1316224,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 10398,
+        "reasoning_output_tokens": 777,
+        "total_tokens": 1395072
+      },
+      "last_token_usage": {
+        "input_tokens": 101764,
+        "cached_input_tokens": 100224,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 419,
+        "reasoning_output_tokens": 62,
+        "total_tokens": 102183
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:08:17.751Z",
+      "ordinal": 157,
+      "total_token_usage": {
+        "input_tokens": 1487542,
+        "cached_input_tokens": 1417856,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 10778,
+        "reasoning_output_tokens": 811,
+        "total_tokens": 1498320
+      },
+      "last_token_usage": {
+        "input_tokens": 102868,
+        "cached_input_tokens": 101632,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 380,
+        "reasoning_output_tokens": 34,
+        "total_tokens": 103248
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:08:30.954Z",
+      "ordinal": 167,
+      "total_token_usage": {
+        "input_tokens": 1592773,
+        "cached_input_tokens": 1520512,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 11074,
+        "reasoning_output_tokens": 849,
+        "total_tokens": 1603847
+      },
+      "last_token_usage": {
+        "input_tokens": 105231,
+        "cached_input_tokens": 102656,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 296,
+        "reasoning_output_tokens": 38,
+        "total_tokens": 105527
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:08:50.356Z",
+      "ordinal": 175,
+      "total_token_usage": {
+        "input_tokens": 1699211,
+        "cached_input_tokens": 1625600,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 11755,
+        "reasoning_output_tokens": 1276,
+        "total_tokens": 1710966
+      },
+      "last_token_usage": {
+        "input_tokens": 106438,
+        "cached_input_tokens": 105088,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 681,
+        "reasoning_output_tokens": 427,
+        "total_tokens": 107119
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:09:04.578Z",
+      "ordinal": 184,
+      "total_token_usage": {
+        "input_tokens": 1808331,
+        "cached_input_tokens": 1731840,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 12332,
+        "reasoning_output_tokens": 1438,
+        "total_tokens": 1820663
+      },
+      "last_token_usage": {
+        "input_tokens": 109120,
+        "cached_input_tokens": 106240,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 577,
+        "reasoning_output_tokens": 162,
+        "total_tokens": 109697
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:09:38.145Z",
+      "ordinal": 192,
+      "total_token_usage": {
+        "input_tokens": 1919754,
+        "cached_input_tokens": 1840768,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 13671,
+        "reasoning_output_tokens": 1954,
+        "total_tokens": 1933425
+      },
+      "last_token_usage": {
+        "input_tokens": 111423,
+        "cached_input_tokens": 108928,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1339,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 112762
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:10:21.868Z",
+      "ordinal": 199,
+      "total_token_usage": {
+        "input_tokens": 2033010,
+        "cached_input_tokens": 1952000,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 15678,
+        "reasoning_output_tokens": 2323,
+        "total_tokens": 2048688
+      },
+      "last_token_usage": {
+        "input_tokens": 113256,
+        "cached_input_tokens": 111232,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2007,
+        "reasoning_output_tokens": 369,
+        "total_tokens": 115263
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:10:41.545Z",
+      "ordinal": 206,
+      "total_token_usage": {
+        "input_tokens": 2148617,
+        "cached_input_tokens": 2065024,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 16416,
+        "reasoning_output_tokens": 2569,
+        "total_tokens": 2165033
+      },
+      "last_token_usage": {
+        "input_tokens": 115607,
+        "cached_input_tokens": 113024,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 738,
+        "reasoning_output_tokens": 246,
+        "total_tokens": 116345
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:11:25.136Z",
+      "ordinal": 213,
+      "total_token_usage": {
+        "input_tokens": 2265511,
+        "cached_input_tokens": 2180480,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 18348,
+        "reasoning_output_tokens": 2760,
+        "total_tokens": 2283859
+      },
+      "last_token_usage": {
+        "input_tokens": 116894,
+        "cached_input_tokens": 115456,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1932,
+        "reasoning_output_tokens": 191,
+        "total_tokens": 118826
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:11:48.922Z",
+      "ordinal": 222,
+      "total_token_usage": {
+        "input_tokens": 2384403,
+        "cached_input_tokens": 2297216,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 19244,
+        "reasoning_output_tokens": 3276,
+        "total_tokens": 2403647
+      },
+      "last_token_usage": {
+        "input_tokens": 118892,
+        "cached_input_tokens": 116736,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 896,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 119788
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "timestamp": "2026-10-15T15:11:55.356Z",
+      "ordinal": 226,
+      "total_token_usage": {
+        "input_tokens": 2504708,
+        "cached_input_tokens": 2415872,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 19505,
+        "reasoning_output_tokens": 3276,
+        "total_tokens": 2524213
+      },
+      "last_token_usage": {
+        "input_tokens": 120305,
+        "cached_input_tokens": 118656,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 261,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 120566
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:07:43.823Z",
+      "ordinal": 25,
+      "total_token_usage": {
+        "input_tokens": 46025,
+        "cached_input_tokens": 22784,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 42,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46067
+      },
+      "last_token_usage": {
+        "input_tokens": 46025,
+        "cached_input_tokens": 22784,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 42,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46067
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:07:47.691Z",
+      "ordinal": 30,
+      "total_token_usage": {
+        "input_tokens": 92719,
+        "cached_input_tokens": 68608,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 142,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 92861
+      },
+      "last_token_usage": {
+        "input_tokens": 46694,
+        "cached_input_tokens": 45824,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 100,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46794
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:07:53.362Z",
+      "ordinal": 35,
+      "total_token_usage": {
+        "input_tokens": 139965,
+        "cached_input_tokens": 115072,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 396,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 140361
+      },
+      "last_token_usage": {
+        "input_tokens": 47246,
+        "cached_input_tokens": 46464,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 254,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 47500
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:07:58.207Z",
+      "ordinal": 42,
+      "total_token_usage": {
+        "input_tokens": 190378,
+        "cached_input_tokens": 162176,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 524,
+        "reasoning_output_tokens": 33,
+        "total_tokens": 190902
+      },
+      "last_token_usage": {
+        "input_tokens": 50413,
+        "cached_input_tokens": 47104,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 128,
+        "reasoning_output_tokens": 33,
+        "total_tokens": 50541
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:08:02.466Z",
+      "ordinal": 47,
+      "total_token_usage": {
+        "input_tokens": 247741,
+        "cached_input_tokens": 212352,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 668,
+        "reasoning_output_tokens": 33,
+        "total_tokens": 248409
+      },
+      "last_token_usage": {
+        "input_tokens": 57363,
+        "cached_input_tokens": 50176,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 144,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 57507
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:08:08.284Z",
+      "ordinal": 54,
+      "total_token_usage": {
+        "input_tokens": 308689,
+        "cached_input_tokens": 269568,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 904,
+        "reasoning_output_tokens": 71,
+        "total_tokens": 309593
+      },
+      "last_token_usage": {
+        "input_tokens": 60948,
+        "cached_input_tokens": 57216,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 236,
+        "reasoning_output_tokens": 38,
+        "total_tokens": 61184
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "timestamp": "2026-10-15T15:08:15.757Z",
+      "ordinal": 60,
+      "total_token_usage": {
+        "input_tokens": 371965,
+        "cached_input_tokens": 330368,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1174,
+        "reasoning_output_tokens": 87,
+        "total_tokens": 373139
+      },
+      "last_token_usage": {
+        "input_tokens": 63276,
+        "cached_input_tokens": 60800,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 270,
+        "reasoning_output_tokens": 16,
+        "total_tokens": 63546
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401a-3b02-7702-9f0e-4448c3698079",
+      "timestamp": "2026-10-15T15:07:06.737Z",
+      "ordinal": 12,
+      "total_token_usage": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "last_token_usage": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401b-50ab-7581-a96f-1c417f4520c7",
+      "timestamp": "2026-10-15T15:08:16.586Z",
+      "ordinal": 24,
+      "total_token_usage": {
+        "input_tokens": 47825,
+        "cached_input_tokens": 25088,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 275,
+        "reasoning_output_tokens": 150,
+        "total_tokens": 48100
+      },
+      "last_token_usage": {
+        "input_tokens": 27581,
+        "cached_input_tokens": 19200,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 116,
+        "reasoning_output_tokens": 52,
+        "total_tokens": 27697
+      }
+    },
+    {
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401b-8426-7782-9b9b-c40ad50fc053",
+      "timestamp": "2026-10-15T15:08:29.684Z",
+      "ordinal": 36,
+      "total_token_usage": {
+        "input_tokens": 77632,
+        "cached_input_tokens": 52480,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 380,
+        "reasoning_output_tokens": 191,
+        "total_tokens": 78012
+      },
+      "last_token_usage": {
+        "input_tokens": 29807,
+        "cached_input_tokens": 27392,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 105,
+        "reasoning_output_tokens": 41,
+        "total_tokens": 29912
+      }
+    }
+  ]
+}

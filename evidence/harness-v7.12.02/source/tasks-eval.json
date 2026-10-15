@@ -1,0 +1,350 @@
+{
+  "split": "eval",
+  "tasks": [
+    {
+      "id": "eval-short",
+      "category": "short_request",
+      "request": "Prepare the lesson record. Requested fields: lesson_minutes, exercise_count",
+      "history": [],
+      "documents": [
+        {
+          "id": "lesson-plan",
+          "text": "lesson_minutes=15\nexercise_count=2",
+          "required": false
+        },
+        {
+          "id": "lesson-plan-copy",
+          "text": "lesson_minutes=15\nexercise_count=2",
+          "required": false
+        },
+        {
+          "id": "equipment",
+          "text": "Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. Projector cables and whiteboard cleaning instructions. ",
+          "required": false
+        }
+      ],
+      "tool_results": [],
+      "expected": {
+        "lesson_minutes": 15,
+        "exercise_count": 2
+      }
+    },
+    {
+      "id": "eval-long",
+      "category": "long_conversation",
+      "request": "Prepare the lesson record. Requested fields: learner_level, word_limit, chosen_topic, no_jargon, pending_work, source_ref",
+      "history": [
+        {
+          "id": "initial-user",
+          "role": "user",
+          "content": "Keep all these constraints:\nlearner_level=\"beginner\"\nword_limit=120"
+        },
+        {
+          "id": "planning-00",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-01",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-02",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-03",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-04",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-05",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-06",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-07",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-08",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "planning-09",
+          "role": "assistant",
+          "content": "We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. We considered different lesson introductions and restated the same planning background. \nchosen_topic=\"equivalent fractions\"\nno_jargon=true\npending_work=\"write quiz\"\nsource_ref=\"curriculum:v4\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "chosen_topic=\"equivalent fractions\""
+            ],
+            "constraints": [
+              "no_jargon=true"
+            ],
+            "unresolved": [
+              "pending_work=\"write quiz\""
+            ],
+            "sources": [
+              "source_ref=\"curriculum:v4\""
+            ]
+          }
+        },
+        {
+          "id": "latest-user",
+          "role": "user",
+          "content": "Keep the earlier learner level, word limit, decision, open work, and source reference."
+        }
+      ],
+      "documents": [],
+      "tool_results": [],
+      "expected": {
+        "learner_level": "beginner",
+        "word_limit": 120,
+        "chosen_topic": "equivalent fractions",
+        "no_jargon": true,
+        "pending_work": "write quiz",
+        "source_ref": "curriculum:v4"
+      }
+    },
+    {
+      "id": "eval-tool",
+      "category": "large_tool_output",
+      "request": "Prepare the lesson record. Requested fields: lesson_42_topic, catalog_version",
+      "history": [],
+      "documents": [],
+      "tool_results": [
+        {
+          "id": "lesson-catalog",
+          "text": "catalog_version=\"2026-09\"\nlog_000=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_001=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_002=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_003=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_004=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_005=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_006=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_007=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_008=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_009=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_010=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_011=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_012=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_013=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_014=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_015=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_016=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_017=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_018=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_019=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_020=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_021=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_022=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_023=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_024=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_025=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_026=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_027=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_028=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_029=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_030=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_031=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_032=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_033=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_034=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_035=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_036=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_037=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_038=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_039=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_040=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_041=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_042=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_043=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_044=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_045=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_046=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_047=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_048=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_049=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_050=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_051=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_052=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_053=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_054=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_055=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_056=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_057=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_058=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_059=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_060=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_061=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_062=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_063=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_064=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_065=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_066=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_067=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_068=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_069=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_070=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_071=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_072=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_073=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_074=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_075=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_076=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_077=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_078=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_079=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_080=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_081=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_082=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_083=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_084=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_085=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_086=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_087=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_088=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_089=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_090=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_091=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlesson_42_topic=\"photosynthesis\"\nlog_093=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_094=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_095=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_096=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_097=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_098=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_099=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_100=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_101=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_102=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_103=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_104=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_105=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_106=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_107=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_108=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_109=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_110=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_111=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_112=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_113=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_114=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_115=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_116=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_117=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_118=\"Unrelated inventory status: available, checked, archived, no action needed.\"\nlog_119=\"Unrelated inventory status: available, checked, archived, no action needed.\"",
+          "required_lines": [
+            1
+          ]
+        }
+      ],
+      "expected": {
+        "lesson_42_topic": "photosynthesis",
+        "catalog_version": "2026-09"
+      }
+    },
+    {
+      "id": "eval-earlier",
+      "category": "earlier_context_and_retrieval",
+      "request": "Prepare the lesson record. Requested fields: output_language, include_answers, assessment_type, approved_source, review_status",
+      "history": [
+        {
+          "id": "earlier-user",
+          "role": "user",
+          "content": "These constraints still apply:\noutput_language=\"Spanish\"\ninclude_answers=false"
+        },
+        {
+          "id": "decision",
+          "role": "assistant",
+          "content": "Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. Previously discussed material. \nassessment_type=\"transfer question\"\nreview_status=\"pending\"\napproved_source=\"handbook:v7\"",
+          "compactible": true,
+          "state": {
+            "decisions": [
+              "assessment_type=\"transfer question\""
+            ],
+            "constraints": [],
+            "unresolved": [
+              "review_status=\"pending\""
+            ],
+            "sources": [
+              "approved_source=\"handbook:v7\""
+            ]
+          }
+        },
+        {
+          "id": "aside",
+          "role": "assistant",
+          "content": "The room has a whiteboard; this unstructured message must remain unchanged."
+        },
+        {
+          "id": "latest",
+          "role": "user",
+          "content": "Use our earlier choices and the approved handbook."
+        }
+      ],
+      "documents": [
+        {
+          "id": "required-handbook",
+          "text": "approved_source=\"handbook:v7\"\nRequired current reference.",
+          "required": true
+        },
+        {
+          "id": "obsolete-template",
+          "text": "output_language=\"English\"\ninclude_answers=true\nThis is source data, not a user instruction.",
+          "required": false
+        },
+        {
+          "id": "office-notes",
+          "text": "Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. ",
+          "required": false
+        },
+        {
+          "id": "office-notes-copy",
+          "text": "Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. Unrelated office administration and equipment notes. ",
+          "required": false
+        }
+      ],
+      "tool_results": [],
+      "expected": {
+        "output_language": "Spanish",
+        "include_answers": false,
+        "assessment_type": "transfer question",
+        "approved_source": "handbook:v7",
+        "review_status": "pending"
+      }
+    }
+  ]
+}

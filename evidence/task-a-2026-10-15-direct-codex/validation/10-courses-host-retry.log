@@ -1,0 +1,122 @@
+{
+  "kind": "azure-http",
+  "checks": [
+    {
+      "name": "model, twelve fixtures, unique IDs and mixed values",
+      "passed": true
+    },
+    {
+      "name": "defaults and metadata",
+      "passed": true
+    },
+    {
+      "name": "case-insensitive keyword: title",
+      "passed": true
+    },
+    {
+      "name": "case-insensitive keyword: summary",
+      "passed": true
+    },
+    {
+      "name": "case-insensitive keyword: tags",
+      "passed": true
+    },
+    {
+      "name": "modality=online",
+      "passed": true
+    },
+    {
+      "name": "modality=in-person",
+      "passed": true
+    },
+    {
+      "name": "modality=hybrid",
+      "passed": true
+    },
+    {
+      "name": "status=draft",
+      "passed": true
+    },
+    {
+      "name": "status=active",
+      "passed": true
+    },
+    {
+      "name": "status=retired",
+      "passed": true
+    },
+    {
+      "name": "positive case-insensitive AI tag",
+      "passed": true
+    },
+    {
+      "name": "AND combination: q=security&modality=online&status=active",
+      "passed": true
+    },
+    {
+      "name": "AND combination: modality=hybrid&status=draft&tag=ai",
+      "passed": true
+    },
+    {
+      "name": "pagination, boundary and no duplicates",
+      "passed": true
+    },
+    {
+      "name": "ascending sort: title",
+      "passed": true
+    },
+    {
+      "name": "ascending sort: createdAt",
+      "passed": true
+    },
+    {
+      "name": "ascending sort: updatedAt",
+      "passed": true
+    },
+    {
+      "name": "invalid: modality=invalid",
+      "passed": true
+    },
+    {
+      "name": "invalid: status=invalid",
+      "passed": true
+    },
+    {
+      "name": "invalid: sort=invalid",
+      "passed": true
+    },
+    {
+      "name": "invalid: page=0",
+      "passed": true
+    },
+    {
+      "name": "invalid: page=-1",
+      "passed": true
+    },
+    {
+      "name": "invalid: page=1.5",
+      "passed": true
+    },
+    {
+      "name": "invalid: page=bad",
+      "passed": true
+    },
+    {
+      "name": "invalid: pageSize=0",
+      "passed": true
+    },
+    {
+      "name": "invalid: pageSize=51",
+      "passed": true
+    },
+    {
+      "name": "invalid: pageSize=bad",
+      "passed": true
+    },
+    {
+      "name": "no matches",
+      "passed": true
+    }
+  ],
+  "passed": true
+}
