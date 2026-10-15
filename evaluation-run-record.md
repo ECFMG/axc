@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper |
+| Reviewer | Henry Casper (self-review) |
+| Harness | OpenAI Codex CLI v0.162.1 |
+| Model | GPT-6.1-Sol (medium reasoning) |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | A |
+| Run Type | Harness Engineering Iteration 12 |
+| Harness Engineering Used | Harness v12 = v11 rules, now loaded on demand, plus tooling that runs automatically instead of relying on instructions alone (nothing task-specific). **Skills**: the CellixJS layout, verification and adversarial-review guidance moved out of `AGENTS.md` into three repo skills (`.agents/skills/{cellix-feature-layout,change-verification,adversarial-review}/SKILL.md`), loaded only when relevant; `AGENTS.md` went from 1,933 to 1,276 words and gained a short `## Tools` section. **TypeScript LSP via MCP** (`.codex/config.toml`): `@mizchi/lsmcp` wrapping `typescript-language-server` with the repo's TypeScript; six read-only tools allowed (definitions, references, hover, diagnostics, document symbols, signature help), auto-approved. **Codex hooks** (`.codex/hooks.json`): a PostToolUse hook runs Biome on files changed by the edit tool and returns findings to the agent; a Stop hook runs the network-free gates (policy, Biome, typecheck, build, knip, `test:arch`, `test`, plus frozen offline install if a manifest changed) whenever the tree is dirty, and blocks the stop with the failing output, at most twice per session. Both hooks were tested beforehand against planted failures. Rules for test-first work, per-layer tests, CellixJS layering, knip baseline, convention suites and the review loop are unchanged in substance. Same model, effort and permissions (workspace-write, on-request approvals, no network) as all prior runs. |
+| Config / Diff Notes | `hac-oai-12` = `hac-oai-11` + v12 harness (`42c69ac`: slimmed `AGENTS.md`, three skills, `.codex/config.toml`, `.codex/hooks.json`, two hook scripts). Workstation prerequisite added: `@mizchi/lsmcp@0.10.0` and `typescript-language-server` installed globally (Node 24.21.0). Otherwise environment unchanged (pnpm 11.11.0, Codex CLI v0.162.1). Setup before the prompt: both project hooks trusted through Codex's startup hook-review prompt (`/hooks` showed PostToolUse and Stop installed and active); `/mcp` showed `typescript_lsp` connected (6 tools); `/status` confirmed settings and `AGENTS.md` loaded. `task-set-a-prompt.md` pasted verbatim as a single prompt in a new session. Machine state outside the repo, unchanged since iteration 11: a user-level skill (`microsoft-foundry`) and a leftover command allow rule in `~/.codex/rules/default.rules` from an earlier session. Session log: knip baseline at 20:15:42 UTC before the first edit; all three skills read by the main agent, and the review skill by the reviewers; one LSP call (`lsp_get_diagnostics` on the query parser, 0 errors); `test:arch` and knip run after implementation and clean. **Gaps found**: (1) tests and implementation were written in the same step and never run red first, so test-first was not followed (iteration 11 did run red first); (2) the PostToolUse hook never fired, because the agent created and changed every file through shell commands (Python scripts and here-docs) rather than the edit tool the hook watches; (3) the Stop hook leaves no log entry. The 18s gap between the final message and the end of the turn matches one passing gate run, but this cannot be confirmed. It never blocked, so there were no automatic continuations. Two review rounds (GPT-6.1-Sol medium, verified in sub-agent logs): round 1 found no blocking issues and one minor gap (tie-breaker sort ordering untested), which was fixed with a new test; round 2 found nothing. Agent output: 55 files changed (+867/−7). Structure follows ocom in every layer: `Domain` namespace with `contexts/catalog/course/{course.ts,course.value-objects.ts}`; persistence read repository (`datasources/readonly/catalog/course/`) owning filtering, sorting and paging, `DataSourcesFactoryImpl` over fixtures in `fixtures/catalog/course/`; thin `queryCourses` application service; REST parser and handler now under `rest/src/contexts/catalog/course/` (iteration 11's flat-file nit resolved); factory wired once in `apps/api`. No planning or notes files. Lockfile diff +31 lines, only workspace links and existing catalog Vitest packages. Final summary included the requirement-to-coverage table. Committed with `--no-verify` because the pre-commit `verify` fails at Snyk (configured `agentcourses` org not accessible). |
+| Branch / Commit | `hac-oai-12-a-out` @ `343e0cb` |
+| Requirements Completed / Attempted | 12 / 12 |
+| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All suites pass / 0 failed (independently re-run by operator: frozen offline install, Biome, knip, typecheck, build, `test:arch`, `test`). Unit: `@axc/persistence` 30 (filters, keyword per field, combinations, each sort field including the ID tie-breaker, pagination edges, empty results, fixtures), `@axc/rest` 48 (parser accept/reject tables, 400 contract, handler), `@axc/application-services` 8, `@axc/domain` 2 (value objects); 88 in total, down from 100 in iteration 11 with equivalent coverage. Architecture: `test:arch` 20/20 tasks, including the per-package CellixJS convention suites (domain 11, application services 10, persistence 13). Acceptance: 30 scenarios pass (29 catalog + healthcheck), up from 25. `pnpm install --frozen-lockfile` passes. |
+| Static Analysis / Security Findings | No new findings introduced. `pnpm audit`: passes the configured `--audit-level=high` threshold (3 moderate; braces high ignored by repository policy), unchanged. Snyk not run: repo-configured `agentcourses` org not accessible (HTTP 404). No third-party dependency changes, so the 4 open findings recorded for iterations 6–11 on base-lockfile packages are unchanged. |
+| Input Tokens | 3,285,956 total (main 2,821,658 + reviewer 1 271,343 + reviewer 2 192,955); 159,812 uncached |
+| Cached Tokens | 3,126,144 |
+| Output Tokens | 22,222 (incl. 3,421 reasoning) |
+| Total Tokens or Credits Used | 3,308,178 tokens (main 2,841,934; reviewers 272,517 + 193,727). Down 4% from iteration 11 despite a second review round. |
+| Estimated Cost | ~$0.85 (main ~$0.68 + reviewers ~$0.10 + ~$0.07) at GPT-6.1-Sol API list prices ($2.00 input / $0.10 cached / $10.00 output per 1M tokens) |
+| Elapsed Time | 8m 47s (2026-10-15 16:15–16:24 EDT), including two review rounds |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, no agent questions. 3 sandbox-escalation requests: `pnpm run test` (Azure Functions acceptance host), `pnpm install --offline --frozen-lockfile` (lockfile check), and `pnpm run verify; pnpm run snyk`. The test request matches the leftover allow rule noted above and may have been approved automatically. No networked install, no branch creation, no post-run cleanup. Hook trust was granted during setup, before the prompt. |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 95 / 100 (self-scored per SRD Appendix 1, judged against CellixJS `packages/ocom` conventions as in iterations 8–11). Functional Correctness 5/5 (20): all requirements and acceptance criteria met; consistent 400 error body. Test and Validation 5/5 (15): 88 unit tests with logic tested where it lives, 30 acceptance scenarios, per-package architecture gates, frozen-lockfile install passes. Architecture 5/5 (15): ocom layering in every layer, REST code now under `contexts/catalog/course/`, enforced by the vendored convention suites. Security and Guardrails 5/5 (15): no new findings or third-party dependencies, strict input validation, vendored CellixJS unmodified, audit passes. Harness Engineering 4/5 (8): skills were discovered and followed and the LSP was used, but test-first was skipped, the post-edit hook never fired because files were written through the shell, and the stop gate cannot be confirmed from logs. Context/Token/Cost 5/5 (10): ~$0.85, flat with iteration 11, with 4% fewer tokens and a smaller `AGENTS.md`. Developer Workflow Fit 4/5 (8): 8m 47s, 0 interventions, no cleanup; 3 approvals (down from 4) plus one-time hook trust and an extra global tool install. Operational/Vendor Readiness 4/5 (4): ChatGPT Business with admin/SSO path, not production-approved. |
+| Recommendation | Continue |
