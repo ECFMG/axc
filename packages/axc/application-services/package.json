@@ -22,9 +22,11 @@
 		"watch": "tsgo --watch",
 		"test": "vitest run --silent --reporter=dot",
 		"test:watch": "vitest",
+		"test:arch": "vitest run --config vitest.arch.config.ts",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"devDependencies": {
+		"@cellix/archunit-tests": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
 		"@vitest/coverage-istanbul": "catalog:",

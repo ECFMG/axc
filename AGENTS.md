@@ -52,6 +52,7 @@ New business features use the structure of the CellixJS sample application. The 
 - Every layer that contains logic gets its own unit tests covering each branch: every allowed enum value, every rejection reason, boundary values and the values just outside them, defaults, combinations of inputs, and empty results. Acceptance scenarios complement unit tests; they do not replace them.
 - Unit tests live next to the code they test, in the same package and folder (`<name>.test.ts` beside `<name>.ts`). Follow the setup of packages that already have tests.
 - `packages/axc-verification/archunit-tests` is for architecture rules only.
+- `domain`, `persistence` and `application-services` each have a `src/archunit-tests/` suite, run by `pnpm run test:arch`, that applies the vendored CellixJS convention checks to that package. Treat a failure as a structure defect in your code and fix the code; do not edit, skip or narrow these suites or their globs.
 - Acceptance tests go in `packages/axc-verification/acceptance-api`. When a spec lists acceptance criteria, cover each one with at least one scenario, including error cases.
 - Test logic in the layer that owns it: application-service and domain behaviour gets unit tests in that package; `rest` tests cover HTTP mapping and validation. Do not rely on `rest` tests alone.
 - Never reduce test coverage to save tokens.
@@ -64,7 +65,8 @@ New business features use the structure of the CellixJS sample application. The 
 
 ## Sandbox and verification
 - The sandbox has no network access. Commands that need it (`pnpm run verify`, `pnpm audit`, `pnpm run snyk`) require approval, so batch them.
-- While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`.
+- While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`, `pnpm run knip`.
+- Run `pnpm run knip` once before your first edit and note what it reports. Run it again after your last code change and before the review; anything new it reports (unused files, exports, types or dependencies) comes from your change and must be removed or used before the review starts.
 - Run verification once, at the end, as a single command: `pnpm run verify; pnpm run snyk`. Everything must pass.
 - If `pnpm audit` or Snyk reports an advisory introduced by your dependency changes, fix it (e.g. upgrade or pin a patched version). If an advisory already exists on the base commit and fixing it needs files outside the task's write boundary (e.g. `pnpm-workspace.yaml` overrides), do not fix it; list it in your summary with the patched version. Report Snyk authentication or organization errors instead of working around them.
 
@@ -82,7 +84,8 @@ Before the review, check your diff for:
 - Dense or hard-to-follow code that a reviewer would need to unpack.
 - Folder, file, export and naming structure matching the CellixJS conventions above.
 - Changes to unrelated lines, including formatting; new entries placed out of the existing order (e.g. alphabetical dependencies).
-- Leftover debug code, TODOs, or unused exports.
+- Leftover debug code, TODOs, or unused exports (confirmed with `pnpm run knip` against your baseline).
+- `pnpm run test:arch` passing, including the per-package CellixJS convention suites.
 - Files that are not deliverables (plans, notes, requirement maps, scratch files).
 - Generic constant names, one-line `if` statements, and truthiness checks on optional values.
 - Documentation updated where the task or spec requires it.
