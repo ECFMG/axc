@@ -53,6 +53,7 @@ overrides:
   axios: 1.20.0
   hono: 4.13.13
   http-cache-semantics: 4.3.0
+  qs: 6.16.1
   postcss-selector-parser: 7.1.6
   serialize-javascript: 7.1.2
   'shell-quote': 1.11.0
@@ -76,3 +77,4 @@ minimumReleaseAgeExclude:
   - hono@4.13.10
   - hono@4.13.13
   - shell-quote@1.11.0
+  - qs@6.16.1
