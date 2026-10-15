@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper |
+| Reviewer |  |
+| Harness | OpenAI Codex CLI v0.162.1 |
+| Model | GPT-6.1-Sol (medium reasoning) |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | A |
+| Run Type | Harness Engineering Iteration 9 |
+| Harness Engineering Used | `AGENTS.md` v9 = v8 with the CellixJS guidance promoted from a low-precedence fallback to the convention for new business features, following the iteration 8 code comparison (general, repository-wide; nothing task-specific). **Plan before coding**: lay out the planned files in the CellixJS structure and follow the closest existing package for tooling, wiring and test setup. **CellixJS conventions** (replaces "CellixJS reference checkout"): new business features follow the `packages/ocom` layout at `/Volumes/files/src/CELLIX/cellixjs` (health is infrastructure, not an example); per-layer layout for domain (`contexts/<context>/<aggregate>/`, `Domain` namespace), persistence (`datasources/{domain,readonly}/...` behind `DataSources`), application services (`contexts/<context>/<aggregate>/<operation>.ts` over `dataSources`) and the composition root; add only folders the feature uses (no UoW/events/value-object classes for read-only features); this repo's stricter rules still win (validation in `rest`, typed inputs, required dependencies); read-only, nothing copied. **Tests**: colocated `<name>.test.ts`. **Self-check** and **reviewer brief** now cover CellixJS-convention violations. Code style, test-first and the review loop are unchanged from v8. Same model, effort, permissions (workspace-write, on-request approvals, no network) as all prior runs. |
+| Config / Diff Notes | `hac-oai-9` = `hac-oai-8` + `AGENTS.md` v9 (`1524603`). Environment unchanged (pnpm 11.11.0, Node 24.21.0, Codex CLI v0.162.1). `task-set-a-prompt.md` pasted verbatim as a single prompt in a new Codex session; `/status` confirmed settings and `AGENTS.md` loaded. Agent stayed on `hac-oai-9-a-out` and left changes uncommitted. Session log confirms test-first: tests were written and run before the implementation. Agent read the CellixJS `ocom` file layout and its domain context/aggregate instruction files, then reproduced the structure; nothing copied or imported. Agent spawned 1 reviewer sub-agent (GPT-6.1-Sol medium, verified in the session log); no blocking findings, loop stopped after round 1. Agent output: 51 files changed (+906/−9). Structure now follows ocom: `Domain` namespace with `domain/contexts/catalog/course/{course.ts,course.value-objects.ts}`; persistence `datasources/readonly/catalog/course/course.read-repository.ts` behind `buildDataSources()` → `readonlyDataSource.Catalog.Course.CourseReadRepo`, plus `fixtures/courses.ts`; application service `contexts/catalog/course/query-courses.ts` as `queryCourses(dataSources)(query)`, exposed as `ApplicationServices.Catalog.Course`; strict parser `rest/.../course-query.ts` and route in `rest`, with the `Authorization` header passed through to `forRequest`; `DataSources` required in the API context and wired in `apps/api`. Issues: an unrequested planning/traceability page `apps/docs/docs/course-search-plan.md` (not in the sidebar, records the base SHA), generic constant names (`MODALITIES`, `DEFAULT_PAGE`) and dense one-line `if` guards in the query; the page offset is not clamped for very large pages (functionally harmless, since `slice` returns empty). Lockfile diff +37 lines, only new workspace links and existing catalog Vitest packages. Final summary included the requirement-to-coverage table. Committed with `--no-verify` because the pre-commit `verify` fails at Snyk (configured `agentcourses` org not accessible). |
+| Branch / Commit | `hac-oai-9-a-out` @ `addc96c` |
+| Requirements Completed / Attempted | 12 / 12 |
+| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All suites pass / 0 failed (independently re-run by operator: frozen offline install, then `pnpm run verify` through to Snyk). `@axc/rest` 66 tests (parser: every enum value, malformed and boundary integers, unknown/repeated keys, multi-error collection; route: 400 contract, services not built on invalid input, auth pass-through), `@axc/application-services` 38 (keyword per field, each filter, combinations, every sort field with ID tie-break, pagination edges, empty results), `@axc/persistence` 6 (fixture shape, repository isolation). Acceptance: 24 scenarios pass (down from 28; same criteria coverage). Biome, typecheck, build, knip, e18e, docs build, architecture tests (9 + 10) pass. `pnpm install --frozen-lockfile` passes. |
+| Static Analysis / Security Findings | No new findings introduced. `pnpm audit`: passes the configured `--audit-level=high` threshold (3 moderate; braces high ignored), unchanged; agent reported the moderate advisories with patched versions. Snyk (personal org; repo-configured `agentcourses` org not accessible): 4 open, identical to iterations 6–8 — postcss-selector-parser (high), uri-js (medium), qs@6.16.0 (high), hono@4.13.10 (medium), all on packages already in the base lockfile. |
+| Input Tokens | 3,805,866 total (main 3,560,070 + reviewer 245,796); 165,546 uncached |
+| Cached Tokens | 3,640,320 |
+| Output Tokens | 22,439 (incl. 3,811 reasoning) |
+| Total Tokens or Credits Used | 3,828,305 tokens (main 3,581,457; reviewer sub-agent 246,848). Up 65% from iteration 8, driven by the larger file set and CellixJS reads. |
+| Estimated Cost | ~$0.92 (main ~$0.79 + reviewer ~$0.13) at GPT-6.1-Sol API list prices ($2.00 input / $0.10 cached / $10.00 output per 1M tokens) |
+| Elapsed Time | 9m 51s (2026-10-15 13:25:42–13:35:33 EDT), including one review round (~35s) |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, no agent questions. 4 sandbox-escalation approvals: `pnpm install --offline` (store write outside the workspace, no network), `pnpm run test` (local test servers), the final `pnpm run verify; pnpm run snyk` batch, and `pnpm audit --json` to report advisory details. No branch creation and no post-run cleanup. |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 92 / 100 (self-scored per SRD Appendix 1, judged against CellixJS `packages/ocom` conventions as in the iteration 8 re-score). Functional Correctness 5/5 (20): all requirements and acceptance criteria met; error body matches spec. Test and Validation 5/5 (15): test-first, 110 unit tests across rest, application services and persistence covering every enum value, boundary and rejection form, plus 24 acceptance scenarios; frozen-lockfile install passes. Architecture 4/5 (12): now follows ocom — `Domain` namespace with context/aggregate folders, readonly read-repository behind `DataSources`, per-operation `query-courses.ts` over `dataSources`, `ApplicationServices.Catalog.Course`, validation kept in `rest`, auth header passed through, required dependency wiring, and no unneeded UoW/event scaffolding; deductions for an unrequested planning page in the docs app, generic constant names and dense guard clauses. Security and Guardrails 5/5 (15): no new findings or third-party dependencies, strict input validation, CellixJS used read-only with nothing copied, audit passes. Harness Engineering 4/5 (8): the CellixJS conventions section produced the intended structure on the first attempt and the reviewer brief and test rules held, but the "Plan before coding" rule was read as permission to commit a plan document. Context/Token/Cost 5/5 (10): ~$0.92 and 3.83M tokens. Developer Workflow Fit 4/5 (8): 9m 51s, 0 interventions and no cleanup, but 4 approvals. Operational/Vendor Readiness 4/5 (4): ChatGPT Business with admin/SSO path, not production-approved. |
+| Recommendation | Continue |
