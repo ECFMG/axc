@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
 
 describe('healthcheck', () => {
@@ -10,7 +10,10 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({
+			environment: 'test',
+			dataSourcesFactory: { forRequest: () => ({ readonlyDataSource: { Catalog: { Course: { CourseReadRepo: { search: vi.fn() } } } } }) },
+		}).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
