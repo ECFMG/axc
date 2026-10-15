@@ -12,8 +12,10 @@ description: Implements and validates agentCourses features with repository laye
 3. Reuse the nearest existing implementation, test, and documentation pattern.
 4. Change only the layers required to satisfy the task.
 5. Keep domain contracts inward. Construct and inject concrete infrastructure in `apps/api`.
-6. Complete one pass across code, exports, project references, tests, and required documentation.
-7. Before verification, check the task requirements once and keep that checklist internal.
-8. Report what changed, the commands, results, limitations, any dependency justification, and security findings.
+6. Before writing tests, confirm public exports, project references, and the repository's comparison or ordering convention. Keep this preflight internal.
+7. Complete one pass across code, exports, project references, tests, and required documentation.
+8. Before verification, check the task requirements once and keep that checklist internal.
+9. Run checks through `node scripts/agent-check.mjs -- <command>`.
+10. Report what changed, the commands, results, limitations, any dependency justification, and security findings.
 
 The one-pass rule controls tool calls. Ponytail and Caveman still apply in full. Do not restate those rules.

@@ -6,6 +6,7 @@ alwaysApply: false
 
 # Public API tests
 
-- New or changed public HTTP behavior needs a package-level test in the package that owns that behavior.
-- When `packages/axc-verification` already contains an acceptance package, that behavior also needs one acceptance scenario.
+- New or changed public HTTP behavior needs package-level tests for its success path, meaningful combinations or limits, and invalid input.
+- When `packages/axc-verification` already contains an acceptance package, prove the HTTP contract with the smallest non-duplicative set: one success response, one combined request, and one invalid request.
+- Keep detailed permutations in package tests. Do not repeat every package test as an acceptance scenario.
 - Reuse the existing Serenity feature and step pattern. Do not add another test framework.
