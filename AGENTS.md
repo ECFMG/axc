@@ -1,6 +1,6 @@
 # agentCourses
 
-Non-production sample monorepo. The current task prompt and its requirements are the source of truth for that task. Read them once, then inspect only the code they require.
+Non-production sample monorepo. The current task prompt and its requirements are the source of truth for that task.
 
 ## Package map
 
@@ -20,17 +20,7 @@ Non-production sample monorepo. The current task prompt and its requirements are
 - REST does not import persistence.
 - A new package relationship must follow this direction and update the existing export and project-reference pattern.
 
-## Change discipline
+## Boundaries
 
 - Stay inside the task's allowed write boundary.
-- Search for an existing pattern before adding a type, helper, abstraction, or dependency.
-- Use repository code, platform APIs, or an installed package before adding a dependency.
 - Do not modify secrets, production configuration, deployment configuration, authentication, or unrelated behavior.
-
-## Validation
-
-- While developing, run the narrowest test that covers the change.
-- Run `pnpm run verify` once after the change is complete.
-- A command that already succeeded is final. Do not read a file again or rerun a check unless an edit invalidated it.
-- Review the diff once and remove unrelated edits.
-- Final summary: what changed, commands, results, limitations, dependency justification, and security findings.

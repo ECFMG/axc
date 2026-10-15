@@ -1,0 +1,20 @@
+---
+description: One-pass execution budget for repository work
+alwaysApply: true
+---
+
+# One pass
+
+- Run one batched search, then read the relevant files in parallel.
+- Do not reopen a file or a successful command, and do not summarize intermediate checks.
+- Implement in one pass. Do not start a second exploration, review pass, or subagent.
+- Run one relevant package test after implementation, then run `pnpm run verify` once as the final gate.
+- On failure, fix the reported cause, rerun only the failed package, then run `pnpm run verify` once more.
+- Ponytail and Caveman apply in full. This rule limits tool calls only.
+
+## Command output
+
+- Redirect complete test and verification output to a temporary log outside the repository.
+- On success, read and report only the command and `PASS`. Do not inspect the log.
+- On failure, report the command, exit code, failed package or check, and the smallest error block that identifies the cause.
+- Do not load the full failure log. Expand the error context only when the first block is insufficient to diagnose the cause.
