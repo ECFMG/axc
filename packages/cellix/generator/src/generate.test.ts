@@ -1,19 +1,21 @@
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 import { checkCellixLint, defaultCellixLintConfig } from '../../lint/src/index.ts';
-import { generateFeature } from './generate.ts';
+import { generateFeature, sessionFileList } from './generate.ts';
 import { parseField, parseFieldsFile, parseNested, parsePermission } from './spec.ts';
 
 const roots: string[] = [];
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
 function expectBiomeClean(files: { path: string }[]): void {
+	const source = files.filter((file) => /\.(ts|tsx|js|mjs|json)$/.test(file.path));
+	if (source.length === 0) return;
 	const biome = path.join(repoRoot, 'node_modules', '.bin', 'biome');
-	const result = spawnSync(biome, ['check', `--config-path=${path.join(repoRoot, 'biome.json')}`, ...files.map((file) => file.path)], { encoding: 'utf8' });
+	const result = spawnSync(biome, ['check', `--config-path=${path.join(repoRoot, 'biome.json')}`, ...source.map((file) => file.path)], { encoding: 'utf8' });
 	expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
 }
 
@@ -33,6 +35,10 @@ describe('Cellix generator', () => {
 		expect(paths).toContain('course.resolvers.ts');
 		expect(paths).toContain('course.data.ts');
 		expect(paths).toContain('course.read-repository.ts');
+		expect(paths).toContain('course-create.feature');
+		expect(paths).toContain('course-create.steps.ts');
+		const steps = files.find((file) => file.path.endsWith('course-create.steps.ts'));
+		expect(steps?.contents).toContain('GetRequest.to(');
 		expect(paths).toContain('datasources/readonly/mongo-data-source.ts');
 		const readRepository = files.find((file) => file.path.endsWith('course.read-repository.ts'));
 		expect(readRepository?.contents).toContain('getCourseReadRepository');
@@ -264,11 +270,38 @@ describe('Cellix generator', () => {
 		expectBiomeClean(deepFiles);
 	});
 
+	it('rejects an acceptance step file that keeps a document array', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(root);
+		const lint = defaultCellixLintConfig();
+		const files = await generateFeature({ root, lint, context: 'course', entity: 'course', action: 'search' });
+		const steps = files.find((file) => file.path.endsWith('course-search.steps.ts'));
+		if (!steps) throw new Error('missing course search steps');
+		const original = await readFile(steps.path, 'utf8');
+		await writeFile(steps.path, `${original}\nconst courses = [{ title: 'Example' }];\n`);
+		const violations = await checkCellixLint({ root, lint });
+		expect(violations.some((violation) => violation.includes('document array'))).toBe(true);
+	});
+
 	it('refuses to overwrite an entity file', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
 		const lint = defaultCellixLintConfig();
 		await generateFeature({ root, lint, context: 'course', entity: 'course', action: 'create' });
 		await expect(generateFeature({ root, lint, context: 'course', entity: 'course', action: 'update' })).rejects.toThrow('Refusing to overwrite');
+	});
+
+	it('puts the mongoose models package on the session list', () => {
+		const files = sessionFileList(defaultCellixLintConfig(), [], { context: 'course', entity: 'course' });
+		expect(files).toContain('packages/axc/data-sources-mongoose-models/package.json');
+		expect(files).toContain('packages/axc/data-sources-mongoose-models/tsconfig.json');
+		expect(files).toContain('packages/axc/data-sources-mongoose-models/src/index.ts');
+		expect(files).toContain('packages/axc/domain/src/domain/index.ts');
+		expect(files).toContain('packages/axc/domain/src/domain/contexts/course/course/index.ts');
+		expect(files).toContain('packages/axc/persistence/package.json');
+		expect(files).toContain('packages/axc/application-services/package.json');
+		expect(files).toContain('pnpm-lock.yaml');
+		expect(files).not.toContain('packages/axc/service-mongoose/package.json');
+		expect(files).not.toContain('packages/axc/domain/src/domain/contexts/other/index.ts');
 	});
 });

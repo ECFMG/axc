@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { CellixLintConfig } from '@cellix/lint';
@@ -25,6 +26,7 @@ export interface GeneratedFile {
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export async function generateFeature(options: GenerateFeatureOptions): Promise<GeneratedFile[]> {
+	const baseline = gitBaseline(options.root);
 	const context = options.context;
 	const entity = options.entity;
 	const action = options.action;
@@ -55,6 +57,7 @@ export async function generateFeature(options: GenerateFeatureOptions): Promise<
 	}
 	formatGeneratedFiles(writes);
 	for (const file of writes) file.contents = await readFile(file.path, 'utf8');
+	await writeSession(options, files, baseline);
 	return writes;
 }
 
@@ -167,9 +170,20 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 	if (options.transport === 'rest') {
 		files.push({
 			path: path.join(root, lint.layers.rest, `${entity}-${action}.ts`),
-			contents: `import type { ApplicationServices } from '${scope}/application-services';\n\nexport const ${camel(`${entity}-${action}`)} = async (applicationServices: ApplicationServices, command: { ${commandFields(shape, mutation)} }): Promise<unknown> => {\n\treturn applicationServices.${contextPascal}.${entityPascal}.${actionCamel}(command);\n};\n`,
+			contents: `import type { ApplicationServices } from '${scope}/application-services';\n\nexport const ${camel(`${entity}-${action}`)} = async (applicationServices: ApplicationServices, command: { ${commandFields(shape, mutation)} }): Promise<unknown> => {\n\treturn await applicationServices.${contextPascal}.${entityPascal}.${actionCamel}(command);\n};\n`,
 		});
 	}
+	const acceptanceName = `${entity}-${action}`;
+	files.push(
+		{
+			path: path.join(root, 'packages/axc-verification/acceptance-api/src/features', `${acceptanceName}.feature`),
+			contents: acceptanceFeature(entity, action),
+		},
+		{
+			path: path.join(root, 'packages/axc-verification/acceptance-api/src/step-definitions', `${acceptanceName}.steps.ts`),
+			contents: acceptanceSteps(entity, action),
+		},
+	);
 	if (resolver) {
 		const typesDir = path.join(root, lint.layers.graphql, 'schema/types');
 		const operation = mutation ? 'Mutation' : 'Query';
@@ -869,7 +883,99 @@ function gqlType(type: ShapeField['type']): string {
 	return 'String!';
 }
 
+function acceptanceFeature(entity: string, action: string): string {
+	const title = `${entity} ${action}`.replaceAll('-', ' ');
+	return `Feature: ${pascal(entity)} ${pascal(action)}\n\n  Scenario: The client reads ${title} from the running application\n    When the client requests ${title}\n    Then ${title} responds with status 200\n`;
+}
+
+function acceptanceSteps(entity: string, action: string): string {
+	const title = `${entity} ${action}`.replaceAll('-', ' ');
+	return `import { Then, When } from '@cucumber/cucumber';
+import { Ensure, equals } from '@serenity-js/assertions';
+import { type Answerable, actorCalled } from '@serenity-js/core';
+import { GetRequest, LastResponse, Send } from '@serenity-js/rest';
+
+const resolved = <T>(answerable: Answerable<Promise<T>>): Answerable<T> => answerable as unknown as Answerable<T>;
+
+When('the client requests ${title}', () => actorCalled('API client').attemptsTo(Send.a(GetRequest.to('/api/${entity}'))));
+
+Then('${title} responds with status 200', () => actorCalled('API client').attemptsTo(Ensure.that(resolved(LastResponse.status()), equals(200))));
+`;
+}
+
+async function writeSession(options: GenerateFeatureOptions, planned: GeneratedFile[], baseline: string[]): Promise<void> {
+	const plannedPaths = planned.map((file) => relativePosix(options.root, file.path));
+	const session = {
+		context: options.context,
+		entity: options.entity,
+		action: options.action,
+		startedAt: new Date().toISOString(),
+		files: sessionFileList(options.lint, plannedPaths, { context: options.context, entity: options.entity }),
+		baseline,
+	};
+	const sessionPath = path.join(options.root, '.cellix/session.json');
+	await mkdir(path.dirname(sessionPath), { recursive: true });
+	await writeFile(sessionPath, `${JSON.stringify(session, null, '\t')}\n`);
+}
+
+export function sessionFileList(lint: CellixLintConfig, planned: string[], task: { context: string; entity: string }): string[] {
+	const modelsPackage = packageRoot(lint.layers.models);
+	const persistencePackage = packageRoot(lint.layers.persistence);
+	const applicationPackage = packageRoot(lint.layers.applicationServices);
+	const domain = lint.layers.domain;
+	const contextDir = `${domain}/domain/contexts/${task.context}`;
+	const wiring = [
+		`${lint.layers.applicationServices}/index.ts`,
+		`${domain}/index.ts`,
+		`${domain}/domain/index.ts`,
+		`${domain}/domain/contexts/index.ts`,
+		`${contextDir}/index.ts`,
+		`${contextDir}/${task.entity}/index.ts`,
+		`${lint.layers.rest}/index.ts`,
+		`${lint.layers.persistence}/index.ts`,
+		lint.apiComposition,
+		`${modelsPackage}/package.json`,
+		`${modelsPackage}/tsconfig.json`,
+		`${lint.layers.models}/index.ts`,
+		`${persistencePackage}/package.json`,
+		`${persistencePackage}/tsconfig.json`,
+		`${applicationPackage}/package.json`,
+		`${applicationPackage}/tsconfig.json`,
+		'pnpm-lock.yaml',
+	];
+	return [...new Set([...planned, ...wiring])].sort();
+}
+
+function packageRoot(layer: string): string {
+	return layer.endsWith('/src') ? layer.slice(0, -4) : layer;
+}
+
+function gitBaseline(root: string): string[] {
+	const result = spawnSync('git', ['status', '--porcelain', '-uall'], { cwd: root, encoding: 'utf8' });
+	if (result.status !== 0 || !result.stdout) return [];
+	return porcelainPaths(result.stdout);
+}
+
+function porcelainPaths(stdout: string): string[] {
+	const paths: string[] = [];
+	for (const line of stdout.split('\n')) {
+		if (line.length < 4) continue;
+		let file = line.slice(3).trim();
+		const arrow = file.lastIndexOf(' -> ');
+		if (arrow !== -1) file = file.slice(arrow + 4).trim();
+		if (file.startsWith('"') && file.endsWith('"')) file = file.slice(1, -1);
+		if (file.length > 0) paths.push(file);
+	}
+	return paths;
+}
+
+function relativePosix(root: string, file: string): string {
+	return path.relative(root, file).split(path.sep).join('/');
+}
+
 function assertInsideLayers(file: string, options: GenerateFeatureOptions): void {
+	const relative = relativePosix(options.root, file);
+	if (relative.startsWith('packages/axc-verification/acceptance-api/src/')) return;
 	const roots = Object.values(options.lint.layers).map((layer) => path.join(options.root, layer));
 	const posix = file.split(path.sep).join('/');
 	const allowed = roots.some((layer) => posix.startsWith(layer.split(path.sep).join('/')));

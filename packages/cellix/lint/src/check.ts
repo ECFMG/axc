@@ -1,3 +1,4 @@
+import { checkAcceptanceShape } from './acceptance.js';
 import { checkCellixBiomeConfig } from './biome-layers.js';
 import { type CellixLintConfig, defaultCellixLintConfig } from './config.js';
 import { checkCellixContent } from './content.js';
@@ -17,7 +18,8 @@ export async function checkCellixLint(input: CellixLintInput): Promise<string[]>
 	const visibility = await checkCellixVisibility({ root: input.root, lint });
 	const graph = await checkCellixGraph({ root: input.root, lint });
 	const biome = await checkCellixBiomeConfig({ root: input.root });
-	return [...structure, ...content, ...visibility, ...graph, ...biome];
+	const acceptance = await checkAcceptanceShape(input.root);
+	return [...structure, ...content, ...visibility, ...graph, ...biome, ...acceptance];
 }
 
 export function checkCellixStructureSuite(input: CellixLintInput): Promise<string[]> {

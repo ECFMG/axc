@@ -22,6 +22,7 @@ apps/api/agentCourses-api.zip
 
 # Agent runtime artifacts
 .agents-work/
+.cellix/
 
 # Docusaurus
 apps/docs/.docusaurus/

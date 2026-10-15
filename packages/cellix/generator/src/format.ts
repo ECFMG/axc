@@ -4,14 +4,15 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export function formatGeneratedFiles(files: { path: string; contents: string }[]): void {
-	if (files.length === 0) return;
+	const formattable = files.filter((file) => /\.(ts|tsx|js|mjs|cjs|json)$/.test(file.path));
+	if (formattable.length === 0) return;
 	const repo = findRepo(path.dirname(fileURLToPath(import.meta.url)));
 	const biome = path.join(repo, 'node_modules', '.bin', 'biome');
 	const config = path.join(repo, 'biome.json');
 	if (!existsSync(biome) || !existsSync(config)) {
 		throw new Error('Biome is not available to format generated files');
 	}
-	const result = spawnSync(biome, ['check', '--write', `--config-path=${config}`, ...files.map((file) => file.path)], {
+	const result = spawnSync(biome, ['check', '--write', `--config-path=${config}`, ...formattable.map((file) => file.path)], {
 		cwd: repo,
 		encoding: 'utf8',
 	});

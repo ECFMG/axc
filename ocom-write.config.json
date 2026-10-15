@@ -1,18 +1,18 @@
 {
 	"agentAccess": {
-		"**": true,
 		"packages/cellix/**": false,
-		"apps/api/src/index.ts": true,
+		".cursor/**": false,
+		"ocom-write.config.json": false,
+		"cellix-lint.config.json": false,
+		"apps/api/package.json": true,
+		"apps/api/src/**": true,
+		"apps/docs/**": true,
 		"apps/**": false
 	},
 	"writable": [
-		"packages/axc/domain/src/**",
-		"packages/axc/application-services/src/**",
-		"packages/axc/persistence/src/**",
-		"packages/axc/rest/src/**",
-		"packages/axc/graphql/src/**",
-		"packages/axc/data-sources-mongoose-models/src/models/**",
+		"packages/axc/**",
+		"packages/axc-verification/**",
 		"package.json",
-		"packages/axc/**/package.json"
+		"pnpm-lock.yaml"
 	]
 }
