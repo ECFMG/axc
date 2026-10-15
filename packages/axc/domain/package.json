@@ -19,6 +19,7 @@
 		"prebuild": "pnpm run lint",
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
+		"test": "vitest run --silent --reporter=dot",
 		"watch": "tsgo --watch",
 		"test:arch": "vitest run --config vitest.arch.config.ts",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
@@ -30,6 +31,7 @@
 		"@cellix/archunit-tests": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
+		"@vitest/coverage-istanbul": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
