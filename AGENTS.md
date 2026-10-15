@@ -24,7 +24,21 @@ General conventions for working in this repository.
 - Dependencies a feature needs (repositories, catalogs, clients) are required parameters wired in the composition root. Do not make them optional or fall back to a silent default such as an empty implementation.
 - Put new implementations and data in their own modules and export them from `index.ts`. Do not move existing code out of `index.ts` unless the task requires it.
 
+## CellixJS reference checkout
+- The upstream CellixJS monorepo is checked out locally at `/Volumes/files/src/CELLIX/cellixjs`. When this repo has no close example of something (a domain value object, a read repository, an application-service query, a persistence data source), look at how CellixJS's sample application `packages/ocom` does it.
+- Useful places there: the design notes `packages/ocom/domain/src/domain/contexts/*.instructions.md`, per-context services in `packages/ocom/application-services/src/contexts`, data sources in `packages/ocom/persistence/src/datasources`, and how their tests sit beside the code.
+- Precedence: the task spec first, then this file, then existing code in this repo, then CellixJS. Use CellixJS for patterns, not as code to transplant.
+- Treat the checkout as read-only. Do not edit it, copy its packages or files into this repo, or add imports or dependencies that point at it. If the path does not exist, carry on using this repo alone.
+
+## Code style
+- Write for a reviewer reading the diff: small named functions, one step per line, descriptive names. Prefer clarity over brevity; avoid packing several conditions or side effects into one expression.
+- Never use a stand-in value to satisfy the type checker (e.g. returning an arbitrary valid enum member after recording a validation error). Represent failure explicitly, for example with a result type or `undefined`.
+- Validate raw input strictly against its expected format before converting it. Do not rely on lenient conversions such as `Number()` or `parseInt()`, which accept whitespace, exponents, or trailing characters.
+- An optional input supplied with an empty or whitespace-only value is treated as not supplied, unless the spec says otherwise.
+
 ## Tests
+- Work test-first: for each item in your plan, write the test, run it and see it fail, then write the code that makes it pass.
+- Every layer that contains logic gets its own unit tests covering each branch: every allowed enum value, every rejection reason, boundary values and the values just outside them, defaults, combinations of inputs, and empty results. Acceptance scenarios complement unit tests; they do not replace them.
 - Unit tests live next to the code they test, in the same package (`src/*.test.ts`). Follow the setup of packages that already have tests.
 - `packages/axc-verification/archunit-tests` is for architecture rules only.
 - Acceptance tests go in `packages/axc-verification/acceptance-api`. When a spec lists acceptance criteria, cover each one with at least one scenario, including error cases.
@@ -52,7 +66,9 @@ These rules apply only to what you write to the user. They do not limit how much
 ## Self-check
 Before the review, check your diff for:
 - Every requirement and acceptance criterion from your plan implemented and tested.
-- Optional dependencies or silent fallbacks; duplicated types or constants.
+- Unit tests in each layer with logic, covering boundaries and every rejection path.
+- Optional dependencies or silent fallbacks; stand-in values; duplicated types or constants.
+- Dense or hard-to-follow code that a reviewer would need to unpack.
 - Changes to unrelated lines, including formatting; new entries placed out of the existing order (e.g. alphabetical dependencies).
 - Leftover debug code, TODOs, or unused exports.
 - Documentation updated where the task or spec requires it.
