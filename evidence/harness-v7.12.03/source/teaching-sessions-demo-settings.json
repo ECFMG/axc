@@ -1,0 +1,9 @@
+{
+  "adapter": "mock",
+  "model": "synthetic-demo",
+  "temperature": 0,
+  "context_tokens": 16384,
+  "max_output_tokens": 1536,
+  "token_budget": 100000,
+  "timeout_seconds": 120
+}

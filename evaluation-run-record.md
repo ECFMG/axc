@@ -89,3 +89,7 @@ The user-supplied [Standard-mode pricing screenshot](evidence/task-a-2026-10-15-
 All-agent arithmetic: `((2,954,305 − 2,798,720) × $2.00 + 2,798,720 × $0.10 + 21,059 × $10.00 + 0 × $2.50) / 1,000,000 = $0.801632`.
 
 Automatic reviews identify their model as `codex-auto-review`; its actual price is unavailable. The $0.801632 total therefore assumes the supplied gpt-6.1-sol rates also apply to those reviews. The model-confirmed $0.742280 portion is priced directly from the supplied rates. Both are API-equivalent estimates, not measured subscription billing. Original final responses are included; all follow-up and publication work is excluded.
+
+## Harness efficiency follow-up
+
+[Harness v7.12.03](evidence/harness-v7.12.03/) implements the subsequent efficiency recommendations: fresh-context review handoff, native focused repair, stronger preflight, deterministic efficiency reporting and host guidance. All 224 tests pass, including 23 new tests; fresh-context code review found no issues. The original Task A measurement, cost estimate and rubric above remain unchanged. No matched live-model trial or measured savings claim accompanies this release.

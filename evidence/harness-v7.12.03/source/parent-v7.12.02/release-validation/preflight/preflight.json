@@ -1,0 +1,81 @@
+{
+  "repo": "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and/outputs/axc",
+  "base_commit": "7a15d9e18795642a1868ee422598adcb8a245e8e",
+  "branch": "df-oai-0-out",
+  "destination_branch": "df-oai-0-out",
+  "checks": [
+    {
+      "name": "node",
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "v24.21.0",
+      "log": "node.log",
+      "seconds": 0.017568709000000002
+    },
+    {
+      "name": "pnpm",
+      "argv": [
+        "pnpm",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "11.9.0",
+      "log": "pnpm.log",
+      "seconds": 0.23437875000000002
+    },
+    {
+      "name": "func",
+      "argv": [
+        "func",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "4.15.2",
+      "log": "func.log",
+      "seconds": 0.034081583
+    },
+    {
+      "name": "java",
+      "argv": [
+        "java",
+        "-version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+      "log": "java.log",
+      "seconds": 0.035836959
+    },
+    {
+      "name": "typescript",
+      "argv": [
+        "node",
+        "-e",
+        "console.log(require('typescript').version)"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "6.0.3",
+      "log": "typescript.log",
+      "seconds": 0.11081254200000001
+    },
+    {
+      "name": "installed_dependency_links",
+      "passed": true,
+      "missing": [],
+      "note": "Direct-link readiness only; frozen lockfile restoration and final build/tests remain required."
+    },
+    {
+      "name": "localhost",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "remediation": "Restore locked dependencies with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; install missing runtimes separately. No install, network access or permissions change is performed by this probe."
+}

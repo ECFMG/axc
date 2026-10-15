@@ -1,0 +1,17 @@
+{
+  "kind": "Importer smoke test against the earlier original Task A run; not a v7.12.01 model trial",
+  "passed": true,
+  "turn_id": "01a13bcf-4777-7551-95a9-83ab897b5f64",
+  "session_id": "01a13bce-3595-72e2-9312-9d2093fecb08",
+  "model": "gpt-6.1-sol",
+  "measured_usage": {
+    "input_tokens": 2359033,
+    "cached_input_tokens": 2270976,
+    "output_tokens": 17585,
+    "reasoning_output_tokens": 2393,
+    "total_tokens": 2376618
+  },
+  "final_response_included": true,
+  "followup_turns_excluded": true,
+  "matched_previously_verified_counters": true
+}

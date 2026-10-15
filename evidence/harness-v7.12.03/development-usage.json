@@ -1,0 +1,811 @@
+{
+  "task": "Harness efficiency v7.12.03 follow-up; separate from frozen Task A usage",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+  "turn_id": "01a14038-0f0d-7cb1-a8b4-501dcc2f137f",
+  "start_timestamp": "2026-10-15T15:39:38.144Z",
+  "starting_cumulative_counters": {
+    "input_tokens": 8196407,
+    "cached_input_tokens": 7881728,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 41484,
+    "reasoning_output_tokens": 9949,
+    "total_tokens": 8237891
+  },
+  "baseline_snapshot_timestamp": "2026-10-15T15:39:27.708Z",
+  "projection": {
+    "total_tokens": 5000000,
+    "assumptions": "About 35 primary calls averaging 125000 input plus 25000 output and approximately 600000 supporting-agent tokens; rounded planning estimate. Fixed host context is outside harness control.",
+    "recorded_at": "2026-10-15T15:40:35.358360+00:00"
+  },
+  "status": "incomplete",
+  "primary": {
+    "model": "gpt-6.1-sol",
+    "session_id": "01a14015-47d3-7ae1-a349-2262998a9c5b",
+    "source": "Codex token_count cumulative counters",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+    "turn_id": "01a14038-0f0d-7cb1-a8b4-501dcc2f137f",
+    "task_start_timestamp": "2026-10-15T15:39:38.144Z",
+    "task_end_timestamp": null,
+    "baseline": {
+      "counters": {
+        "input_tokens": 8196407,
+        "cached_input_tokens": 7881728,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 41484,
+        "reasoning_output_tokens": 9949,
+        "total_tokens": 8237891
+      },
+      "basis": "observed cumulative token_count before original task"
+    },
+    "ending_snapshot": {
+      "counters": {
+        "input_tokens": 14714485,
+        "cached_input_tokens": 14339968,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 62185,
+        "reasoning_output_tokens": 16406,
+        "total_tokens": 14776670
+      },
+      "timestamp": "2026-10-15T15:50:23.011Z"
+    },
+    "measured_usage": {
+      "input_tokens": 6518078,
+      "cached_input_tokens": 6458240,
+      "output_tokens": 20701,
+      "reasoning_output_tokens": 6457,
+      "total_tokens": 6538779
+    },
+    "final_response_accounted_for": false,
+    "model_calls_recorded": 28,
+    "distinct_counter_events": 28,
+    "duplicate_counter_events": 6,
+    "request_accounting_complete": true,
+    "request_usage": [
+      {
+        "timestamp": "2026-10-15T15:39:44.041Z",
+        "input_tokens": 190375,
+        "cached_input_tokens": 188800,
+        "output_tokens": 152,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 190527
+      },
+      {
+        "timestamp": "2026-10-15T15:40:03.875Z",
+        "input_tokens": 197629,
+        "cached_input_tokens": 190208,
+        "output_tokens": 614,
+        "reasoning_output_tokens": 469,
+        "total_tokens": 198243
+      },
+      {
+        "timestamp": "2026-10-15T15:40:23.340Z",
+        "input_tokens": 205760,
+        "cached_input_tokens": 197504,
+        "output_tokens": 630,
+        "reasoning_output_tokens": 509,
+        "total_tokens": 206390
+      },
+      {
+        "timestamp": "2026-10-15T15:40:35.407Z",
+        "input_tokens": 216239,
+        "cached_input_tokens": 205568,
+        "output_tokens": 554,
+        "reasoning_output_tokens": 31,
+        "total_tokens": 216793
+      },
+      {
+        "timestamp": "2026-10-15T15:40:44.865Z",
+        "input_tokens": 216978,
+        "cached_input_tokens": 216064,
+        "output_tokens": 301,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 217279
+      },
+      {
+        "timestamp": "2026-10-15T15:40:54.148Z",
+        "input_tokens": 217302,
+        "cached_input_tokens": 216832,
+        "output_tokens": 332,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 217634
+      },
+      {
+        "timestamp": "2026-10-15T15:41:28.304Z",
+        "input_tokens": 218407,
+        "cached_input_tokens": 217472,
+        "output_tokens": 429,
+        "reasoning_output_tokens": 320,
+        "total_tokens": 218836
+      },
+      {
+        "timestamp": "2026-10-15T15:41:54.103Z",
+        "input_tokens": 224255,
+        "cached_input_tokens": 223488,
+        "output_tokens": 110,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 224365
+      },
+      {
+        "timestamp": "2026-10-15T15:41:58.807Z",
+        "input_tokens": 224377,
+        "cached_input_tokens": 224128,
+        "output_tokens": 117,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 224494
+      },
+      {
+        "timestamp": "2026-10-15T15:42:07.616Z",
+        "input_tokens": 227119,
+        "cached_input_tokens": 224256,
+        "output_tokens": 248,
+        "reasoning_output_tokens": 175,
+        "total_tokens": 227367
+      },
+      {
+        "timestamp": "2026-10-15T15:42:59.069Z",
+        "input_tokens": 229669,
+        "cached_input_tokens": 228992,
+        "output_tokens": 2029,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 231698
+      },
+      {
+        "timestamp": "2026-10-15T15:43:25.874Z",
+        "input_tokens": 232280,
+        "cached_input_tokens": 229504,
+        "output_tokens": 1096,
+        "reasoning_output_tokens": 470,
+        "total_tokens": 233376
+      },
+      {
+        "timestamp": "2026-10-15T15:43:51.249Z",
+        "input_tokens": 234082,
+        "cached_input_tokens": 233216,
+        "output_tokens": 97,
+        "reasoning_output_tokens": 11,
+        "total_tokens": 234179
+      },
+      {
+        "timestamp": "2026-10-15T15:44:25.569Z",
+        "input_tokens": 234191,
+        "cached_input_tokens": 233856,
+        "output_tokens": 1895,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 236086
+      },
+      {
+        "timestamp": "2026-10-15T15:44:38.961Z",
+        "input_tokens": 236689,
+        "cached_input_tokens": 233984,
+        "output_tokens": 459,
+        "reasoning_output_tokens": 170,
+        "total_tokens": 237148
+      },
+      {
+        "timestamp": "2026-10-15T15:44:48.769Z",
+        "input_tokens": 237574,
+        "cached_input_tokens": 236544,
+        "output_tokens": 402,
+        "reasoning_output_tokens": 91,
+        "total_tokens": 237976
+      },
+      {
+        "timestamp": "2026-10-15T15:45:02.987Z",
+        "input_tokens": 241433,
+        "cached_input_tokens": 237440,
+        "output_tokens": 590,
+        "reasoning_output_tokens": 177,
+        "total_tokens": 242023
+      },
+      {
+        "timestamp": "2026-10-15T15:45:23.134Z",
+        "input_tokens": 242115,
+        "cached_input_tokens": 241280,
+        "output_tokens": 620,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 242735
+      },
+      {
+        "timestamp": "2026-10-15T15:46:27.888Z",
+        "input_tokens": 243023,
+        "cached_input_tokens": 241920,
+        "output_tokens": 2746,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 245769
+      },
+      {
+        "timestamp": "2026-10-15T15:46:38.018Z",
+        "input_tokens": 245826,
+        "cached_input_tokens": 242816,
+        "output_tokens": 345,
+        "reasoning_output_tokens": 109,
+        "total_tokens": 246171
+      },
+      {
+        "timestamp": "2026-10-15T15:46:46.987Z",
+        "input_tokens": 246193,
+        "cached_input_tokens": 245632,
+        "output_tokens": 325,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 246518
+      },
+      {
+        "timestamp": "2026-10-15T15:46:57.180Z",
+        "input_tokens": 246692,
+        "cached_input_tokens": 246016,
+        "output_tokens": 156,
+        "reasoning_output_tokens": 35,
+        "total_tokens": 246848
+      },
+      {
+        "timestamp": "2026-10-15T15:47:23.785Z",
+        "input_tokens": 247619,
+        "cached_input_tokens": 246528,
+        "output_tokens": 961,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 248580
+      },
+      {
+        "timestamp": "2026-10-15T15:48:18.113Z",
+        "input_tokens": 249234,
+        "cached_input_tokens": 248448,
+        "output_tokens": 1357,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 250591
+      },
+      {
+        "timestamp": "2026-10-15T15:49:06.911Z",
+        "input_tokens": 251309,
+        "cached_input_tokens": 250496,
+        "output_tokens": 1218,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 252527
+      },
+      {
+        "timestamp": "2026-10-15T15:49:36.279Z",
+        "input_tokens": 252597,
+        "cached_input_tokens": 251136,
+        "output_tokens": 1080,
+        "reasoning_output_tokens": 539,
+        "total_tokens": 253677
+      },
+      {
+        "timestamp": "2026-10-15T15:50:10.127Z",
+        "input_tokens": 253819,
+        "cached_input_tokens": 252416,
+        "output_tokens": 1374,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 255193
+      },
+      {
+        "timestamp": "2026-10-15T15:50:23.011Z",
+        "input_tokens": 255292,
+        "cached_input_tokens": 253696,
+        "output_tokens": 464,
+        "reasoning_output_tokens": 255,
+        "total_tokens": 255756
+      }
+    ],
+    "complete": false,
+    "missing_usage": [
+      "original final-response usage pending"
+    ],
+    "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+    "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output."
+  },
+  "subagents": [
+    {
+      "model": "gpt-6.1-sol",
+      "session_id": "01a14039-12bb-76c3-92d0-05db20bbe8d2",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-40-44-01a14039-12bb-76c3-92d0-05db20bbe8d2.jsonl",
+      "turn_id": "01a14039-12fe-76e3-be13-22841770ace2",
+      "task_start_timestamp": "2026-10-15T15:40:44.700Z",
+      "task_end_timestamp": "2026-10-15T15:44:38.524Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "session origin: first cumulative token_count equals its first-call usage; no pre-task snapshot"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 805405,
+          "cached_input_tokens": 760576,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 9843,
+          "reasoning_output_tokens": 3703,
+          "total_tokens": 815248
+        },
+        "timestamp": "2026-10-15T15:44:38.521Z"
+      },
+      "measured_usage": {
+        "input_tokens": 805405,
+        "cached_input_tokens": 760576,
+        "output_tokens": 9843,
+        "reasoning_output_tokens": 3703,
+        "total_tokens": 815248
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 15,
+      "distinct_counter_events": 15,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:40:51.120Z",
+          "input_tokens": 37785,
+          "cached_input_tokens": 22784,
+          "output_tokens": 162,
+          "reasoning_output_tokens": 22,
+          "total_tokens": 37947
+        },
+        {
+          "timestamp": "2026-10-15T15:40:56.101Z",
+          "input_tokens": 38224,
+          "cached_input_tokens": 37632,
+          "output_tokens": 197,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 38421
+        },
+        {
+          "timestamp": "2026-10-15T15:41:01.609Z",
+          "input_tokens": 41149,
+          "cached_input_tokens": 38016,
+          "output_tokens": 217,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 41366
+        },
+        {
+          "timestamp": "2026-10-15T15:41:05.422Z",
+          "input_tokens": 42187,
+          "cached_input_tokens": 40960,
+          "output_tokens": 131,
+          "reasoning_output_tokens": 12,
+          "total_tokens": 42318
+        },
+        {
+          "timestamp": "2026-10-15T15:41:12.569Z",
+          "input_tokens": 52557,
+          "cached_input_tokens": 41984,
+          "output_tokens": 165,
+          "reasoning_output_tokens": 31,
+          "total_tokens": 52722
+        },
+        {
+          "timestamp": "2026-10-15T15:41:24.596Z",
+          "input_tokens": 52734,
+          "cached_input_tokens": 52352,
+          "output_tokens": 463,
+          "reasoning_output_tokens": 331,
+          "total_tokens": 53197
+        },
+        {
+          "timestamp": "2026-10-15T15:41:28.949Z",
+          "input_tokens": 53291,
+          "cached_input_tokens": 52608,
+          "output_tokens": 81,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 53372
+        },
+        {
+          "timestamp": "2026-10-15T15:42:19.138Z",
+          "input_tokens": 54166,
+          "cached_input_tokens": 53120,
+          "output_tokens": 2018,
+          "reasoning_output_tokens": 1840,
+          "total_tokens": 56184
+        },
+        {
+          "timestamp": "2026-10-15T15:42:23.812Z",
+          "input_tokens": 56196,
+          "cached_input_tokens": 54016,
+          "output_tokens": 143,
+          "reasoning_output_tokens": 36,
+          "total_tokens": 56339
+        },
+        {
+          "timestamp": "2026-10-15T15:43:51.022Z",
+          "input_tokens": 58135,
+          "cached_input_tokens": 56064,
+          "output_tokens": 4748,
+          "reasoning_output_tokens": 664,
+          "total_tokens": 62883
+        },
+        {
+          "timestamp": "2026-10-15T15:43:55.024Z",
+          "input_tokens": 63004,
+          "cached_input_tokens": 57984,
+          "output_tokens": 61,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 63065
+        },
+        {
+          "timestamp": "2026-10-15T15:43:58.637Z",
+          "input_tokens": 63077,
+          "cached_input_tokens": 62848,
+          "output_tokens": 77,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 63154
+        },
+        {
+          "timestamp": "2026-10-15T15:44:16.990Z",
+          "input_tokens": 63539,
+          "cached_input_tokens": 62848,
+          "output_tokens": 643,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 64182
+        },
+        {
+          "timestamp": "2026-10-15T15:44:31.641Z",
+          "input_tokens": 64194,
+          "cached_input_tokens": 63360,
+          "output_tokens": 564,
+          "reasoning_output_tokens": 144,
+          "total_tokens": 64758
+        },
+        {
+          "timestamp": "2026-10-15T15:44:38.521Z",
+          "input_tokens": 65167,
+          "cached_input_tokens": 64000,
+          "output_tokens": 173,
+          "reasoning_output_tokens": 107,
+          "total_tokens": 65340
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output.",
+      "role": "/root/efficiency_metrics"
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "session_id": "01a14039-3766-7dc0-9e71-cb1bc368a67d",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-40-53-01a14039-3766-7dc0-9e71-cb1bc368a67d.jsonl",
+      "turn_id": "01a14039-37b0-7bb2-9ad6-dea4890740c5",
+      "task_start_timestamp": "2026-10-15T15:40:54.073Z",
+      "task_end_timestamp": "2026-10-15T15:44:24.620Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "session origin: first cumulative token_count equals its first-call usage; no pre-task snapshot"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 746459,
+          "cached_input_tokens": 715648,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 8959,
+          "reasoning_output_tokens": 2851,
+          "total_tokens": 755418
+        },
+        "timestamp": "2026-10-15T15:44:24.614Z"
+      },
+      "measured_usage": {
+        "input_tokens": 746459,
+        "cached_input_tokens": 715648,
+        "output_tokens": 8959,
+        "reasoning_output_tokens": 2851,
+        "total_tokens": 755418
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 14,
+      "distinct_counter_events": 14,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:40:58.963Z",
+          "input_tokens": 37814,
+          "cached_input_tokens": 35840,
+          "output_tokens": 102,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 37916
+        },
+        {
+          "timestamp": "2026-10-15T15:41:06.663Z",
+          "input_tokens": 38168,
+          "cached_input_tokens": 37632,
+          "output_tokens": 375,
+          "reasoning_output_tokens": 20,
+          "total_tokens": 38543
+        },
+        {
+          "timestamp": "2026-10-15T15:41:13.524Z",
+          "input_tokens": 40113,
+          "cached_input_tokens": 38016,
+          "output_tokens": 306,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 40419
+        },
+        {
+          "timestamp": "2026-10-15T15:41:31.835Z",
+          "input_tokens": 47416,
+          "cached_input_tokens": 39936,
+          "output_tokens": 621,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 48037
+        },
+        {
+          "timestamp": "2026-10-15T15:42:08.016Z",
+          "input_tokens": 48049,
+          "cached_input_tokens": 47232,
+          "output_tokens": 1793,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 49842
+        },
+        {
+          "timestamp": "2026-10-15T15:42:26.062Z",
+          "input_tokens": 49987,
+          "cached_input_tokens": 47872,
+          "output_tokens": 621,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 50608
+        },
+        {
+          "timestamp": "2026-10-15T15:43:28.153Z",
+          "input_tokens": 55140,
+          "cached_input_tokens": 49792,
+          "output_tokens": 3450,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 58590
+        },
+        {
+          "timestamp": "2026-10-15T15:43:35.186Z",
+          "input_tokens": 58614,
+          "cached_input_tokens": 54912,
+          "output_tokens": 200,
+          "reasoning_output_tokens": 99,
+          "total_tokens": 58814
+        },
+        {
+          "timestamp": "2026-10-15T15:43:40.005Z",
+          "input_tokens": 59863,
+          "cached_input_tokens": 58496,
+          "output_tokens": 130,
+          "reasoning_output_tokens": 18,
+          "total_tokens": 59993
+        },
+        {
+          "timestamp": "2026-10-15T15:43:57.681Z",
+          "input_tokens": 60005,
+          "cached_input_tokens": 59648,
+          "output_tokens": 649,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 60654
+        },
+        {
+          "timestamp": "2026-10-15T15:44:04.458Z",
+          "input_tokens": 60919,
+          "cached_input_tokens": 59776,
+          "output_tokens": 171,
+          "reasoning_output_tokens": 66,
+          "total_tokens": 61090
+        },
+        {
+          "timestamp": "2026-10-15T15:44:09.998Z",
+          "input_tokens": 61827,
+          "cached_input_tokens": 60800,
+          "output_tokens": 210,
+          "reasoning_output_tokens": 28,
+          "total_tokens": 62037
+        },
+        {
+          "timestamp": "2026-10-15T15:44:18.834Z",
+          "input_tokens": 64151,
+          "cached_input_tokens": 61696,
+          "output_tokens": 230,
+          "reasoning_output_tokens": 29,
+          "total_tokens": 64381
+        },
+        {
+          "timestamp": "2026-10-15T15:44:24.614Z",
+          "input_tokens": 64393,
+          "cached_input_tokens": 64000,
+          "output_tokens": 101,
+          "reasoning_output_tokens": 11,
+          "total_tokens": 64494
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output.",
+      "role": "/root/preflight_checks"
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "session_id": "01a1403e-76f6-76d0-b0c2-1350f25a0ad6",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-46-37-01a1403e-76f6-76d0-b0c2-1350f25a0ad6.jsonl",
+      "turn_id": "01a1403e-773d-7613-a86d-bbb7edb18e0e",
+      "task_start_timestamp": "2026-10-15T15:46:38.025Z",
+      "task_end_timestamp": "2026-10-15T15:48:32.091Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "session origin: first cumulative token_count equals its first-call usage; no pre-task snapshot"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 933316,
+          "cached_input_tokens": 882688,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3701,
+          "reasoning_output_tokens": 1757,
+          "total_tokens": 937017
+        },
+        "timestamp": "2026-10-15T15:48:32.085Z"
+      },
+      "measured_usage": {
+        "input_tokens": 933316,
+        "cached_input_tokens": 882688,
+        "output_tokens": 3701,
+        "reasoning_output_tokens": 1757,
+        "total_tokens": 937017
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 14,
+      "distinct_counter_events": 14,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:46:45.211Z",
+          "input_tokens": 37716,
+          "cached_input_tokens": 35840,
+          "output_tokens": 119,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 37835
+        },
+        {
+          "timestamp": "2026-10-15T15:46:49.790Z",
+          "input_tokens": 38957,
+          "cached_input_tokens": 37504,
+          "output_tokens": 190,
+          "reasoning_output_tokens": 18,
+          "total_tokens": 39147
+        },
+        {
+          "timestamp": "2026-10-15T15:46:53.443Z",
+          "input_tokens": 44299,
+          "cached_input_tokens": 38784,
+          "output_tokens": 80,
+          "reasoning_output_tokens": 17,
+          "total_tokens": 44379
+        },
+        {
+          "timestamp": "2026-10-15T15:46:58.767Z",
+          "input_tokens": 44391,
+          "cached_input_tokens": 44160,
+          "output_tokens": 236,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 44627
+        },
+        {
+          "timestamp": "2026-10-15T15:47:05.251Z",
+          "input_tokens": 54506,
+          "cached_input_tokens": 44160,
+          "output_tokens": 276,
+          "reasoning_output_tokens": 30,
+          "total_tokens": 54782
+        },
+        {
+          "timestamp": "2026-10-15T15:47:13.984Z",
+          "input_tokens": 64028,
+          "cached_input_tokens": 54272,
+          "output_tokens": 307,
+          "reasoning_output_tokens": 77,
+          "total_tokens": 64335
+        },
+        {
+          "timestamp": "2026-10-15T15:47:18.258Z",
+          "input_tokens": 74418,
+          "cached_input_tokens": 63872,
+          "output_tokens": 126,
+          "reasoning_output_tokens": 17,
+          "total_tokens": 74544
+        },
+        {
+          "timestamp": "2026-10-15T15:47:34.438Z",
+          "input_tokens": 78499,
+          "cached_input_tokens": 74240,
+          "output_tokens": 586,
+          "reasoning_output_tokens": 516,
+          "total_tokens": 79085
+        },
+        {
+          "timestamp": "2026-10-15T15:47:43.956Z",
+          "input_tokens": 79097,
+          "cached_input_tokens": 78336,
+          "output_tokens": 310,
+          "reasoning_output_tokens": 153,
+          "total_tokens": 79407
+        },
+        {
+          "timestamp": "2026-10-15T15:48:03.487Z",
+          "input_tokens": 82440,
+          "cached_input_tokens": 78976,
+          "output_tokens": 640,
+          "reasoning_output_tokens": 484,
+          "total_tokens": 83080
+        },
+        {
+          "timestamp": "2026-10-15T15:48:12.122Z",
+          "input_tokens": 83213,
+          "cached_input_tokens": 82304,
+          "output_tokens": 181,
+          "reasoning_output_tokens": 88,
+          "total_tokens": 83394
+        },
+        {
+          "timestamp": "2026-10-15T15:48:21.354Z",
+          "input_tokens": 83471,
+          "cached_input_tokens": 83072,
+          "output_tokens": 356,
+          "reasoning_output_tokens": 163,
+          "total_tokens": 83827
+        },
+        {
+          "timestamp": "2026-10-15T15:48:29.832Z",
+          "input_tokens": 83991,
+          "cached_input_tokens": 83328,
+          "output_tokens": 287,
+          "reasoning_output_tokens": 194,
+          "total_tokens": 84278
+        },
+        {
+          "timestamp": "2026-10-15T15:48:32.085Z",
+          "input_tokens": 84290,
+          "cached_input_tokens": 83840,
+          "output_tokens": 7,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 84297
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output.",
+      "role": "/root/harness_review"
+    }
+  ],
+  "auxiliary_agents": [],
+  "measured_usage": {
+    "input_tokens": 9003258,
+    "cached_input_tokens": 8817152,
+    "output_tokens": 43204,
+    "reasoning_output_tokens": 14768,
+    "total_tokens": 9046462
+  },
+  "recorded_through": "2026-10-15T15:50:23.011Z",
+  "final_response_accounted": false,
+  "missing_usage": [
+    {
+      "turn_id": "01a14038-0f0d-7cb1-a8b4-501dcc2f137f",
+      "missing": [
+        "original final-response usage pending"
+      ]
+    }
+  ],
+  "measurement_captured_at": "2026-10-15T15:50:52.196431+00:00",
+  "scope": "This harness v7.12.03 development turn and disjoint supporting-agent turns, including original final responses when available; excludes frozen Task A usage and all later follow-up conversations.",
+  "recovery": "Run this file before answering the next user message. No later-turn token events are included.",
+  "projection_exceeded": true
+}

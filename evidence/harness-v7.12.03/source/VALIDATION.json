@@ -1,0 +1,51 @@
+{
+  "version": "v7.12.03",
+  "passed": true,
+  "command": "HARNESS_TEST_TYPESCRIPT=/absolute/path/to/typescript/lib/typescript.js python3 -B -m unittest discover -v",
+  "tests": 224,
+  "new_tests": 23,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "duration_seconds": 11.061,
+  "test_log": "TEST_RESULTS.log",
+  "fixed_contracts_unchanged": {
+    "settings": true,
+    "checks": true,
+    "allowed_paths": true,
+    "protected_paths": true,
+    "verification_files": true,
+    "implementation_steps": true,
+    "action_batch_size": true,
+    "focused_local_validation": true,
+    "context_groups": true
+  },
+  "fixed_input_sha256": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "independent_code_review": {
+    "context": "fresh, no parent chat history",
+    "findings": 0,
+    "tests_reviewer_ran": 23
+  },
+  "actual_usage_cli_regression": {
+    "input": "release-validation/original-task-efficiency-input.json",
+    "output": "release-validation/original-task-efficiency.json",
+    "expected_total_tokens": 2975364,
+    "passed": true
+  },
+  "native_workflow_proof": "test_native_efficiency: local repair reuses existing checks, rejects unready/scope/branch violations, invalidates stale feedback, and two explicit finishes run all eight controlled fixture gates twice.",
+  "model_invocations_during_release_validation": 0,
+  "live_task_a_model_run": false,
+  "live_token_or_cost_savings_verified": false,
+  "limitations": [
+    "No matched live model comparison was performed; no savings percentage or improved rubric score is inferred.",
+    "Host-provided system instructions, tools and conversation history remain under host control.",
+    "Fresh review handoff is a contract for the host, not automatic review execution or verification of host compliance.",
+    "Preflight checks direct links and executable tools, not full lockfile/install coherence.",
+    "Character bounds are not token measurements.",
+    "Original Task A usage/cost/rubric remain frozen; release work has separate accounting."
+  ]
+}

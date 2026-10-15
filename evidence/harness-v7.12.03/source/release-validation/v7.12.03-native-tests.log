@@ -1,0 +1,10 @@
+test_fixed_task_a_generation_limits_and_all_eight_gates_remain_unchanged (test_native_efficiency.NativeEfficiency) ... ok
+test_fresh_handoff_has_complete_requirements_bounded_summary_and_no_claimed_review (test_native_efficiency.NativeEfficiency) ... ok
+test_local_repair_cache_and_host_packet_never_establish_final_completion (test_native_efficiency.NativeEfficiency) ... ok
+test_repair_failure_diagnostics_are_retrievable_and_full_finish_always_runs_all_gates (test_native_efficiency.NativeEfficiency) ... ok
+test_unready_no_harness_scope_and_branch_block_commands (test_native_efficiency.NativeEfficiency) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 2.378s
+
+OK

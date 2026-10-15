@@ -1,0 +1,160 @@
+{
+  "kind": "descriptive measured token volume and request metrics",
+  "overall": {
+    "source": "Disjoint original-turn cumulative deltas; automatic review turns explicitly separated",
+    "model": null,
+    "session_id": null,
+    "turn_id": null,
+    "measured_usage": {
+      "input_tokens": 2954305,
+      "cached_input_tokens": 2798720,
+      "output_tokens": 21059,
+      "reasoning_output_tokens": 3554,
+      "total_tokens": 2975364
+    },
+    "complete": true,
+    "missing_usage": [],
+    "request_accounting_complete": true,
+    "model_calls_recorded": 37,
+    "cached_input_ratio": 0.947336175513361,
+    "output_token_ratio": 0.007077789473825724,
+    "mean_input_tokens_per_model_call": 79846.08108108108,
+    "flags": {
+      "usage_incomplete": false,
+      "request_accounting_incomplete": false,
+      "unknown_metrics": []
+    }
+  },
+  "agent_breakdown_available": true,
+  "primary": {
+    "source": "Codex token_count cumulative counters",
+    "model": "gpt-6.1-sol",
+    "session_id": "01a14015-47d3-7ae1-a349-2262998a9c5b",
+    "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+    "measured_usage": {
+      "input_tokens": 2504708,
+      "cached_input_tokens": 2415872,
+      "output_tokens": 19505,
+      "reasoning_output_tokens": 3276,
+      "total_tokens": 2524213
+    },
+    "complete": true,
+    "missing_usage": [],
+    "request_accounting_complete": true,
+    "model_calls_recorded": 27,
+    "cached_input_ratio": 0.964532392598259,
+    "output_token_ratio": 0.007727160901239317,
+    "mean_input_tokens_per_model_call": 92766.96296296296,
+    "flags": {
+      "usage_incomplete": false,
+      "request_accounting_incomplete": false,
+      "unknown_metrics": []
+    }
+  },
+  "subagents": [
+    {
+      "source": "Codex token_count cumulative counters",
+      "model": "gpt-6.1-sol",
+      "session_id": "01a1401a-c7a3-78d0-a846-aa32fce0c6b6",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "measured_usage": {
+        "input_tokens": 371965,
+        "cached_input_tokens": 330368,
+        "output_tokens": 1174,
+        "reasoning_output_tokens": 87,
+        "total_tokens": 373139
+      },
+      "complete": true,
+      "missing_usage": [],
+      "request_accounting_complete": true,
+      "model_calls_recorded": 7,
+      "cached_input_ratio": 0.8881695858481309,
+      "output_token_ratio": 0.0031462806085667807,
+      "mean_input_tokens_per_model_call": 53137.857142857145,
+      "flags": {
+        "usage_incomplete": false,
+        "request_accounting_incomplete": false,
+        "unknown_metrics": []
+      }
+    },
+    {
+      "source": "Codex token_count cumulative counters",
+      "model": "codex-auto-review",
+      "session_id": "01a1401a-3acd-74b1-ab48-8b398cb485f9",
+      "turn_id": "01a1401a-3b02-7702-9f0e-4448c3698079",
+      "measured_usage": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "complete": true,
+      "missing_usage": [],
+      "request_accounting_complete": true,
+      "model_calls_recorded": 1,
+      "cached_input_ratio": 0.29085161035368506,
+      "output_token_ratio": 0.00779297162182032,
+      "mean_input_tokens_per_model_call": 20244.0,
+      "flags": {
+        "usage_incomplete": false,
+        "request_accounting_incomplete": false,
+        "unknown_metrics": []
+      }
+    },
+    {
+      "source": "Codex token_count cumulative counters",
+      "model": "codex-auto-review",
+      "session_id": "01a1401a-3acd-74b1-ab48-8b398cb485f9",
+      "turn_id": "01a1401b-50ab-7581-a96f-1c417f4520c7",
+      "measured_usage": {
+        "input_tokens": 27581,
+        "cached_input_tokens": 19200,
+        "output_tokens": 116,
+        "reasoning_output_tokens": 52,
+        "total_tokens": 27697
+      },
+      "complete": true,
+      "missing_usage": [],
+      "request_accounting_complete": true,
+      "model_calls_recorded": 1,
+      "cached_input_ratio": 0.6961313948007687,
+      "output_token_ratio": 0.004188179225186843,
+      "mean_input_tokens_per_model_call": 27581.0,
+      "flags": {
+        "usage_incomplete": false,
+        "request_accounting_incomplete": false,
+        "unknown_metrics": []
+      }
+    },
+    {
+      "source": "Codex token_count cumulative counters",
+      "model": "codex-auto-review",
+      "session_id": "01a1401a-3acd-74b1-ab48-8b398cb485f9",
+      "turn_id": "01a1401b-8426-7782-9b9b-c40ad50fc053",
+      "measured_usage": {
+        "input_tokens": 29807,
+        "cached_input_tokens": 27392,
+        "output_tokens": 105,
+        "reasoning_output_tokens": 41,
+        "total_tokens": 29912
+      },
+      "complete": true,
+      "missing_usage": [],
+      "request_accounting_complete": true,
+      "model_calls_recorded": 1,
+      "cached_input_ratio": 0.9189787633777301,
+      "output_token_ratio": 0.003510296870821075,
+      "mean_input_tokens_per_model_call": 29807.0,
+      "flags": {
+        "usage_incomplete": false,
+        "request_accounting_incomplete": false,
+        "unknown_metrics": []
+      }
+    }
+  ],
+  "cost": {
+    "status": "not_inferred",
+    "reason": "Requires separate explicit rates or billing data."
+  }
+}

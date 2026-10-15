@@ -1,0 +1,193 @@
+{
+  "id": "TS-A-CATALOG-SEARCH",
+  "spec": "task-set-a-requirements.md",
+  "allowed_paths": [
+    "apps/api/",
+    "packages/axc/rest/",
+    "packages/axc/application-services/",
+    "packages/axc/domain/",
+    "packages/axc/persistence/",
+    "packages/axc/service-mongoose/",
+    "packages/axc-verification/",
+    "apps/docs/"
+  ],
+  "protected_paths": [
+    "apps/api/host.json",
+    "apps/api/src/service-config/",
+    "apps/api/scripts/sync-local-settings.ts",
+    "apps/api/scripts/start-host.ts",
+    "apps/api/rolldown.config.ts"
+  ],
+  "checks": [
+    [
+      "pnpm",
+      "test",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    [
+      "pnpm",
+      "run",
+      "build",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "typecheck",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "test:arch",
+      "--env-mode=loose"
+    ],
+    [
+      "node",
+      "{verification_dir}/course_acceptance.mjs"
+    ],
+    [
+      "node",
+      "{verification_dir}/course_acceptance.mjs",
+      "--host"
+    ],
+    [
+      "python3",
+      "{verification_dir}/task_a_gates.py",
+      "--repo",
+      ".",
+      "--base",
+      "{base_commit}",
+      "--out",
+      "{validation_dir}/submitted"
+    ]
+  ],
+  "settings": {
+    "model": "gemma4:26b",
+    "temperature": 0,
+    "context_tokens": 98304,
+    "max_output_tokens": 4000,
+    "max_calls": 20,
+    "token_budget": 300000,
+    "timeout_seconds": 900,
+    "cache": "verified model unload before every generation",
+    "mode": "local only; hosted cost unmeasured"
+  },
+  "check_timeout": 900,
+  "prompt_file": "task-set-a-prompt.md",
+  "verification_files": [
+    "course_acceptance.mjs",
+    "task_a_gates.py",
+    "node_test_reporter.mjs"
+  ],
+  "agent_command": [
+    "python3",
+    "-B",
+    "{harness_dir}/coding_agent.py",
+    "--variant",
+    "relevant_context"
+  ],
+  "agent_timeout": 5400,
+  "version": "v7.12.03",
+  "implementation_steps": [
+    {
+      "path": "packages/axc/application-services/src/course-types.ts",
+      "instruction": "Define the complete required Course model and typed query, success and error contracts."
+    },
+    {
+      "path": "packages/axc/application-services/src/course-fixtures.ts",
+      "instruction": "Create at least twelve varied local course fixtures with mixed modality/status/tags and valid dates."
+    },
+    {
+      "path": "packages/axc/application-services/src/course-search.ts",
+      "instruction": "Implement stateless fixture search, combined filters, raw-input validation, sorting and pagination against the exact specification."
+    },
+    {
+      "path": "packages/axc/application-services/src/index.ts",
+      "instruction": "Extend the existing ApplicationServices interface and factory; preserve all original health exports and behavior and expose course APIs through the public package root."
+    },
+    {
+      "path": "packages/axc/rest/src/index.ts",
+      "instruction": "Add the Hono GET /api/courses route, exact response envelope and HTTP 400 handling; preserve health and authorization-header forwarding."
+    },
+    {
+      "path": "apps/api/src/index.ts",
+      "instruction": "Register the courses GET Azure HTTP function using the existing composition root and adapter; preserve health registration and startup."
+    },
+    {
+      "path": "packages/axc/application-services/src/course-search.test.ts",
+      "instruction": "Add executable Vitest tests in this registered package for required Task A behaviors, including two filter combinations, invalid inputs and no matches; follow strict TS narrowing."
+    },
+    {
+      "path": "apps/api/test/courses.test.mjs",
+      "instruction": "Add executable Node HTTP integration tests using the real local app/host and public package exports; plain JavaScript only; cover success and invalid requests."
+    },
+    {
+      "path": "apps/api/package.json",
+      "instruction": "Add test:courses as node --test test/courses.test.mjs while preserving original scripts, dependencies, exports and other manifest fields."
+    },
+    {
+      "path": "apps/docs/docs/courses.md",
+      "instruction": "Document endpoint path, all query parameters/defaults, and success/error responses."
+    }
+  ],
+  "repair_targets": {
+    "independent_api": "packages/axc/application-services/src/course-search.ts",
+    "submitted_tests": "packages/axc/application-services/src/course-search.test.ts"
+  },
+  "repository_contracts": true,
+  "always_context": [
+    "packages/axc/README.md"
+  ],
+  "context_groups": {
+    "packages/axc/application-services/src/course-types.ts": [],
+    "packages/axc/application-services/src/course-fixtures.ts": [
+      "packages/axc/application-services/src/course-types.ts"
+    ],
+    "packages/axc/application-services/src/course-search.ts": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/course-fixtures.ts"
+    ],
+    "packages/axc/application-services/src/index.ts": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/course-search.ts",
+      "packages/axc/application-services/src/health.test.ts"
+    ],
+    "packages/axc/rest/src/index.ts": [
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/application-services/src/course-types.ts"
+    ],
+    "apps/api/src/index.ts": [
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/rest/src/index.ts"
+    ],
+    "packages/axc/application-services/src/course-search.test.ts": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/course-fixtures.ts",
+      "packages/axc/application-services/src/course-search.ts"
+    ],
+    "apps/api/test/courses.test.mjs": [
+      "apps/api/src/index.ts",
+      "packages/axc/rest/src/index.ts",
+      "packages/axc/application-services/src/index.ts",
+      "apps/api/package.json",
+      "apps/api/scripts/start-host.ts"
+    ],
+    "apps/api/package.json": [
+      "apps/api/test/courses.test.mjs"
+    ],
+    "apps/docs/docs/courses.md": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/docs/docs/healthcheck.md"
+    ]
+  },
+  "defer_validation_until_planned_files": true,
+  "action_batch_size": 2,
+  "focused_local_validation": true
+}

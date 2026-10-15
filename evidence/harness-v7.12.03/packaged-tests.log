@@ -1,0 +1,28 @@
+test_fixed_task_a_generation_limits_and_all_eight_gates_remain_unchanged (test_native_efficiency.NativeEfficiency) ... ok
+test_fresh_handoff_has_complete_requirements_bounded_summary_and_no_claimed_review (test_native_efficiency.NativeEfficiency) ... ok
+test_local_repair_cache_and_host_packet_never_establish_final_completion (test_native_efficiency.NativeEfficiency) ... ok
+test_repair_failure_diagnostics_are_retrievable_and_full_finish_always_runs_all_gates (test_native_efficiency.NativeEfficiency) ... ok
+test_unready_no_harness_scope_and_branch_block_commands (test_native_efficiency.NativeEfficiency) ... ok
+test_duplicate_snapshots_and_followup_are_excluded_end_to_end (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_empty_provider_ledger_does_not_replace_unknown_counters_with_zero (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_known_provider_calls_preserve_real_zero_ratios (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_known_single_session_and_input_are_unchanged (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_missing_categories_remain_null_and_known_ratios_still_report (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_missing_request_accounting_does_not_promote_a_recorded_count (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_missing_request_snapshot_keeps_original_totals_without_call_estimates (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_multiple_agents_use_aggregate_counters_and_preserve_each_session (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_pending_original_final_usage_remains_incomplete_despite_followup (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_provider_ledgers_preserve_complete_call_counts_with_unknown_token_categories (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_totals_and_call_counts_are_not_inferred_from_other_counters_or_requests (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_zero_usage_and_zero_calls_preserve_zero_with_undefined_ratios (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_each_missing_failing_or_timed_out_prerequisite_blocks_readiness (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_exact_pnpm_pin_mismatch_blocks_readiness_even_when_command_succeeds (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_failed_preflight_blocks_adapter_execution_before_any_command (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_missing_dependency_link_and_localhost_denial_are_actionable_failures (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_only_exact_pnpm_pins_require_version_equality (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_ready_probes_are_bounded_offline_read_only_and_final_gates_remain_required (test_preflight_readiness.PreflightReadinessTests) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 2.593s
+
+OK

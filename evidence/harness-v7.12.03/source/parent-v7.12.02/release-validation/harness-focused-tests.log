@@ -1,0 +1,29 @@
+...............F.{"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+.{"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+........{"call":1,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+{"call":2,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+{"call":3,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+{"call":4,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+...........................
+======================================================================
+FAIL: test_real_finish_and_recovery_cli_generate_all_evidence_without_model_or_revalidation (test_roundtrip_efficiency.Workflow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/openai-harness-v7.12.02/test_roundtrip_efficiency.py", line 162, in test_real_finish_and_recovery_cli_generate_all_evidence_without_model_or_revalidation
+    self.assertEqual(completed.returncode,0,completed.stderr);self.assertEqual(marker.read_text(),'x')
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/openai-harness-v7.12.02/run_task_a.py", line 158, in <module>
+    result = finish(a.evidence, a.usage, a.codex_log, a.turn_id, rates, a.archive, a.execute, a.subagent)
+  File "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/openai-harness-v7.12.02/coding_workflow.py", line 79, in finish
+    summary = check(root, usage_file, codex_log, turn_id, rates, subagents)
+  File "/Users/dfortun/Documents/Codex/2026-10-14/read-both-task-a-documents-and-3/outputs/openai-harness-v7.12.02/run_task_a.py", line 105, in check
+    record = {'label': meta['label'], 'repetition': meta['repetition'], 'execution': meta['execution'],
+KeyError: 'repetition'
+
+
+----------------------------------------------------------------------
+Ran 53 tests in 4.274s
+
+FAILED (failures=1)
