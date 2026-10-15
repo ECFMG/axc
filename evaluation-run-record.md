@@ -8,8 +8,8 @@ This record incorporates the supplied Task A findings from session `01a13fb0-30d
 | Developer / Operator | Dane Fortun; implementation by Codex |
 | Reviewer | Unassigned |
 | Harness | Codex Desktop, direct implementation; no subagents in the supplied run |
-| Model | gpt-6.1-sol, as reported by the supplied run metadata |
-| License / Plan | Not provided for this run |
+| Model | gpt-6.1-sol medium reasoning |
+| License / Plan | Business Pro Lite Seat |
 | Codebase | ECFMG/axc; supplied source baseline `d6153e2f09645297fc17749a438e7728d9754fe0` |
 | Task Set | A — TS-A-CATALOG-SEARCH |
 | Run Type | Implementation and validation of an existing catalog baseline |
@@ -25,7 +25,7 @@ This record incorporates the supplied Task A findings from session `01a13fb0-30d
 | Cached Tokens | 2,028,288; included in input |
 | Output Tokens | 9,882; includes 1,800 reasoning output tokens |
 | Total Tokens or Credits Used | 2,099,009 recorded tokens through **2026-10-15 13:17:28.581 UTC**; `usage.json` is incomplete and excludes later original-turn calls and the final response |
-| Estimated Cost | Unavailable; no dollar or credit estimate substituted |
+| Estimated Cost | **$0.423327 (approximately $0.42)** using user-supplied Standard Mode rates and recorded counters; provisional, not an actual billed charge; assumptions below |
 | Elapsed Time | Final elapsed time unavailable; task started at 2026-10-15 13:12:17.483 UTC, counters recorded through 13:17:28.581 UTC |
 | Number of Human Interventions / Redirects | Not measured in the supplied artifacts |
 | Reviewer Notes | Existing catalog implementation retained and validated in the supplied run; only the stricter unknown-parameter handling, regression tests, HTTP scenario and related documentation were newly added there |
