@@ -5,5 +5,5 @@
 		"rootDir": "src"
 	},
 	"include": ["src/**/*.ts"],
-	"references": [{ "path": "../../cellix/serenity-framework" }, { "path": "../../cellix/local-dev" }]
+	"references": [{ "path": "../../axc/application-services" }, { "path": "../../cellix/serenity-framework" }, { "path": "../../cellix/local-dev" }]
 }
