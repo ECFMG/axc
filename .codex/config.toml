@@ -1,0 +1,19 @@
+# Project-scoped Codex configuration. Codex loads it only when this project is trusted.
+# Hooks live in .codex/hooks.json.
+
+# TypeScript language server exposed over MCP (workstation prerequisite: npm i -g @mizchi/lsmcp@0.10.0 typescript-language-server).
+# Only read-only navigation and diagnostics tools are enabled; edits go through the normal patch tool.
+[mcp_servers.typescript_lsp]
+command = "lsmcp"
+args = ["-p", "typescript"]
+startup_timeout_sec = 30
+tool_timeout_sec = 60
+enabled_tools = [
+  "lsp_get_definitions",
+  "lsp_find_references",
+  "lsp_get_hover",
+  "lsp_get_diagnostics",
+  "lsp_get_document_symbols",
+  "lsp_get_signature_help",
+]
+default_tools_approval_mode = "approve"

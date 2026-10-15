@@ -1,0 +1,30 @@
+{
+	"description": "Repository lifecycle hooks: Biome feedback after each edit, and a verification gate before a turn that changed files can finish.",
+	"hooks": {
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/post-edit-check.mjs\"",
+						"statusMessage": "Checking edited files with Biome",
+						"timeout": 60
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/stop-gate.mjs\"",
+						"statusMessage": "Running verification gate",
+						"timeout": 900
+					}
+				]
+			}
+		]
+	}
+}

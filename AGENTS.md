@@ -27,16 +27,7 @@ General conventions for working in this repository.
 - Put new implementations and data in their own modules and export them from `index.ts`. Do not move existing code out of `index.ts` unless the task requires it.
 
 ## CellixJS conventions
-New business features use the structure of the CellixJS sample application. The existing `health` endpoint is infrastructure and is not a structural example. Reference checkout (read-only): `/Volumes/files/src/CELLIX/cellixjs/packages/ocom`.
-- Group code by bounded context and aggregate in every layer, with an `index.ts` at each folder level re-exporting the level below:
-  - domain: `src/domain/contexts/<context>/<aggregate>/` holding `<aggregate>.ts` (entity type or reference) and `<aggregate>.value-objects.ts` (allowed values, limits, constructors), exposed from `src/index.ts` as the `Domain` namespace so callers write `Domain.Contexts.<Context>.<Aggregate>.<Name>`.
-  - persistence: read access in `src/datasources/readonly/<context>/<aggregate>/<aggregate>.read-repository.ts`, created by `get<Aggregate>ReadRepository(...)`; a `DataSources` object (`readonlyDataSource.<Context>.<Aggregate>.<Aggregate>ReadRepo`) built by `DataSourcesFactoryImpl` and exported from the package root. Seed or fixture data lives in persistence.
-  - read repositories own data access: filtering, matching, sorting and paging happen in the repository method, so the same contract can later be backed by a database query. Give repositories methods shaped like the question being asked rather than a load-everything method that callers filter in memory.
-  - application services: one file per operation in `src/contexts/<context>/<aggregate>/` (`query-<name>.ts`, `create.ts`, ...), each exporting a function that takes `dataSources` and returns the operation. Query operations stay thin: pass typed criteria to the read repository and shape its result. The aggregate and context `index.ts` files compose these, and `ApplicationServices` exposes them as `<Context>.<Aggregate>.<operation>`.
-  - composition root: `apps/api` creates the data-sources factory once and passes it to the application-services factory through the API context.
-- Add only the contexts, aggregates, folders and files the feature uses. Do not scaffold unit-of-work, domain events or empty contexts for read-only features, and do not add value-object classes or entity base classes unless the feature mutates or enforces invariants on an aggregate.
-- Keep this repo's own rules where they are stricter: HTTP parsing and error bodies stay in `rest`, application services receive already-typed input, and dependencies are required, not optional.
-- To check a pattern, read the matching ocom files, including the `*.instructions.md` design notes under its domain contexts and the tests next to each file. Do not edit the checkout, copy files from it, or import from it. If the path is missing, apply the rules above from this file alone.
+New business features follow the layout of the CellixJS sample application: code grouped by bounded context and aggregate in every layer, one application-service file per operation, and read repositories that own filtering, sorting and paging. The full layout is in the `cellix-feature-layout` skill (`.agents/skills/cellix-feature-layout/SKILL.md`). Read it before planning any new feature; it is required, not optional.
 
 ## Code style
 - Write for a reviewer reading the diff: small named functions, one step per line, descriptive names. Prefer clarity over brevity; avoid packing several conditions or side effects into one expression.
@@ -64,11 +55,12 @@ New business features use the structure of the CellixJS sample application. The 
 - The lockfile diff should contain only entries for the dependencies you changed.
 
 ## Sandbox and verification
-- The sandbox has no network access. Commands that need it (`pnpm run verify`, `pnpm audit`, `pnpm run snyk`) require approval, so batch them.
-- While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`, `pnpm run knip`.
-- Run `pnpm run knip` once before your first edit and note what it reports. Run it again after your last code change and before the review; anything new it reports (unused files, exports, types or dependencies) comes from your change and must be removed or used before the review starts.
-- Run verification once, at the end, as a single command: `pnpm run verify; pnpm run snyk`. Everything must pass.
-- If `pnpm audit` or Snyk reports an advisory introduced by your dependency changes, fix it (e.g. upgrade or pin a patched version). If an advisory already exists on the base commit and fixing it needs files outside the task's write boundary (e.g. `pnpm-workspace.yaml` overrides), do not fix it; list it in your summary with the patched version. Report Snyk authentication or organization errors instead of working around them.
+- The sandbox has no network access. Commands that need it (`pnpm run verify`, `pnpm audit`, `pnpm run snyk`) require approval, so batch them and run them once at the end.
+- Follow the `change-verification` skill (`.agents/skills/change-verification/SKILL.md`): read it before your first edit (knip baseline), and again before review (self-check list) and before final verification.
+
+## Tools
+- The `typescript_lsp` MCP server provides TypeScript language-server queries: `lsp_get_definitions`, `lsp_find_references`, `lsp_get_hover`, `lsp_get_document_symbols`, `lsp_get_signature_help` and `lsp_get_diagnostics`. Pass the repository root as `root` and a repository-relative `relativePath`; `line` can be a line number or a snippet of the line. Prefer `lsp_find_references` and `lsp_get_definitions` over text search when tracing how a type, factory or export is used across packages, and use `lsp_get_diagnostics` for a quick type check of a file you just edited.
+- Repository hooks give automatic feedback: Biome findings after each edit, and a verification gate when you finish with uncommitted changes. Treat their output like a failing check: fix the cause. The `change-verification` skill describes them.
 
 ## Messages
 These rules apply only to what you write to the user. They do not limit how much you read, explore, or test.
@@ -76,24 +68,5 @@ These rules apply only to what you write to the user. They do not limit how much
 - Keep the final summary concise: include what the task asks you to report, without repeating file contents or full command output.
 - End the summary with a compact table mapping each requirement and acceptance criterion to the test or file that covers it.
 
-## Self-check
-Before the review, check your diff for:
-- Every requirement and acceptance criterion from your plan implemented and tested.
-- Unit tests in each layer with logic, covering boundaries and every rejection path.
-- Optional dependencies or silent fallbacks; stand-in values; duplicated types or constants.
-- Dense or hard-to-follow code that a reviewer would need to unpack.
-- Folder, file, export and naming structure matching the CellixJS conventions above.
-- Changes to unrelated lines, including formatting; new entries placed out of the existing order (e.g. alphabetical dependencies).
-- Leftover debug code, TODOs, or unused exports (confirmed with `pnpm run knip` against your baseline).
-- `pnpm run test:arch` passing, including the per-package CellixJS convention suites.
-- Files that are not deliverables (plans, notes, requirement maps, scratch files).
-- Generic constant names, one-line `if` statements, and truthiness checks on optional values.
-- Documentation updated where the task or spec requires it.
-
 ## Adversarial review
-Before final verification, get an independent review of your change. Use a sub-agent, not self-review.
-- Spawn the reviewer with `fork_turns: "none"`, `model: "gpt-6.1-sol"`, `reasoning_effort: "medium"`. Give it the original task instructions verbatim, the paths of any spec files they reference, and the base commit. Do not include your own reasoning or summary of the change.
-- The reviewer's brief: find defects in the uncommitted change (`git diff <base>` plus untracked files) against the task instructions, the spec, and this file. Look for unmet or misread requirements, incorrect edge-case behaviour, missing or weak tests, layering, single-source-of-truth and CellixJS-convention violations, and out-of-scope changes. Report each finding with severity (blocker / major / minor), file and line, and evidence. Do not edit files or run commands that need network. Say "no blocking findings" if there are none. Report findings only, without restating the change.
-- Fix blocker and major findings that are within the task's scope. Ignore style preferences and suggestions that would expand scope. If you reject a finding, record why.
-- After fixing, spawn a fresh reviewer with the same brief. Stop when a review returns no blocker or major findings, or after 3 review rounds.
-- In your final summary, list each round's findings and how you resolved them.
+Before final verification, get an independent sub-agent review of your change by following the `adversarial-review` skill (`.agents/skills/adversarial-review/SKILL.md`). Self-review does not count.
