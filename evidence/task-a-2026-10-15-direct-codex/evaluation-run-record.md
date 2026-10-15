@@ -26,11 +26,11 @@ This record covers the October 15, 2026 Task A implementation and its publicatio
 | Reasoning Output Tokens | 3,554 aggregate; primary 3,276; code reviewer 87; automatic approval reviews 191. Subset of output. |
 | Total Tokens or Credits Used | **2,975,364 recorded tokens**; primary 2,524,213; code reviewer 373,139; automatic approval reviews 78,012. Original final responses included; all later turns excluded. Credits unmeasured. |
 | Projected Token Estimate | Approximately 3 million initially; exact assumption arithmetic 3,018,000 = 40 calls × 75,000 input + 18,000 output. Recorded during initial inspection, before source extraction or implementation. Separate from measured usage. |
-| Estimated Cost | No run-specific billed-dollar counters or current-run pricing supplied; dollar estimate not calculated. Reference-run prices and costs are not reused. |
+| Estimated Cost | **USD $0.801632 (~$0.80) API-equivalent estimate** using the supplied screenshot rates. Confirmed gpt-6.1-sol portion: $0.742280; automatic-review portion: $0.059352 assuming the same rates for codex-auto-review. Actual billed charges unavailable. See [calculation](cost-estimate.json). |
 | Elapsed Time | 483.184 seconds (8m 3.184s): 2026-10-15T15:03:52.176Z to 2026-10-15T15:11:55.360Z. Publication follow-ups excluded. |
 | Number of Human Interventions / Redirects | 0 after the edited original-task boundary. Three automatic permission reviews allowed locked dependency restore and localhost validation. Superseded original turn and later publication requests excluded. |
 | Reviewer Notes |  |
-| Final Rubric Score | Not scored; independent human assessment pending |
+| Final Rubric Score | **90/100 (27/30)** — Codex assessment across six equally weighted categories; independent human review pending. See [assessment](rubric-assessment.json). |
 | Recommendation | Candidate for Pilot for this non-production sample, subject to independent human review |
 
 ## Implementation and validation
@@ -43,7 +43,7 @@ Publication applies the exact original 11-file patch to the newer AXC baseline; 
 
 - [Original validation logs](validation/)
 - [Complete actual usage](usage.json) and [raw token snapshots](usage-snapshots.json)
-- [Separate projection](projection.json) and [cost availability](cost-estimate.json)
+- [Separate projection](projection.json) and [cost estimate](cost-estimate.json)
 - [Original source and write-boundary provenance](provenance.json)
 - [Original source ZIP](task-a-source.zip) and [patch](task-a.patch)
 
@@ -52,3 +52,32 @@ Publication applies the exact original 11-file patch to the newer AXC baseline; 
 Original session: `01a14015-47d3-7ae1-a349-2262998a9c5b`. Original edited turn: `01a14017-5066-7693-a4c9-36f789890dcc`. Primary ending counter timestamp: `2026-10-15T15:11:55.356Z`. Source log paths, agent turn IDs, timestamps, cumulative boundaries and individual deltas appear in `usage.json`.
 
 The primary and code-review logs start with fresh counter origins; no explicit preceding cumulative snapshot exists. Zero baselines are inferred from those origins. Usage is ending cumulative minus starting cumulative, never a sum of snapshots. Disjoint primary, reviewer and automatic-review deltas are added once. Cached input is included in input; reasoning output is included in output. All five requested token counters and original final responses are accounted for. Superseded preparation and later follow-up turns are excluded. Billed dollars and credits are unmeasured.
+
+## Final rubric assessment
+
+Six Task A categories use the reference records' 1–5 scale with equal weights because no numeric weights were supplied: **27 / 30 × 100 = 90/100**. This is Codex's evidence-based assessment; independent human review remains pending.
+
+| Category | Score | Basis |
+| --- | --- | --- |
+| Functional correctness | 5/5 | All twelve acceptance criteria pass; both independent endpoint oracles pass 29/29 checks. |
+| Tests and validation | 5/5 | Full suite, 67 new tests, lint, build, typecheck, 19 architecture checks and submitted-test gates pass. Publication full suite reruns with zero cached tasks. |
+| Architecture and codebase alignment | 4/5 | Existing application-service injection, Hono routing and Azure composition root are preserved. Read-only review reports no findings. Evidence covers a small fixture-backed sample, not broader domain or production architecture. |
+| Security and guardrail compliance | 5/5 | Implementation respects allowed paths and preserves authentication, dependencies, protected settings and Cellix source. This scores task-boundary compliance; no dedicated security scan was run. |
+| Context/token/cost efficiency | 3/5 | 2,975,364 recorded tokens remain below the 3,018,000 projection, but repeated input context dominates and no matched harness-efficiency comparison proves savings. |
+| Developer workflow fit | 5/5 | Committed implementation, API documentation, patch, source archive, frozen harness, full logs, finalized usage and successful new-baseline checks are published with a clear root evaluation record. |
+
+## Final cost estimate
+
+The user-supplied [Standard-mode pricing screenshot](pricing-source.png) lists $2.00 per million uncached input tokens, $0.10 cached input, $10.00 output, and $2.50 cache writes. Cached input is a subset of input; reasoning output is a subset of output. Cache-write counters are zero in all original-task agent logs. Maximum per-call input is 120,305 tokens, below the 272K long-context threshold, so no multiplier applies.
+
+| Component | Input tokens | Cached input | Output tokens | Estimated USD |
+| --- | ---: | ---: | ---: | ---: |
+| Primary gpt-6.1-sol | 2,504,708 | 2,415,872 | 19,505 | $0.6143092 |
+| Code reviewer gpt-6.1-sol | 371,965 | 330,368 | 1,174 | $0.1279708 |
+| Confirmed-model subtotal | 2,876,673 | 2,746,240 | 20,679 | **$0.7422800** |
+| Automatic reviews, assuming the same rates | 77,632 | 52,480 | 380 | $0.0593520 |
+| All-agent estimate with that assumption | 2,954,305 | 2,798,720 | 21,059 | **$0.8016320** |
+
+All-agent arithmetic: `((2,954,305 − 2,798,720) × $2.00 + 2,798,720 × $0.10 + 21,059 × $10.00 + 0 × $2.50) / 1,000,000 = $0.801632`.
+
+Automatic reviews identify their model as `codex-auto-review`; its actual price is unavailable. The $0.801632 total therefore assumes the supplied gpt-6.1-sol rates also apply to those reviews. The model-confirmed $0.742280 portion is priced directly from the supplied rates. Both are API-equivalent estimates, not measured subscription billing. Original final responses are included; all follow-up and publication work is excluded.

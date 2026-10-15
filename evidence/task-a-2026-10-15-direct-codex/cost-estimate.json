@@ -1,8 +1,158 @@
 {
-  "actual_billed_cost": null,
-  "estimated_cost": null,
   "currency": "USD",
-  "reason": "No task-specific billed-dollar counters or pricing rates supplied for this run. Reference-run prices are not treated as this run's billing.",
+  "estimated_cost_usd": 0.801632,
+  "confirmed_model_rate_estimate_usd": 0.74228,
+  "automatic_review_assumed_rate_estimate_usd": 0.059352,
+  "actual_billed_cost": null,
+  "estimate_kind": "API-equivalent estimate from measured original-task tokens and user-supplied screenshot rates; not a measured billed charge",
+  "rates_per_million_tokens": {
+    "uncached_input": 2,
+    "cached_input": 0.1,
+    "output": 10,
+    "cache_writes": 2.5
+  },
+  "pricing_source": "User attachment Screenshot 2026-10-14 at 3.16.15 PM.png, supplied in this follow-up",
+  "long_context_rule": {
+    "threshold_input_tokens": 272000,
+    "input_and_cache_multiplier_above_threshold": 2,
+    "maximum_observed_per_call_input_tokens": 120305,
+    "applies": false
+  },
+  "formula": "((input_tokens - cached_input_tokens) * 2 + cached_input_tokens * 0.10 + output_tokens * 10 + cache_write_tokens * 2.50) / 1,000,000",
+  "measurement_scope": "Original edited Task A turn and its code/automatic reviews, including final responses. Later conversations and publication excluded.",
+  "accounting_rules": "Cached input is included in input; reasoning output is included in output. Zero cache writes verified from original cumulative logs.",
+  "agents": [
+    {
+      "role": "primary",
+      "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+      "model": "gpt-6.1-sol",
+      "rate_basis": "User-supplied gpt-6.1-sol Standard rates",
+      "maximum_per_call_input_tokens": 120305,
+      "long_context_multiplier_applied": false,
+      "measured_usage": {
+        "input_tokens": 2504708,
+        "cached_input_tokens": 2415872,
+        "output_tokens": 19505,
+        "reasoning_output_tokens": 3276,
+        "total_tokens": 2524213
+      },
+      "uncached_input_tokens": 88836,
+      "cache_write_tokens": 0,
+      "cache_write_baseline_cumulative": 0,
+      "cache_write_ending_cumulative": 0,
+      "components_usd": {
+        "uncached_input": 0.177672,
+        "cached_input": 0.2415872,
+        "output_including_reasoning": 0.19505,
+        "cache_writes": 0.0
+      },
+      "estimated_cost_usd": 0.6143092
+    },
+    {
+      "role": "Cavecrew read-only code reviewer",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "model": "gpt-6.1-sol",
+      "rate_basis": "User-supplied gpt-6.1-sol Standard rates",
+      "maximum_per_call_input_tokens": 63276,
+      "long_context_multiplier_applied": false,
+      "measured_usage": {
+        "input_tokens": 371965,
+        "cached_input_tokens": 330368,
+        "output_tokens": 1174,
+        "reasoning_output_tokens": 87,
+        "total_tokens": 373139
+      },
+      "uncached_input_tokens": 41597,
+      "cache_write_tokens": 0,
+      "cache_write_baseline_cumulative": 0,
+      "cache_write_ending_cumulative": 0,
+      "components_usd": {
+        "uncached_input": 0.083194,
+        "cached_input": 0.0330368,
+        "output_including_reasoning": 0.01174,
+        "cache_writes": 0.0
+      },
+      "estimated_cost_usd": 0.1279708
+    },
+    {
+      "role": "Automatic permission review; system-created auxiliary agent",
+      "turn_id": "01a1401a-3b02-7702-9f0e-4448c3698079",
+      "model": "codex-auto-review",
+      "rate_basis": "Assumption: apply user-supplied gpt-6.1-sol rates to codex-auto-review; actual model price unavailable",
+      "maximum_per_call_input_tokens": 20244,
+      "long_context_multiplier_applied": false,
+      "measured_usage": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "uncached_input_tokens": 14356,
+      "cache_write_tokens": 0,
+      "cache_write_baseline_cumulative": 0,
+      "cache_write_ending_cumulative": 0,
+      "components_usd": {
+        "uncached_input": 0.028712,
+        "cached_input": 0.0005888,
+        "output_including_reasoning": 0.00159,
+        "cache_writes": 0.0
+      },
+      "estimated_cost_usd": 0.0308908
+    },
+    {
+      "role": "Automatic permission review; system-created auxiliary agent",
+      "turn_id": "01a1401b-50ab-7581-a96f-1c417f4520c7",
+      "model": "codex-auto-review",
+      "rate_basis": "Assumption: apply user-supplied gpt-6.1-sol rates to codex-auto-review; actual model price unavailable",
+      "maximum_per_call_input_tokens": 27581,
+      "long_context_multiplier_applied": false,
+      "measured_usage": {
+        "input_tokens": 27581,
+        "cached_input_tokens": 19200,
+        "output_tokens": 116,
+        "reasoning_output_tokens": 52,
+        "total_tokens": 27697
+      },
+      "uncached_input_tokens": 8381,
+      "cache_write_tokens": 0,
+      "cache_write_baseline_cumulative": 0,
+      "cache_write_ending_cumulative": 0,
+      "components_usd": {
+        "uncached_input": 0.016762,
+        "cached_input": 0.00192,
+        "output_including_reasoning": 0.00116,
+        "cache_writes": 0.0
+      },
+      "estimated_cost_usd": 0.019842
+    },
+    {
+      "role": "Automatic permission review; system-created auxiliary agent",
+      "turn_id": "01a1401b-8426-7782-9b9b-c40ad50fc053",
+      "model": "codex-auto-review",
+      "rate_basis": "Assumption: apply user-supplied gpt-6.1-sol rates to codex-auto-review; actual model price unavailable",
+      "maximum_per_call_input_tokens": 29807,
+      "long_context_multiplier_applied": false,
+      "measured_usage": {
+        "input_tokens": 29807,
+        "cached_input_tokens": 27392,
+        "output_tokens": 105,
+        "reasoning_output_tokens": 41,
+        "total_tokens": 29912
+      },
+      "uncached_input_tokens": 2415,
+      "cache_write_tokens": 0,
+      "cache_write_baseline_cumulative": 0,
+      "cache_write_ending_cumulative": 0,
+      "components_usd": {
+        "uncached_input": 0.00483,
+        "cached_input": 0.0027392,
+        "output_including_reasoning": 0.00105,
+        "cache_writes": 0.0
+      },
+      "estimated_cost_usd": 0.0086192
+    }
+  ],
   "token_usage": "usage.json",
   "projection": "projection.json"
 }

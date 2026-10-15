@@ -45,3 +45,7 @@ Projection: 3,018,000 total tokens, assuming 40 calls averaging 75,000 input tok
 Recorded usage is in usage.json. Main-agent, code-review-agent and automatic approval-review deltas are separate; aggregate adds disjoint deltas once. Cached input is already included in input. Reasoning output is already included in output. No cumulative snapshots are summed.
 The edited task turn starts at 2026-10-15T15:03:52.176Z. Fresh-log zero baseline is inferred from the counter origin; no preceding cumulative snapshot exists. The superseded prior turn and all later follow-up turns are excluded.
 Accounting recovered and complete through 2026-10-15T15:11:55.356Z, including the original final response. Aggregate measured input: 2954305; cached input: 2798720; output: 21059; reasoning output: 3554; total: 2975364. Recovery excludes follow-up turn usage. No task-specific dollar counters are available.
+
+Cost and rubric update from user-supplied pricing
+API-equivalent estimate: $0.801632 (~$0.80), including $0.742280 for confirmed gpt-6.1-sol usage and $0.059352 assuming the same rates for codex-auto-review. Actual billed charge unavailable. Zero cache writes verified; maximum per-call input 120,305, below the 272K threshold.
+Rubric: 90/100 (27/30), equally weighted Codex assessment; independent human review pending. See cost-estimate.json and rubric-assessment.json. Original measured counters remain unchanged.
