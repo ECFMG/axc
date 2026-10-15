@@ -1,3 +1,6 @@
+import type { DataSourcesFactory } from '@axc/persistence';
+import { Catalog, type CatalogApplicationService } from './contexts/index.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -12,10 +15,12 @@ export interface HealthStatus {
 }
 
 export interface ApiContext {
+	dataSourcesFactory: DataSourcesFactory;
 	environment: HealthEnvironment;
 }
 
 export interface ApplicationServices {
+	Catalog: CatalogApplicationService;
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -38,6 +43,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			Catalog: Catalog(context.dataSourcesFactory.create()),
 			health: {
 				getStatus(): HealthStatus {
 					return {
