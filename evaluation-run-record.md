@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper |
+| Reviewer |  |
+| Harness | OpenAI Codex CLI v0.162.1 |
+| Model | GPT-6.1-Sol (medium reasoning) |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | A |
+| Run Type | Harness Engineering Iteration 11 |
+| Harness Engineering Used | `AGENTS.md` v11 = v10 + two general, repository-wide guardrails (nothing task-specific). **CellixJS convention suites wired per layer**: `@axc/domain`, `@axc/persistence` and `@axc/application-services` each gained a `test:arch` script and a thin `src/archunit-tests/*-conventions.test.ts` that calls the vendored `@cellix/archunit-tests` domain, persistence and application-services convention checks (unmodified vendored code; patterns are package-relative so they inspect real files, confirmed by planted-violation probes failing in all three packages). `AGENTS.md` tells the agent these suites exist and must not be edited, skipped or narrowed. **Knip as an early check**: knip added to the network-free checks; the agent records a knip baseline before its first edit and reruns it after its last change and before review, so unused exports are caught before review rather than at the final `verify`. Self-check gained knip and `test:arch` items. Test-first, per-layer tests, CellixJS layering, verification batching and the review loop unchanged. Same model, effort, permissions (workspace-write, on-request approvals, no network) as all prior runs. |
+| Config / Diff Notes | `hac-oai-11` = `hac-oai-10` + v11 harness (`31cd233`: `AGENTS.md`, three per-package convention test files and Vitest arch configs, `test:arch` scripts and workspace devDependencies, lockfile links). Environment unchanged (pnpm 11.11.0, Node 24.21.0, Codex CLI v0.162.1). Working tree cleaned with `git clean -xfd -e node_modules` and reinstalled before the run. `task-set-a-prompt.md` pasted verbatim as a single prompt in a new Codex session; `/status` confirmed settings and `AGENTS.md` loaded. Agent stayed on `hac-oai-11-a-out` and left changes uncommitted. Session log confirms: knip baseline at 19:31:22 UTC before the first edit (19:32:46); tests written first and run red (exit 1) before implementation; `test:arch` run after implementation and passing; post-change knip run found an unused export, fixed in `persistence/src/index.ts` and rerun clean before the reviewer was spawned. Agent read the CellixJS `ocom` domain instruction files and the vendored archunit checks; nothing copied. One reviewer sub-agent (GPT-6.1-Sol medium, verified in its session log), no blocking findings, so one review round (down from two). Agent output: 48 files changed (+921/−6). Structure follows ocom: `Domain` namespace with `contexts/catalog/course/{course.ts,course.value-objects.ts}`; persistence `datasources/readonly/catalog/course/course.read-repository.ts` with `getCourseReadRepository()` whose `search()` owns filtering, sorting and paging, `DataSourcesFactoryImpl` over fixtures in `fixtures/catalog/course/`; a thin `queryCourses` application service; strict parser and handler in `@axc/rest` with the `Authorization` header passed through; factory wired once in `apps/api`. No planning or notes files. Remaining nits: REST files placed flat in `rest/src/courses*.ts` rather than under `contexts/catalog/course/` (no rule requires either); `rest/src/index.ts` re-exports the route registrar and parser though nothing outside the package needs them; a few dense one-line returns and a chained `||` sort comparator; acceptance-api gained an `@axc/application-services` dependency for a type import. Lockfile diff +31 lines, only new workspace links and existing catalog Vitest packages. Final summary included the requirement-to-coverage table. Committed with `--no-verify` because the pre-commit `verify` fails at Snyk (configured `agentcourses` org not accessible). |
+| Branch / Commit | `hac-oai-11-a-out` @ `61787c5` |
+| Requirements Completed / Attempted | 12 / 12 |
+| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All suites pass / 0 failed (independently re-run by operator: frozen install, lint, typecheck, build, `test:arch`, `test`, knip). `@axc/persistence` 29 tests (every modality and status, keyword per field, exact case-insensitive tag match, combinations, every sort field, pagination edges and out-of-range pages, empty results, fixture shape), `@axc/rest` 59 (table-driven parser accepts/rejects, blank-as-absent, unknown/repeated keys, multi-error collection, 400 contract, auth pass-through), `@axc/application-services` 12 (page shaping for 0/1/5/6/12 matches, error propagation, health). Architecture: `test:arch` 20/20 tasks pass, including the new per-package CellixJS convention suites (domain 11, application services 10, persistence 13 checks) running against the real implementation. Acceptance: 25 scenarios pass (agent run). Biome, typecheck, build, knip, e18e, docs build pass. `pnpm install --frozen-lockfile` passes. |
+| Static Analysis / Security Findings | No new findings introduced. `pnpm audit`: passes the configured `--audit-level=high` threshold (3 moderate; braces high ignored by repository policy), unchanged; agent reported the moderate advisories with patched versions (uuid ≥11.1.1, smol-toml ≥1.8.1, postcss-selector-parser ≥7.1.6). Snyk: repo-configured `agentcourses` org not accessible (HTTP 404); no third-party dependency changes, so the 4 open findings recorded for iterations 6–10 on base-lockfile packages are unchanged. Agent noted that the docs Turbo cache inputs omit Markdown and built the docs directly; reported, not changed. |
+| Input Tokens | 3,417,220 total (main 3,167,524 + reviewer 249,696); 148,996 uncached |
+| Cached Tokens | 3,268,224 |
+| Output Tokens | 21,992 (incl. 3,969 reasoning) |
+| Total Tokens or Credits Used | 3,439,212 tokens (main 3,188,520; reviewer sub-agent 250,692). Down 13% from iteration 10. |
+| Estimated Cost | ~$0.85 (main ~$0.74 + reviewer ~$0.10) at GPT-6.1-Sol API list prices ($2.00 input / $0.10 cached / $10.00 output per 1M tokens) |
+| Elapsed Time | 8m 44s (2026-10-15 15:31–15:39 EDT), including one ~36s review round |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, no agent questions. 4 sandbox-escalation approvals: a rerun of `pnpm install --offline` (pnpm's registry check failed inside the sandbox), `pnpm run test:acceptance` (Azure Functions port 7071), `pnpm run verify; pnpm run snyk`, and `pnpm audit --json` to report advisory details. No networked install was needed. No branch creation and no post-run cleanup. |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 97 / 100 (self-scored per SRD Appendix 1, judged against CellixJS `packages/ocom` conventions as in iterations 8–10). Functional Correctness 5/5 (20): all requirements and acceptance criteria met; consistent 400 error body; blank optional inputs handled as absent. Test and Validation 5/5 (15): test-first, 100 unit tests with logic tested where it lives, 25 acceptance scenarios, per-package architecture gates passing; frozen-lockfile install passes. Architecture 5/5 (15): ocom layering in every layer — `Domain` namespace with context/aggregate folders, a read repository owning filtering/sorting/paging, CellixJS factory names, thin query service, validation in `rest`, required factory wiring, now enforced by the vendored convention suites; minor nits only (flat REST files, unneeded public re-exports, some dense lines). Security and Guardrails 5/5 (15): no new findings or third-party dependencies, strict input validation, vendored CellixJS used unmodified, audit passes. Harness Engineering 5/5 (10): both v11 rules took effect — knip baseline and pre-review run caught and fixed the unused export before review (iteration 10's gap), and the convention suites ran as real gates — with a single review round. Context/Token/Cost 5/5 (10): ~$0.85 and 3.44M tokens, down from ~$1.03 in iteration 10. Developer Workflow Fit 4/5 (8): 8m 44s, 0 interventions and no cleanup, but 4 approvals. Operational/Vendor Readiness 4/5 (4): ChatGPT Business with admin/SSO path, not production-approved. |
+| Recommendation | Continue |
