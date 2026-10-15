@@ -13,6 +13,7 @@
 		"clean": "rimraf reports target"
 	},
 	"dependencies": {
+		"@axc/domain": "workspace:*",
 		"@cucumber/cucumber": "catalog:",
 		"@serenity-js/assertions": "catalog:",
 		"@serenity-js/console-reporter": "catalog:",
