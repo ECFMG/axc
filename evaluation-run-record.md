@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper |
+| Reviewer |  |
+| Harness | OpenAI Codex CLI v0.162.0 |
+| Model | GPT-6.1-Sol (medium reasoning) |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | A |
+| Run Type | Harness Engineering Iteration 6 |
+| Harness Engineering Used | `AGENTS.md` v6 = v5 with targeted fixes (general, repository-wide, nothing task-specific). **Token efficiency** section replaced by a narrower **Messages** section that limits only user-facing output (one-line progress updates, concise final summary without repeating file contents or full command output) and explicitly does not limit reading, exploring, or testing. **Tests**: cover each spec-listed acceptance criterion with at least one scenario including error cases; test logic in the layer that owns it (application-service/domain unit tests, `rest` tests for HTTP mapping/validation); never reduce test coverage to save tokens. **Scope**: keep existing formatting of JSON/config lines not being changed. **Verification**: removed hard-coded audit counts; everything must pass; fix advisories introduced by the agent's own dependency changes, report pre-existing ones that need files outside the write boundary, report Snyk auth/org errors. Reviewer brief: report findings only, without restating the change. Harness commit also resolves the pre-existing `pnpm audit` advisories (same `pnpm-workspace.yaml` change as `c16f546`: overrides for tinypool 2.1.2, http-cache-semantics 4.3.0, source-map-js 1.2.2; documented ignore for braces GHSA-vfj7-8cjw-p6xm, no patched release) with a regenerated lockfile. Adversarial review loop unchanged (fresh-context GPT-6.1-Sol medium reviewer, max 3 rounds). Same model, effort, permissions (workspace-write, on-request approvals, no network) as all prior runs. |
+| Config / Diff Notes | `hac-oai-6` = `hac-oai-5` + `AGENTS.md` v6 + audit overrides (`d0299c2`). Environment unchanged from iteration 5 (pnpm 11.11.0, Node 24.21.0). Working tree cleaned with `git clean -xfd -e node_modules` before the run (removes stale `dist/` and `.turbo` output from earlier iterations). Contents of `task-set-a-prompt.md` pasted verbatim (md5 verified) as a single prompt in a new Codex session; `/status` confirmed settings and `AGENTS.md` loaded. Agent spawned 1 reviewer sub-agent with the specified settings (verified in its session log); it returned "no blocking findings", so the loop stopped after round 1. Agent output: 28 files changed (+715/−5). Layering correct: `Course`, modality/status constants and a read-only `CourseCatalog` port in `domain` (own module), service and sort constants in `application-services`, query parsing and 400 mapping in `rest`, fixtures and catalog in `persistence` (own modules), wiring in `apps/api`. Formatting rule worked: existing single-line tsconfig `references` arrays kept single-line. Minor: `ApiContext.courseCatalog` is optional with a silent empty-catalog fallback in the service factory (hidden default); `@axc/persistence` / `@axc/domain` dependencies inserted out of alphabetical order. Lockfile diff +22 lines, only new workspace links and existing catalog Vitest packages. Workflow deviation: the agent read the requirements' "Implementation branch" deliverable as an instruction and created `ts-a-catalog-search` (approved escalation); operator moved the uncommitted changes back to `hac-oai-6-a-out` and deleted that branch. Committed with `--no-verify` because the pre-commit `verify` fails at Snyk (configured `agentcourses` org not accessible). |
+| Branch / Commit | `hac-oai-6-a-out` @ `171a3bf` |
+| Requirements Completed / Attempted | 12 / 12 |
+| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All suites pass / 0 failed (independently re-run by operator). `@axc/rest` 42 tests (new colocated `courses.test.ts`), `@axc/application-services` 33 (new `courses.test.ts` + existing). Acceptance: 28 scenarios pass (27 course + health; up from 6 in iteration 5), covering default list, keyword search, each filter, two combined-filter cases, pagination, every sort, table-driven invalid parameters, no-match and page-beyond-catalog. Biome, typecheck, build, knip, e18e, docs build, architecture tests (9 + 10) pass. `pnpm install --frozen-lockfile` passes. |
+| Static Analysis / Security Findings | No new findings introduced. `pnpm audit`: passes the configured `--audit-level=high` threshold (3 moderate; braces high ignored, no patched release) after the harness-commit overrides; previously 2 critical, 3 high, 3 moderate. Snyk (personal org; repo-configured `agentcourses` org not accessible): 4 open — 1 high postcss-selector-parser and 1 medium uri-js (as in all prior runs), plus 1 high qs@6.16.0 and 1 medium hono@4.13.10 (Snyk-flagged "new") that are newly published advisories on packages already in the base lockfile; the agent's lockfile diff does not touch either. |
+| Input Tokens | 1,934,264 total (main 1,747,009 + reviewer 187,255); 127,288 uncached |
+| Cached Tokens | 1,806,976 |
+| Output Tokens | 14,718 (incl. 1,790 reasoning) |
+| Total Tokens or Credits Used | 1,948,982 tokens (main 1,760,952; reviewer sub-agent 188,030) — up 55% from iteration 5, down 16% from iteration 4 |
+| Estimated Cost | ~$0.58 (main ~$0.49 + reviewer ~$0.09) at GPT-6.1-Sol API list prices ($2.00 input / $0.10 cached / $10.00 output per 1M tokens) |
+| Elapsed Time | 7m 11s (2026-10-15 09:20:11–09:27:22 EDT), including one review round (~30s) |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, no agent questions. 6 sandbox-escalation approvals (up from 2): creating branch `ts-a-catalog-search` (unrequested), `pnpm install --frozen-lockfile` twice, `pnpm run test` (Azure Functions host for acceptance), the final `pnpm run verify; pnpm run snyk` batch, and `pnpm run audit --json` to report advisory details. Post-run branch cleanup by operator. |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 92 / 100 (self-scored per SRD Appendix 1). Functional Correctness 5/5 (20): all requirements and acceptance criteria met; error body matches spec. Test and Validation 5/5 (15): 42 REST + 33 service tests, 28 acceptance scenarios covering every required test area, frozen-lockfile install passes; v5's thin-test regression reversed. Architecture 4/5 (12): correct layering, domain owns `Course`/`CourseCatalog` and constants, parsing in `rest`, fixtures in `persistence`, config formatting preserved; deductions for the optional `courseCatalog` with a silent empty fallback and unordered dependency entries. Security and Guardrails 5/5 (15): no new findings or third-party dependencies, strict input validation, vendored code untouched; audit now passes. Harness Engineering 4/5 (8): v6 restored test depth and fixed v5's reformatting while keeping cost below iteration 4, but approvals rose to 6 and nothing prevented the unrequested branch creation. Context/Token/Cost 5/5 (10): ~$0.58 and 1.95M tokens. Developer Workflow Fit 4/5 (8): 7m 11s and 0 interventions, but 6 approvals and post-run branch cleanup. Operational/Vendor Readiness 4/5 (4): ChatGPT Business with admin/SSO path, not production-approved. |
+| Recommendation | Continue |
