@@ -1,3 +1,9 @@
+import type { CourseReadRepository } from '@axc/domain';
+import { buildCourseSearchApplicationService, type CourseSearchApplicationService } from './course-search-application-service.ts';
+
+export type { QueryParameterError, RawCourseQuery } from './course-query.ts';
+export type { CourseSearchOutcome } from './course-search-application-service.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -13,12 +19,15 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	/** Read side of the course catalog, injected by the composition root. */
+	courseReadRepository: CourseReadRepository;
 }
 
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: CourseSearchApplicationService;
 }
 
 export interface ApplicationServicesFactory {
@@ -36,6 +45,8 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const courses = buildCourseSearchApplicationService(context.courseReadRepository);
+
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -49,6 +60,7 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses,
 		});
 
 	return { forRequest };
