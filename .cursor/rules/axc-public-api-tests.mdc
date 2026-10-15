@@ -1,0 +1,11 @@
+---
+description: Require package and acceptance coverage for new public HTTP behavior
+globs: "{apps/api/**,packages/axc/**,packages/axc-verification/**,apps/docs/**}"
+alwaysApply: false
+---
+
+# Public API tests
+
+- New or changed public HTTP behavior needs a package-level test in the package that owns that behavior.
+- When `packages/axc-verification` already contains an acceptance package, that behavior also needs one acceptance scenario.
+- Reuse the existing Serenity feature and step pattern. Do not add another test framework.
