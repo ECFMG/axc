@@ -5,11 +5,12 @@ alwaysApply: true
 
 # One pass
 
-- Run one batched search, then read the relevant files in parallel.
+- Start with the `apps/api` composition root, the `packages/axc/rest` and `packages/axc/application-services` entries and nearest existing feature, and the `packages/axc-verification` acceptance entry. Use one batched search to identify them, then read them in parallel.
 - Use at most one follow-up read batch to resolve a specific unknown. A failed check permits the reads needed to fix it.
 - Do not reopen a file or successful command, summarize intermediate work, or start a second exploration, review pass, or subagent.
 - Write each new file once. Make a follow-up edit only to resolve a specific unknown or failed check.
-- Run one affected-package check through `node scripts/agent-check.mjs -- <command>`, then run `pnpm run verify` through the same wrapper as the final gate.
+- Format changed files once with `pnpm exec biome check --write --no-errors-on-unmatched <paths>`.
+- Run one affected-package check through `node scripts/agent-check.mjs -- <command>`, then run `pnpm run verify` once through the same wrapper as the final gate.
 - On failure, fix the reported cause, rerun only the failed package through the wrapper, then run wrapped `pnpm run verify` once more.
 - Ponytail and Caveman apply in full. This rule limits tool calls only.
 
