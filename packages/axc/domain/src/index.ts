@@ -1,4 +1,2 @@
-import type { Repository } from '@cellix/domain-seedwork/repository';
-
-/** Repositories added in this package implement the Cellix repository contract. */
-export type DomainRepository<T> = Repository<T>;
+export * from './domain/contexts/training/enrollment-request/index.ts';
+export * as Training from './domain/contexts/training/index.ts';
