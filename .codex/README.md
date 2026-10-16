@@ -49,3 +49,24 @@ zero files and pass vacuously (this was true of the v14 dependency-rules test). 
 (`support/package-scope.ts`; vitest isolates each file in its own worker), which keeps all
 verification code in `axc-verification` and the `packages/axc/*` packages free of harness files.
 Cross-package rules read the filesystem directly.
+
+## Iteration 16 (from the iteration-15 A/B runs)
+Baselines to beat: Task A 90 / $1.60 / 7 approvals / 12m57s; Task B 77 / $2.80 / 10 approvals / 28m29s.
+
+| Mechanism | Replaces | Hypothesis |
+| --- | --- | --- |
+| `apps/docs/turbo.json` and `archunit-tests/turbo.json` declare real inputs (`docs/**`, `sidebars.ts`, `$TURBO_ROOT$/packages/axc/**`, acceptance features) | Root inputs (`src/**` only), which let v15-B ship a broken sidebar id behind a cached docs build and a cached `test:arch` | No false-green gate: a doc or source edit always re-executes the docs build and `test:arch`. Stop-gate evidence records `turboCached/turboTotal` per check so a cache hit after a change is visible. |
+| `docs-sidebar.test.ts` in `test:arch` | Nothing (defect found only by a direct `docusaurus build`) | Dangling sidebar ids and unlisted docs fail before the build runs. Planted the v15-B defect: fails. |
+| Feature-file shape rule: an unparameterised `Then` reused by >5 scenarios in a package fails | Prose "one behaviour per scenario" | Unit-level features stop sharing one generic Then across 83 scenarios (v15-B) and 38 (v15-A); acceptance features are unaffected. |
+| `requirements_reviewer`: medium effort, ≤15 tool calls, acceptance suite + one probe per endpoint, no re-run of the full gate | High effort, re-ran tests/arch/build (≈22% of v15-B tokens) | Task B cost ≥25% lower with the same findings. |
+| Skills: no manual `stop-gate.mjs` run, one review round unless blocker/major, layer tests while iterating and the full suite once per layer | Agent re-running the gate and the full suite after each layer | Fewer duplicated checks, fewer tokens. |
+| AGENTS.md: commit once on green with the hook active; lockfile output of `pnpm install --offline` is allowed inside the write boundary | "uncommitted" rule plus a boundary that contradicted the install step (v15-B reviewer blocked on it) | No end-of-run question to the operator; the record's commit is the agent's. Stop gate also inspects committed-but-unpushed paths. |
+| `[sandbox_workspace_write] network_access = true` in `.codex/config.toml`; `pnpm-lock` exception; docs/ADR paths in `cellix-feature-layout` | Sandbox escalations for registry, mongodb-memory-server and the host port; docs under four different paths across runs | Approvals ≤3 per task; docs at `apps/docs/docs/api/<feature>.md` and `adr/NNNN-<slug>.md` listed in the sidebar. |
+| `scripts/snyk-verify.mjs` detects the monthly-quota notice | Silent pass | The record states whether Snyk tested the projects or only printed a quota notice. |
+
+Targets for v16 A/B: Task A ≥90, Task B ≥77 (expect the docs and test-step points back), B cost ≤$2.10, approvals ≤3, zero cached gate results after a change.
+
+### Pre-flight (operator)
+1. Hooks changed (`stop-gate.mjs`, `pre-tool-policy.mjs`): open Codex in the run branch and re-trust them via `/hooks` before pasting the prompt.
+2. Mongo binaries are cached under `~/.cache/mongodb-binaries`; if a run still asks to download one, run `pnpm run test` once outside Codex.
+3. If the first run still prompts for network, the project-scoped `[sandbox_workspace_write]` is being ignored: add the same block to `~/.codex/config.toml` and note it in the record.

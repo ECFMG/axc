@@ -4,6 +4,14 @@
 [agents]
 max_concurrent_threads_per_session = 2
 
+# Iteration 16: the v15 approvals were all sandbox escalations (registry/DNS for
+# `pnpm install --offline` metadata, mongodb-memory-server binary lookup, binding the
+# API host port for acceptance tests), not execpolicy denials. Allow network inside the
+# workspace-write sandbox so those run without a prompt. Hypothesis: approvals 7-10 -> <=3.
+# If Codex ignores this key at project scope, copy it into ~/.codex/config.toml.
+[sandbox_workspace_write]
+network_access = true
+
 # Optional TypeScript language server over MCP. Off by default: iteration 12 showed
 # no measurable gain and it adds startup time. Workstation prerequisite if enabled:
 # npm i -g @mizchi/lsmcp@0.10.0 typescript-language-server
