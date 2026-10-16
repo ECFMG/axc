@@ -1,3 +1,5 @@
+import { CatalogService } from './catalog.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -16,6 +18,7 @@ export interface ApiContext {
 }
 
 export interface ApplicationServices {
+	catalog: CatalogService;
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -36,8 +39,10 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const catalog = new CatalogService();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			catalog,
 			health: {
 				getStatus(): HealthStatus {
 					return {
@@ -53,3 +58,4 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 
 	return { forRequest };
 }
+export { CatalogError, CatalogService } from './catalog.ts';
