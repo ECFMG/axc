@@ -1,0 +1,16 @@
+# Project-scoped Codex configuration (loaded once the project is trusted).
+# Hooks: .codex/hooks.json  Rules: .codex/rules/axc.rules  Agents: .codex/agents/*.toml
+
+[agents]
+max_concurrent_threads_per_session = 2
+
+# Optional TypeScript language server over MCP. Off by default: iteration 12 showed
+# no measurable gain and it adds startup time. Workstation prerequisite if enabled:
+# npm i -g @mizchi/lsmcp@0.10.0 typescript-language-server
+# [mcp_servers.typescript_lsp]
+# command = "lsmcp"
+# args = ["-p", "typescript"]
+# startup_timeout_sec = 30
+# tool_timeout_sec = 60
+# enabled_tools = ["lsp_get_definitions", "lsp_find_references", "lsp_get_hover", "lsp_get_diagnostics", "lsp_get_document_symbols"]
+# default_tools_approval_mode = "approve"

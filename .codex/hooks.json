@@ -1,0 +1,43 @@
+{
+	"description": "Repository lifecycle hooks: policy checks before tool calls, Biome feedback after each write (apply_patch or shell), and a verification gate before a turn that changed files can finish.",
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "Bash|Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/pre-tool-policy.mjs\"",
+						"statusMessage": "Checking repository policy",
+						"timeout": 15
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Bash|Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/post-edit-check.mjs\"",
+						"statusMessage": "Checking written files with Biome",
+						"timeout": 60
+					}
+				]
+			}
+		],
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/stop-gate.mjs\"",
+						"statusMessage": "Running verification gate",
+						"timeout": 900
+					}
+				]
+			}
+		]
+	}
+}
