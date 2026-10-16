@@ -65,7 +65,14 @@ function runChecks(root, checks) {
 	for (const check of checks) {
 		const startedAt = Date.now();
 		const result = run(check.command, check.args, root);
-		results.push({ label: check.label, command: [check.command, ...check.args].join(' '), status: result.status, ms: Date.now() - startedAt });
+		const entry = { label: check.label, command: [check.command, ...check.args].join(' '), status: result.status, ms: Date.now() - startedAt };
+		const turboSummary = /(\d+) cached, (\d+) total/.exec(stripAnsi(result.stdout ?? ''));
+		if (turboSummary) {
+			// Records how much of a turbo task was replayed, so a suspicious all-cached pass is visible in the run record.
+			entry.turboCached = Number(turboSummary[1]);
+			entry.turboTotal = Number(turboSummary[2]);
+		}
+		results.push(entry);
 		if (result.status !== 0) {
 			failure = { check, output: tailOf(`${result.stdout ?? ''}\n${result.stderr ?? ''}`) };
 			break;

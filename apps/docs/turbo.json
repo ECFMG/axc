@@ -1,0 +1,11 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"description": "Builds the Docusaurus site; inputs include the content so a sidebar or doc change invalidates the cache",
+			"dependsOn": ["^build"],
+			"inputs": ["docs/**", "sidebars.ts", "docusaurus.config.ts", "src/**", "static/**", "package.json", "tsconfig.json"],
+			"outputs": ["build/**"]
+		}
+	}
+}

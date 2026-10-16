@@ -11,7 +11,7 @@ const PROTECTED_PATH_RULES = [
 	{ pattern: /^pnpm-workspace\.yaml$/, reason: 'the dependency catalog is owned by the harness; use existing catalog entries' },
 	{ pattern: /^(?:\.codex|\.agents|\.husky)\//, reason: 'hooks, rules, skills and agents are harness files, not task output' },
 	{ pattern: /^AGENTS\.md$/, reason: 'AGENTS.md is harness configuration' },
-	{ pattern: /^(?:biome\.json|knip\.json|\.snyk|turbo\.json)$/, reason: 'tool configuration is fixed for the task; fix the code, not the gate' },
+	{ pattern: /^(?:biome\.json|knip\.json|\.snyk)$|(?:^|\/)turbo\.json$/, reason: 'tool configuration (including every turbo.json) is fixed for the task; fix the code, not the gate' },
 	{ pattern: /^scripts\/check-script-policy\.mjs$/, reason: 'the dependency script policy is a gate, not task output' },
 	{ pattern: /^packages\/cellix\//, reason: 'packages/cellix is vendored framework code; extend it from the axc packages instead' },
 ];

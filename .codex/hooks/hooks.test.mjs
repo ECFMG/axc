@@ -57,6 +57,8 @@ describe('pre-tool-policy', () => {
 		assert.match(evaluate(patch('Add File: .codex/hooks/x.mjs'), root).join(), /harness files/);
 		assert.match(evaluate(patch('Update File: packages/cellix/domain-seedwork/src/index.ts'), root).join(), /vendored/);
 		assert.match(evaluate(patch('Update File: knip.json'), root).join(), /tool configuration/);
+		assert.match(evaluate(patch('Add File: packages/axc/rest/turbo.json'), root).join(), /turbo\.json/);
+		assert.match(evaluate(patch('Update File: apps/docs/turbo.json'), root).join(), /turbo\.json/);
 	});
 
 	it('denies the same edits through the shell', () => {

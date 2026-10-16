@@ -1,0 +1,21 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"test:arch": {
+			"description": "Architecture fitness tests read other packages, so their sources are inputs; otherwise a cached pass hides new violations",
+			"dependsOn": ["^build", "@cellix/config-vitest#build", "@cellix/archunit-tests#build"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"$TURBO_ROOT$/packages/axc/**/*.ts",
+				"$TURBO_ROOT$/packages/axc/**/*.feature",
+				"$TURBO_ROOT$/packages/axc/*/tsconfig*.json",
+				"$TURBO_ROOT$/packages/axc/*/package.json",
+				"$TURBO_ROOT$/packages/axc-verification/acceptance-api/**/*.feature",
+				"$TURBO_ROOT$/apps/api/src/**/*.ts",
+				"$TURBO_ROOT$/apps/docs/docs/**",
+				"$TURBO_ROOT$/apps/docs/sidebars.ts"
+			],
+			"outputs": []
+		}
+	}
+}
