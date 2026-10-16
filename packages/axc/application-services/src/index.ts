@@ -1,3 +1,5 @@
+import type { DataSources } from '@axc/persistence';
+import { Training, type TrainingApplicationService } from './contexts/index.ts';
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -13,9 +15,12 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	dataSources: DataSources;
+	ready: Promise<void>;
 }
 
 export interface ApplicationServices {
+	Training: TrainingApplicationService;
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -36,8 +41,10 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
-	const forRequest = (): Promise<ApplicationServices> =>
-		Promise.resolve({
+	const forRequest = async (): Promise<ApplicationServices> => {
+		await context.ready;
+		return {
+			Training: Training(context.dataSources),
 			health: {
 				getStatus(): HealthStatus {
 					return {
@@ -49,7 +56,8 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
-		});
+		};
+	};
 
 	return { forRequest };
 }
