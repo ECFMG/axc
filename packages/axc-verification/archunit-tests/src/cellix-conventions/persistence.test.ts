@@ -1,9 +1,15 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { type DataSourcesMongooseModelsConventionTestsConfig, describeDataSourcesMongooseModelsConventionTests } from '@cellix/archunit-tests/data-sources-mongoose-models';
 import { describePersistenceConventionTests, type PersistenceConventionTestsConfig } from '@cellix/archunit-tests/persistence';
 import { describe, expect, it } from 'vitest';
+import { axcPackageDir, runFromPackage } from '../support/package-scope.ts';
+import { importedSpecifiers, isProductionSource, listFiles } from '../support/source-files.ts';
+
+const packageDir = axcPackageDir('persistence');
+const srcDir = path.join(packageDir, 'src');
+
+runFromPackage(packageDir);
 
 // Shared CellixJS persistence conventions: write side under datasources/domain
 // (repository, domain adapter, unit of work), read side under datasources/readonly.
@@ -15,9 +21,9 @@ const persistenceConfig: PersistenceConventionTestsConfig = {
 
 describePersistenceConventionTests(persistenceConfig);
 
-// Mongoose models are kept inside this package (there is no separate
-// data-sources-mongoose-models package in AXC), so the shared model
-// conventions are pointed at src/models.
+// Mongoose models are kept inside the persistence package (there is no separate
+// data-sources-mongoose-models package in AXC), so the shared model conventions
+// are pointed at src/models.
 const modelsConfig: DataSourcesMongooseModelsConventionTestsConfig = {
 	modelsGlob: 'src/models/**',
 	allGlob: 'src/models/**',
@@ -25,14 +31,12 @@ const modelsConfig: DataSourcesMongooseModelsConventionTestsConfig = {
 
 describeDataSourcesMongooseModelsConventionTests(modelsConfig);
 
-const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-
 describe('axc persistence conventions', () => {
 	it('write-side units of work are built on MongooseSeedwork.MongoUnitOfWork', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(path.join(srcDir, 'datasources/domain'))) {
+		for (const file of await listFiles(path.join(srcDir, 'datasources/domain'), isProductionSource)) {
 			if (file.path.endsWith('.uow.ts') && !/MongoUnitOfWork/.test(file.content)) {
-				violations.push(file.relative);
+				violations.push(file.relativePath);
 			}
 		}
 		expect(violations, 'hand-rolled units of work bypass the seedwork transaction and event handling').toEqual([]);
@@ -40,7 +44,7 @@ describe('axc persistence conventions', () => {
 
 	it('write-side folders contain repository, domain adapter and unit of work for each aggregate', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(path.join(srcDir, 'datasources/domain'))) {
+		for (const file of await listFiles(path.join(srcDir, 'datasources/domain'), isProductionSource)) {
 			if (!file.path.endsWith('.uow.ts')) {
 				continue;
 			}
@@ -48,7 +52,7 @@ describe('axc persistence conventions', () => {
 			const siblings = await readdir(path.dirname(file.path));
 			for (const suffix of ['.repository.ts', '.domain-adapter.ts']) {
 				if (!siblings.includes(`${base}${suffix}`)) {
-					violations.push(`${file.relative} is missing ${base}${suffix}`);
+					violations.push(`${file.relativePath} is missing ${base}${suffix}`);
 				}
 			}
 		}
@@ -57,9 +61,9 @@ describe('axc persistence conventions', () => {
 
 	it('read-side files do not expose write operations', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(path.join(srcDir, 'datasources/readonly'))) {
+		for (const file of await listFiles(path.join(srcDir, 'datasources/readonly'), isProductionSource)) {
 			if (/\.(?:create|insertMany|updateOne|updateMany|findOneAndUpdate|deleteOne|deleteMany|save)\s*\(/.test(file.content)) {
-				violations.push(file.relative);
+				violations.push(file.relativePath);
 			}
 		}
 		expect(violations, 'readonly data sources must only query').toEqual([]);
@@ -67,9 +71,9 @@ describe('axc persistence conventions', () => {
 
 	it('mongoose model files live in models/<context>/ and end with .model.ts', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(path.join(srcDir, 'models'))) {
+		for (const file of await listFiles(path.join(srcDir, 'models'), isProductionSource)) {
 			if (/mongoose/.test(file.content) && /Schema\s*\(/.test(file.content) && !file.path.endsWith('.model.ts')) {
-				violations.push(file.relative);
+				violations.push(file.relativePath);
 			}
 		}
 		expect(violations).toEqual([]);
@@ -78,37 +82,13 @@ describe('axc persistence conventions', () => {
 	it('persistence does not import the delivery or application layers', async () => {
 		const forbidden = ['hono', '@axc/rest', '@axc/application-services', '@apps/'];
 		const violations: string[] = [];
-		for (const file of await listSources(srcDir)) {
-			for (const specifier of importSpecifiers(file.content)) {
+		for (const file of await listFiles(srcDir, isProductionSource)) {
+			for (const specifier of importedSpecifiers(file.content)) {
 				if (forbidden.some((prefix) => specifier.startsWith(prefix))) {
-					violations.push(`${file.relative} imports ${specifier}`);
+					violations.push(`${file.relativePath} imports ${specifier}`);
 				}
 			}
 		}
 		expect(violations).toEqual([]);
 	});
 });
-
-interface Source {
-	path: string;
-	relative: string;
-	content: string;
-}
-
-async function listSources(root: string): Promise<Source[]> {
-	const result: Source[] = [];
-	const entries = await readdir(root, { withFileTypes: true }).catch(() => []);
-	for (const entry of entries) {
-		const entryPath = path.join(root, entry.name);
-		if (entry.isDirectory()) {
-			if (entry.name !== 'archunit-tests') {
-				result.push(...(await listSources(entryPath)));
-			}
-		} else if (entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) {
-			result.push({ path: entryPath, relative: path.relative(srcDir, entryPath), content: await readFile(entryPath, 'utf8') });
-		}
-	}
-	return result;
-}
-
-const importSpecifiers = (content: string): string[] => [...content.matchAll(/from\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string);

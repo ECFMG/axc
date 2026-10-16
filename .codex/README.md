@@ -31,7 +31,7 @@ effects by reading the evidence log and the approval count, not only the rubric 
 
 | Mechanism | Replaces | Hypothesis |
 | --- | --- | --- |
-| Per-package Cellix convention suites (`packages/axc/*/src/archunit-tests`, `test:arch`) + fs-based layer rules and feature-file shape test in `axc-verification/archunit-tests` | Prose conventions in AGENTS.md | Structural defects (missing `.aggregate.ts`, UoW not on `MongoUnitOfWork`, mutations outside `withScopedTransaction`, Then-only mega-scenarios) surface as failing tests the stop gate reports, instead of being found in review. Dry run on the v14 Task B output: 12 convention failures + 22 feature-shape violations, all genuine. |
+| Vendored Cellix convention suites run for each axc package from `axc-verification/archunit-tests/src/cellix-conventions` (`test:arch`) + fs-based layer rules and feature-file shape test in the same package | Prose conventions in AGENTS.md | Structural defects (missing `.aggregate.ts`, UoW not on `MongoUnitOfWork`, mutations outside `withScopedTransaction`, Then-only mega-scenarios) surface as failing tests the stop gate reports, instead of being found in review. Dry run on the v14 Task B output: 12 convention failures + 22 feature-shape violations, all genuine. |
 | `pre-tool-policy.mjs` | Prose "do not edit the lockfile / add dependencies / write plans" | Denials with reasons cost fewer tokens than a redirect and remove the v12 shell-bypass gap. |
 | Evidence-logging stop gate | Stop gate without a trace | The run record's "tests passed" line becomes reproducible from the log. |
 | `rules/axc.rules` | Approval prompts for routine commands | 9 approvals in v14 → ≤1. |
@@ -44,5 +44,8 @@ Targets for v15 A/B: ≤3.5M total tokens per task, 0 human redirects, ≤1 appr
 ### Finding worth keeping
 `@cellix/archunit-tests` `projectFiles()` scopes to the tsconfig of the current working directory,
 so convention suites placed in `axc-verification/archunit-tests` with cross-package globs match
-zero files and pass vacuously (this was true of the v14 dependency-rules test). Convention suites
-must run inside each package; cross-package rules read the filesystem directly.
+zero files and pass vacuously (this was true of the v14 dependency-rules test). The suites in
+`src/cellix-conventions/*.test.ts` therefore `chdir` into the package under test before running
+(`support/package-scope.ts`; vitest isolates each file in its own worker), which keeps all
+verification code in `axc-verification` and the `packages/axc/*` packages free of harness files.
+Cross-package rules read the filesystem directly.

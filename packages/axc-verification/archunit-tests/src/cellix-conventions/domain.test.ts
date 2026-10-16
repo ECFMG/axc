@@ -1,10 +1,17 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { type DomainConventionTestsConfig, describeDomainConventionTests } from '@cellix/archunit-tests/domain';
 import { describe, expect, it } from 'vitest';
+import { axcPackageDir, runFromPackage } from '../support/package-scope.ts';
+import { importedSpecifiers, isProductionSource, listFiles } from '../support/source-files.ts';
 
-// Shared CellixJS domain conventions (aggregate/repository/uow/visa file shapes).
+const packageDir = axcPackageDir('domain');
+const contextsDir = path.join(packageDir, 'src/domain/contexts');
+
+runFromPackage(packageDir);
+
+// Shared CellixJS domain conventions (aggregate/repository/uow/visa file shapes),
+// with globs relative to the domain package.
 const config: DomainConventionTestsConfig = {
 	domainContextsGlob: 'src/domain/contexts/**',
 };
@@ -14,14 +21,12 @@ describeDomainConventionTests(config);
 // AXC-specific checks. The shared suite recognises the `DomainSeedwork.X`
 // namespace style only; this package imports seedwork subpaths, so the same
 // rules are restated against the imported class names.
-const contextsDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../domain/contexts');
-
 describe('axc domain conventions', () => {
 	it('classes extending AggregateRoot live in *.aggregate.ts files', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(contextsDir)) {
+		for (const file of await listFiles(contextsDir, isProductionSource)) {
 			if (/extends\s+(?:DomainSeedwork\.)?AggregateRoot\b/.test(file.content) && !file.path.endsWith('.aggregate.ts')) {
-				violations.push(file.relative);
+				violations.push(file.relativePath);
 			}
 		}
 		expect(violations, 'aggregate roots must use the .aggregate.ts suffix').toEqual([]);
@@ -29,7 +34,7 @@ describe('axc domain conventions', () => {
 
 	it('every aggregate exposes its contracts in sibling files', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(contextsDir)) {
+		for (const file of await listFiles(contextsDir, isProductionSource)) {
 			if (!file.path.endsWith('.aggregate.ts')) {
 				continue;
 			}
@@ -37,7 +42,7 @@ describe('axc domain conventions', () => {
 			const siblings = await readdir(path.dirname(file.path));
 			for (const suffix of ['.repository.ts', '.uow.ts']) {
 				if (!siblings.includes(path.basename(`${base}${suffix}`))) {
-					violations.push(`${file.relative} is missing ${path.basename(base)}${suffix}`);
+					violations.push(`${file.relativePath} is missing ${path.basename(base)}${suffix}`);
 				}
 			}
 		}
@@ -46,13 +51,13 @@ describe('axc domain conventions', () => {
 
 	it('aggregates with behaviour have a feature file next to them', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(contextsDir)) {
+		for (const file of await listFiles(contextsDir, isProductionSource)) {
 			if (!file.path.endsWith('.aggregate.ts')) {
 				continue;
 			}
-			const features = await readdir(path.join(path.dirname(file.path), 'features')).catch(() => []);
+			const features = await readdir(path.join(path.dirname(file.path), 'features')).catch((): string[] => []);
 			if (!features.some((name) => name.endsWith('.feature'))) {
-				violations.push(file.relative);
+				violations.push(file.relativePath);
 			}
 		}
 		expect(violations, 'each aggregate needs features/*.feature describing its rules').toEqual([]);
@@ -61,35 +66,13 @@ describe('axc domain conventions', () => {
 	it('domain files do not import infrastructure or delivery packages', async () => {
 		const forbidden = ['mongoose', 'mongodb', 'hono', '@azure/', '@axc/persistence', '@axc/rest', '@axc/service-mongoose', '@axc/application-services', 'node:fs', 'node:http'];
 		const violations: string[] = [];
-		for (const file of await listSources(path.resolve(contextsDir, '..'))) {
-			for (const specifier of importSpecifiers(file.content)) {
-				if (forbidden.some((prefix) => specifier === prefix || specifier.startsWith(`${prefix}/`) || specifier.startsWith(prefix))) {
-					violations.push(`${file.relative} imports ${specifier}`);
+		for (const file of await listFiles(path.join(packageDir, 'src'), isProductionSource)) {
+			for (const specifier of importedSpecifiers(file.content)) {
+				if (forbidden.some((prefix) => specifier === prefix || specifier.startsWith(prefix))) {
+					violations.push(`${file.relativePath} imports ${specifier}`);
 				}
 			}
 		}
 		expect(violations).toEqual([]);
 	});
 });
-
-interface Source {
-	path: string;
-	relative: string;
-	content: string;
-}
-
-async function listSources(root: string): Promise<Source[]> {
-	const result: Source[] = [];
-	const entries = await readdir(root, { withFileTypes: true }).catch(() => []);
-	for (const entry of entries) {
-		const entryPath = path.join(root, entry.name);
-		if (entry.isDirectory()) {
-			result.push(...(await listSources(entryPath)));
-		} else if (entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) {
-			result.push({ path: entryPath, relative: path.relative(root, entryPath), content: await readFile(entryPath, 'utf8') });
-		}
-	}
-	return result;
-}
-
-const importSpecifiers = (content: string): string[] => [...content.matchAll(/from\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string);

@@ -29,7 +29,7 @@
 			"ignore": ["**/mongo-connection.ts"]
 		},
 		"packages/axc/*": {
-			"entry": ["src/index.ts", "vitest.config.ts", "vitest.arch.config.ts", "src/archunit-tests/**/*.test.ts"],
+			"entry": ["src/index.ts", "vitest.config.ts"],
 			"project": ["src/**/*.ts"]
 		},
 		"packages/axc-verification/archunit-tests": {

@@ -13,6 +13,7 @@
 		"format:check": "biome format ."
 	},
 	"devDependencies": {
+		"@cellix/archunit-tests": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
 		"@types/node": "catalog:",

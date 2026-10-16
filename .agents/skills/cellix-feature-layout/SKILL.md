@@ -34,5 +34,6 @@ When a path below is missing there, apply the rule as written.
 - Request parsing, validation, status codes, response and error bodies, with tests beside the handlers. Services receive typed input; the package root exports only what `apps/api` uses.
 
 ## Enforcement
-`pnpm run test:arch` runs the vendored CellixJS convention suites per package plus this repo's
-layer and feature-file rules. A failure is a structure defect: fix the code, never the suite.
+`pnpm run test:arch` runs the vendored CellixJS convention suites against each axc package plus
+this repo's layer and feature-file rules, all from `packages/axc-verification/archunit-tests`.
+A failure is a structure defect: fix the code, never the suite.

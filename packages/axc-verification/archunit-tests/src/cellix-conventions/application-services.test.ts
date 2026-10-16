@@ -1,8 +1,14 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { type ApplicationServicesConventionTestsConfig, describeApplicationServicesConventionTests } from '@cellix/archunit-tests/application-services';
 import { describe, expect, it } from 'vitest';
+import { axcPackageDir, runFromPackage } from '../support/package-scope.ts';
+import { importedSpecifiers, isProductionSource, listFiles } from '../support/source-files.ts';
+
+const packageDir = axcPackageDir('application-services');
+const srcDir = path.join(packageDir, 'src');
+
+runFromPackage(packageDir);
 
 // Shared CellixJS application-service conventions: curried factories taking
 // data sources, one ApplicationService interface per aggregate, mutations via
@@ -14,16 +20,14 @@ const config: ApplicationServicesConventionTestsConfig = {
 
 describeApplicationServicesConventionTests(config);
 
-const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-
 describe('axc application-services conventions', () => {
 	it('application services do not import delivery, persistence implementations or mongoose', async () => {
 		const forbidden = ['hono', '@axc/rest', '@axc/service-mongoose', 'mongoose', 'mongodb', '@apps/'];
 		const violations: string[] = [];
-		for (const file of await listSources(srcDir)) {
-			for (const specifier of importSpecifiers(file.content)) {
+		for (const file of await listFiles(srcDir, isProductionSource)) {
+			for (const specifier of importedSpecifiers(file.content)) {
 				if (forbidden.some((prefix) => specifier.startsWith(prefix))) {
-					violations.push(`${file.relative} imports ${specifier}`);
+					violations.push(`${file.relativePath} imports ${specifier}`);
 				}
 			}
 		}
@@ -32,40 +36,16 @@ describe('axc application-services conventions', () => {
 
 	it('each use case under contexts has a feature file describing it', async () => {
 		const violations: string[] = [];
-		for (const file of await listSources(path.join(srcDir, 'contexts'))) {
+		for (const file of await listFiles(path.join(srcDir, 'contexts'), isProductionSource)) {
 			const name = path.basename(file.path, '.ts');
 			if (name === 'index' || file.path.includes('/features/')) {
 				continue;
 			}
-			const features = await readdir(path.join(path.dirname(file.path), 'features')).catch(() => []);
+			const features = await readdir(path.join(path.dirname(file.path), 'features')).catch((): string[] => []);
 			if (!features.includes(`${name}.feature`)) {
-				violations.push(`${file.relative} has no features/${name}.feature`);
+				violations.push(`${file.relativePath} has no features/${name}.feature`);
 			}
 		}
 		expect(violations, 'application services are specified with a feature file per use case').toEqual([]);
 	});
 });
-
-interface Source {
-	path: string;
-	relative: string;
-	content: string;
-}
-
-async function listSources(root: string): Promise<Source[]> {
-	const result: Source[] = [];
-	const entries = await readdir(root, { withFileTypes: true }).catch(() => []);
-	for (const entry of entries) {
-		const entryPath = path.join(root, entry.name);
-		if (entry.isDirectory()) {
-			if (entry.name !== 'archunit-tests') {
-				result.push(...(await listSources(entryPath)));
-			}
-		} else if (entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) {
-			result.push({ path: entryPath, relative: path.relative(srcDir, entryPath), content: await readFile(entryPath, 'utf8') });
-		}
-	}
-	return result;
-}
-
-const importSpecifiers = (content: string): string[] => [...content.matchAll(/from\s*['"]([^'"]+)['"]/g)].map((match) => match[1] as string);
