@@ -60,5 +60,18 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 	return { forRequest };
 }
 
-export type { CatalogContextApplicationService, CourseApplicationService, CourseSearchQuery, CourseSearchResult, QueryParameterErrorDetail } from './contexts/catalog/index.ts';
+export { EnrollmentWorkflowError } from '@axc/domain';
+export type {
+	CatalogContextApplicationService,
+	CourseApplicationService,
+	CourseSearchQuery,
+	CourseSearchResult,
+	CreateEnrollmentRequestCommand,
+	EnrollmentRequestApplicationService,
+	EnrollmentRequestListResult,
+	GetEnrollmentRequestQuery,
+	QueryEnrollmentRequestsQuery,
+	QueryParameterErrorDetail,
+	UpdateEnrollmentRequestStatusCommand,
+} from './contexts/catalog/index.ts';
 export { InvalidQueryParameterError } from './contexts/catalog/index.ts';

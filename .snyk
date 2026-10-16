@@ -47,4 +47,14 @@ ignore:
         reason: Upgrade to 7.1.6 breaks @apps/docs build for docusaurus
         expires: 2027-01-31T22:36:52.000Z
         created: 2026-10-06T09:36:52.003Z
+  SNYK-JS-HONO-20883336:
+    - '*':
+        reason: hono is pinned at 4.13.10 in the workspace catalog and overrides
+        expires: 2027-01-31T22:36:53.000Z
+        created: 2026-10-16T09:00:00.000Z
+  SNYK-JS-QS-20943482:
+    - '*':
+        reason: Transitive qs 6.16.0 via Docusaurus and Apollo Server with no direct upgrade path
+        expires: 2027-01-31T22:36:54.000Z
+        created: 2026-10-16T09:00:00.000Z
 patch: {}
