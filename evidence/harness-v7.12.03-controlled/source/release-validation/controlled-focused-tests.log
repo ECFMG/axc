@@ -1,0 +1,43 @@
+test_bad_preflight_never_generates_or_reserves (test_run_budget.SharedBudgetTests) ... ok
+test_duplicate_settlement_is_idempotent_but_conflicts_rejected (test_run_budget.SharedBudgetTests) ... ok
+test_global_call_limit_includes_pending_and_all_actors (test_run_budget.SharedBudgetTests) ... ok
+test_initialization_requires_fixed_positive_limits (test_run_budget.SharedBudgetTests) ... ok
+test_known_failed_usage_and_rejected_retry_are_retained_once (test_run_budget.SharedBudgetTests) ... ok
+test_malformed_response_keeps_valid_usage_and_settles_exactly_once (test_run_budget.SharedBudgetTests) ... ok
+test_no_response_with_unknown_or_estimated_usage_returns_free (test_run_budget.SharedBudgetTests) ... ok
+test_output_or_input_overrun_is_retained_and_stops_future_dispatch (test_run_budget.SharedBudgetTests) ... ok
+test_pending_actors_and_truncated_final_response_cannot_complete (test_run_budget.SharedBudgetTests) ... ok
+test_processes_cannot_oversubscribe_shared_token_ceiling (test_run_budget.SharedBudgetTests) ... ok
+test_provider_optional_detail_aliases_are_retained_without_inventing_zero (test_run_budget.SharedBudgetTests) ... ok
+test_shared_actors_and_deterministic_reporting_close (test_run_budget.SharedBudgetTests) ... ok
+test_token_denial_marks_incomplete_before_generation (test_run_budget.SharedBudgetTests) ... ok
+test_unknown_failure_holds_reservation_and_blocks_retry (test_run_budget.SharedBudgetTests) ... ok
+test_approves_only_measured_quality_preserving_savings (test_coding_comparison.CodingComparisonTests) ... ok
+test_budget_must_match_fixed_token_and_call_limits (test_coding_comparison.CodingComparisonTests) ... ok
+test_budget_unknown_exhausted_or_reserved_blocks_claim (test_coding_comparison.CodingComparisonTests) ... ok
+test_changed_task_or_check_contract_cannot_qualify (test_coding_comparison.CodingComparisonTests) ... ok
+test_cheaper_invalid_output_cannot_qualify (test_coding_comparison.CodingComparisonTests) ... ok
+test_cli_accepts_predeclared_repetition_count (test_coding_comparison.CodingComparisonTests) ... ok
+test_expected_repetitions_must_be_positive_integer (test_coding_comparison.CodingComparisonTests) ... ok
+test_failed_rejected_and_retried_calls_count_even_after_success (test_coding_comparison.CodingComparisonTests) ... ok
+test_failed_runs_stay_in_consumption_and_accepted_task_statistics (test_coding_comparison.CodingComparisonTests) ... ok
+test_forecasts_cannot_fill_missing_reproducibility_evidence (test_coding_comparison.CodingComparisonTests) ... ok
+test_forecasts_never_change_report_or_comparability (test_coding_comparison.CodingComparisonTests) ... ok
+test_frozen_repetition_count_cannot_be_reduced_or_bypassed (test_coding_comparison.CodingComparisonTests) ... ok
+test_legacy_and_native_advisory_controls_fail_closed (test_coding_comparison.CodingComparisonTests) ... ok
+test_malformed_or_empty_evidence_cannot_claim_savings (test_coding_comparison.CodingComparisonTests) ... ok
+test_missing_duplicate_and_unmatched_pairs_block_claim (test_coding_comparison.CodingComparisonTests) ... ok
+test_missing_or_pending_actor_usage_blocks_claim (test_coding_comparison.CodingComparisonTests) ... ok
+test_missing_reasoning_detail_prevents_complete_accounting_claim (test_coding_comparison.CodingComparisonTests) ... ok
+test_missing_time_and_cost_stay_null (test_coding_comparison.CodingComparisonTests) ... ok
+test_no_reduction_is_not_a_savings_claim (test_coding_comparison.CodingComparisonTests) ... ok
+test_partial_balanced_pair_cannot_qualify_early (test_coding_comparison.CodingComparisonTests) ... ok
+test_quality_or_conditions_or_unknown_usage_block_claim (test_coding_comparison.CodingComparisonTests) ... ok
+test_quality_requires_all_eight_mandatory_checks_and_fixed_scope (test_coding_comparison.CodingComparisonTests) ... ok
+test_repair_calls_count_and_can_erase_savings (test_coding_comparison.CodingComparisonTests) ... ok
+test_unknown_usage_is_not_reported_as_zero (test_coding_comparison.CodingComparisonTests) ... ok
+
+----------------------------------------------------------------------
+Ran 38 tests in 0.347s
+
+OK

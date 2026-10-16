@@ -1,0 +1,10 @@
+{
+  "source_manifest_verified": true,
+  "archive_sha256": "d8c7082bd354f6382e9ed107728649b294712e27d9fc6ec906680c20ec234576",
+  "tests": 266,
+  "packaged_tests_passed": true,
+  "source_directory": "source/",
+  "historical_task_a_files_modified": false,
+  "savings_claim_supported": false,
+  "live_model_comparison": false
+}

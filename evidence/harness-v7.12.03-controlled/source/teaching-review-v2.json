@@ -1,0 +1,86 @@
+{
+  "speed-units": {
+    "required_review_points": [
+      "1 km = 1000 m. 1 hour = 3600 seconds. Thus 90 km/h = 90 times 1000 divided by 3600 m/s = 25 m/s. Distance and time units must both be converted.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "area-scaling": {
+    "required_review_points": [
+      "Rectangle area is length times width. A 2 cm by 4 cm rectangle has area 8 square centimetres. Tripling both lengths gives 6 cm by 12 cm and area 72 square centimetres. The area multiplier is 3 times 3 = 9. This assumes both dimensions scale by the same factor.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "median-outlier": {
+    "required_review_points": [
+      "For the sorted list 2, 3, 3, 4, 28, the mean is (2+3+3+4+28)/5 = 40/5 = 8. The median is the middle value, 3. Changing only the largest value while keeping it largest changes the mean but not the median in this example. Median is not always unchanged by any edit.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "controlled-comparison": {
+    "required_review_points": [
+      "Compare multiple similar plants randomly assigned to lamp and comparison groups. Keep water, soil, plant type, duration, and measurement method the same. Change the lamp condition. Compare growth after the same period. Repetition helps assess variability; a single result does not guarantee causation.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "loop-boundaries": {
+    "required_review_points": [
+      "range(4) produces 0, 1, 2, 3. The start defaults to 0; the stop value 4 is excluded. A four-item list has valid nonnegative indices 0 through 3. Index 4 is outside that list. These examples use positive stop values and the default step of 1.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "multiplication-scale": {
+    "required_review_points": [
+      "For a positive starting quantity, multiplying by a positive factor less than 1 takes a fraction of it and reduces it. 0.25 is one quarter, so 20 × 0.25 = 5. A factor greater than 1 increases a positive quantity. Multiplication does not always make numbers bigger or always make them smaller.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "v2-speed": {
+    "required_review_points": [
+      "1 km = 1000 m. 1 hour = 3600 seconds. Thus 108 km/h = 108 times 1000 divided by 3600 m/s = 30 m/s. Convert both distance and time units.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "v2-area": {
+    "required_review_points": [
+      "Rectangle area is length times width. A 4 cm by 5 cm rectangle has area 20 square centimetres. Doubling both lengths gives 8 cm by 10 cm, with area 80 square centimetres. The area multiplier is 2 times 2 = 4. Both dimensions must scale by the same factor.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "v2-median": {
+    "required_review_points": [
+      "For the sorted list 1, 2, 3, 4, 40, the mean is (1+2+3+4+40)/5 = 50/5 = 10. The median is the middle value, 3. Changing only the largest value while keeping it largest changes the mean but not the median here. The median is not immune to every edit.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "v2-plants": {
+    "required_review_points": [
+      "Randomly assign several similar plants to music and comparison groups. Keep water, soil, plant type, duration and measurement method the same. Change only the music condition. Compare growth after the same period. Repetition helps assess variability; a single result does not guarantee causation.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "v2-range": {
+    "required_review_points": [
+      "range(5) produces 0, 1, 2, 3, 4. The start defaults to 0 and stop value 5 is excluded. A five-item list has valid nonnegative indices 0 through 4. Index 5 is outside that list. This explanation assumes a positive stop and the default step of 1.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  },
+  "v2-scale": {
+    "required_review_points": [
+      "For a positive starting quantity, a positive factor less than 1 takes a fraction of it and reduces it. 0.4 is two-fifths or 40%, so 30 * 0.4 = 12. A factor greater than 1 increases a positive quantity. Multiplication does not always make numbers bigger or always make them smaller.",
+      "Check all conditions, exact question and withheld answer."
+    ],
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent."
+  }
+}

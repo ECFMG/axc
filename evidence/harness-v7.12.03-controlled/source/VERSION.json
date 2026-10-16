@@ -1,0 +1,35 @@
+{
+  "version": "v7.12.03",
+  "harness_base": "v7",
+  "comparison_reference": "frozen measured broad-context internal baseline",
+  "cumulative_iterations": [
+    "v7.10",
+    "v7.11",
+    "v7.12",
+    "v7.12.01",
+    "v7.12.02",
+    "v7.12.03"
+  ],
+  "new_changes": [
+    "All controller-dispatched actors share one durable token/call budget; failed/rejected attempts count and unknown usage blocks further dispatch.",
+    "Executed context/repair/review/budget receipts gate claims; external native runs remain advisory.",
+    "Finalization executes a real fresh structured reviewer on unchanged settings and then refreshes reporting without repeating final gates.",
+    "Quality-gated paired comparison ignores forecasts and requires fixed protocol, complete actor accounting, exact gates and equal conditions."
+  ],
+  "fixed_inputs": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "live_task_a_savings_verified": false,
+  "live_adapter_checks_passed": false,
+  "ollama_compatibility_version": "0.40.0",
+  "parent_version": "v7.12.02",
+  "inherited_parent_live_adapter_checks_passed": false,
+  "parent_source_archive_sha256": "b6c6c0ae822e16caf0c68d427deaffd8afdbecaa5762447b9c493ddcd80e65bf",
+  "revision": "controlled-quality-gated",
+  "objective": "measured token reduction subject to complete quality/accounting eligibility",
+  "parent_revision": "initial-v7.12.03",
+  "live_token_or_cost_savings_verified": false,
+  "historical_comparison_reference": "no_harness"
+}

@@ -71,7 +71,7 @@ Six Task A categories use the reference records' 1–5 scale with equal weights 
 | Tests and validation | 5/5 | Full suite, 67 new tests, lint, build, typecheck, 19 architecture checks and submitted-test gates pass. Publication full suite reruns with zero cached tasks. |
 | Architecture and codebase alignment | 4/5 | Existing application-service injection, Hono routing and Azure composition root are preserved. Read-only review reports no findings. Evidence covers a small fixture-backed sample, not broader domain or production architecture. |
 | Security and guardrail compliance | 5/5 | Implementation respects allowed paths and preserves authentication, dependencies, protected settings and Cellix source. This scores task-boundary compliance; no dedicated security scan was run. |
-| Context/token/cost efficiency | 3/5 | 2,975,364 recorded tokens remain below the 3,018,000 projection, but repeated input context dominates and no matched harness-efficiency comparison proves savings. |
+| Context/token/cost efficiency | 3/5 (historical provisional grade) | No matched controlled benchmark establishes efficiency. The original forecast-based rationale is withdrawn; forecasts never establish quality or savings. This historical grade is excluded from controlled optimization decisions. |
 | Developer workflow fit | 5/5 | Committed implementation, API documentation, patch, source archive, frozen harness, full logs, finalized usage and successful new-baseline checks are published with a clear root evaluation record. |
 
 ## Final cost estimate
@@ -93,3 +93,11 @@ Automatic reviews identify their model as `codex-auto-review`; its actual price 
 ## Harness efficiency follow-up
 
 [Harness v7.12.03](evidence/harness-v7.12.03/) implements the subsequent efficiency recommendations: fresh-context review handoff, native focused repair, stronger preflight, deterministic efficiency reporting and host guidance. All 224 tests pass, including 23 new tests; fresh-context code review found no issues. The original Task A measurement, cost estimate and rubric above remain unchanged. No matched live-model trial or measured savings claim accompanies this release.
+
+## v7.12.03 controlled amendment
+
+[The amended harness](evidence/harness-v7.12.03-controlled/) makes measured token reduction the objective, with passing output quality and complete accounting required for eligibility. It enforces one shared budget for primary/reviewer calls, retains all attempts, executes a fresh structured review, records actual control use, and generates final reports deterministically. Native-host runs cannot claim controller enforcement.
+
+The paired benchmark freezes the full task/check contract, base, model/settings, tools, accounting scope and at least two repetitions. Changing forecasts has no effect. Cheap failed output, missing reviewer/final counters, skipped repetitions and changed validation commands block claims. All 266 tests pass, including 42 net additional tests over initial .03. No live matched comparison or measured savings is claimed.
+
+The 90/100 score above is retained as the original historical assessment, not a controlled efficiency ranking. Its forecast-based efficiency rationale has been withdrawn. This amendment assigns no replacement numerical efficiency or overall rubric score without comparable measured trials. Original Task A token totals and cost calculations remain unchanged; amendment development usage is separate.

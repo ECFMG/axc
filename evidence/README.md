@@ -8,3 +8,5 @@ The root [evaluation run record](../evaluation-run-record.md) summarizes Task A 
 - [Publication validation](publication-2026-10-15-df-oai-3-out/): repeat checks on the newer AXC branch base and transfer provenance.
 
 Only this run's relevant artifacts are published. Conversation bodies, credentials, local settings, dependencies and generated deployment folders are excluded.
+
+- [v7.12.03 controlled amendment](harness-v7.12.03-controlled/): enforced shared budget, actual fresh review, frozen repeated comparisons and forecast-independent quality-gated efficiency.

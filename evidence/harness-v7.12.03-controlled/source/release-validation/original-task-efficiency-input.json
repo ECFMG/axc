@@ -1,0 +1,555 @@
+{
+  "source": "Disjoint original-turn cumulative deltas; automatic review turns explicitly separated",
+  "model": null,
+  "primary": {
+    "model": "gpt-6.1-sol",
+    "session_id": "01a14015-47d3-7ae1-a349-2262998a9c5b",
+    "source": "Codex token_count cumulative counters",
+    "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-03-52-01a14015-47d3-7ae1-a349-2262998a9c5b_01a14017-4fdc-7172-8d5c-41ec26df6f3f.jsonl",
+    "turn_id": "01a14017-5066-7693-a4c9-36f789890dcc",
+    "task_start_timestamp": "2026-10-15T15:03:52.176Z",
+    "task_end_timestamp": "2026-10-15T15:11:55.360Z",
+    "baseline": {
+      "counters": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "basis": "session origin: first cumulative token_count equals its first-call usage; no pre-task snapshot"
+    },
+    "ending_snapshot": {
+      "counters": {
+        "input_tokens": 2504708,
+        "cached_input_tokens": 2415872,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 19505,
+        "reasoning_output_tokens": 3276,
+        "total_tokens": 2524213
+      },
+      "timestamp": "2026-10-15T15:11:55.356Z"
+    },
+    "measured_usage": {
+      "input_tokens": 2504708,
+      "cached_input_tokens": 2415872,
+      "output_tokens": 19505,
+      "reasoning_output_tokens": 3276,
+      "total_tokens": 2524213
+    },
+    "final_response_accounted_for": true,
+    "model_calls_recorded": 27,
+    "distinct_counter_events": 27,
+    "duplicate_counter_events": 0,
+    "request_accounting_complete": true,
+    "request_usage": [
+      {
+        "timestamp": "2026-10-15T15:04:00.456Z",
+        "input_tokens": 46089,
+        "cached_input_tokens": 36096,
+        "output_tokens": 119,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 46208
+      },
+      {
+        "timestamp": "2026-10-15T15:04:09.339Z",
+        "input_tokens": 47890,
+        "cached_input_tokens": 45952,
+        "output_tokens": 335,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 48225
+      },
+      {
+        "timestamp": "2026-10-15T15:04:22.972Z",
+        "input_tokens": 58638,
+        "cached_input_tokens": 47744,
+        "output_tokens": 514,
+        "reasoning_output_tokens": 34,
+        "total_tokens": 59152
+      },
+      {
+        "timestamp": "2026-10-15T15:04:30.841Z",
+        "input_tokens": 62638,
+        "cached_input_tokens": 58496,
+        "output_tokens": 201,
+        "reasoning_output_tokens": 16,
+        "total_tokens": 62839
+      },
+      {
+        "timestamp": "2026-10-15T15:04:38.243Z",
+        "input_tokens": 67400,
+        "cached_input_tokens": 62464,
+        "output_tokens": 257,
+        "reasoning_output_tokens": 25,
+        "total_tokens": 67657
+      },
+      {
+        "timestamp": "2026-10-15T15:04:46.992Z",
+        "input_tokens": 73406,
+        "cached_input_tokens": 67200,
+        "output_tokens": 320,
+        "reasoning_output_tokens": 70,
+        "total_tokens": 73726
+      },
+      {
+        "timestamp": "2026-10-15T15:04:55.752Z",
+        "input_tokens": 80323,
+        "cached_input_tokens": 73216,
+        "output_tokens": 202,
+        "reasoning_output_tokens": 28,
+        "total_tokens": 80525
+      },
+      {
+        "timestamp": "2026-10-15T15:05:10.070Z",
+        "input_tokens": 85804,
+        "cached_input_tokens": 80128,
+        "output_tokens": 502,
+        "reasoning_output_tokens": 365,
+        "total_tokens": 86306
+      },
+      {
+        "timestamp": "2026-10-15T15:05:51.194Z",
+        "input_tokens": 87477,
+        "cached_input_tokens": 85632,
+        "output_tokens": 2108,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 89585
+      },
+      {
+        "timestamp": "2026-10-15T15:07:08.061Z",
+        "input_tokens": 91045,
+        "cached_input_tokens": 87296,
+        "output_tokens": 3980,
+        "reasoning_output_tokens": 11,
+        "total_tokens": 95025
+      },
+      {
+        "timestamp": "2026-10-15T15:07:16.709Z",
+        "input_tokens": 95178,
+        "cached_input_tokens": 90880,
+        "output_tokens": 208,
+        "reasoning_output_tokens": 68,
+        "total_tokens": 95386
+      },
+      {
+        "timestamp": "2026-10-15T15:07:26.289Z",
+        "input_tokens": 95998,
+        "cached_input_tokens": 94976,
+        "output_tokens": 286,
+        "reasoning_output_tokens": 42,
+        "total_tokens": 96284
+      },
+      {
+        "timestamp": "2026-10-15T15:07:34.203Z",
+        "input_tokens": 96556,
+        "cached_input_tokens": 95872,
+        "output_tokens": 315,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 96871
+      },
+      {
+        "timestamp": "2026-10-15T15:07:39.380Z",
+        "input_tokens": 96927,
+        "cached_input_tokens": 96384,
+        "output_tokens": 174,
+        "reasoning_output_tokens": 12,
+        "total_tokens": 97101
+      },
+      {
+        "timestamp": "2026-10-15T15:07:43.130Z",
+        "input_tokens": 97122,
+        "cached_input_tokens": 96768,
+        "output_tokens": 115,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 97237
+      },
+      {
+        "timestamp": "2026-10-15T15:07:52.340Z",
+        "input_tokens": 100419,
+        "cached_input_tokens": 96896,
+        "output_tokens": 343,
+        "reasoning_output_tokens": 44,
+        "total_tokens": 100762
+      },
+      {
+        "timestamp": "2026-10-15T15:08:04.338Z",
+        "input_tokens": 101764,
+        "cached_input_tokens": 100224,
+        "output_tokens": 419,
+        "reasoning_output_tokens": 62,
+        "total_tokens": 102183
+      },
+      {
+        "timestamp": "2026-10-15T15:08:17.751Z",
+        "input_tokens": 102868,
+        "cached_input_tokens": 101632,
+        "output_tokens": 380,
+        "reasoning_output_tokens": 34,
+        "total_tokens": 103248
+      },
+      {
+        "timestamp": "2026-10-15T15:08:30.954Z",
+        "input_tokens": 105231,
+        "cached_input_tokens": 102656,
+        "output_tokens": 296,
+        "reasoning_output_tokens": 38,
+        "total_tokens": 105527
+      },
+      {
+        "timestamp": "2026-10-15T15:08:50.356Z",
+        "input_tokens": 106438,
+        "cached_input_tokens": 105088,
+        "output_tokens": 681,
+        "reasoning_output_tokens": 427,
+        "total_tokens": 107119
+      },
+      {
+        "timestamp": "2026-10-15T15:09:04.578Z",
+        "input_tokens": 109120,
+        "cached_input_tokens": 106240,
+        "output_tokens": 577,
+        "reasoning_output_tokens": 162,
+        "total_tokens": 109697
+      },
+      {
+        "timestamp": "2026-10-15T15:09:38.145Z",
+        "input_tokens": 111423,
+        "cached_input_tokens": 108928,
+        "output_tokens": 1339,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 112762
+      },
+      {
+        "timestamp": "2026-10-15T15:10:21.868Z",
+        "input_tokens": 113256,
+        "cached_input_tokens": 111232,
+        "output_tokens": 2007,
+        "reasoning_output_tokens": 369,
+        "total_tokens": 115263
+      },
+      {
+        "timestamp": "2026-10-15T15:10:41.545Z",
+        "input_tokens": 115607,
+        "cached_input_tokens": 113024,
+        "output_tokens": 738,
+        "reasoning_output_tokens": 246,
+        "total_tokens": 116345
+      },
+      {
+        "timestamp": "2026-10-15T15:11:25.136Z",
+        "input_tokens": 116894,
+        "cached_input_tokens": 115456,
+        "output_tokens": 1932,
+        "reasoning_output_tokens": 191,
+        "total_tokens": 118826
+      },
+      {
+        "timestamp": "2026-10-15T15:11:48.922Z",
+        "input_tokens": 118892,
+        "cached_input_tokens": 116736,
+        "output_tokens": 896,
+        "reasoning_output_tokens": 516,
+        "total_tokens": 119788
+      },
+      {
+        "timestamp": "2026-10-15T15:11:55.356Z",
+        "input_tokens": 120305,
+        "cached_input_tokens": 118656,
+        "output_tokens": 261,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 120566
+      }
+    ],
+    "complete": true,
+    "missing_usage": [],
+    "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+    "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output."
+  },
+  "subagents": [
+    {
+      "model": "gpt-6.1-sol",
+      "session_id": "01a1401a-c7a3-78d0-a846-aa32fce0c6b6",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-39-01a1401a-c7a3-78d0-a846-aa32fce0c6b6.jsonl",
+      "turn_id": "01a1401a-c7e8-7f33-b745-ecb1bfbda540",
+      "task_start_timestamp": "2026-10-15T15:07:39.380Z",
+      "task_end_timestamp": "2026-10-15T15:08:15.846Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "session origin: first cumulative token_count equals its first-call usage; no pre-task snapshot"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 371965,
+          "cached_input_tokens": 330368,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1174,
+          "reasoning_output_tokens": 87,
+          "total_tokens": 373139
+        },
+        "timestamp": "2026-10-15T15:08:15.757Z"
+      },
+      "measured_usage": {
+        "input_tokens": 371965,
+        "cached_input_tokens": 330368,
+        "output_tokens": 1174,
+        "reasoning_output_tokens": 87,
+        "total_tokens": 373139
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 7,
+      "distinct_counter_events": 7,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:07:43.823Z",
+          "input_tokens": 46025,
+          "cached_input_tokens": 22784,
+          "output_tokens": 42,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 46067
+        },
+        {
+          "timestamp": "2026-10-15T15:07:47.691Z",
+          "input_tokens": 46694,
+          "cached_input_tokens": 45824,
+          "output_tokens": 100,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 46794
+        },
+        {
+          "timestamp": "2026-10-15T15:07:53.362Z",
+          "input_tokens": 47246,
+          "cached_input_tokens": 46464,
+          "output_tokens": 254,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 47500
+        },
+        {
+          "timestamp": "2026-10-15T15:07:58.207Z",
+          "input_tokens": 50413,
+          "cached_input_tokens": 47104,
+          "output_tokens": 128,
+          "reasoning_output_tokens": 33,
+          "total_tokens": 50541
+        },
+        {
+          "timestamp": "2026-10-15T15:08:02.466Z",
+          "input_tokens": 57363,
+          "cached_input_tokens": 50176,
+          "output_tokens": 144,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 57507
+        },
+        {
+          "timestamp": "2026-10-15T15:08:08.284Z",
+          "input_tokens": 60948,
+          "cached_input_tokens": 57216,
+          "output_tokens": 236,
+          "reasoning_output_tokens": 38,
+          "total_tokens": 61184
+        },
+        {
+          "timestamp": "2026-10-15T15:08:15.757Z",
+          "input_tokens": 63276,
+          "cached_input_tokens": 60800,
+          "output_tokens": 270,
+          "reasoning_output_tokens": 16,
+          "total_tokens": 63546
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output."
+    },
+    {
+      "model": "codex-auto-review",
+      "session_id": "01a1401a-3acd-74b1-ab48-8b398cb485f9",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401a-3b02-7702-9f0e-4448c3698079",
+      "task_start_timestamp": "2026-10-15T15:07:03.300Z",
+      "task_end_timestamp": "2026-10-15T15:07:06.741Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "session origin: first cumulative token_count equals its first-call usage; no pre-task snapshot"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 20244,
+          "cached_input_tokens": 5888,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 159,
+          "reasoning_output_tokens": 98,
+          "total_tokens": 20403
+        },
+        "timestamp": "2026-10-15T15:07:06.737Z"
+      },
+      "measured_usage": {
+        "input_tokens": 20244,
+        "cached_input_tokens": 5888,
+        "output_tokens": 159,
+        "reasoning_output_tokens": 98,
+        "total_tokens": 20403
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 1,
+      "distinct_counter_events": 1,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:07:06.737Z",
+          "input_tokens": 20244,
+          "cached_input_tokens": 5888,
+          "output_tokens": 159,
+          "reasoning_output_tokens": 98,
+          "total_tokens": 20403
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output."
+    },
+    {
+      "model": "codex-auto-review",
+      "session_id": "01a1401a-3acd-74b1-ab48-8b398cb485f9",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401b-50ab-7581-a96f-1c417f4520c7",
+      "task_start_timestamp": "2026-10-15T15:08:14.381Z",
+      "task_end_timestamp": "2026-10-15T15:08:16.589Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 20244,
+          "cached_input_tokens": 5888,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 159,
+          "reasoning_output_tokens": 98,
+          "total_tokens": 20403
+        },
+        "basis": "observed cumulative token_count before original task"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 47825,
+          "cached_input_tokens": 25088,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 275,
+          "reasoning_output_tokens": 150,
+          "total_tokens": 48100
+        },
+        "timestamp": "2026-10-15T15:08:16.586Z"
+      },
+      "measured_usage": {
+        "input_tokens": 27581,
+        "cached_input_tokens": 19200,
+        "output_tokens": 116,
+        "reasoning_output_tokens": 52,
+        "total_tokens": 27697
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 1,
+      "distinct_counter_events": 1,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:08:16.586Z",
+          "input_tokens": 27581,
+          "cached_input_tokens": 19200,
+          "output_tokens": 116,
+          "reasoning_output_tokens": 52,
+          "total_tokens": 27697
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output."
+    },
+    {
+      "model": "codex-auto-review",
+      "session_id": "01a1401a-3acd-74b1-ab48-8b398cb485f9",
+      "source": "Codex token_count cumulative counters",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T11-07-03-01a1401a-3acd-74b1-ab48-8b398cb485f9.jsonl",
+      "turn_id": "01a1401b-8426-7782-9b9b-c40ad50fc053",
+      "task_start_timestamp": "2026-10-15T15:08:27.562Z",
+      "task_end_timestamp": "2026-10-15T15:08:29.687Z",
+      "baseline": {
+        "counters": {
+          "input_tokens": 47825,
+          "cached_input_tokens": 25088,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 275,
+          "reasoning_output_tokens": 150,
+          "total_tokens": 48100
+        },
+        "basis": "observed cumulative token_count before original task"
+      },
+      "ending_snapshot": {
+        "counters": {
+          "input_tokens": 77632,
+          "cached_input_tokens": 52480,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 380,
+          "reasoning_output_tokens": 191,
+          "total_tokens": 78012
+        },
+        "timestamp": "2026-10-15T15:08:29.684Z"
+      },
+      "measured_usage": {
+        "input_tokens": 29807,
+        "cached_input_tokens": 27392,
+        "output_tokens": 105,
+        "reasoning_output_tokens": 41,
+        "total_tokens": 29912
+      },
+      "final_response_accounted_for": true,
+      "model_calls_recorded": 1,
+      "distinct_counter_events": 1,
+      "duplicate_counter_events": 0,
+      "request_accounting_complete": true,
+      "request_usage": [
+        {
+          "timestamp": "2026-10-15T15:08:29.684Z",
+          "input_tokens": 29807,
+          "cached_input_tokens": 27392,
+          "output_tokens": 105,
+          "reasoning_output_tokens": 41,
+          "total_tokens": 29912
+        }
+      ],
+      "complete": true,
+      "missing_usage": [],
+      "scope": "Original turn only, including inspection/planning/implementation/validation/reporting/final response. Later turns excluded. Supply each subagent log separately if used.",
+      "rules": "Subtract cumulative ending minus baseline, never sum snapshots. Cached input is inside input; reasoning output is inside output."
+    }
+  ],
+  "measured_usage": {
+    "input_tokens": 2954305,
+    "cached_input_tokens": 2798720,
+    "output_tokens": 21059,
+    "reasoning_output_tokens": 3554,
+    "total_tokens": 2975364
+  },
+  "complete": true,
+  "missing_usage": [],
+  "model_calls_recorded": 37,
+  "scope": "Original Task A main/reviewer/three automatic-review turns, including final responses; all subsequent turns excluded."
+}

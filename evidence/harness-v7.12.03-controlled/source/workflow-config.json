@@ -1,0 +1,38 @@
+{
+  "model": {
+    "name": "mock-v1",
+    "max_output_tokens": 512,
+    "temperature": 0
+  },
+  "pricing": {
+    "input_per_million": 1.0,
+    "cached_input_per_million": 0.1,
+    "output_per_million": 4.0,
+    "label": "ILLUSTRATIVE USD rates; replace with your model/account prices before live use"
+  },
+  "limits": {
+    "context_tokens": 16000,
+    "workflow_tokens": 80000,
+    "tool_rounds": 8,
+    "detail_lines": 20,
+    "retries": 1,
+    "repetitions": 2,
+    "tool_calls": 32,
+    "request_timeout_seconds": 60,
+    "workflow_timeout_seconds": 300
+  },
+  "optimization": {
+    "top_k": 2,
+    "tool_lines": 8,
+    "keep_recent": 2,
+    "context_tokens": 8000,
+    "response_tokens": 256
+  },
+  "acceptance": {
+    "min_success_rate": 1.0,
+    "max_success_drop": 0.0,
+    "max_initial_success_drop": 0.0,
+    "min_token_savings": 0.05,
+    "max_fallback_rate": 0.0
+  }
+}

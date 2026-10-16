@@ -1,0 +1,10 @@
+{
+  "context": "fresh, no parent history",
+  "initial_findings": 2,
+  "fixed_findings": [
+    "Minimum paired repetitions reconciled with frozen declaration",
+    "Static task/check contract included in comparison protocol fingerprints"
+  ],
+  "remaining_findings": 0,
+  "focused_tests_after_fixes": 45
+}

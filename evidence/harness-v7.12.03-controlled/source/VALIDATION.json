@@ -1,0 +1,63 @@
+{
+  "version": "v7.12.03",
+  "revision": "controlled-quality-gated",
+  "passed": true,
+  "recorded_at": "2026-10-16T17:59:57.179173+00:00",
+  "command": "HARNESS_TEST_TYPESCRIPT=/absolute/path/to/typescript/lib/typescript.js python3 -B -m unittest discover -v",
+  "tests": 266,
+  "net_additional_tests_over_initial_03": 42,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "duration_seconds": 32.596,
+  "test_log": "TEST_RESULTS.log",
+  "fixed_contracts_unchanged": {
+    "settings": true,
+    "checks": true,
+    "allowed_paths": true,
+    "protected_paths": true,
+    "verification_files": true,
+    "implementation_steps": true,
+    "action_batch_size": true,
+    "focused_local_validation": true,
+    "context_groups": true
+  },
+  "fixed_input_sha256": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "independent_review": {
+    "context": "fresh, no parent history",
+    "initial_findings": 2,
+    "fixed_findings": [
+      "Minimum paired repetitions reconciled with frozen declaration",
+      "Static task/check contract included in comparison protocol fingerprints"
+    ],
+    "remaining_findings": 0,
+    "focused_tests_after_fixes": 45
+  },
+  "coverage": [
+    "forecast invariance",
+    "cheap failed quality ineligible",
+    "missing reviewer/final-response counters ineligible",
+    "failed/rejected/retry calls retained",
+    "concurrent shared reservations",
+    "budget exhaustion still runs all eight final fixture gates",
+    "real primary/reviewer controller integration with mocked adapters",
+    "native imports cannot establish controlled receipts",
+    "stale/malformed/truncated review rejected",
+    "repeated benchmark dispatch routing and failed trial retention"
+  ],
+  "model_invocations_during_release_validation": 0,
+  "live_task_a_model_run": false,
+  "live_token_or_cost_savings_verified": false,
+  "limitations": [
+    "No matched live model comparison; no measured savings percentage or new rubric score.",
+    "Native Codex dispatch/context remains host-controlled and advisory; external runs cannot qualify as controlled.",
+    "Unavailable provider cache/reasoning subcounters stay null and prevent complete accounting claims.",
+    "Cold-cache, source and counter receipts are local evidence, not authenticated provider attestations or an OS sandbox.",
+    "Model latency is separate from development wall time; billed cost is unmeasured.",
+    "Original Task A measurements remain separate from amendment development usage."
+  ]
+}

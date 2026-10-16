@@ -1,0 +1,50 @@
+{
+  "speed-units": {
+    "required_review_points": [
+      "Keep both unit conversions and the division order.",
+      "Do not disclose the transfer answer."
+    ],
+    "transfer_answer": "20 m/s; 72 × 1000 / 3600.",
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent. Every rating must be at least 4, and both checks true."
+  },
+  "area-scaling": {
+    "required_review_points": [
+      "Preserve the assumption that both dimensions scale equally.",
+      "Distinguish length units from square units."
+    ],
+    "transfer_answer": "Area becomes 25 times as large.",
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent. Every rating must be at least 4, and both checks true."
+  },
+  "median-outlier": {
+    "required_review_points": [
+      "Preserve the qualification about which value changes.",
+      "Explain sorting and the middle position."
+    ],
+    "transfer_answer": "The median stays 3; the mean becomes 10.",
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent. Every rating must be at least 4, and both checks true."
+  },
+  "controlled-comparison": {
+    "required_review_points": [
+      "Do not guarantee causation from one result.",
+      "Include random assignment, multiple plants, and matched conditions."
+    ],
+    "transfer_answer": "Water becomes a second difference, so lamp and water effects cannot be separated by that comparison.",
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent. Every rating must be at least 4, and both checks true."
+  },
+  "loop-boundaries": {
+    "required_review_points": [
+      "Do not confuse iteration count with the last index.",
+      "Keep the positive-stop/default-step scope."
+    ],
+    "transfer_answer": "5.",
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent. Every rating must be at least 4, and both checks true."
+  },
+  "multiplication-scale": {
+    "required_review_points": [
+      "Preserve the positive-quantity and positive-factor qualifications.",
+      "Reject blanket claims that multiplication always shrinks or enlarges."
+    ],
+    "transfer_answer": "30, which is larger than 20.",
+    "rating_scale": "1 unusable; 2 major issues; 3 needs revision; 4 accurate and usable; 5 excellent. Every rating must be at least 4, and both checks true."
+  }
+}

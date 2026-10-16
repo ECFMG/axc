@@ -1,0 +1,16 @@
+{
+  "kind": "Regression against original recorded Task A logs; not a new model run",
+  "measured_usage": {
+    "input_tokens": 3229179,
+    "cached_input_tokens": 3067776,
+    "output_tokens": 24131,
+    "reasoning_output_tokens": 4721,
+    "total_tokens": 3253310
+  },
+  "complete": true,
+  "distinct_model_calls": 41,
+  "primary_distinct_calls": 31,
+  "reviewer_distinct_calls": 10,
+  "duplicate_events_ignored": 1,
+  "follow_up_turns_excluded": true
+}
