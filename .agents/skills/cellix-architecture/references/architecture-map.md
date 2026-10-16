@@ -37,9 +37,15 @@ Expected shape:
 | Aggregate and entity reference | `packages/ocom/domain/src/domain/contexts/community/community/community.ts` |
 | Mutation-side repository contract | `packages/ocom/domain/src/domain/contexts/community/community/community.repository.ts` |
 | Value objects and unit of work, when needed | `packages/ocom/domain/src/domain/contexts/community/community/community.value-objects.ts`; `packages/ocom/domain/src/domain/contexts/community/community/community.uow.ts` |
+| Stateful workflow aggregate, props, and entity reference | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.aggregate.ts` |
+| Stateful workflow value objects | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.value-objects.ts` |
+| Child entities with their own lifecycle | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1-activity-detail.entity.ts`; `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1-message.entity.ts` |
+| Stateful workflow repository and unit of work | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.repository.ts`; `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.uow.ts` |
+| Aggregate authorization policy | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.visa.ts` |
+| Focused aggregate and value-object tests | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.aggregate.test.ts`; `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.value-objects.test.ts` |
 | Search specifications | `packages/ocom/domain/src/domain/contexts/community/member/member.search-specs.ts` |
 
-Use the lightest applicable domain pattern. A read-only projection does not automatically require an aggregate, value objects, mutation repository, or unit of work. Place stable domain concepts in the context/entity structure when they apply. A domain `*.repository.ts` contract is for mutation-side domain access; it is not the home for a `*ReadRepository` interface.
+Classify the concept before selecting a pattern. A genuinely read-only projection does not require an aggregate, value objects, mutation repository, or unit of work. A persisted command concept with creation plus transitions, audit or history, nested lifecycle, or transactional invariants uses the full applicable stateful-workflow pattern: an `AggregateRoot`, props and entity reference, constrained value objects, child entities where identity or lifecycle requires them, seedwork repository and unit-of-work contracts, and focused domain tests. A public record plus free mutation functions is not an aggregate substitute. A domain `*.repository.ts` contract is for mutation-side domain access; it is not the home for a `*ReadRepository` interface.
 
 ## Persistence and Read Models
 
@@ -54,6 +60,18 @@ Use the lightest applicable domain pattern. A read-only projection does not auto
 | Read data source | `packages/ocom/persistence/src/datasources/readonly/community/community/community.data.ts` |
 
 Expected shape: application services depend on `DataSources` and the read repository interface defined in persistence. Concrete MongoDB, in-memory, or fixture-backed implementations remain replaceable behind those contracts. Use the matching `<context>/<entity>` directories and `*.read-repository.ts` suffix for read-side code. Compose repositories through the applicable entity, context, and data-source `index.ts` files shown by the selected slice; do not centralize all concrete assembly in the root factory without a documented reason. `*.data.ts` is appropriate when a separate data-source adapter is needed; do not add empty layers solely to mirror the reference.
+
+## Command-Side Persistence
+
+| Pattern | Reference |
+| --- | --- |
+| Aggregate persistence adapter and conversion | `packages/ocom/persistence/src/datasources/domain/case/service-ticket-v1/service-ticket-v1.domain-adapter.ts` |
+| Domain repository implementation | `packages/ocom/persistence/src/datasources/domain/case/service-ticket-v1/service-ticket-v1.repository.ts` |
+| Unit-of-work implementation | `packages/ocom/persistence/src/datasources/domain/case/service-ticket-v1/service-ticket-v1.uow.ts` |
+| Persistence composition and exports | `packages/ocom/persistence/src/datasources/domain/case/service-ticket-v1/index.ts` |
+| Adapter, repository, and unit-of-work tests | `packages/ocom/persistence/src/datasources/domain/case/service-ticket-v1/*.test.ts`; `packages/ocom/persistence/src/datasources/domain/case/service-ticket-v1/*.feature` |
+
+Expected shape: the persistence adapter reconstructs and serializes the aggregate without moving domain rules out of it. Repository and unit-of-work implementations satisfy the domain seedwork contracts and are composed through entity, context, and data-source boundaries. A custom in-memory implementation may replace the storage technology, but it must retain and directly test the applicable commit, rollback, isolation or serialization, and defensive-copy semantics.
 
 ## Cross-Layer Naming Check
 

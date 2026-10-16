@@ -18,16 +18,20 @@ For changes under `apps/api`, `packages/axc`, or `packages/axc-verification`, re
 
 Before writing code:
 
-1. Locate the closest analogous vertical slice in Cellix.
-2. Inventory the applicable reference tree for composition, domain, application services, persistence or data sources, transport, and tests. Include sibling and parent `index.ts` files, public exports, interfaces, and test companions; package-level similarity is insufficient.
-3. Choose one context name and map each needed responsibility and planned file to its Cellix counterpart before writing code.
-4. Record every applicable reference file or behavior that will be omitted and why it does not apply. An omission without a reason is a defect to resolve during review.
+1. Classify every feature concept as a read-only projection, command aggregate, child entity, or value object. Do not infer the domain shape from the endpoint count or task size.
+2. Locate the closest analogous vertical slice in Cellix by behavior. A persisted workflow with creation, state transitions, audit or history, nested lifecycle, or transactional invariants must inspect the full `case/service-ticket/v1` slice; a query-only feature may use a read-model slice.
+3. Inventory the applicable reference tree for composition, domain, application services, persistence or data sources, transport, and tests. For a command aggregate, include the aggregate, props and entity reference, value objects, child entities, repository, unit of work, visa or passport when authorization applies, events when required by the reference behavior, persistence adapters and converters, sibling and parent `index.ts` files, and focused tests. Package-level similarity is insufficient.
+4. Choose one context name and map each needed responsibility and planned file to its exact Cellix counterpart before writing code.
+5. Record every applicable reference file or behavior that will be omitted and why it does not apply. Complexity, implementation speed, and passing end-to-end tests are not valid omission reasons. An omission without a behavior-based reason is a defect to resolve during review.
 
 ## Architecture Invariants
 
 - Keep `apps/api` as the composition root. Do not place business rules or storage behavior there.
 - Construct or register the data-sources factory in the API composition context and inject it into the application-services host. Do not call a concrete persistence factory such as `createDataSources()` inside `buildApplicationServicesFactory`.
 - Keep domain concepts, invariants, entity references, and mutation-side repository or unit-of-work contracts in `packages/axc/domain` when the feature needs them. Put read-side repository interfaces, implementations, and fixture data in `packages/axc/persistence`; a `*ReadRepository` must not live in domain.
+- Treat a persisted command-side concept with creation plus state transitions, audit or history, nested lifecycle, or transactional invariants as an aggregate unless the closest behavioral Cellix reference proves otherwise. Implement it with the applicable Cellix aggregate root, props and entity-reference pattern, value objects, child entities, repository, unit of work, exports, and focused tests. Do not model such a concept as a public mutable record operated on by free mutation functions.
+- Represent constrained or normalized domain values with Cellix-aligned value objects. Model nested records as child entities, value objects, or prop arrays according to identity and lifecycle; do not leave those decisions implicit in transport or persistence types.
+- Mutation repositories and units of work must extend or reuse the corresponding `@cellix/domain-seedwork` contracts. Do not introduce a reduced project-local substitute. Include visa or passport checks, domain events, and versioning when the selected behavioral reference requires them; document why each inapplicable capability is omitted.
 - Follow the applicable Cellix context/entity directory structure, filename suffixes, public exports, and required feature behavior. For example, use `*.read-repository.ts` for a read repository and `*.repository.ts` for a domain repository. Do not collapse a feature into a root `course.ts` or `readonly/course.ts` when the analogous Cellix slice separates context, entity, and repository files.
 - Use the chosen context name consistently across domain, application services, persistence, data-source namespaces, and public APIs. Do not substitute a different context name in one layer.
 - Organize application behavior under context and feature modules in `packages/axc/application-services/src/contexts`. Keep the package root focused on host interfaces and composition.
@@ -52,7 +56,7 @@ Before writing code:
 Before reporting completion:
 
 1. Perform the review in `.agents/skills/cellix-architecture/references/review-template.md`.
-2. Compare the implemented tree with the planned Cellix map, including composition files, suffixes, exports, service interfaces, test companions, and behavior. Resolve unexplained differences.
+2. Compare the implemented tree with the planned Cellix map, including composition files, suffixes, exports, service interfaces, aggregate and value-object semantics, seedwork inheritance, persistence adapters, test companions, and behavior. Resolve unexplained differences.
 3. Run the relevant focused tests, followed by the repository verification gate:
 
    ```bash

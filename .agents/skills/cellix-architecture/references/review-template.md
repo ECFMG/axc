@@ -5,10 +5,18 @@ Complete this review after implementation and before the final verification comm
 ## Reference Evidence
 
 1. Which local Cellix files were inspected?
-2. Which reference is the closest analogous vertical slice?
+2. Which reference is the closest analogous vertical slice, and why is it behaviorally closer than a simpler CRUD or read-model slice?
 3. Which applicable Cellix capability or package was reused?
 4. What are the applicable reference and planned destination trees, including parent and sibling composition files?
 5. Which reference files, suffixes, exports, tests, and behavior apply? Which were intentionally omitted, and why?
+
+## Domain Modeling Classification
+
+1. Is each concept a read-only projection, command aggregate, child entity, or value object? What behavior supports that classification?
+2. Does any persisted concept support creation plus state transitions, audit or history, nested lifecycle, or transactional invariants? If so, where are its aggregate root, props, entity reference, constrained value objects, repository, unit of work, and focused tests?
+3. Do mutation repository and unit-of-work contracts reuse `@cellix/domain-seedwork` rather than a reduced project-local abstraction?
+4. Are nested records modeled according to identity and lifecycle? Are visa or passport rules, events, and versioning implemented when the selected Cellix behavior requires them, or explicitly omitted for a behavior-based reason?
+5. Are domain transitions methods on the aggregate or child entity rather than free functions over a public mutable record?
 
 ## Responsibility Placement
 
@@ -57,6 +65,8 @@ Do not report completion until:
 
 - architecture tests pass;
 - no feature data or business operation remains in a composition root;
+- every persisted command workflow has the applicable Cellix aggregate, value-object, child-entity, repository, unit-of-work, persistence-adapter, export, and focused-test shape; any omission has a behavior-based rationale;
+- mutation repositories and units of work reuse the Cellix domain seedwork contracts, and domain transitions are not implemented as free functions over mutable records;
 - read-side repository contracts are in persistence, and context, composition, and filename conventions match the applicable Cellix slice;
 - production transport does not depend on persistence contracts, and any direct domain dependency is justified by the reference;
 - required feature behavior and files have been implemented or their omission justified;
