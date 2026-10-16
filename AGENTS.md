@@ -33,6 +33,7 @@ New business features use the structure of the CellixJS sample application. The 
   - persistence: read access in `src/datasources/readonly/<context>/<aggregate>/<aggregate>.read-repository.ts`, created by `get<Aggregate>ReadRepository(...)`; a `DataSources` object (`readonlyDataSource.<Context>.<Aggregate>.<Aggregate>ReadRepo`) built by `DataSourcesFactoryImpl` and exported from the package root. Seed or fixture data lives in persistence.
   - read repositories own data access: filtering, matching, sorting and paging happen in the repository method, so the same contract can later be backed by a database query. Give repositories methods shaped like the question being asked rather than a load-everything method that callers filter in memory.
   - application services: one file per operation in `src/contexts/<context>/<aggregate>/` (`query-<name>.ts`, `create.ts`, ...), each exporting a function that takes `dataSources` and returns the operation. Query operations stay thin: pass typed criteria to the read repository and shape its result. The aggregate and context `index.ts` files compose these, and `ApplicationServices` exposes them as `<Context>.<Aggregate>.<operation>`.
+  - rest: request parsing, handlers and their tests in `src/contexts/<context>/<aggregate>/`, with the same `index.ts` chain; the package root exports only what other packages use.
   - composition root: `apps/api` creates the data-sources factory once and passes it to the application-services factory through the API context.
 - Add only the contexts, aggregates, folders and files the feature uses. Do not scaffold unit-of-work, domain events or empty contexts for read-only features, and do not add value-object classes or entity base classes unless the feature mutates or enforces invariants on an aggregate.
 - Keep this repo's own rules where they are stricter: HTTP parsing and error bodies stay in `rest`, application services receive already-typed input, and dependencies are required, not optional.
@@ -49,6 +50,7 @@ New business features use the structure of the CellixJS sample application. The 
 
 ## Tests
 - Work test-first: for each item in your plan, write the test, run it and see it fail, then write the code that makes it pass.
+- Do not create implementation files in the same step as their tests. Write the tests (with at most the type or function signatures they import), run them and confirm the failure comes from missing behaviour rather than a setup error, and only then implement.
 - Every layer that contains logic gets its own unit tests covering each branch: every allowed enum value, every rejection reason, boundary values and the values just outside them, defaults, combinations of inputs, and empty results. Acceptance scenarios complement unit tests; they do not replace them.
 - Unit tests live next to the code they test, in the same package and folder (`<name>.test.ts` beside `<name>.ts`). Follow the setup of packages that already have tests.
 - `packages/axc-verification/archunit-tests` is for architecture rules only.
@@ -64,7 +66,8 @@ New business features use the structure of the CellixJS sample application. The 
 
 ## Sandbox and verification
 - The sandbox has no network access. Commands that need it (`pnpm run verify`, `pnpm audit`, `pnpm run snyk`) require approval, so batch them.
-- While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`.
+- While iterating, run network-free checks directly: `pnpm run lint`, `pnpm run typecheck`, `pnpm run build`, `pnpm run test:arch`, `pnpm run test`, `pnpm run knip`.
+- Run `pnpm run knip` once before your first edit and note what it reports. Run it again after your last code change and before the review; anything new it reports (unused files, exports, types or dependencies) comes from your change and must be fixed.
 - Run verification once, at the end, as a single command: `pnpm run verify; pnpm run snyk`. Everything must pass.
 - If `pnpm audit` or Snyk reports an advisory introduced by your dependency changes, fix it (e.g. upgrade or pin a patched version). If an advisory already exists on the base commit and fixing it needs files outside the task's write boundary (e.g. `pnpm-workspace.yaml` overrides), do not fix it; list it in your summary with the patched version. Report Snyk authentication or organization errors instead of working around them.
 
@@ -82,7 +85,8 @@ Before the review, check your diff for:
 - Dense or hard-to-follow code that a reviewer would need to unpack.
 - Folder, file, export and naming structure matching the CellixJS conventions above.
 - Changes to unrelated lines, including formatting; new entries placed out of the existing order (e.g. alphabetical dependencies).
-- Leftover debug code, TODOs, or unused exports.
+- Leftover debug code, TODOs, or unused exports (confirmed with `pnpm run knip` against your baseline).
+- Tests that were run and seen to fail before their implementation existed.
 - Files that are not deliverables (plans, notes, requirement maps, scratch files).
 - Generic constant names, one-line `if` statements, and truthiness checks on optional values.
 - Documentation updated where the task or spec requires it.
