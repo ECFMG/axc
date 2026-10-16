@@ -3,19 +3,24 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { isAbsolute, relative, resolve, sep } from 'node:path';
+import { rawBroadCommandReason } from '../../scripts/check-budget.mjs';
 
 const CLOSED_TREES = ['node_modules', 'packages/cellix'];
 const INSPECTION_COMMAND = /(?:^|[;&|]\s*|\s)(?:cat|less|more|head|tail|sed|awk|rg|grep|find|ls|stat|readlink|wc|tree)(?:\s|$)/;
 
 try {
 	const input = await readInput();
-	const blockedReference = findBlockedReference(input);
-	const cwd = input.cwd ?? input.workspace_roots?.[0];
-
-	if (blockedReference === undefined || latestCheckNames(blockedReference, cwd)) {
-		allow();
+	const broadCommand = rawBroadCommandReason(shellCommand(input) ?? '');
+	if (broadCommand !== undefined) {
+		deny(broadCommand, input.hook_event_name);
 	} else {
-		deny(`Inspection of ${blockedReference} is closed by the repository harness. Use the agent-check error block first; open this path only when the newest agent-check log names it.`, input.hook_event_name);
+		const blockedReference = findBlockedReference(input);
+		const cwd = input.cwd ?? input.workspace_roots?.[0];
+		if (blockedReference === undefined || latestCheckNames(blockedReference, cwd)) {
+			allow();
+		} else {
+			deny(`Inspection of ${blockedReference} is closed by the repository harness. Use the agent-check error block first; open this path only when the newest agent-check log names it.`, input.hook_event_name);
+		}
 	}
 } catch {
 	// Hook defects must not turn a scored run into a human intervention.
@@ -46,18 +51,8 @@ function findBlockedReference(input) {
 		return closedPath(toolInput.path ?? toolInput.file_path ?? toolInput.target_file, cwd);
 	}
 
-	if (toolName === 'Grep') {
-		for (const value of [toolInput.path, toolInput.glob]) {
-			const blocked = closedPath(value, cwd);
-			if (blocked !== undefined) {
-				return blocked;
-			}
-		}
-		return undefined;
-	}
-
-	if (toolName === 'Glob') {
-		for (const value of [toolInput.target_directory, toolInput.glob_pattern]) {
+	if (toolName === 'Grep' || toolName === 'Glob') {
+		for (const value of collectStrings(toolInput)) {
 			const blocked = closedPath(value, cwd);
 			if (blocked !== undefined) {
 				return blocked;
@@ -71,6 +66,29 @@ function findBlockedReference(input) {
 	}
 
 	return undefined;
+}
+
+function shellCommand(input) {
+	if (typeof input.command === 'string') {
+		return input.command;
+	}
+	const toolInput = parseToolInput(input.tool_input);
+	return typeof toolInput.command === 'string' ? toolInput.command : undefined;
+}
+
+function collectStrings(value, result = []) {
+	if (typeof value === 'string') {
+		result.push(value);
+	} else if (Array.isArray(value)) {
+		for (const item of value) {
+			collectStrings(item, result);
+		}
+	} else if (value !== null && typeof value === 'object') {
+		for (const item of Object.values(value)) {
+			collectStrings(item, result);
+		}
+	}
+	return result;
 }
 
 function parseToolInput(value) {
@@ -131,7 +149,8 @@ function closedReferenceInText(value) {
 }
 
 function latestCheckNames(blockedReference, cwd) {
-	if (!blockedReference.includes('/')) {
+	const leaf = blockedReference.slice(blockedReference.lastIndexOf('/') + 1);
+	if (!blockedReference.includes('/') || !leaf.includes('.')) {
 		return false;
 	}
 

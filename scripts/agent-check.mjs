@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { closeSync, mkdtempSync, openSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { commandText, isVerify, readBudget, recordVerify, rejectionReason } from './check-budget.mjs';
 
 const args = process.argv.slice(2);
 if (args[0] === '--') {
@@ -15,6 +16,14 @@ if (args.length === 0) {
 
 const [command, ...commandArgs] = args;
 const displayCommand = [command, ...commandArgs].map(formatArgument).join(' ');
+const requestedText = commandText(command, commandArgs);
+const blocked = rejectionReason(requestedText, readBudget());
+if (blocked !== undefined) {
+	console.error(`FAIL: ${displayCommand}`);
+	console.error(blocked);
+	process.exit(1);
+}
+
 const directory = mkdtempSync(join(tmpdir(), 'axc-agent-check-'));
 const logPath = join(directory, 'command.log');
 const logFile = openSync(logPath, 'w');
@@ -24,6 +33,10 @@ const result = spawnSync(command, commandArgs, {
 	stdio: ['ignore', logFile, logFile],
 });
 closeSync(logFile);
+
+if (isVerify(requestedText)) {
+	recordVerify(result.status ?? 1);
+}
 
 if (result.status === 0) {
 	console.log(`PASS: ${displayCommand}`);
@@ -75,7 +88,21 @@ function findFailedCheck(lines) {
 }
 
 function findErrorBlock(lines) {
-	const specificPatterns = [/^\s*×\s*/, /\bFound \d+ errors?\b/i, /\bUnused exports?(?:ed)?\b/i, /\bFAIL\b/, /AssertionError:/, /\berror TS\d+:/i, /\bFailed Tests\b/i];
+	const specificPatterns = [
+		/^\s*[×✗]\s*/,
+		/\bfunction timed out\b/i,
+		/\bExecution failed\b/i,
+		/\bFound \d+ errors?\b/i,
+		/\bUnused exports?(?:ed)?\b/i,
+		/\bUndefined(?: step|\. Implement with)\b/,
+		/\bis not a function\b/,
+		/\d+ failing\b/i,
+		/\bscenarios?.*\bfailed\b/i,
+		/\bFAIL\b/,
+		/AssertionError:/,
+		/\berror TS\d+:/i,
+		/\bFailed Tests\b/i,
+	];
 	const specificIndexes = specificPatterns.map((pattern) => lines.findIndex((line) => pattern.test(line))).filter((candidate) => candidate !== -1);
 	const index = specificIndexes.length > 0 ? Math.min(...specificIndexes) : lines.findIndex((line) => /\[ELIFECYCLE\]|\bERROR\b/.test(line));
 

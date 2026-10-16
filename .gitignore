@@ -22,6 +22,7 @@ apps/api/agentCourses-api.zip
 
 # Agent runtime artifacts
 .agents-work/
+.axc-check-budget.json
 
 # Docusaurus
 apps/docs/.docusaurus/

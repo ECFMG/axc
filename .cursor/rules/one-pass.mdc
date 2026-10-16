@@ -11,8 +11,9 @@ alwaysApply: true
 - Write each new file once. Make a follow-up edit only to resolve a specific unknown or failed check.
 - Format changed files once with `pnpm exec biome check --write --no-errors-on-unmatched <paths>`.
 - Run one affected-package check through `node scripts/agent-check.mjs -- <command>`. That command includes the affected package test and `pnpm run knip`.
-- Run `pnpm run verify` once through the same wrapper as the final gate.
-- On failure, fix the reported cause, rerun only the failed package through the wrapper, then run wrapped `pnpm run verify` once more.
+- Run `pnpm run verify` once through the same wrapper. The wrapper rejects another full verify after a pass and allows one rerun only after a failed verify.
+- Do not run acceptance or the full suite as a separate command. They run inside `pnpm run verify`.
+- On failure, fix the reported cause, rerun only the failed package through the wrapper, then run one more wrapped verify.
 - Ponytail and Caveman apply in full. This rule limits tool calls only.
 
 ## Command output
