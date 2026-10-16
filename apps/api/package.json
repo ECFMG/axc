@@ -21,7 +21,9 @@
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
+		"@axc/persistence": "workspace:*",
 		"@axc/rest": "workspace:*",
+		"@axc/service-mongoose": "workspace:*",
 		"@cellix/api-core": "workspace:*"
 	},
 	"devDependencies": {

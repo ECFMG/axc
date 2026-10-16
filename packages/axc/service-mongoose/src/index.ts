@@ -12,3 +12,5 @@ export type MongoConnection = Connection;
 export function createMemoryMongoServer(): MongoMemoryServer {
 	return new MongoMemoryServer();
 }
+
+export { ServiceMongoose } from './service-mongoose.ts';
