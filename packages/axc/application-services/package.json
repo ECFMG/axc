@@ -25,6 +25,10 @@
 		"test:watch": "vitest",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
+	"dependencies": {
+		"@axc/domain": "workspace:*",
+		"@axc/persistence": "workspace:*"
+	},
 	"devDependencies": {
 		"@axc-verification/archunit-tests": "workspace:*",
 		"@cellix/archunit-tests": "workspace:*",

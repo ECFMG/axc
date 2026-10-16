@@ -362,6 +362,9 @@ importers:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../../packages/axc/application-services
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../../packages/axc/persistence
       '@axc/rest':
         specifier: workspace:*
         version: link:../../packages/axc/rest
@@ -453,7 +456,7 @@ importers:
         version: 3.46.0(@cucumber/cucumber@12.8.1)
       '@serenity-js/rest':
         specifier: 'catalog:'
-        version: 3.46.0
+        version: 3.46.0(supports-color@8.1.1)
       '@serenity-js/serenity-bdd':
         specifier: 'catalog:'
         version: 3.46.0
@@ -502,6 +505,13 @@ importers:
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/application-services:
+    dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../persistence
     devDependencies:
       '@axc-verification/archunit-tests':
         specifier: workspace:*
@@ -546,6 +556,9 @@ importers:
       '@cellix/config-vitest':
         specifier: workspace:*
         version: link:../../cellix/config-vitest
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.1.11(vitest@4.1.11)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
@@ -558,6 +571,9 @@ importers:
 
   packages/axc/persistence:
     dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@cellix/domain-seedwork':
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
@@ -574,6 +590,9 @@ importers:
       '@cellix/config-vitest':
         specifier: workspace:*
         version: link:../../cellix/config-vitest
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.1.11(vitest@4.1.11)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
@@ -616,10 +635,10 @@ importers:
         version: link:../../cellix/mongoose-seedwork
       mongodb-memory-server-core:
         specifier: 'catalog:'
-        version: 10.1.4
+        version: 10.1.4(supports-color@8.1.1)
       mongoose:
         specifier: 'catalog:'
-        version: 8.24.1
+        version: 8.24.1(supports-color@8.1.1)
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -838,7 +857,7 @@ importers:
         version: 10.4.3
       mongoose:
         specifier: 'catalog:'
-        version: 8.24.1
+        version: 8.24.1(supports-color@8.1.1)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
@@ -853,7 +872,7 @@ importers:
     dependencies:
       '@apollo/server':
         specifier: 'catalog:'
-        version: 5.5.0(graphql@16.14.2)
+        version: 5.5.0(graphql@16.14.2)(supports-color@8.1.1)
       '@cellix/server-mongodb-memory-mock-seedwork':
         specifier: workspace:*
         version: link:../server-mongodb-memory-mock-seedwork
@@ -923,10 +942,10 @@ importers:
     dependencies:
       mongodb-memory-server:
         specifier: 'catalog:'
-        version: 10.4.3
+        version: 10.4.3(supports-color@8.1.1)
       mongoose:
         specifier: 'catalog:'
-        version: 8.24.1
+        version: 8.24.1(supports-color@8.1.1)
     devDependencies:
       '@cellix/config-typescript':
         specifier: workspace:*
@@ -8926,7 +8945,7 @@ snapshots:
       '@apollo/utils.logger': 3.0.0
       graphql: 16.14.2
 
-  '@apollo/server@5.5.0(graphql@16.14.2)':
+  '@apollo/server@5.5.0(graphql@16.14.2)(supports-color@8.1.1)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.14.2)
       '@apollo/server-gateway-interface': 2.0.0(graphql@16.14.2)
@@ -8940,10 +8959,10 @@ snapshots:
       '@apollo/utils.withrequired': 3.0.0
       '@graphql-tools/schema': 10.1.1(graphql@16.14.2)
       async-retry: 1.3.3
-      body-parser: 2.3.0
+      body-parser: 2.3.0(supports-color@8.1.1)
       content-type: 1.0.5
       cors: 2.8.6
-      finalhandler: 2.1.1
+      finalhandler: 2.1.1(supports-color@8.1.1)
       graphql: 16.14.2
       loglevel: 1.9.2
       lru-cache: 11.5.3
@@ -12127,12 +12146,12 @@ snapshots:
     optionalDependencies:
       '@cucumber/cucumber': 12.8.1
 
-  '@serenity-js/rest@3.46.0':
+  '@serenity-js/rest@3.46.0(supports-color@8.1.1)':
     dependencies:
       '@serenity-js/core': 3.46.0
       agent-base: 7.1.4
-      axios: 1.20.0
-      http-proxy-agent: 7.0.2
+      axios: 1.20.0(supports-color@8.1.1)
+      http-proxy-agent: 7.0.2(supports-color@8.1.1)
       https-proxy-agent: 7.0.6
       lru-cache: 11.5.2
       tiny-types: 2.0.5
@@ -12144,9 +12163,9 @@ snapshots:
     dependencies:
       '@serenity-js/assertions': 3.46.0
       '@serenity-js/core': 3.46.0
-      '@serenity-js/rest': 3.46.0
+      '@serenity-js/rest': 3.46.0(supports-color@8.1.1)
       ansi-regex: 5.0.1
-      axios: 1.20.0
+      axios: 1.20.0(supports-color@8.1.1)
       chalk: 4.1.2
       find-java-home: 2.0.0
       progress: 2.0.3
@@ -12677,7 +12696,7 @@ snapshots:
       magicast: 0.5.5
       obug: 2.2.1
       tinyrainbow: 3.1.1
-      vitest: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+      vitest: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.6.2)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -12860,7 +12879,7 @@ snapshots:
 
   address@2.0.3: {}
 
-  agent-base@6.0.2:
+  agent-base@6.0.2(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -13027,11 +13046,11 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.20.0:
+  axios@1.20.0(supports-color@8.1.1):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3)
       form-data: 4.0.6
-      https-proxy-agent: 5.0.1
+      https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
     transitivePeerDependencies:
       - debug
@@ -13142,7 +13161,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  body-parser@2.3.0:
+  body-parser@2.3.0(supports-color@8.1.1):
     dependencies:
       bytes: 3.1.2
       content-type: 2.1.0
@@ -14142,7 +14161,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  finalhandler@2.1.1:
+  finalhandler@2.1.1(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
       encodeurl: 2.0.0
@@ -14182,6 +14201,10 @@ snapshots:
       path-exists: 5.0.0
 
   flat@5.0.2: {}
+
+  follow-redirects@1.16.0(debug@4.4.3(supports-color@8.1.1)):
+    optionalDependencies:
+      debug: 4.4.3(supports-color@8.1.1)
 
   follow-redirects@1.16.0(debug@4.4.3):
     optionalDependencies:
@@ -14580,7 +14603,7 @@ snapshots:
 
   http-parser-js@0.5.10: {}
 
-  http-proxy-agent@7.0.2:
+  http-proxy-agent@7.0.2(supports-color@8.1.1):
     dependencies:
       agent-base: 7.1.4
       debug: 4.4.3(supports-color@8.1.1)
@@ -14612,9 +14635,9 @@ snapshots:
       quick-lru: 5.1.1
       resolve-alpn: 1.2.1
 
-  https-proxy-agent@5.0.1:
+  https-proxy-agent@5.0.1(supports-color@8.1.1):
     dependencies:
-      agent-base: 6.0.2
+      agent-base: 6.0.2(supports-color@8.1.1)
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
@@ -15671,13 +15694,13 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.2.0
 
-  mongodb-memory-server-core@10.1.4:
+  mongodb-memory-server-core@10.1.4(supports-color@8.1.1):
     dependencies:
       async-mutex: 0.5.0
       camelcase: 6.3.0
       debug: 4.4.3(supports-color@8.1.1)
       find-cache-dir: 3.3.2
-      follow-redirects: 1.16.0(debug@4.4.3)
+      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
       https-proxy-agent: 7.0.6
       mongodb: 6.21.0
       new-find-package-json: 2.0.0
@@ -15725,9 +15748,53 @@ snapshots:
       - socks
       - supports-color
 
+  mongodb-memory-server-core@10.4.3(supports-color@8.1.1):
+    dependencies:
+      async-mutex: 0.5.0
+      camelcase: 6.3.0
+      debug: 4.4.3(supports-color@8.1.1)
+      find-cache-dir: 3.3.2
+      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      https-proxy-agent: 7.0.6
+      mongodb: 6.21.0
+      new-find-package-json: 2.0.0
+      semver: 7.8.5
+      tar-stream: 3.2.1
+      tslib: 2.8.1
+      yauzl: 3.4.0
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - bare-abort-controller
+      - bare-buffer
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - react-native-b4a
+      - snappy
+      - socks
+      - supports-color
+
   mongodb-memory-server@10.4.3:
     dependencies:
       mongodb-memory-server-core: 10.4.3
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - bare-abort-controller
+      - bare-buffer
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - react-native-b4a
+      - snappy
+      - socks
+      - supports-color
+
+  mongodb-memory-server@10.4.3(supports-color@8.1.1):
+    dependencies:
+      mongodb-memory-server-core: 10.4.3(supports-color@8.1.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
@@ -15760,13 +15827,13 @@ snapshots:
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
 
-  mongoose@8.24.1:
+  mongoose@8.24.1(supports-color@8.1.1):
     dependencies:
       bson: 6.10.4
       kareem: 2.6.3
       mongodb: 6.20.0
       mpath: 0.9.0
-      mquery: 5.0.0
+      mquery: 5.0.0(supports-color@8.1.1)
       ms: 2.1.3
       sift: 17.1.3
     transitivePeerDependencies:
@@ -15781,7 +15848,7 @@ snapshots:
 
   mpath@0.9.0: {}
 
-  mquery@5.0.0:
+  mquery@5.0.0(supports-color@8.1.1):
     dependencies:
       debug: 4.4.3(supports-color@8.1.1)
     transitivePeerDependencies:
