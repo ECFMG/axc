@@ -12,7 +12,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Codebase | ECFMG/axc |
 | Task Set | B (including Task Set A course search) |
 | Run Type | Harness Engineering Iteration 6 |
-| Harness Engineering Used | Repository instructions, bounded run workflow, Cellix reference mapping, reusable architecture tests, acceptance harness, and `pnpm run verify` gate |
+| Harness Engineering Used | Repository instructions, bounded run workflow, Cellix reference mapping, reusable architecture tests, acceptance harness, and `pnpm run verify` gate. Relative to the `dn-oai-0-b-out` baseline, these controls accompanied stronger architecture and broader validation. |
 | Config / Diff Notes | Commit `632980d664f168dccc1debcf7ea5975783d1e023` adds the `training` context across domain, application services, persistence, REST, API composition, acceptance tests, and docs. It uses a Cellix aggregate, value objects, seedwork repository/unit-of-work contracts, and focused domain tests. The lockfile diff matches declared workspace/test dependencies. Harness/evaluation edits remain outside the feature commit. |
 | Branch / Commit | `dn-oai-6-b-out` at `632980d664f168dccc1debcf7ea5975783d1e023` (`output of harness 6`) |
 | Requirements Completed / Attempted | 28 / 28 functional requirements represented in code; two test-adequacy acceptance criteria remain unproven |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | Unavailable |
 | Elapsed Time | 12m 43s active; 12m 44s wall (2026-10-16 15:47:40.985Z to 16:00:24.874Z) |
 | Number of Human Interventions / Redirects | Prior evaluation reports 0 for the original generation run; post-run cleanup and evaluation were required |
-| Reviewer Notes | The feature tests and architecture are strong, and no feature-attributable security violation was found. Filter tests could be more discriminating. The full repository verification gate remains incomplete, while its feature-scope checks passed independently. The existing audit advisories remain visible; Snyk is excluded from the evaluation score. Business provides a plausible team rollout path, subject to the organization's own approval. |
-| Final Rubric Score | 89 / 100 |
+| Reviewer Notes | Compared with the 67/100 Task Set B baseline on `dn-oai-0-b-out`, this run adds a Cellix-aligned aggregate and data-source structure plus domain, adapter, architecture, and HTTP acceptance tests. The score rises 23 points to 90/100. Filter tests could be more discriminating, and the full repository verification gate remains incomplete. The run used 9.6× as many total tokens and 2.75× as much wall time as baseline; dollar cost is unknown. Existing audit advisories remain visible; Snyk is excluded from scoring. Vendor readiness is held at the baseline's 3/5 because the plan and approval evidence are unchanged. |
+| Final Rubric Score | 90 / 100 |
 | Recommendation | Remediate |

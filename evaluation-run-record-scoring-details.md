@@ -1,6 +1,6 @@
 # Evaluation Scoring Details
 
-Evaluated on 2026-10-16 against the feature output now committed on `dn-oai-6-b-out` at `632980d664f168dccc1debcf7ea5975783d1e023` (`output of harness 6`). Separate harness/evaluation edits remain outside that commit and are identified below. Scores use the whole-number 0–5 rubric in `evaluation-category-scoring-rubric.md`.
+Evaluated on 2026-10-16 against the feature output now committed on `dn-oai-6-b-out` at `632980d664f168dccc1debcf7ea5975783d1e023` (`output of harness 6`). The comparison baseline is `dn-oai-0-b-out` at `ef71b54e13a30651467cb6a98f514493713b5405`, evaluated at 67/100. Separate harness/evaluation edits remain outside the feature commit. Scores use the whole-number 0–5 rubric in `evaluation-category-scoring-rubric.md`.
 
 ## Score Summary
 
@@ -10,15 +10,31 @@ Evaluated on 2026-10-16 against the feature output now committed on `dn-oai-6-b-
 | Test and Validation Performance | 15% | 5 | 15 |
 | Architecture and Codebase Alignment | 15% | 5 | 15 |
 | Security and Guardrail Compliance | 15% | 5 | 15 |
-| Harness Engineering Effectiveness | 10% | 3 | 6 |
+| Harness Engineering Effectiveness | 10% | 4 | 8 |
 | Context Token and Cost Efficiency | 10% | 3 | 6 |
 | Developer Workflow Fit | 10% | 4 | 8 |
-| Operational and Vendor Readiness | 5% | 4 | 4 |
-| **Total** | **100%** |  | **89 / 100** |
+| Operational and Vendor Readiness | 5% | 3 | 3 |
+| **Total** | **100%** |  | **90 / 100** |
 
 Security hard rule: **Not triggered.** No feature-attributable serious security or guardrail violation was found. Per the evaluation scope, Snyk is excluded from scoring; its attempted run was skipped because the CLI is unavailable.
 
 Recommendation: **Remediate.**
+
+## Baseline Comparison
+
+| Category | Baseline | Iteration 6 | Change | Evidence of change |
+| --- | ---: | ---: | ---: | --- |
+| Functional Correctness | 4 | 5 | +1 | The composed HTTP workflow passes and the feature is implemented across all required layers. |
+| Test and Validation Performance | 3 | 5 | +2 | Baseline had only service tests; this run adds domain, persistence, architecture, and HTTP acceptance coverage. |
+| Architecture and Codebase Alignment | 2 | 5 | +3 | The anemic baseline domain and concrete repository construction were replaced by a Cellix aggregate, contracts, injected data sources, and scoped unit of work. |
+| Security and Guardrail Compliance | 5 | 5 | 0 | Neither evaluation found a feature-attributable serious security issue. |
+| Harness Engineering Effectiveness | 3 | 4 | +1 | Quality and test repeatability improved in two meaningful areas versus the baseline. |
+| Context Token and Cost Efficiency | 3 | 3 | 0 | Higher usage bought a stronger result, but dollar cost is unavailable. |
+| Developer Workflow Fit | 3 | 4 | +1 | The run completed more verification and produced a more reviewable implementation. |
+| Operational and Vendor Readiness | 3 | 3 | 0 | Both runs used the same Business plan; organizational approval remains unverified. |
+| **Weighted total** | **67** | **90** | **+23** |  |
+
+The baseline used 1,625,641 total tokens (57,135 uncached input), 17,274 output tokens, and 4m 38s wall time. This run used 15,584,146 total tokens (175,306 uncached input), 43,208 output tokens, and 12m 44s wall time: about 9.6× total tokens, 3.1× uncached input, 2.5× output, and 2.75× wall time. Cache share rose from 96.4% to 98.9%. Those figures show an efficiency tradeoff, not a measured dollar-cost comparison; credits and actual spend remain unavailable.
 
 ## Category Evidence
 
@@ -91,29 +107,28 @@ Behavior-based deviations:
 - Dependency changes are workspace edges required by composition/testing, and the lockfile diff is limited to those declarations.
 - The 5/5 score applies to the feature output: no new unsafe code, secret, dependency advisory, or prohibited change was found. It does not reclassify the existing advisories as clean results; Snyk has no score impact.
 
-### Harness Engineering Effectiveness — 3/5
+### Harness Engineering Effectiveness — 4/5
 
 - The run workflow, Cellix guidance, architecture tests, focused adapter semantics, acceptance harness, and verification script provide meaningful quality controls.
-- The output follows most of those controls and has better behavioral depth than a transport-only implementation.
-- Effectiveness remains neutral because no comparable baseline quality, speed, or cost record was available to demonstrate a clear improvement. Two test-adequacy criteria remain unproven.
+- The baseline scored 67/100: its domain was mostly interfaces and enums, its application service constructed concrete persistence, and its added tests covered only the service layer. It had no new HTTP acceptance scenarios. Iteration 6 scores 90/100, with the Cellix aggregate/data-source structure and focused domain, application, adapter, architecture, and HTTP checks. This demonstrates clear improvement in architecture and validation depth, supporting 4/5.
+- The run is slower and uses more tokens, and two filter-test adequacy criteria remain unproven. Improvement in cost or speed is not claimed, so 5/5 is unsupported.
 
 ### Context Token and Cost Efficiency — 3/5
 
 - The user supplied the local summary for session `01a14565-8877-7412-bf23-a758774837c2` (`gpt-6-sol`, Business): 15,540,938 input tokens, including 15,365,632 cached; 43,208 output tokens, including 7,276 reasoning; 15,584,146 total tokens.
 - Uncached input was 175,306 tokens, and 98.9% of input was cached. The session took 12m 43s active and 12m 44s wall. The earlier 7,633,908-token figure was superseded by this run-specific summary.
-- Credits and dollar cost are unavailable. The large total token count, high cache share, short elapsed time, and strong result support a provisional neutral 3/5; actual spend or savings cannot be inferred from raw tokens alone.
+- Compared with the baseline's 1,625,641 total tokens, 57,135 uncached input, 17,274 output, and 4m 38s wall time, this run used 9.6× total tokens, 3.1× uncached input, 2.5× output, and 2.75× wall time. The stronger implementation and broader tests justify retaining a provisional neutral 3/5 rather than claiming a cost improvement. Credits and dollar cost are unavailable, so actual spend cannot be inferred from token totals alone.
 
 ### Developer Workflow Fit — 4/5
 
-- The implementation is reviewable and package tests are independently runnable. The unchanged acceptance suite passed outside the process sandbox.
+- The implementation is reviewable and package tests are independently runnable. The unchanged acceptance suite passed outside the process sandbox. The baseline run could not run its package test/lint/build commands and required an operator to create the commit and update the lockfile; this branch has substantially more completed verification evidence.
 - The prior evaluation reports no original-run redirects; the user-provided session summary reports 12m 44s wall time. A primary interaction log was not reviewed.
 - The repository-wide gate remains incomplete because of formatting outside the evaluated feature scope. Snyk is outside this evaluation's scoring scope.
 
-### Operational and Vendor Readiness — 4/5
+### Operational and Vendor Readiness — 3/5
 
-- The user-provided session summary identifies `gpt-6-sol` authenticated through ChatGPT Business (`self_serve_business_prolite`). [Official OpenAI documentation](https://learn.chatgpt.com/docs/pricing) describes a commercial Business plan for Codex with a dedicated workspace, core admin controls, SAML SSO, MFA, and no training on business data by default.
-- [OpenAI's Work admin FAQ](https://learn.chatgpt.com/docs/enterprise/work-admin-faq) describes sandboxing and approval policies for local Codex activity. It also states that Business lacks custom member RBAC and SCIM group synchronization; the [pricing comparison](https://learn.chatgpt.com/docs/pricing) places Compliance API audit logs and advanced retention controls in Enterprise.
-- A team rollout path is plausible on the existing Business plan, supporting 4/5. Organization-specific security/procurement approval and any need for Enterprise-only controls are not established, so 5/5 is not supported by popularity or plan availability alone.
+- Both runs used `gpt-6-sol` authenticated through ChatGPT Business (`self_serve_business_prolite`). The plan alone does not show that the organization has approved procurement, security, auditability, or production use.
+- The baseline scored 3/5 because those approval facts were unavailable. No new organization-specific evidence exists for this branch, so the same 3/5 applies. The stronger implementation changes product quality, not vendor readiness.
 
 ## Verification Record
 

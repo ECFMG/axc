@@ -22,11 +22,11 @@ Use this rubric to evaluate a completed harness and model run from its Evaluatio
 | Test and Validation Performance | 15% | 5 | 15 | All feature tests pass, and useful domain, service, adapter, and HTTP tests were added; stronger filter assertions remain a review improvement. |
 | Architecture and Codebase Alignment | 15% | 5 | 15 | The enrollment aggregate, value objects, seedwork contracts, composition, and focused domain tests align with the applicable Cellix slice. |
 | Security and Guardrail Compliance | 15% | 5 | 15 | No feature-attributable security or boundary violation was found; existing audit advisories are disclosed. Snyk is excluded from scoring. |
-| Harness Engineering Effectiveness | 10% | 3 | 6 | Controls are present, but no comparable baseline proves improvement and two test-adequacy criteria remain open. |
-| Context Token and Cost Efficiency | 10% | 3 | 6 | User-provided session summary reports 15,584,146 tokens, 98.9% cached input, and 12m 44s wall time; actual credits and cost are unavailable. |
-| Developer Workflow Fit | 10% | 4 | 8 | Zero original-run redirects were reported; the acceptance rerun was reproducible outside the sandbox. |
-| Operational and Vendor Readiness | 5% | 4 | 4 | The Business plan gives a commercial team path with core admin and identity controls; organization approval and advanced Enterprise controls remain open. |
-| **Total** | **100%** |  | **89** | Iteration 6 feature output at `632980d664f168dccc1debcf7ea5975783d1e023`; full repository verification remains incomplete. Snyk is excluded from scoring. Details are in `evaluation-run-record-scoring-details.md`. |
+| Harness Engineering Effectiveness | 10% | 4 | 8 | Compared with the 67/100 baseline, this run clearly improves architecture and validation depth; higher usage and two test gaps limit the score. |
+| Context Token and Cost Efficiency | 10% | 3 | 6 | This run used 15,584,146 tokens versus 1,625,641 at baseline, with a stronger result; actual credits and cost are unavailable. |
+| Developer Workflow Fit | 10% | 4 | 8 | Compared with baseline, more checks completed and the result is easier to review; the acceptance rerun was reproducible outside the sandbox. |
+| Operational and Vendor Readiness | 5% | 3 | 3 | The same Business plan was used in both runs; organization approval and production controls remain unverified. |
+| **Total** | **100%** |  | **90** | Iteration 6 improves by 23 points over the 67/100 baseline on `dn-oai-0-b-out`; full repository verification remains incomplete. Details are in `evaluation-run-record-scoring-details.md`. |
 
 ## Functional Correctness
 
@@ -238,11 +238,11 @@ Record the following after scoring:
 | Test and Validation Performance | 5 / 5 |
 | Architecture and Codebase Alignment | 5 / 5 |
 | Security and Guardrail Compliance | 5 / 5 |
-| Harness Engineering Effectiveness | 3 / 5 |
+| Harness Engineering Effectiveness | 4 / 5 |
 | Context Token and Cost Efficiency | 3 / 5 |
 | Developer Workflow Fit | 4 / 5 |
-| Operational and Vendor Readiness | 4 / 5 |
-| Final Weighted Score | 89 / 100 |
+| Operational and Vendor Readiness | 3 / 5 |
+| Final Weighted Score | 90 / 100 |
 | Security Hard Rule Triggered | No |
 | Recommendation | Remediate |
-| Reviewer Summary | The Task Set B workflow functions, follows the Cellix aggregate pattern, and passes the feature tests without a feature-attributable security finding. The Business plan supports a plausible team rollout. Strengthen filter assertions; the full repository gate remains incomplete. |
+| Reviewer Summary | Compared with the 67/100 baseline, this run improves Cellix alignment and validation depth, reaching 90/100. Token and time use increased; vendor readiness is unchanged. Strengthen filter assertions and complete the repository gate. |
