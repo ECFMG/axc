@@ -14,6 +14,22 @@ Never create a test and its implementation in the same step.
 ## Feature files
 - One scenario per observable behaviour: exactly one `When`, one `Then` (with `And` for closely related assertions), unique titles. A scenario listing six endpoints or every validation rule at once is a defect; split it. `test:arch` rejects scenarios without `When`/`Then`, with several `When`s, or duplicate titles.
 - Cover each allowed enum value, each rejection reason, boundaries and the values just outside them, defaults, and empty results — as separate scenarios.
+- The `Then` must state the outcome so a reader can predict the assertion without opening the step code. A generic `Then` repeated across scenarios (`Then the HTTP contract is satisfied`, `Then the rule is enforced`, `Then the result is correct`) is Gherkin-shaped vitest, not a specification; `test:arch` fails any unparameterised `Then` used by more than 5 scenarios in a package. Either parameterise it (`Then the response status is 400 and field "pageSize" is rejected`) or write the specific outcome.
+
+```gherkin
+# Rejected: the outcome is hidden in the step code
+Scenario: Page size above the maximum
+  When the HTTP request is sent
+  Then the HTTP contract is satisfied
+
+# Accepted: the outcome is in the scenario
+Scenario: Page size above the maximum is rejected
+  When courses are requested with pageSize 51
+  Then the response status is 400
+  And the error names field "pageSize"
+```
+
+- Generating many scenarios from a script does not change this: each generated scenario still needs its own observable `Then`.
 - Example:
 
 ```gherkin

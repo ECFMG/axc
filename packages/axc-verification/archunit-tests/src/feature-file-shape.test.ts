@@ -50,9 +50,51 @@ function expandedKeywords(steps: string[]): string[] {
 	});
 }
 
+// A Then step that carries no parameter and is repeated across many scenarios
+// ("Then the contract is satisfied") describes no observable outcome; the real
+// assertion lives in the step code where a reader of the feature cannot see it.
+const GENERIC_THEN_LIMIT = 5;
+
+const isParameterised = (step: string): boolean => /"[^"]*"|<[^>]+>|\d/.test(step);
+
+function thenSteps(scenario: Scenario): string[] {
+	const keywords = expandedKeywords(scenario.steps);
+	return scenario.steps.filter((_, index) => keywords[index] === 'Then').map((step) => step.replace(/^(?:Then|And|But|\*)\s+/, '').trim());
+}
+
+const packageOf = (relativeToRepo: string): string => relativeToRepo.split('/').slice(0, 3).join('/');
+
+async function allFeatures() {
+	return (await Promise.all(roots.map((root) => listFiles(root, (filePath) => filePath.endsWith('.feature'))))).flat();
+}
+
 describe('feature file shape', () => {
+	it('an unparameterised Then is not reused across many scenarios in a package', async () => {
+		const features = await allFeatures();
+		const usage = new Map<string, { count: number; files: Set<string> }>();
+		for (const feature of features) {
+			const name = path.relative(path.resolve(packageDir, '../..'), feature.path);
+			for (const scenario of parseScenarios(feature.content)) {
+				for (const step of thenSteps(scenario)) {
+					if (isParameterised(step)) {
+						continue;
+					}
+					const key = `${packageOf(name)} :: ${step}`;
+					const entry = usage.get(key) ?? { count: 0, files: new Set<string>() };
+					entry.count += 1;
+					entry.files.add(name);
+					usage.set(key, entry);
+				}
+			}
+		}
+		const violations = [...usage.entries()]
+			.filter(([, entry]) => entry.count > GENERIC_THEN_LIMIT)
+			.map(([key, entry]) => `${key} — used by ${entry.count} scenarios (${[...entry.files].join(', ')}); state the expected outcome in each scenario instead`);
+		expect(violations).toEqual([]);
+	});
+
 	it('every feature file has at least one scenario with Given/When/Then and unique titles', async () => {
-		const features = (await Promise.all(roots.map((root) => listFiles(root, (filePath) => filePath.endsWith('.feature'))))).flat();
+		const features = await allFeatures();
 		const violations: string[] = [];
 		for (const feature of features) {
 			const name = path.relative(path.resolve(packageDir, '../..'), feature.path);

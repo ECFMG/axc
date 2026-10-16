@@ -21,5 +21,13 @@ if (organisation !== undefined && organisation !== '') {
 }
 
 console.log(`Snyk: running snyk ${args.join(' ')} (local CLI, no monitor, no --remote-repo-url)`);
-const test = spawnSync('snyk', args, { stdio: 'inherit' });
+const test = spawnSync('snyk', args, { encoding: 'utf8' });
+const output = `${test.stdout ?? ''}${test.stderr ?? ''}`;
+process.stdout.write(output);
+// Snyk exits 0 when the account's monthly test quota is used up, without testing
+// anything. Say so explicitly so a run record never reports a scan that did not happen.
+if (/reached your monthly limit/i.test(output)) {
+	console.log('Snyk: NOT RUN (monthly test quota exhausted for this account). Treat security results as unverified for this commit.');
+	process.exit(0);
+}
 process.exit(test.status ?? 1);
