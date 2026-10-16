@@ -42,11 +42,15 @@ Complete this review after implementation and before the final verification comm
 ## Behavioral Evidence
 
 1. Is each requirement mapped to an owning layer and a focused test or justified alternative?
-2. Do composed public-path tests prove the externally visible workflow?
-3. For each specified failure, do tests assert both the status or result and the error code?
-4. Do tests verify material response, state-transition, and audit fields directly rather than only counts or broad status checks?
-5. If an adapter differs from the Cellix reference technology, which observable semantics must match, and where are the relevant commit, rollback, isolation, serialization, or copying behaviors tested?
-6. When contract documentation is required, does it cover every affected operation's input, success output, status or result, and specified errors?
+2. For each material rule, what plausible incorrect implementation does its test reject? Would omitting, weakening, inverting, or incorrectly ordering the rule cause at least one test to fail?
+3. Where multiple rules are exercised together, do focused cases or independently discriminating data prove each rule rather than allowing one result to mask another?
+4. Do predicate-based behaviors include counterexamples that satisfy the other relevant conditions, and do assertions identify the complete expected result or ordering?
+5. Do composed public-path tests prove the externally visible workflow?
+6. For each specified failure, do tests assert both the status or result and the error code, as well as any required absence of state change or side effect?
+7. Do tests verify material response, state-transition, and audit fields directly rather than only counts or broad status checks?
+8. If an adapter differs from the Cellix reference technology, which observable semantics must match, and where are the relevant commit, rollback, isolation, serialization, or copying behaviors tested?
+9. For high-risk rules, would targeted mutation testing or fault injection materially strengthen the evidence, and if so, was it performed or explicitly justified as unnecessary?
+10. When contract documentation is required, does it cover every affected operation's input, success output, status or result, and specified errors?
 
 ## Deviations
 
@@ -71,6 +75,7 @@ Do not report completion until:
 - production transport does not depend on persistence contracts, and any direct domain dependency is justified by the reference;
 - required feature behavior and files have been implemented or their omission justified;
 - required tests and documentation are complete against the task evidence matrix;
+- every material rule has evidence that rejects at least one plausible incorrect implementation, and combined scenarios do not obscure whether individual rules are enforced;
 - focused tests cover rules at their owning layer; composed HTTP tests do not substitute for domain transition tests, application-service invariant tests, or applicable custom-adapter commit, rollback, isolation/serialization, and defensive-copy tests;
 - no available Cellix capability has been unnecessarily recreated;
 - all deviations are documented;

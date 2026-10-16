@@ -35,7 +35,7 @@ Before writing code:
 - Follow the applicable Cellix context/entity directory structure, filename suffixes, public exports, and required feature behavior. For example, use `*.read-repository.ts` for a read repository and `*.repository.ts` for a domain repository. Do not collapse a feature into a root `course.ts` or `readonly/course.ts` when the analogous Cellix slice separates context, entity, and repository files.
 - Use the chosen context name consistently across domain, application services, persistence, data-source namespaces, and public APIs. Do not substitute a different context name in one layer.
 - Organize application behavior under context and feature modules in `packages/axc/application-services/src/contexts`. Keep the package root focused on host interfaces and composition.
-- In application-service context composition, import entity APIs with a distinct alias and their explicit service type, as Cellix does: `import { Course as CourseApi, type CourseApplicationService } from './course/index.ts';`. Expose a named context service interface instead of relying only on inferred return types.
+- In application-service context composition, follow the Cellix import pattern: alias each entity API distinctly from its service type, and expose a named context service interface rather than relying only on an inferred return type.
 - Follow the Cellix curried application-service pattern. Inject `DataSources` first, then accept a command or query input.
 - Use `readonlyDataSource` for queries and the domain data source with a scoped transaction for mutations.
 - Keep fixture or in-memory storage behind a data-source or repository boundary. Production composition and package entry points must not own fixture collections.
