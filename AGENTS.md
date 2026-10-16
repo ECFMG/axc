@@ -30,12 +30,15 @@ General conventions for working in this repository.
 New business features use the structure of the CellixJS sample application. The existing `health` endpoint is infrastructure and is not a structural example. Reference checkout (read-only): `/Volumes/files/src/CELLIX/cellixjs/packages/ocom`.
 - Group code by bounded context and aggregate in every layer, with an `index.ts` at each folder level re-exporting the level below:
   - domain: `src/domain/contexts/<context>/<aggregate>/` holding `<aggregate>.ts` (entity type or reference) and `<aggregate>.value-objects.ts` (allowed values, limits, constructors), exposed from `src/index.ts` as the `Domain` namespace so callers write `Domain.Contexts.<Context>.<Aggregate>.<Name>`.
-  - persistence: read access in `src/datasources/readonly/<context>/<aggregate>/<aggregate>.read-repository.ts`, created by `get<Aggregate>ReadRepository(...)`; a `DataSources` object (`readonlyDataSource.<Context>.<Aggregate>.<Aggregate>ReadRepo`) built by `DataSourcesFactoryImpl` and exported from the package root. Seed or fixture data lives in persistence.
-  - read repositories own data access: filtering, matching, sorting and paging happen in the repository method, so the same contract can later be backed by a database query. Give repositories methods shaped like the question being asked rather than a load-everything method that callers filter in memory.
+  - persistence: Mongoose models in `src/models/<context>/<aggregate>.model.ts` (schema, document interface, model factory built with `@cellix/mongoose-seedwork`); read access in `src/datasources/readonly/<context>/<aggregate>/<aggregate>.read-repository.ts`, created by `get<Aggregate>ReadRepository(models)`, with a `<aggregate>.domain-adapter.ts` beside it converting documents to domain types; a `DataSources` object (`readonlyDataSource.<Context>.<Aggregate>.<Aggregate>ReadRepo`) built by `DataSourcesFactoryImpl` and exported from the package root. Seed data lives in `src/seed/<context>/<aggregate>.ts`.
+  - read repositories query the database: filtering, matching, sorting, `skip`/`limit` paging and `countDocuments` run in MongoDB, not in memory. Give repositories methods shaped like the question being asked, returning domain types, never Mongoose documents.
+  - service-mongoose: a `ServiceMongoose` class implementing the `ServiceBase` contract from `@cellix/api-services-spec` (`startUp`/`shutDown`) and the seedwork context factory. It connects to the configured URI; when none is configured (local and test) it starts an in-memory server via `mongodb-memory-server-core` pinned to binary `7.0.14` (cached, works offline) and stops it on shutdown.
+  - composition root: `apps/api` registers `ServiceMongoose` with `registerInfrastructureService`, seeds the in-memory database only when no URI is configured, and in `setContext` builds the data-sources factory from the started service.
   - application services: one file per operation in `src/contexts/<context>/<aggregate>/` (`query-<name>.ts`, `create.ts`, ...), each exporting a function that takes `dataSources` and returns the operation. Query operations stay thin: pass typed criteria to the read repository and shape its result. The aggregate and context `index.ts` files compose these, and `ApplicationServices` exposes them as `<Context>.<Aggregate>.<operation>`.
   - rest: request parsing, handlers and their tests in `src/contexts/<context>/<aggregate>/`, with the same `index.ts` chain; the package root exports only what other packages use.
-  - composition root: `apps/api` creates the data-sources factory once and passes it to the application-services factory through the API context.
-- Add only the contexts, aggregates, folders and files the feature uses. Do not scaffold unit-of-work, domain events or empty contexts for read-only features, and do not add value-object classes or entity base classes unless the feature mutates or enforces invariants on an aggregate.
+  - `apps/api` creates the data-sources factory once and passes it to the application-services factory through the API context.
+- Add only the contexts, aggregates, folders and files the feature uses. Do not scaffold unit-of-work, domain events or empty contexts for read-only features. When a feature creates or changes an aggregate or enforces invariants on it, build it on `@cellix/domain-seedwork` (aggregate root, entity props, value objects) with a matching unit of work and domain adapter, as ocom does.
+- Vendored packages compile with `erasableSyntaxOnly`: no constructor parameter properties, enums or namespaces with runtime code. Declare fields and assign them in the constructor.
 - Keep this repo's own rules where they are stricter: HTTP parsing and error bodies stay in `rest`, application services receive already-typed input, and dependencies are required, not optional.
 - To check a pattern, read the matching ocom files, including the `*.instructions.md` design notes under its domain contexts and the tests next to each file. Do not edit the checkout, copy files from it, or import from it. If the path is missing, apply the rules above from this file alone.
 
@@ -47,12 +50,20 @@ New business features use the structure of the CellixJS sample application. The 
 - Never use a stand-in value to satisfy the type checker (e.g. returning an arbitrary valid enum member after recording a validation error). Represent failure explicitly, for example with a result type or `undefined`.
 - Validate raw input strictly against its expected format before converting it. Do not rely on lenient conversions such as `Number()` or `parseInt()`, which accept whitespace, exponents, or trailing characters.
 - An optional input supplied with an empty or whitespace-only value is treated as not supplied, unless the spec says otherwise.
+- Do not reject inputs the spec does not mention (e.g. unknown query parameters) unless the spec says to; ignore them.
+- Validation messages describe accepted input in user terms (e.g. "page must be a positive integer"), never internal limits such as `Number.MAX_SAFE_INTEGER`.
+
+## Security
+- Never pass request objects or raw user values to MongoDB as filters. Build each filter from validated, typed criteria, field by field.
+- Escape user text before using it in a regular expression, or use a non-regex match. Bound result sizes with the spec's maximums.
+- Error responses never include stack traces, driver errors or internal identifiers.
 
 ## Tests
 - Work test-first: for each item in your plan, write the test, run it and see it fail, then write the code that makes it pass.
 - Do not create implementation files in the same step as their tests. Write the tests (with at most the type or function signatures they import), run them and confirm the failure comes from missing behaviour rather than a setup error, and only then implement.
 - Every layer that contains logic gets its own unit tests covering each branch: every allowed enum value, every rejection reason, boundary values and the values just outside them, defaults, combinations of inputs, and empty results. Acceptance scenarios complement unit tests; they do not replace them.
-- Unit tests live next to the code they test, in the same package and folder (`<name>.test.ts` beside `<name>.ts`). Follow the setup of packages that already have tests.
+- Unit tests follow ocom: behaviour is written as Gherkin in `features/<name>.feature` next to the code, and `<name>.test.ts` beside `<name>.ts` binds it with `@amiceli/vitest-cucumber` (`loadFeature`, `describeFeature`). Add `@amiceli/vitest-cucumber` as a devDependency of each package that uses it, with the root's version range.
+- Read repositories are tested against a real in-memory MongoDB (started in `beforeAll`, stopped in `afterAll`), so filters, sorting and paging are proven by actual queries. Layers above persistence use typed fakes of the contract below them.
 - `packages/axc-verification/archunit-tests` is for architecture rules only.
 - Acceptance tests go in `packages/axc-verification/acceptance-api`. When a spec lists acceptance criteria, cover each one with at least one scenario, including error cases.
 - Test logic in the layer that owns it: application-service and domain behaviour gets unit tests in that package; `rest` tests cover HTTP mapping and validation. Do not rely on `rest` tests alone.
@@ -63,6 +74,7 @@ New business features use the structure of the CellixJS sample application. The 
 - If you change any `package.json`, update `pnpm-lock.yaml` so `pnpm install --frozen-lockfile` succeeds. The lockfile update is always part of a dependency change, even when a task lists specific files to edit; you do not need to ask.
 - For `workspace:*` or already-installed packages, use `pnpm install --offline` first; it needs no network access. `pnpm install --offline --frozen-lockfile` also works inside the sandbox.
 - The lockfile diff should contain only entries for the dependencies you changed.
+- Use `catalog:` for dependencies listed in the `pnpm-workspace.yaml` catalog (e.g. `mongoose`, `mongodb-memory-server-core`). Use `mongodb-memory-server-core`, not `mongodb-memory-server`, whose install script is disabled.
 
 ## Sandbox and verification
 - The sandbox has no network access. Commands that need it (`pnpm run verify`, `pnpm audit`, `pnpm run snyk`) require approval, so batch them.
@@ -83,7 +95,9 @@ Before the review, check your diff for:
 - Unit tests in each layer with logic, covering boundaries and every rejection path.
 - Optional dependencies or silent fallbacks; stand-in values; duplicated types or constants.
 - Dense or hard-to-follow code that a reviewer would need to unpack.
-- Folder, file, export and naming structure matching the CellixJS conventions above.
+- Folder, file, export and naming structure matching the CellixJS conventions above, including Mongoose models, domain adapters and `ServiceMongoose` registration.
+- Queries that load a whole collection and filter, sort or page in memory; raw user values reaching a Mongo filter or regex.
+- Inputs rejected that the spec does not ask to reject; validation messages that expose internal limits.
 - Changes to unrelated lines, including formatting; new entries placed out of the existing order (e.g. alphabetical dependencies).
 - Leftover debug code, TODOs, or unused exports (confirmed with `pnpm run knip` against your baseline).
 - Tests that were run and seen to fail before their implementation existed.
