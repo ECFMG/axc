@@ -25,11 +25,15 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"devDependencies": {
+		"@amiceli/vitest-cucumber": "^6.3.0",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/config-vitest": "workspace:*",
 		"@vitest/coverage-istanbul": "catalog:",
 		"rimraf": "catalog:",
 		"typescript": "catalog:",
 		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@axc/domain": "workspace:*"
 	}
 }

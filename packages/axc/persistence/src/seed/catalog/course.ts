@@ -1,0 +1,136 @@
+import type { Domain } from '@axc/domain';
+import type { MongooseSeedwork } from '@cellix/mongoose-seedwork';
+import { CourseModelFactory } from '../../models/catalog/course.model.ts';
+
+const COURSE_FIXTURES: Domain.Contexts.Catalog.Course.CourseEntityReference[] = [
+	{
+		id: 'course-001',
+		title: 'AI Security Foundations',
+		summary: 'Introductory course on secure AI-assisted development.',
+		modality: 'online',
+		status: 'active',
+		tags: ['ai', 'security'],
+		createdAt: '2026-01-12T00:00:00.000Z',
+		updatedAt: '2026-06-01T00:00:00.000Z',
+	},
+	{
+		id: 'course-002',
+		title: 'Cloud Foundations',
+		summary: 'Practical SECURITY controls for cloud teams.',
+		modality: 'in-person',
+		status: 'draft',
+		tags: ['cloud'],
+		createdAt: '2026-01-11T00:00:00.000Z',
+		updatedAt: '2026-06-02T00:00:00.000Z',
+	},
+	{
+		id: 'course-003',
+		title: 'Defensive Coding',
+		summary: 'Build robust software.',
+		modality: 'hybrid',
+		status: 'retired',
+		tags: ['Security', 'coding'],
+		createdAt: '2026-01-10T00:00:00.000Z',
+		updatedAt: '2026-06-03T00:00:00.000Z',
+	},
+	{
+		id: 'course-004',
+		title: 'Data Analysis',
+		summary: 'Explore datasets.',
+		modality: 'online',
+		status: 'active',
+		tags: ['data', 'ai'],
+		createdAt: '2026-01-09T00:00:00.000Z',
+		updatedAt: '2026-06-04T00:00:00.000Z',
+	},
+	{
+		id: 'course-005',
+		title: 'Effective Testing',
+		summary: 'Test reliable applications.',
+		modality: 'in-person',
+		status: 'active',
+		tags: ['testing'],
+		createdAt: '2026-01-08T00:00:00.000Z',
+		updatedAt: '2026-06-05T00:00:00.000Z',
+	},
+	{
+		id: 'course-006',
+		title: 'Frontend Basics',
+		summary: 'Build accessible interfaces.',
+		modality: 'hybrid',
+		status: 'draft',
+		tags: ['web'],
+		createdAt: '2026-01-07T00:00:00.000Z',
+		updatedAt: '2026-06-06T00:00:00.000Z',
+	},
+	{
+		id: 'course-007',
+		title: 'Generative AI',
+		summary: 'Apply models responsibly.',
+		modality: 'online',
+		status: 'draft',
+		tags: ['AI'],
+		createdAt: '2026-01-06T00:00:00.000Z',
+		updatedAt: '2026-06-07T00:00:00.000Z',
+	},
+	{
+		id: 'course-008',
+		title: 'Hybrid Leadership',
+		summary: 'Lead distributed teams.',
+		modality: 'hybrid',
+		status: 'active',
+		tags: ['leadership'],
+		createdAt: '2026-01-05T00:00:00.000Z',
+		updatedAt: '2026-06-08T00:00:00.000Z',
+	},
+	{
+		id: 'course-009',
+		title: 'Infrastructure Design',
+		summary: 'Design reliable platforms.',
+		modality: 'in-person',
+		status: 'retired',
+		tags: ['cloud'],
+		createdAt: '2026-01-04T00:00:00.000Z',
+		updatedAt: '2026-06-09T00:00:00.000Z',
+	},
+	{
+		id: 'course-010',
+		title: 'JavaScript Workshop',
+		summary: 'Learn JavaScript.',
+		modality: 'online',
+		status: 'retired',
+		tags: ['web', 'coding'],
+		createdAt: '2026-01-03T00:00:00.000Z',
+		updatedAt: '2026-06-10T00:00:00.000Z',
+	},
+	{
+		id: 'course-011',
+		title: 'Knowledge Sharing',
+		summary: 'Share team knowledge.',
+		modality: 'in-person',
+		status: 'draft',
+		tags: ['leadership'],
+		createdAt: '2026-01-02T00:00:00.000Z',
+		updatedAt: '2026-06-11T00:00:00.000Z',
+	},
+	{
+		id: 'course-012',
+		title: 'Literal Patterns',
+		summary: 'Match [brackets] and C++ safely.',
+		modality: 'hybrid',
+		status: 'active',
+		tags: ['a.b'],
+		createdAt: '2026-01-01T00:00:00.000Z',
+		updatedAt: '2026-06-12T00:00:00.000Z',
+	},
+];
+
+export async function seedCourses(initializedService: MongooseSeedwork.MongooseContextFactory): Promise<void> {
+	const model = CourseModelFactory(initializedService);
+	await model.init();
+	await model.bulkWrite(
+		COURSE_FIXTURES.map(({ id, createdAt, updatedAt, ...course }) => ({
+			updateOne: { filter: { courseId: id }, update: { $setOnInsert: { ...course, courseId: id, createdAt: new Date(createdAt), updatedAt: new Date(updatedAt) } }, upsert: true, timestamps: false },
+		})),
+	);
+}

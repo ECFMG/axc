@@ -1,3 +1,6 @@
+import type { Domain } from '@axc/domain';
+import { Catalog } from './contexts/index.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -13,9 +16,11 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	dataSources: Domain.Contexts.Catalog.Course.DataSources;
 }
 
 export interface ApplicationServices {
+	courses: Catalog.CatalogApplicationService['Course'];
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -38,6 +43,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			courses: Catalog.Catalog(context.dataSources).Course,
 			health: {
 				getStatus(): HealthStatus {
 					return {
