@@ -75,7 +75,7 @@ function findFailedCheck(lines) {
 }
 
 function findErrorBlock(lines) {
-	const specificPatterns = [/^\s*×\s*/, /\bFound \d+ errors?\b/i, /\bUnused exported\b/i, /\bFAIL\b/, /AssertionError:/, /\berror TS\d+:/i, /\bFailed Tests\b/i];
+	const specificPatterns = [/^\s*×\s*/, /\bFound \d+ errors?\b/i, /\bUnused exports?(?:ed)?\b/i, /\bFAIL\b/, /AssertionError:/, /\berror TS\d+:/i, /\bFailed Tests\b/i];
 	const specificIndexes = specificPatterns.map((pattern) => lines.findIndex((line) => pattern.test(line))).filter((candidate) => candidate !== -1);
 	const index = specificIndexes.length > 0 ? Math.min(...specificIndexes) : lines.findIndex((line) => /\[ELIFECYCLE\]|\bERROR\b/.test(line));
 

@@ -6,7 +6,7 @@
 		"build": {
 			"description": "Compiles TypeScript and bundles each package",
 			"dependsOn": ["^build"],
-			"inputs": ["src/**", "tsconfig*.json", "rolldown.config.ts", "scripts/**", "host.json", "package.json"],
+			"inputs": ["src/**", "docs/**", "sidebars.ts", "docusaurus.config.ts", "tsconfig*.json", "rolldown.config.ts", "scripts/**", "host.json", "package.json"],
 			"outputs": ["dist/**", "deploy/**", "*.zip", "*.tsbuildinfo", "build/**"]
 		},
 		"typecheck": {

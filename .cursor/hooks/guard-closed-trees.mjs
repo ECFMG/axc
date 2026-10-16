@@ -10,11 +10,12 @@ const INSPECTION_COMMAND = /(?:^|[;&|]\s*|\s)(?:cat|less|more|head|tail|sed|awk|
 try {
 	const input = await readInput();
 	const blockedReference = findBlockedReference(input);
+	const cwd = input.cwd ?? input.workspace_roots?.[0];
 
-	if (blockedReference === undefined || latestCheckNames(blockedReference, input.cwd)) {
+	if (blockedReference === undefined || latestCheckNames(blockedReference, cwd)) {
 		allow();
 	} else {
-		deny(`Inspection of ${blockedReference} is closed by the repository harness. Use the agent-check error block first; open this path only when the newest agent-check log names it.`);
+		deny(`Inspection of ${blockedReference} is closed by the repository harness. Use the agent-check error block first; open this path only when the newest agent-check log names it.`, input.hook_event_name);
 	}
 } catch {
 	// Hook defects must not turn a scored run into a human intervention.
@@ -30,16 +31,24 @@ async function readInput() {
 }
 
 function findBlockedReference(input) {
+	const cwd = input.cwd ?? input.workspace_roots?.[0];
+	if (input.tool_name === undefined && typeof input.file_path === 'string') {
+		return closedPath(input.file_path, cwd);
+	}
+	if (input.tool_name === undefined && typeof input.command === 'string') {
+		return inspectionTarget(input.command);
+	}
+
 	const toolName = input.tool_name;
-	const toolInput = input.tool_input ?? {};
+	const toolInput = parseToolInput(input.tool_input);
 
 	if (toolName === 'Read') {
-		return closedPath(toolInput.path ?? toolInput.file_path, input.cwd);
+		return closedPath(toolInput.path ?? toolInput.file_path ?? toolInput.target_file, cwd);
 	}
 
 	if (toolName === 'Grep') {
 		for (const value of [toolInput.path, toolInput.glob]) {
-			const blocked = closedPath(value, input.cwd);
+			const blocked = closedPath(value, cwd);
 			if (blocked !== undefined) {
 				return blocked;
 			}
@@ -49,7 +58,7 @@ function findBlockedReference(input) {
 
 	if (toolName === 'Glob') {
 		for (const value of [toolInput.target_directory, toolInput.glob_pattern]) {
-			const blocked = closedPath(value, input.cwd);
+			const blocked = closedPath(value, cwd);
 			if (blocked !== undefined) {
 				return blocked;
 			}
@@ -58,14 +67,29 @@ function findBlockedReference(input) {
 	}
 
 	if (toolName === 'Shell') {
-		const command = toolInput.command;
-		if (typeof command !== 'string' || !INSPECTION_COMMAND.test(command)) {
-			return undefined;
-		}
-		return closedReferenceInText(command);
+		return inspectionTarget(toolInput.command);
 	}
 
 	return undefined;
+}
+
+function parseToolInput(value) {
+	if (typeof value === 'string') {
+		try {
+			const parsed = JSON.parse(value);
+			return parsed && typeof parsed === 'object' ? parsed : {};
+		} catch {
+			return {};
+		}
+	}
+	return value && typeof value === 'object' ? value : {};
+}
+
+function inspectionTarget(command) {
+	if (typeof command !== 'string' || !INSPECTION_COMMAND.test(command)) {
+		return undefined;
+	}
+	return closedReferenceInText(command);
 }
 
 function closedPath(value, cwd) {
@@ -144,12 +168,13 @@ function allow() {
 	console.log(JSON.stringify({ permission: 'allow' }));
 }
 
-function deny(message) {
-	console.log(
-		JSON.stringify({
-			permission: 'deny',
-			user_message: message,
-			agent_message: message,
-		}),
-	);
+function deny(message, eventName) {
+	const output = {
+		permission: 'deny',
+		user_message: message,
+	};
+	if (eventName !== 'beforeReadFile') {
+		output.agent_message = message;
+	}
+	console.log(JSON.stringify(output));
 }

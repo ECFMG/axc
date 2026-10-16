@@ -1,10 +1,22 @@
 {
 	"version": 1,
 	"hooks": {
+		"beforeReadFile": [
+			{
+				"command": "node .cursor/hooks/guard-closed-trees.mjs",
+				"failClosed": false
+			}
+		],
 		"preToolUse": [
 			{
 				"command": "node .cursor/hooks/guard-closed-trees.mjs",
 				"matcher": "Read|Grep|Glob|Shell",
+				"failClosed": false
+			}
+		],
+		"beforeShellExecution": [
+			{
+				"command": "node .cursor/hooks/guard-closed-trees.mjs",
 				"failClosed": false
 			}
 		]
