@@ -20,6 +20,7 @@
 		"start": "node --experimental-strip-types scripts/start-host.ts"
 	},
 	"dependencies": {
+		"@axc/persistence": "workspace:*",
 		"@axc/application-services": "workspace:*",
 		"@axc/rest": "workspace:*",
 		"@cellix/api-core": "workspace:*"
