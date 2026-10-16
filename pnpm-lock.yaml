@@ -361,9 +361,15 @@ importers:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../../packages/axc/application-services
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../../packages/axc/persistence
       '@axc/rest':
         specifier: workspace:*
         version: link:../../packages/axc/rest
+      '@axc/service-mongoose':
+        specifier: workspace:*
+        version: link:../../packages/axc/service-mongoose
       '@cellix/api-core':
         specifier: workspace:*
         version: link:../../packages/cellix/api-core
@@ -457,6 +463,9 @@ importers:
         specifier: 'catalog:'
         version: 3.46.0
     devDependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../../axc/domain
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
@@ -501,13 +510,26 @@ importers:
         version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/application-services:
+    dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
+      '@axc/persistence':
+        specifier: workspace:*
+        version: link:../persistence
     devDependencies:
+      '@amiceli/vitest-cucumber':
+        specifier: ^6.3.0
+        version: 6.5.0(vitest@4.1.11)
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
       '@cellix/config-vitest':
         specifier: workspace:*
         version: link:../../cellix/config-vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
       '@vitest/coverage-istanbul':
         specifier: 'catalog:'
         version: 4.1.11(vitest@4.1.11)
@@ -519,7 +541,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@26.6.2)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/domain:
     dependencies:
@@ -539,25 +561,55 @@ importers:
 
   packages/axc/persistence:
     dependencies:
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@cellix/domain-seedwork':
         specifier: workspace:*
         version: link:../../cellix/domain-seedwork
+      '@cellix/mongoose-seedwork':
+        specifier: workspace:*
+        version: link:../../cellix/mongoose-seedwork
+      mongoose:
+        specifier: 'catalog:'
+        version: 8.24.1(supports-color@8.1.1)
     devDependencies:
+      '@amiceli/vitest-cucumber':
+        specifier: ^6.3.0
+        version: 6.5.0(vitest@4.1.11)
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
+      '@cellix/config-vitest':
+        specifier: workspace:*
+        version: link:../../cellix/config-vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.1.11(vitest@4.1.11)
+      mongodb-memory-server-core:
+        specifier: 'catalog:'
+        version: 10.1.4(supports-color@8.1.1)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/rest:
     dependencies:
       '@axc/application-services':
         specifier: workspace:*
         version: link:../application-services
+      '@axc/domain':
+        specifier: workspace:*
+        version: link:../domain
       '@azure/functions':
         specifier: 'catalog:'
         version: 4.11.0(patch_hash=69772ce521bf6df67d814ff4f419f19b5e966a41c4ce80b5938143ad628e5645)
@@ -568,37 +620,70 @@ importers:
         specifier: 4.13.10
         version: 4.13.10
     devDependencies:
+      '@amiceli/vitest-cucumber':
+        specifier: ^6.3.0
+        version: 6.5.0(vitest@4.1.11)
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
+      '@cellix/config-vitest':
+        specifier: workspace:*
+        version: link:../../cellix/config-vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.1.11(vitest@4.1.11)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/axc/service-mongoose:
     dependencies:
+      '@cellix/api-services-spec':
+        specifier: workspace:*
+        version: link:../../cellix/api-services-spec
       '@cellix/mongoose-seedwork':
         specifier: workspace:*
         version: link:../../cellix/mongoose-seedwork
       mongodb-memory-server-core:
         specifier: 'catalog:'
-        version: 10.1.4(supports-color@8.1.1)
+        version: 10.1.4
       mongoose:
         specifier: 'catalog:'
         version: 8.24.1(supports-color@8.1.1)
     devDependencies:
+      '@amiceli/vitest-cucumber':
+        specifier: ^6.3.0
+        version: 6.5.0(vitest@4.1.11)
       '@cellix/config-typescript':
         specifier: workspace:*
         version: link:../../cellix/config-typescript
+      '@cellix/config-vitest':
+        specifier: workspace:*
+        version: link:../../cellix/config-vitest
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
+      '@vitest/coverage-istanbul':
+        specifier: 'catalog:'
+        version: 4.1.11(vitest@4.1.11)
       rimraf:
         specifier: 'catalog:'
         version: 6.0.1
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-istanbul@4.1.11)(happy-dom@20.10.1)(vite@8.3.0(@types/node@24.10.1)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
 
   packages/cellix/api-core:
     dependencies:
@@ -15647,6 +15732,33 @@ snapshots:
     dependencies:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.2.0
+
+  mongodb-memory-server-core@10.1.4:
+    dependencies:
+      async-mutex: 0.5.0
+      camelcase: 6.3.0
+      debug: 4.4.3(supports-color@8.1.1)
+      find-cache-dir: 3.3.2
+      follow-redirects: 1.16.0(debug@4.4.3)
+      https-proxy-agent: 7.0.6(supports-color@8.1.1)
+      mongodb: 6.21.0
+      new-find-package-json: 2.0.0(supports-color@8.1.1)
+      semver: 7.8.5
+      tar-stream: 3.2.1
+      tslib: 2.8.1
+      yauzl: 3.4.0
+    transitivePeerDependencies:
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - bare-abort-controller
+      - bare-buffer
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - react-native-b4a
+      - snappy
+      - socks
+      - supports-color
 
   mongodb-memory-server-core@10.1.4(supports-color@8.1.1):
     dependencies:

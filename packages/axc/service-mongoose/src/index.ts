@@ -10,5 +10,7 @@ export type MongoConnection = Connection;
 
 /** Local and test MongoDB process. Uses mongodb-memory-server-core so installs do not run package build scripts. */
 export function createMemoryMongoServer(): MongoMemoryServer {
-	return new MongoMemoryServer();
+	return new MongoMemoryServer({ binary: { version: '7.0.14' } });
 }
+
+export { ServiceMongoose } from './service-mongoose.ts';

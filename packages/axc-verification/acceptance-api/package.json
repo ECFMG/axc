@@ -23,6 +23,7 @@
 		"@cellix/serenity-framework": "workspace:*"
 	},
 	"devDependencies": {
+		"@axc/domain": "workspace:*",
 		"@cellix/config-typescript": "workspace:*",
 		"@cellix/local-dev": "workspace:*",
 		"@types/node": "catalog:",
