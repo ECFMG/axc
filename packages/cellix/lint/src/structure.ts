@@ -143,10 +143,17 @@ function checkDomainPackageIndex(file: string, content: string): string[] {
 	if (!/export\s+type\s+DomainRepository\b/.test(content)) {
 		violations.push(report(file, 'cellix/domain-package-index', 'missing DomainRepository', 'export type DomainRepository<T> = Repository<T>'));
 	}
-	if (/export\s+type\s+\{/.test(content) || /export\s+interface\s+/.test(content) || /export\s+const\s+/.test(content) || /export\s+class\s+/.test(content) || /export\s+function\s+/.test(content)) {
-		violations.push(report(file, 'cellix/domain-package-index', 'feature type or value added to the package index', "keep feature types on their files. The only added export is export * as Domain from './domain/index.ts'"));
+	if (/export\s+type\s+\{/.test(content) || /export\s+interface\s+(?!DomainDataSource\b)/.test(content) || /export\s+const\s+/.test(content) || /export\s+class\s+/.test(content) || /export\s+function\s+/.test(content)) {
+		violations.push(
+			report(
+				file,
+				'cellix/domain-package-index',
+				'feature type or value added to the package index',
+				"keep feature types on their files. The package index exports DomainRepository, DomainDataSource, and export * as Domain from './domain/index.ts'",
+			),
+		);
 	}
-	violations.push(...rejectUnexpectedTypes(file, content, new Set(['DomainRepository']), 'cellix/domain-package-index'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set(['DomainRepository', 'DomainDataSource']), 'cellix/domain-package-index'));
 	return violations;
 }
 
@@ -402,7 +409,7 @@ function checkApplicationContextIndex(file: string, content: string): string[] {
 		violations.push(report(file, 'cellix/application-context-single-factory', consts.join(', ') || 'no const export', `only export const ${pascal}`));
 	}
 	violations.push(...banTopLevelFunctions(file, content, 'cellix/application-context-no-helper'));
-	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}ApplicationService`, `${pascal}Context`]), 'cellix/application-context-types'));
+	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}ApplicationService`, `${pascal}Context`, `${pascal}ContextApplicationService`]), 'cellix/application-context-types'));
 	return violations;
 }
 
@@ -470,7 +477,14 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 			if (/export\s+class\s+/.test(content)) {
 				violations.push(report(file, 'cellix/persistence-barrel', 'export class in a barrel', 'classes live in *.repository.ts, *.domain-adapter.ts, or *.uow.ts'));
 			}
-			const allowed = relative === 'index.ts' ? new Set(['DataSources', 'DataSourcesFactory', 'ModelsContext']) : relative === 'datasources/readonly/index.ts' ? new Set(['ReadonlyDataSource']) : new Set<string>();
+			const allowed =
+				relative === 'index.ts'
+					? new Set(['DataSources', 'DataSourcesFactory', 'ModelsContext'])
+					: relative === 'datasources/index.ts'
+						? new Set(['DataSources', 'DataSourcesFactory'])
+						: relative === 'datasources/readonly/index.ts'
+							? new Set(['ReadonlyDataSource'])
+							: new Set<string>();
 			violations.push(...rejectUnexpectedTypes(file, content, allowed, 'cellix/persistence-index-types'));
 			continue;
 		}
@@ -632,6 +646,13 @@ function checkModels(files: string[], domainFiles: string[]): string[] {
 		violations.push(...banImports(file, content, active.modelBans, 'cellix/model-boundary'));
 		if (file.endsWith('.seed.ts')) {
 			violations.push(...checkModelSeed(file, content, domainStems));
+			continue;
+		}
+		if (path.basename(file) === 'index.ts') {
+			if (!/export\s+const\s+mongooseContextBuilder\b/.test(content)) {
+				violations.push(report(file, 'cellix/model-context', 'missing mongooseContextBuilder', 'export const mongooseContextBuilder = (initializedService) => ({ <Entity>: <Entity>ModelFactory(initializedService) })'));
+			}
+			violations.push(...banTopLevelFunctions(file, content, 'cellix/model-context-no-helper'));
 			continue;
 		}
 		if (!/\/models\/[^/]+\/[^/]+\.model\.ts$/.test(posix)) {

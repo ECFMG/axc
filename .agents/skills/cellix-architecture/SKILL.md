@@ -4,7 +4,7 @@ description: >
   Development workflow for agentCourses Cellix features. Use when adding or changing
   domain, application service, persistence, mongoose model, GraphQL, or REST code.
   Requires @cellix/generator for new features, @cellix/lint for file body, visibility,
-  and dependency-graph checks, and the writable-path hook.
+  and dependency-graph checks, and the agentAccess write hook.
 ---
 
 # Cellix development
@@ -13,9 +13,7 @@ description: >
 
 A change to a structure that already exists does not need the generator. That includes a bugfix, a validation rule, a query filter, a route that already has a handler, a test, or documentation. Edit the existing files. Cellix lint still checks file roles, imports, and the dependency graph.
 
-While `.cellix/session.json` exists, a new structure is in progress and the hook allows only the paths in that file. Fill in the behavior there. When `pnpm run verify` exits 0, the session ends. Later edits to those files do not need generate.
-
-With no session file, write product code, acceptance tests, API source, and docs. The control plane stays locked. Do not hand-create a new context, entity, or action. Generate it so the file roles exist. Do not add a helper, util, common, or shared module.
+Write product code, acceptance tests, API source, and docs on paths whose `agentAccess` entry is true. The control plane stays locked. Do not hand-create a new context, entity, or action. Generate it so the file roles exist. Do not add a helper, util, common, or shared module.
 
 The health host in `packages/axc/application-services/src/index.ts` is the composition root. It is not an action template.
 
@@ -26,7 +24,7 @@ Use them in this order. Each one catches a different class of drift.
 | Guardrail | What it forces | When it runs |
 | --- | --- | --- |
 | `@cellix/generator` | The file set for one context, entity, and action | Before any new feature files exist |
-| Write-allow hook | A new structure stays on its generator file list. Other work stays on the writable paths in `ocom-write.config.json` | Every write and every shell write |
+| Write-allow hook | A write is allowed only when the first matching `agentAccess` entry in `ocom-write.config.json` is true | Every write and every shell write |
 | `@cellix/lint` | File roles, file body, public imports, dependency graph | `pnpm --filter @cellix/lint lint:cellix`, `pnpm run lint`, commit, `pnpm run verify` |
 | Biome, extended from `@cellix/lint/biome` | Formatter, recommended rules, and layer import bans. The repo `biome.json` extends that file and adds only app-specific ignores and overrides | `pnpm exec biome check` |
 | `@cellix/archunit-tests` `./structure` | The same lint, as an architecture test apps opt into | `pnpm run test:arch` |
@@ -103,13 +101,13 @@ Start the application with `pnpm run dev` and call the endpoint. The rows come f
 
 A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entity>.<action>(command)` inside the function that receives `applicationServices`. Context and Entity are PascalCase. Mentioning `applicationServices`, casting it, or calling a local list when the property is missing does not count. A REST file does not keep an array of documents.
 
-## Writable paths
+## agentAccess
 
-The generator writes `.cellix/session.json` for one new context, entity, and action. While that file exists, the hook allows writes only to the paths it lists. That list includes the mongoose models `package.json`, its `tsconfig.json`, and `src/index.ts`, the persistence and application-services manifests that depend on the new package, `pnpm-lock.yaml`, and the domain namespace barrels for that context and entity. A path outside the list is rejected. Edit a listed file. Run `pnpm run clear-session` after verify to work on existing code. Run the generator again only when that new structure is missing or wrong.
+`ocom-write.config.json` is the only write list. The first matching `agentAccess` key wins. `true` allows the path. `false` locks it. A path with no match is denied.
 
-With no session file, the hook allows `packages/axc/**`, `packages/axc-verification/**`, `apps/api/src/**`, `apps/docs/**`, the root `package.json`, and `pnpm-lock.yaml`. `packages/cellix/**`, `.cursor/**`, and the lint and write configs stay locked. Deploy scripts, secrets, and env files stay locked with the rest of `apps/**`.
+`packages/axc/**`, `packages/axc-verification/**`, `apps/api/src/**`, `apps/docs/**`, the root `package.json`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml` are open. `cellix-lint.config.json` stays locked. Deploy scripts, secrets, and env files stay locked with the rest of `apps/**`.
 
-A shell write that does not name a file is denied. `pnpm --filter @cellix/generator generate` is allowed. `git status` and `git diff` are allowed. `git restore` of a file outside the current allowlist is denied.
+A shell write that does not name a file is denied. `pnpm --filter @cellix/generator generate` is allowed. `git status` and `git diff` are allowed. `git restore` of a locked file is denied.
 
 ## After every edit
 

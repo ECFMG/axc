@@ -11,7 +11,7 @@ try {
 }
 
 const root = typeof input.cwd === 'string' && input.cwd ? input.cwd : process.cwd();
-const policy = policyFromConfig(loadConfig(root), loadSession(root));
+const policy = policyFromConfig(loadConfig(root));
 const toolInput = parseToolInput(input.tool_input);
 const tool = String(input.tool_name ?? input.toolName ?? '');
 const command = String(input.command ?? toolInput.command ?? '');
@@ -39,14 +39,6 @@ function allow() {
 function deny(message) {
 	process.stdout.write(`${JSON.stringify({ permission: 'deny', user_message: message, agent_message: message })}\n`);
 	process.exit(0);
-}
-
-function loadSession(start) {
-	try {
-		return JSON.parse(readFileSync(path.join(start, '.cellix/session.json'), 'utf8'));
-	} catch {
-		return null;
-	}
 }
 
 function loadConfig(start) {

@@ -1,7 +1,7 @@
-import { spawnSync } from 'node:child_process';
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { CellixLintConfig } from '@cellix/lint';
+import { wireComposition } from './compose.ts';
 import { formatGeneratedFiles } from './format.ts';
 import type { FieldSpec, NestedSpec } from './spec.ts';
 
@@ -26,7 +26,6 @@ export interface GeneratedFile {
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export async function generateFeature(options: GenerateFeatureOptions): Promise<GeneratedFile[]> {
-	const baseline = gitBaseline(options.root);
 	const context = options.context;
 	const entity = options.entity;
 	const action = options.action;
@@ -55,9 +54,9 @@ export async function generateFeature(options: GenerateFeatureOptions): Promise<
 		await mkdir(path.dirname(file.path), { recursive: true });
 		await writeFile(file.path, file.contents);
 	}
-	formatGeneratedFiles(writes);
+	const composed = await wireComposition(options);
+	formatGeneratedFiles([...writes, ...composed]);
 	for (const file of writes) file.contents = await readFile(file.path, 'utf8');
-	await writeSession(options, files, baseline);
 	return writes;
 }
 
@@ -92,7 +91,7 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 		},
 		{
 			path: path.join(domainContexts, 'passport.ts'),
-			contents: `import type { ${contextPascal}Visa } from './${context}/${context}.visa.ts';\n\nexport interface Passport {\n\t${camel(context)}: {\n\t\tfor${entityPascal}(entity: unknown): ${contextPascal}Visa;\n\t};\n}\n`,
+			contents: `import type { ${contextPascal}Visa } from './${context}/${context}.visa.ts';\n\nexport interface Passport {\n\t${camel(context)}: {\n\t\tfor${entityPascal}(entity: unknown): ${contextPascal}Visa;\n\t};\n}\n\nexport const PassportFactory = {\n\tforSystem(): Passport {\n\t\treturn {\n\t\t\t${camel(context)}: {\n\t\t\t\tfor${entityPascal}: () => ({\n\t\t\t\t\tdetermineIf: (check: (permissions: { ${shape.permissions.map((permission) => `${permission}: boolean`).join('; ')} }) => boolean) => check({ ${shape.permissions.map((permission) => `${permission}: true`).join(', ')} }),\n\t\t\t\t}),\n\t\t\t},\n\t\t};\n\t},\n};\n`,
 		},
 		{
 			path: path.join(entityDir, `${entity}.value-objects.ts`),
@@ -217,9 +216,10 @@ function aggregateTemplate(input: { entity: string; entityPascal: string; contex
 	].join('\n');
 	const inputFields = [...shape.fields.map((field) => `\t${field.name}: ${tsType(field.type)};`), ...shape.nested.map((item) => `\t${item.camel}: ${item.pascal}Props;`)].join('\n');
 	const assigns = [...shape.fields.map((field) => `\t\tnewInstance.${field.name} = input.${field.name};`), ...shape.nested.map((item) => `\t\tnewInstance.${item.camel} = input.${item.camel};`)].join('\n');
-	const members = [...shape.fields.map((field) => scalarMembers(field)), ...shape.nested.map((item) => nestedMembers(item)), createdMembers()].join('\n\n');
+	const permission = shape.permissions[0] ?? `canManage${entityPascal}`;
+	const members = [...shape.fields.map((field) => scalarMembers(field, permission)), ...shape.nested.map((item) => nestedMembers(item, permission)), createdMembers()].join('\n\n');
 	return `import { AggregateRoot } from '@cellix/domain-seedwork/aggregate-root';
-import type { DomainEntityProps } from '@cellix/domain-seedwork/domain-entity';
+import { type DomainEntityProps, PermissionError } from '@cellix/domain-seedwork/domain-entity';
 import type { Passport } from '../../passport.ts';
 import type { ${visa} } from '../${context}.visa.ts';
 import * as ValueObjects from './${entity}.value-objects.ts';
@@ -236,9 +236,7 @@ ${inputFields}
 }
 
 export class ${entityPascal}<props extends ${entityPascal}Props> extends AggregateRoot<props, Passport> implements ${entityPascal}EntityReference {
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: markAsNew sets this so a later setter can skip the visa check
 	private isNew: boolean = false;
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: passport wiring for a later visa.determineIf check
 	private readonly visa: ${visa};
 	constructor(props: props, passport: Passport) {
 		super(props, passport);
@@ -432,14 +430,14 @@ export const get${entityPascal}ReadRepository = (models: { ${entityPascal}: ${en
 }
 
 function readEntityIndexTemplate(input: { entity: string; entityPascal: string; scope: string }): string {
-	const { entity, entityPascal, scope } = input;
-	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
-import type { Domain } from '${scope}/domain';
+	const { entity, entityPascal } = input;
+	return `import type { Domain } from '${input.scope}/domain';
+import type { ModelsContext } from '${input.scope}/persistence';
 import { get${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
 
 export type { ${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
 
-export const ${entityPascal}ReadRepositoryImpl = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport) => {
+export const ${entityPascal}ReadRepositoryImpl = (models: ModelsContext, passport: Domain.Passport) => {
 	return {
 		${entityPascal}ReadRepo: get${entityPascal}ReadRepository(models, passport),
 	};
@@ -448,21 +446,21 @@ export const ${entityPascal}ReadRepositoryImpl = (models: { ${entityPascal}: ${e
 }
 
 function readContextIndexTemplate(input: { context: string; contextPascal: string; entity: string; entityPascal: string; scope: string }): string {
-	const { contextPascal, entity, entityPascal, scope } = input;
-	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
-import type { Domain } from '${scope}/domain';
+	const { contextPascal, entity, entityPascal } = input;
+	return `import type { Domain } from '${input.scope}/domain';
+import type { ModelsContext } from '${input.scope}/persistence';
 import { ${entityPascal}ReadRepositoryImpl } from './${entity}/index.ts';
 
-export const ${contextPascal}Context = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport) => ({
+export const ${contextPascal}Context = (models: ModelsContext, passport: Domain.Passport) => ({
 	${entityPascal}: ${entityPascal}ReadRepositoryImpl(models, passport),
 });
 `;
 }
 
 function readonlyIndexTemplate(input: { context: string; contextPascal: string; entity: string; entityPascal: string; scope: string }): string {
-	const { context, contextPascal, entity, entityPascal, scope } = input;
-	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
-import type { Domain } from '${scope}/domain';
+	const { context, contextPascal, entity, entityPascal } = input;
+	return `import type { Domain } from '${input.scope}/domain';
+import type { ModelsContext } from '${input.scope}/persistence';
 import { ${contextPascal}Context } from './${context}/index.ts';
 import type { ${entityPascal}ReadRepository } from './${context}/${entity}/${entity}.read-repository.ts';
 
@@ -474,7 +472,7 @@ export interface ReadonlyDataSource {
 	};
 }
 
-export const ReadonlyDataSourceImplementation = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport): ReadonlyDataSource => ({
+export const ReadonlyDataSourceImplementation = (models: ModelsContext, passport: Domain.Passport): ReadonlyDataSource => ({
 	${contextPascal}: ${contextPascal}Context(models, passport),
 });
 `;
@@ -595,12 +593,13 @@ function persistenceUowTemplate(input: { entity: string; entityPascal: string; c
 	const { entity, entityPascal, contextPascal, scope } = input;
 	const domainPath = namespacePath(contextPascal, entityPascal);
 	return `import { InProcEventBusInstance, NodeEventBusInstance } from '@cellix/event-bus-seedwork-node';
+import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
 import { MongooseSeedwork } from '@cellix/mongoose-seedwork';
 import type { Domain } from '${scope}/domain';
 import { ${entityPascal}Converter } from './${entity}.domain-adapter.ts';
 import { ${entityPascal}Repository } from './${entity}.repository.ts';
 
-export const get${entityPascal}UnitOfWork = (model: unknown, passport: Domain.Passport): Domain.Contexts.${domainPath}UnitOfWork => {
+export const get${entityPascal}UnitOfWork = (model: ${entityPascal}ModelType, passport: Domain.Passport): Domain.Contexts.${domainPath}UnitOfWork => {
 	const unitOfWork = new MongooseSeedwork.MongoUnitOfWork(InProcEventBusInstance, NodeEventBusInstance, model, new ${entityPascal}Converter(), ${entityPascal}Repository);
 	return MongooseSeedwork.getInitializedUnitOfWork(unitOfWork, passport);
 };
@@ -613,7 +612,7 @@ function actionTemplate(input: { actionCamel: string; command: string; contextPa
 	const domainPath = namespacePath(contextPascal, entityPascal);
 	const body = mutation
 		? `return await dataSources.domainDataSource.${domainPath}UnitOfWork.withScopedTransaction(async (repo) => {\n\t\t\treturn repo.save(await repo.getNewInstance({ ${inputLiteral} }));\n\t\t});`
-		: `return await dataSources.readonlyDataSource.${contextPascal}.${entityPascal}.${entityPascal}ReadRepo.getById(command.id);`;
+		: `const found = await dataSources.readonlyDataSource.${contextPascal}.${entityPascal}.${entityPascal}ReadRepo.getById(command.id);\n\t\tif (!found) {\n\t\t\tthrow new Error('${entityPascal} was not found');\n\t\t}\n\t\treturn found;`;
 	const result = `Domain.Contexts.${domainPath}EntityReference`;
 	return `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\n\nexport interface ${command} {\n\t${commandFields(shape, mutation)}\n}\n\nexport const ${actionCamel} = (dataSources: DataSources) => {\n\treturn async (command: ${command}): Promise<${result}> => {\n\t\t${body}\n\t};\n};\n`;
 }
@@ -677,28 +676,31 @@ function toShapeNested(item: NestedSpec, fileNames: Set<string>): ShapeNested {
 }
 
 function nestedFiles(entityDir: string, context: string, shape: Shape): GeneratedFile[] {
-	return shape.nested.flatMap((item) => filesForNested(entityDir, context, item));
+	const permission = shape.permissions[0] ?? 'canManage';
+	return shape.nested.flatMap((item) => filesForNested(entityDir, context, item, permission));
 }
 
-function filesForNested(entityDir: string, context: string, item: ShapeNested): GeneratedFile[] {
-	const children = item.fields.filter(isShapeNested).flatMap((child) => filesForNested(entityDir, context, child));
+function filesForNested(entityDir: string, context: string, item: ShapeNested, permission: string): GeneratedFile[] {
+	const children = item.fields.filter(isShapeNested).flatMap((child) => filesForNested(entityDir, context, child, permission));
 	const strings = item.fields.filter((member): member is ShapeField => !isShapeNested(member) && member.type === 'string').map((member) => member.pascal);
 	const files = [...children];
 	if (item.kind === 'value' || strings.length > 0) {
 		files.push({ path: path.join(entityDir, `${item.name}.value-objects.ts`), contents: valueObjectModule(item, strings) });
 	}
-	if (item.kind === 'entity') files.push({ path: path.join(entityDir, `${item.name}.entity.ts`), contents: entityTemplate(item, context) });
+	if (item.kind === 'entity') files.push({ path: path.join(entityDir, `${item.name}.entity.ts`), contents: entityTemplate(item, context, permission) });
 	return files;
 }
 
-function entityTemplate(item: ShapeNested, context: string): string {
+function entityTemplate(item: ShapeNested, context: string, permission: string): string {
 	const visa = `${pascal(context)}Visa`;
 	const childEntities = item.fields.filter((member): member is ShapeNested => isShapeNested(member) && member.kind === 'entity');
 	const reference = childEntities.length === 0 ? `export interface ${item.pascal}EntityReference extends Readonly<${item.pascal}Props> {}` : entityReference(item.pascal, childEntities);
 	const imports = [valueObjectImport(item), ...item.fields.filter(isShapeNested).map((child) => childImport(child))].filter((line) => line.length > 0).join('\n');
-	const members = [...item.fields.filter((member): member is ShapeField => !isShapeNested(member)).map((field) => scalarMembers(field)), ...item.fields.filter(isShapeNested).map((child) => nestedMembers(child))].join('\n\n');
-	return `import type { DomainEntityProps } from '@cellix/domain-seedwork/domain-entity';
-import { DomainEntity } from '@cellix/domain-seedwork/domain-entity';
+	const members = [
+		...item.fields.filter((member): member is ShapeField => !isShapeNested(member)).map((field) => scalarMembers(field, permission)),
+		...item.fields.filter(isShapeNested).map((child) => nestedMembers(child, permission)),
+	].join('\n\n');
+	return `import { DomainEntity, type DomainEntityProps, PermissionError } from '@cellix/domain-seedwork/domain-entity';
 import type { ${visa} } from '../${context}.visa.ts';
 ${imports}
 
@@ -711,9 +713,7 @@ ${propLines(item.fields)}
 ${reference}
 
 export class ${item.pascal} extends DomainEntity<${item.pascal}Props> implements ${item.pascal}EntityReference {
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: set true while constructing so a later setter can skip the visa check
 	private isNew: boolean = false;
-	// biome-ignore lint/correctness/noUnusedPrivateClassMembers: visa wiring for a later visa.determineIf check
 	private readonly visa: ${visa};
 	constructor(props: ${item.pascal}Props, visa: ${visa}) {
 		super(props);
@@ -743,16 +743,20 @@ function valueObjectModule(item: ShapeNested, names: string[]): string {
 	return `${imports}\n\n${header}${classes}\n`;
 }
 
-function scalarMembers(field: ShapeField): string {
+function scalarMembers(field: ShapeField, permission: string): string {
 	const assign = field.type === 'string' ? `this.props.${field.name} = new ValueObjects.${field.pascal}(${field.name}).valueOf();` : `this.props.${field.name} = ${field.name};`;
-	return `\tget ${field.name}(): ${tsType(field.type)} {\n\t\treturn this.props.${field.name};\n\t}\n\tset ${field.name}(${field.name}: ${tsType(field.type)}) {\n\t\t${assign}\n\t}`;
+	return `\tget ${field.name}(): ${tsType(field.type)} {\n\t\treturn this.props.${field.name};\n\t}\n\tset ${field.name}(${field.name}: ${tsType(field.type)}) {\n\t\t${setterGuard(permission, field.name)}\n\t\t${assign}\n\t}`;
 }
 
-function nestedMembers(item: ShapeNested): string {
+function nestedMembers(item: ShapeNested, permission: string): string {
 	if (item.kind === 'entity') {
-		return `\tget ${item.camel}(): ${item.pascal}EntityReference {\n\t\treturn new ${item.pascal}(this.props.${item.camel}, this.visa);\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\tthis.props.${item.camel} = ${item.camel};\n\t}`;
+		return `\tget ${item.camel}(): ${item.pascal}EntityReference {\n\t\treturn new ${item.pascal}(this.props.${item.camel}, this.visa);\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\t${setterGuard(permission, item.camel)}\n\t\tthis.props.${item.camel} = ${item.camel};\n\t}`;
 	}
-	return `\tget ${item.camel}(): ${item.pascal}Props {\n\t\treturn this.props.${item.camel};\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\tthis.props.${item.camel} = ${valueCopy(item, item.camel)};\n\t}`;
+	return `\tget ${item.camel}(): ${item.pascal}Props {\n\t\treturn this.props.${item.camel};\n\t}\n\tset ${item.camel}(${item.camel}: ${item.pascal}Props) {\n\t\t${setterGuard(permission, item.camel)}\n\t\tthis.props.${item.camel} = ${valueCopy(item, item.camel)};\n\t}`;
+}
+
+function setterGuard(permission: string, name: string): string {
+	return `if (!this.isNew && !this.visa.determineIf((permissions) => permissions.${permission})) {\n\t\t\tthrow new PermissionError('You do not have permission to change ${name}');\n\t\t}`;
 }
 
 function createdMembers(): string {
@@ -901,72 +905,6 @@ When('the client requests ${title}', () => actorCalled('API client').attemptsTo(
 
 Then('${title} responds with status 200', () => actorCalled('API client').attemptsTo(Ensure.that(resolved(LastResponse.status()), equals(200))));
 `;
-}
-
-async function writeSession(options: GenerateFeatureOptions, planned: GeneratedFile[], baseline: string[]): Promise<void> {
-	const plannedPaths = planned.map((file) => relativePosix(options.root, file.path));
-	const session = {
-		context: options.context,
-		entity: options.entity,
-		action: options.action,
-		startedAt: new Date().toISOString(),
-		files: sessionFileList(options.lint, plannedPaths, { context: options.context, entity: options.entity }),
-		baseline,
-	};
-	const sessionPath = path.join(options.root, '.cellix/session.json');
-	await mkdir(path.dirname(sessionPath), { recursive: true });
-	await writeFile(sessionPath, `${JSON.stringify(session, null, '\t')}\n`);
-}
-
-export function sessionFileList(lint: CellixLintConfig, planned: string[], task: { context: string; entity: string }): string[] {
-	const modelsPackage = packageRoot(lint.layers.models);
-	const persistencePackage = packageRoot(lint.layers.persistence);
-	const applicationPackage = packageRoot(lint.layers.applicationServices);
-	const domain = lint.layers.domain;
-	const contextDir = `${domain}/domain/contexts/${task.context}`;
-	const wiring = [
-		`${lint.layers.applicationServices}/index.ts`,
-		`${domain}/index.ts`,
-		`${domain}/domain/index.ts`,
-		`${domain}/domain/contexts/index.ts`,
-		`${contextDir}/index.ts`,
-		`${contextDir}/${task.entity}/index.ts`,
-		`${lint.layers.rest}/index.ts`,
-		`${lint.layers.persistence}/index.ts`,
-		lint.apiComposition,
-		`${modelsPackage}/package.json`,
-		`${modelsPackage}/tsconfig.json`,
-		`${lint.layers.models}/index.ts`,
-		`${persistencePackage}/package.json`,
-		`${persistencePackage}/tsconfig.json`,
-		`${applicationPackage}/package.json`,
-		`${applicationPackage}/tsconfig.json`,
-		'pnpm-lock.yaml',
-	];
-	return [...new Set([...planned, ...wiring])].sort();
-}
-
-function packageRoot(layer: string): string {
-	return layer.endsWith('/src') ? layer.slice(0, -4) : layer;
-}
-
-function gitBaseline(root: string): string[] {
-	const result = spawnSync('git', ['status', '--porcelain', '-uall'], { cwd: root, encoding: 'utf8' });
-	if (result.status !== 0 || !result.stdout) return [];
-	return porcelainPaths(result.stdout);
-}
-
-function porcelainPaths(stdout: string): string[] {
-	const paths: string[] = [];
-	for (const line of stdout.split('\n')) {
-		if (line.length < 4) continue;
-		let file = line.slice(3).trim();
-		const arrow = file.lastIndexOf(' -> ');
-		if (arrow !== -1) file = file.slice(arrow + 4).trim();
-		if (file.startsWith('"') && file.endsWith('"')) file = file.slice(1, -1);
-		if (file.length > 0) paths.push(file);
-	}
-	return paths;
 }
 
 function relativePosix(root: string, file: string): string {

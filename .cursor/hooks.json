@@ -23,14 +23,14 @@
 			{
 				"command": ".cursor/hooks/cellix-evidence.mjs",
 				"failClosed": true,
-				"loop_limit": null
+				"loop_limit": 1
 			}
 		],
 		"subagentStop": [
 			{
 				"command": ".cursor/hooks/cellix-evidence.mjs",
 				"failClosed": true,
-				"loop_limit": null
+				"loop_limit": 1
 			}
 		]
 	}

@@ -1,11 +1,11 @@
 import { spawnSync } from 'node:child_process';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 import { checkCellixLint, defaultCellixLintConfig } from '../../lint/src/index.ts';
-import { generateFeature, sessionFileList } from './generate.ts';
+import { generateFeature } from './generate.ts';
 import { parseField, parseFieldsFile, parseNested, parsePermission } from './spec.ts';
 
 const roots: string[] = [];
@@ -51,7 +51,8 @@ describe('Cellix generator', () => {
 		expect(resolver?.contents).toContain('applicationServices.Course.Course.create');
 		expect(aggregate?.contents).toContain('const newInstance = new Course');
 		expect(aggregate?.contents).toContain('newInstance.markAsNew()');
-		expect(aggregate?.contents).not.toContain('this.visa.determineIf');
+		expect(aggregate?.contents).toContain('this.visa.determineIf');
+		expect(aggregate?.contents).toContain('!this.isNew');
 		expect(aggregate?.contents).toContain('private markAsNew(): void');
 		expect(aggregate?.contents).not.toContain('addIntegrationEvent');
 		const seed = files.find((file) => file.path.endsWith('course.seed.ts'));
@@ -62,6 +63,7 @@ describe('Cellix generator', () => {
 		const violations = await checkCellixLint({ root, lint });
 		expect(violations).toStrictEqual([]);
 		expectBiomeClean(files);
+		await expectDomainTypechecks(root);
 	});
 
 	it('fills fields, permissions, a value object, and an entity, and writes resolvers only when asked', async () => {
@@ -98,6 +100,7 @@ describe('Cellix generator', () => {
 
 		const violations = await checkCellixLint({ root, lint });
 		expect(violations).toStrictEqual([]);
+		await expectDomainTypechecks(root);
 
 		const resolverRoot = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(resolverRoot);
@@ -291,17 +294,161 @@ describe('Cellix generator', () => {
 		await expect(generateFeature({ root, lint, context: 'course', entity: 'course', action: 'update' })).rejects.toThrow('Refusing to overwrite');
 	});
 
-	it('puts the mongoose models package on the session list', () => {
-		const files = sessionFileList(defaultCellixLintConfig(), [], { context: 'course', entity: 'course' });
-		expect(files).toContain('packages/axc/data-sources-mongoose-models/package.json');
-		expect(files).toContain('packages/axc/data-sources-mongoose-models/tsconfig.json');
-		expect(files).toContain('packages/axc/data-sources-mongoose-models/src/index.ts');
-		expect(files).toContain('packages/axc/domain/src/domain/index.ts');
-		expect(files).toContain('packages/axc/domain/src/domain/contexts/course/course/index.ts');
-		expect(files).toContain('packages/axc/persistence/package.json');
-		expect(files).toContain('packages/axc/application-services/package.json');
-		expect(files).toContain('pnpm-lock.yaml');
-		expect(files).not.toContain('packages/axc/service-mongoose/package.json');
-		expect(files).not.toContain('packages/axc/domain/src/domain/contexts/other/index.ts');
+	it('wires a new context through the same barrels Community uses', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(root);
+		const lint = defaultCellixLintConfig();
+		await writeStub(
+			root,
+			'packages/axc/domain/src/index.ts',
+			"import type { Repository } from '@cellix/domain-seedwork/repository';\n\n/** Repositories added in this package implement the Cellix repository contract. */\nexport type DomainRepository<T> = Repository<T>;\n",
+		);
+		await writeStub(root, 'packages/axc/persistence/src/index.ts', "export type { UnitOfWork } from '@cellix/domain-seedwork/unit-of-work';\n");
+		await writeStub(
+			root,
+			'packages/axc/persistence/package.json',
+			'{ "name": "@axc/persistence", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } }, "dependencies": { "@cellix/domain-seedwork": "workspace:*" } }\n',
+		);
+		await writeStub(root, 'packages/axc/persistence/tsconfig.json', '{ "references": [{ "path": "../../cellix/domain-seedwork" }] }\n');
+		await writeStub(root, 'packages/axc/application-services/package.json', '{ "name": "@axc/application-services", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } } }\n');
+		await writeStub(root, 'packages/axc/application-services/tsconfig.json', '{ "references": [] }\n');
+		await writeStub(
+			root,
+			'packages/axc/application-services/src/index.ts',
+			`export type HealthEnvironment = 'local' | 'test' | 'production';\n\nexport interface HealthStatus {\n\tstatus: 'ok';\n\tenvironment: HealthEnvironment;\n\ttimestamp: string;\n}\n\nexport interface ApiContext {\n\tenvironment: HealthEnvironment;\n}\n\nexport interface ApplicationServices {\n\thealth: {\n\t\tgetStatus(): HealthStatus;\n\t};\n}\n\nexport interface ApplicationServicesFactory {\n\tforRequest(rawAuthHeader?: string): Promise<ApplicationServices>;\n}\n\nexport function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {\n\tconst forRequest = (): Promise<ApplicationServices> =>\n\t\tPromise.resolve({\n\t\t\thealth: {\n\t\t\t\tgetStatus(): HealthStatus {\n\t\t\t\t\treturn { status: 'ok', environment: context.environment, timestamp: new Date().toISOString() };\n\t\t\t\t},\n\t\t\t},\n\t\t});\n\n\treturn { forRequest };\n}\n`,
+		);
+		await writeStub(
+			root,
+			'packages/axc/rest/src/index.ts',
+			`import type { ApplicationServicesFactory } from '@axc/application-services';\nimport { Hono } from 'hono';\n\nexport function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {\n\tconst app = new Hono();\n\treturn app;\n}\n`,
+		);
+		await writeStub(
+			root,
+			'apps/api/src/index.ts',
+			`import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';\nimport { restHandlerCreator } from '@axc/rest';\nimport { Cellix } from '@cellix/api-core';\nimport * as RuntimeConfig from './service-config/runtime/index.ts';\n\nCellix.initializeInfrastructureServices<ApiContext, ApplicationServices>(() => undefined)\n\t.setContext(() => {\n\t\treturn {\n\t\t\tenvironment: RuntimeConfig.environment,\n\t\t};\n\t})\n\t.initializeApplicationServices((context) => buildApplicationServicesFactory(context))\n\t.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)\n\t.startUp();\n`,
+		);
+		const apiPackage = '{ "name": "@apps/api", "dependencies": { "@axc/application-services": "workspace:*" } }\n';
+		const apiTsconfig = '{ "references": [{ "path": "../../packages/axc/application-services" }] }\n';
+		const persistencePackage = '{ "name": "@axc/persistence", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } }, "dependencies": { "@cellix/domain-seedwork": "workspace:*" } }\n';
+		const persistenceTsconfig = '{ "references": [{ "path": "../../cellix/domain-seedwork" }] }\n';
+		const applicationPackage = '{ "name": "@axc/application-services", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } } }\n';
+		const applicationTsconfig = '{ "references": [] }\n';
+		await writeStub(root, 'apps/api/package.json', apiPackage);
+		await writeStub(root, 'apps/api/tsconfig.json', apiTsconfig);
+
+		await generateFeature({ root, lint, context: 'course', entity: 'course', action: 'query', transport: 'rest' });
+
+		const models = await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/src/index.ts'), 'utf8');
+		const persistence = await readFile(path.join(root, 'packages/axc/persistence/src/index.ts'), 'utf8');
+		const dataSources = await readFile(path.join(root, 'packages/axc/persistence/src/datasources/index.ts'), 'utf8');
+		const domain = await readFile(path.join(root, 'packages/axc/domain/src/index.ts'), 'utf8');
+		const domainBarrel = await readFile(path.join(root, 'packages/axc/domain/src/domain/index.ts'), 'utf8');
+		const passport = await readFile(path.join(root, 'packages/axc/domain/src/domain/contexts/passport.ts'), 'utf8');
+		const application = await readFile(path.join(root, 'packages/axc/application-services/src/index.ts'), 'utf8');
+		const contextService = await readFile(path.join(root, 'packages/axc/application-services/src/contexts/course/index.ts'), 'utf8');
+		const rest = await readFile(path.join(root, 'packages/axc/rest/src/index.ts'), 'utf8');
+		const api = await readFile(path.join(root, 'apps/api/src/index.ts'), 'utf8');
+
+		expect(models).toContain('export const mongooseContextBuilder');
+		expect(models).toContain('export type { Course, CourseModelType }');
+		expect(models).toContain('Course: CourseModelFactory(initializedService)');
+		expect(persistence).toContain('export const Persistence');
+		expect(persistence).toContain('export type { UnitOfWork }');
+		expect(persistence).toContain('DataSourcesFactoryImpl(models)');
+		expect(dataSources).toContain('withSystemPassport');
+		expect(dataSources).toContain('Domain.PassportFactory.forSystem()');
+		expect(domain).toContain('export type DomainRepository');
+		expect(domain).toContain("export * as Domain from './domain/index.ts'");
+		expect(domain).toContain('export interface DomainDataSource');
+		expect(domain).toContain('CourseUnitOfWork: Contexts.Course.Course.CourseUnitOfWork');
+		expect(domainBarrel).toContain('PassportFactory');
+		expect(passport).toContain('forSystem()');
+		expect(contextService).toContain('export interface CourseContextApplicationService');
+		expect(contextService).toContain('Course: CourseApi(dataSources)');
+		expect(application).toContain('dataSourcesFactory.withSystemPassport()');
+		expect(application).toContain('Course: Course(dataSources)');
+		expect(application).not.toContain("from 'mongoose'");
+		expect(rest).toContain("app.get('/api/course'");
+		expect(rest).toContain('courseQuery(applicationServices');
+		expect(api).toContain('Persistence({ service: mongoose })');
+		expect(api).toContain("route: 'api/course'");
+		expect(await readFile(path.join(root, 'apps/api/package.json'), 'utf8')).toBe(apiPackage);
+		expect(await readFile(path.join(root, 'apps/api/tsconfig.json'), 'utf8')).toBe(apiTsconfig);
+		expect(await readFile(path.join(root, 'packages/axc/persistence/package.json'), 'utf8')).toBe(persistencePackage);
+		expect(await readFile(path.join(root, 'packages/axc/persistence/tsconfig.json'), 'utf8')).toBe(persistenceTsconfig);
+		expect(await readFile(path.join(root, 'packages/axc/application-services/package.json'), 'utf8')).toBe(applicationPackage);
+		expect(await readFile(path.join(root, 'packages/axc/application-services/tsconfig.json'), 'utf8')).toBe(applicationTsconfig);
+		await expect(access(path.join(root, 'packages/axc/data-sources-mongoose-models/package.json'))).rejects.toThrow();
+		await expect(access(path.join(root, 'packages/axc/data-sources-mongoose-models/tsconfig.json'))).rejects.toThrow();
+
+		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
+
+		await generateFeature({ root, lint, context: 'user', entity: 'staff-user', action: 'query', transport: 'rest' });
+		const modelsAfter = await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/src/index.ts'), 'utf8');
+		const domainAfter = await readFile(path.join(root, 'packages/axc/domain/src/index.ts'), 'utf8');
+		const passportAfter = await readFile(path.join(root, 'packages/axc/domain/src/domain/contexts/passport.ts'), 'utf8');
+		const applicationAfter = await readFile(path.join(root, 'packages/axc/application-services/src/index.ts'), 'utf8');
+		expect(modelsAfter).toContain('StaffUser: StaffUserModelFactory(initializedService)');
+		expect(modelsAfter).toContain('export type { StaffUser, StaffUserModelType }');
+		expect(domainAfter).toContain('StaffUserUnitOfWork: Contexts.User.StaffUser.StaffUserUnitOfWork');
+		expect(passportAfter).toContain('forStaffUser');
+		expect(applicationAfter).toContain('User: User(dataSources)');
+		expect(applicationAfter).toContain('Course: Course(dataSources)');
+		const readonlyAfter = await readFile(path.join(root, 'packages/axc/persistence/src/datasources/readonly/index.ts'), 'utf8');
+		expect(readonlyAfter).toContain("from './user/staff-user/staff-user.read-repository.ts'");
+		expect(readonlyAfter).not.toContain('undefined');
+		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
 	});
 });
+
+async function expectDomainTypechecks(root: string): Promise<void> {
+	const modules = path.join(root, 'node_modules');
+	await mkdir(path.join(root, 'packages/axc/domain'), { recursive: true });
+	await writeFile(path.join(root, 'packages/axc/domain/package.json'), '{ "name": "@axc/domain", "type": "module" }\n');
+	await mkdir(path.join(modules, '@cellix'), { recursive: true });
+	await symlink(path.join(repoRoot, 'packages/cellix/domain-seedwork'), path.join(modules, '@cellix/domain-seedwork'));
+	const valueObjects = path.join(modules, '@lucaspaganini/value-objects');
+	await mkdir(valueObjects, { recursive: true });
+	await writeFile(path.join(valueObjects, 'package.json'), `${JSON.stringify({ name: '@lucaspaganini/value-objects', type: 'module', exports: { '.': { types: './index.d.ts', default: './index.js' } } })}\n`);
+	await writeFile(
+		path.join(valueObjects, 'index.d.ts'),
+		'export interface ValueObject<T> { valueOf(): T }\nexport function VOString(options?: { trim?: boolean; minLength?: number; maxLength?: number }): new (value: string) => ValueObject<string>;\n',
+	);
+	await writeFile(
+		path.join(root, 'tsconfig.json'),
+		`${JSON.stringify(
+			{
+				compilerOptions: {
+					target: 'ES2022',
+					lib: ['ES2023'],
+					module: 'NodeNext',
+					moduleResolution: 'nodenext',
+					strict: true,
+					noUnusedLocals: true,
+					noUnusedParameters: true,
+					exactOptionalPropertyTypes: true,
+					noUncheckedIndexedAccess: true,
+					allowImportingTsExtensions: true,
+					rewriteRelativeImportExtensions: true,
+					verbatimModuleSyntax: true,
+					erasableSyntaxOnly: true,
+					noEmit: true,
+					skipLibCheck: true,
+					types: [],
+				},
+				include: ['packages/axc/domain/src/**/*.ts'],
+			},
+			null,
+			'\t',
+		)}\n`,
+	);
+	const tsgo = path.join(repoRoot, 'node_modules', '.bin', 'tsgo');
+	const result = spawnSync(tsgo, ['--noEmit', '--project', path.join(root, 'tsconfig.json')], { encoding: 'utf8' });
+	expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
+}
+
+async function writeStub(root: string, relative: string, contents: string): Promise<void> {
+	const file = path.join(root, relative);
+	await mkdir(path.dirname(file), { recursive: true });
+	await writeFile(file, contents);
+}

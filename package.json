@@ -15,7 +15,7 @@
 		"typecheck": "turbo run typecheck",
 		"build": "turbo run build",
 		"start": "pnpm --filter @apps/api start",
-		"lint": "biome check . && pnpm --filter @cellix/lint lint:cellix",
+		"lint": "biome check . --vcs-use-ignore-file=true && pnpm --filter @cellix/lint lint:cellix",
 		"format": "biome format --write",
 		"format:check": "biome format .",
 		"knip": "knip",
@@ -23,8 +23,6 @@
 		"audit": "pnpm audit --audit-level=high",
 		"snyk": "node scripts/snyk-verify.mjs",
 		"verify": "node scripts/check-script-policy.mjs && pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk && node .cursor/hooks/cellix-stamp-verify.mjs",
-		"clear-session": "node scripts/clear-session.mjs",
-		"session-review": "node .cursor/hooks/cellix-evidence.mjs",
 		"prepare": "husky"
 	},
 	"optionalDependencies": {

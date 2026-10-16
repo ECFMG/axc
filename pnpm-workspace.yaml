@@ -29,7 +29,7 @@ catalog:
   '@vitest/coverage-istanbul': 4.1.11
   archunit: ^2.1.63
   graphql: ^16.10.0
-  hono: 4.13.10
+  hono: 4.13.11
   mongodb: 6.18.0
   mongodb-memory-server: ^10.1.4
   mongodb-memory-server-core: 10.1.4
@@ -51,7 +51,8 @@ overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
-  hono: 4.13.10
+  hono: 4.13.11
+  qs: 6.16.1
   http-cache-semantics: 4.3.0
   postcss-selector-parser: 7.1.6
   serialize-javascript: 7.1.2
@@ -73,5 +74,6 @@ allowBuilds:
   mongodb-memory-server: false
 
 minimumReleaseAgeExclude:
-  - hono@4.13.10
+  - hono@4.13.11
+  - qs@6.16.1
   - shell-quote@1.11.0
