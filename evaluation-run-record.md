@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper |
+| Reviewer | Henry Casper (self-review) |
+| Harness | OpenAI Codex CLI v0.162.1 |
+| Model | GPT-6.1-Sol (medium reasoning) |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | A |
+| Run Type | Harness Engineering Iteration 13 |
+| Harness Engineering Used | Harness v13 = v10 `AGENTS.md` plus three general text rules; no code, config, hooks, skills or MCP servers (nothing task-specific). Iterations 11 and 12 (vendored convention test suites, then skills, LSP and hooks) are kept as a superseded experiment; v13 returns to a single-file harness built from v10, the last `AGENTS.md`-only version. Added: (1) **Test-first enforcement**: do not create implementation files in the same step as their tests; write tests (with at most the signatures they import), run them, confirm the failure comes from missing behaviour rather than setup, then implement. (2) **Knip baseline**: `pnpm run knip` added to the network-free checks, run before the first edit and again after the last change and before review, fixing anything new; the self-check item on unused exports now points to it. (3) **REST layout**: request parsing, handlers and their tests in `src/contexts/<context>/<aggregate>/` with the same `index.ts` chain; the package root exports only what other packages use. New self-check item: tests were run and seen to fail before their implementation existed. `AGENTS.md` 1,810 → 1,948 words. Same model, effort and permissions (workspace-write, on-request approvals, no network) as all prior runs. |
+| Config / Diff Notes | `hac-oai-13` = `hac-oai-10` + v13 `AGENTS.md` (`60bd453`, the only changed file). Environment unchanged (Node 24.21.0, pnpm 11.11.0, Codex CLI v0.162.1); no project `.codex` directory, hooks or MCP servers. Before the run, the leftover command allow rule in `~/.codex/rules/default.rules` was removed (file now empty, and still empty after the run), so every escalation required a manual approval. Remaining machine state outside the repo: a user-level skill (`microsoft-foundry`), not used. Setup: new Codex session; `/status` confirmed settings and `AGENTS.md` loaded; `/mcp` showed only built-in servers. `task-set-a-prompt.md` pasted verbatim as a single prompt. Session log (UTC): knip baseline at 16:11:59 before the first edit; at 16:12:34 domain types plus persistence, application-service and REST stubs that throw `not implemented`; tests written at 16:13:29 and run red at 16:13:38 and 16:14:01 (failures were the `not implemented` errors, not setup errors); implementation from 16:14:31. Knip after implementation flagged one unused exported type (`CourseQueryResult`), which was un-exported before review. The first `verify` failed on Biome formatting; fixed with `biome --write` and re-run. One review round (GPT-6.1-Sol medium, verified in the sub-agent log): "No blocking findings." Agent output: 48 files changed (+731/−8). Structure follows ocom: `Domain` namespace with `contexts/catalog/course/{course.ts,course.value-objects.ts}`; persistence read repository (`datasources/readonly/catalog/course/`) owning filtering, sorting and paging, `DataSourcesFactoryImpl` in `datasources/index.ts`; thin `queryCourses` application service; REST parser and handler under `rest/src/contexts/catalog/course/{parse-query,list}.ts`; factory wired once in `apps/api`. Minor nits: fixtures sit flat at `persistence/src/fixtures/courses.ts` rather than under `catalog/course/`; no domain unit tests (the domain package holds only types and constants). No planning or notes files. Lockfile diff +34 lines, only workspace links and existing catalog Vitest packages. Final summary included the requirement-to-coverage table. Committed with `--no-verify` because the pre-commit `verify` fails at Snyk (configured `agentcourses` org not accessible). |
+| Branch / Commit | `hac-oai-13-a-out` @ `89793af` |
+| Requirements Completed / Attempted | 12 / 12 |
+| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All suites pass / 0 failed (independently re-run by operator: frozen offline install, Biome, knip, typecheck, build, `test:arch`, `test`). Unit: `@axc/persistence` 22 (filters, keyword search, combinations, sorting, pagination edges, empty results, fixtures), `@axc/rest` 50 (parser accept/reject tables, 400 contract, handler), `@axc/application-services` 8 (including the existing healthcheck, adapted to the new factory dependency); 80 in total (iteration 12: 88; iteration 11: 100). Acceptance: 21 scenarios pass (two scenario outlines with 20 catalog examples, plus the healthcheck). Architecture: `test:arch` passes (the v10 base has no per-package convention suites). `pnpm install --frozen-lockfile` passes. |
+| Static Analysis / Security Findings | No new findings introduced. `pnpm audit`: passes the configured `--audit-level=high` threshold (3 moderate: uuid, smol-toml, postcss-selector-parser; braces high ignored by repository policy), unchanged. Snyk not run: repo-configured `agentcourses` org not accessible (HTTP 404). No third-party dependency changes, so the 4 open findings recorded for iterations 6–12 on base-lockfile packages are unchanged. |
+| Input Tokens | 3,441,251 total (main 3,213,767 + reviewer 227,484); 123,875 uncached |
+| Cached Tokens | 3,317,376 |
+| Output Tokens | 21,395 (incl. 4,633 reasoning) |
+| Total Tokens or Credits Used | 3,462,646 tokens (main 3,234,194; reviewer 228,452). Up 5% from iteration 12, but more of it cached. |
+| Estimated Cost | ~$0.79 (main ~$0.71 + reviewer ~$0.09) at GPT-6.1-Sol API list prices ($2.00 input / $0.10 cached / $10.00 output per 1M tokens); lowest of any harness iteration (iteration 10: $1.03; 11 and 12: $0.85) |
+| Elapsed Time | 8m 35s (2026-10-16 12:11–12:20 EDT), including one review round |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, no agent questions. 4 sandbox-escalation requests, all approved once manually (no saved allow rules): `pnpm run test:acceptance` (Azure Functions acceptance host), `pnpm run verify; pnpm run snyk`, a `verify` re-run after the formatting fix, and `pnpm audit --json` to list advisories. No networked install, no branch creation, no post-run cleanup. |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 97 / 100 (self-scored per SRD Appendix 1, judged against CellixJS `packages/ocom` conventions as in iterations 8–12). Functional Correctness 5/5 (20): all requirements and acceptance criteria met; consistent 400 error body. Test and Validation 5/5 (15): tests written and run red before implementation, 80 unit tests with logic tested where it lives, 20 catalog acceptance examples, frozen-lockfile install passes. Architecture 5/5 (15): ocom layering in every layer including REST `contexts/catalog/course/`; flat fixtures path is a minor nit. Security and Guardrails 5/5 (15): no new findings or third-party dependencies, strict input validation, vendored CellixJS unmodified, audit passes. Harness Engineering 5/5 (10): a single `AGENTS.md` with no extra tooling, and all three new rules (red-first, knip baseline, REST layout) are visibly followed in the session log, closing iteration 12's test-first gap. Context/Token/Cost 5/5 (10): ~$0.79, lowest of all harness iterations. Developer Workflow Fit 4/5 (8): 8m 35s, 0 interventions, one review round, no cleanup; 4 manual approvals, one of them a `verify` re-run caused by a formatting miss. Operational/Vendor Readiness 4/5 (4): ChatGPT Business with admin/SSO path, not production-approved. |
+| Recommendation | Continue |
