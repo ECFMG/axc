@@ -12,7 +12,7 @@ Complete this review after implementation and before the final verification comm
 
 ## Domain Modeling Classification
 
-1. Is each concept a read-only projection, command aggregate, child entity, or value object? What behavior supports that classification?
+1. Is each concept an aggregate root, child entity, value object, or derived projection based on its identity and lifecycle? What behavior supports that classification? Does any concept have only query endpoints today yet still own persisted identity and future lifecycle? For each such business object, identify its aggregate root, static `getNewInstance` factory and initial-state rules, props, entity reference, exports, applicable value objects, and focused tests. Is stored-object reconstruction distinct from new-instance creation? A persistence-only interface or a `DomainEntity` chosen solely because writes are absent is insufficient.
 2. Does any persisted concept support creation plus state transitions, audit or history, nested lifecycle, or transactional invariants? If so, where are its aggregate root, props, entity reference, constrained value objects, repository, unit of work, and focused tests?
 3. Do mutation repository and unit-of-work contracts reuse `@cellix/domain-seedwork` rather than a reduced project-local abstraction?
 4. Are nested records modeled according to identity and lifecycle? Are visa or passport rules, events, and versioning implemented when the selected Cellix behavior requires them, or explicitly omitted for a behavior-based reason?
@@ -72,6 +72,7 @@ Do not report completion until:
 - every persisted command workflow has the applicable Cellix aggregate, value-object, child-entity, repository, unit-of-work, persistence-adapter, export, and focused-test shape; any omission has a behavior-based rationale;
 - mutation repositories and units of work reuse the Cellix domain seedwork contracts, and domain transitions are not implemented as free functions over mutable records;
 - read-side repository contracts are in persistence, and context, composition, and filename conventions match the applicable Cellix slice;
+- every persisted read-side business object with independent identity and lifecycle has a matching domain aggregate and public reference, even when it has no commands; a derived projection classification has an explicit ownership and lifecycle rationale;
 - production transport does not depend on persistence contracts, and any direct domain dependency is justified by the reference;
 - required feature behavior and files have been implemented or their omission justified;
 - required tests and documentation are complete against the task evidence matrix;

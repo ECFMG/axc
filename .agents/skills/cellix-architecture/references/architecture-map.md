@@ -45,7 +45,7 @@ Expected shape:
 | Focused aggregate and value-object tests | `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.aggregate.test.ts`; `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1/service-ticket-v1.value-objects.test.ts` |
 | Search specifications | `packages/ocom/domain/src/domain/contexts/community/member/member.search-specs.ts` |
 
-Classify the concept before selecting a pattern. A genuinely read-only projection does not require an aggregate, value objects, mutation repository, or unit of work. A persisted command concept with creation plus transitions, audit or history, nested lifecycle, or transactional invariants uses the full applicable stateful-workflow pattern: an `AggregateRoot`, props and entity reference, constrained value objects, child entities where identity or lifecycle requires them, seedwork repository and unit-of-work contracts, and focused domain tests. A public record plus free mutation functions is not an aggregate substitute. A domain `*.repository.ts` contract is for mutation-side domain access; it is not the home for a `*ReadRepository` interface.
+Classify the concept by domain identity and lifecycle before selecting a pattern. A persisted business object with independent identity and lifecycle, such as Course, uses an `AggregateRoot` and `*.aggregate.ts` even when the current API only reads it. Include a static `getNewInstance` factory for valid initial state, `DomainEntityProps`, an entity reference, applicable value objects, context exports, and focused tests. Stored-object reconstruction stays separate from creation. Defer mutation repository and unit-of-work contracts only when the task contains no commands; record that deferral rather than labeling the object permanently read-only. A derived projection has no independent lifecycle and needs an explicit justification. A persisted command concept with creation plus transitions, audit or history, nested lifecycle, or transactional invariants uses the full applicable stateful-workflow pattern: constrained value objects, child entities where identity or lifecycle requires them, seedwork repository and unit-of-work contracts, and focused domain tests. A public record plus free mutation functions is not an aggregate substitute. A domain `*.repository.ts` contract is for mutation-side domain access; it is not the home for a `*ReadRepository` interface.
 
 ## Persistence and Read Models
 
@@ -75,7 +75,7 @@ Expected shape: the persistence adapter reconstructs and serializes the aggregat
 
 ## Cross-Layer Naming Check
 
-For the chosen context and entity, verify that the same names appear in the domain context, application-service context, persistence context, entity modules, and data-source bindings. Inspect the analogous Cellix files before choosing exact files and exports. Check for missing applicable behavior, tests, and public types as well as matching names.
+For every chosen context and named entity, including one currently exposed only through queries, verify that the same names appear in the domain context, application-service context, persistence context, entity modules, and data-source bindings. Inspect the analogous Cellix files before choosing exact files and exports. Check for missing applicable behavior, tests, and public types as well as matching names. A persistence-owned `Course` interface without a domain `Course` aggregate and `CourseEntityReference` is an incomplete slice.
 
 ## Transport
 
