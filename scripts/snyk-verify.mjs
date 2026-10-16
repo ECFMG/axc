@@ -12,6 +12,14 @@ if (version.status !== 0) {
 	process.exit(0);
 }
 
-console.log('Snyk: running snyk test --all-projects --org=agentcourses --policy-path=.snyk (local CLI, no monitor, no --remote-repo-url)');
-const test = spawnSync('snyk', ['test', '--all-projects', '--org=agentcourses', '--policy-path=.snyk'], { stdio: 'inherit' });
+// The organisation is a property of the authenticated Snyk account, not of this
+// repository, so it is never hard-coded. Set SNYK_ORG to target a specific org.
+const organisation = process.env.SNYK_ORG?.trim();
+const args = ['test', '--all-projects', '--policy-path=.snyk'];
+if (organisation !== undefined && organisation !== '') {
+	args.push(`--org=${organisation}`);
+}
+
+console.log(`Snyk: running snyk ${args.join(' ')} (local CLI, no monitor, no --remote-repo-url)`);
+const test = spawnSync('snyk', args, { stdio: 'inherit' });
 process.exit(test.status ?? 1);
