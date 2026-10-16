@@ -15,7 +15,8 @@ interface CommandSlice {
 
 describe('Cellix command-side domain modeling', () => {
 	it('requires command workflows to have the complete aggregate file shape', async () => {
-		const slices = await findCommandSlices(applicationContextsDir);
+		// Git omits empty directories, so a baseline without application contexts has no command slices.
+		const slices = (await exists(applicationContextsDir)) ? await findCommandSlices(applicationContextsDir) : [];
 		const violations: string[] = [];
 
 		for (const slice of slices) {
