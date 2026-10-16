@@ -1,3 +1,5 @@
+import type { DataSources } from '@axc/persistence';
+import { Training } from './contexts/index.ts';
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -52,4 +54,27 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 		});
 
 	return { forRequest };
+}
+
+export interface TrainingApplicationServices extends ApplicationServices, Training.TrainingApplicationService {}
+export interface TrainingApplicationServicesFactory {
+	forRequest(rawAuthHeader?: string): Promise<TrainingApplicationServices>;
+}
+export function buildTrainingApplicationServicesFactory(context: ApiContext, dataSources: DataSources): TrainingApplicationServicesFactory {
+	const healthFactory = buildApplicationServicesFactory(context);
+	return {
+		async forRequest(rawAuthHeader) {
+			const healthServices = await healthFactory.forRequest(rawAuthHeader);
+			return {
+				...healthServices,
+				courses: { search: Training.Course.search(dataSources) },
+				enrollmentRequests: {
+					create: Training.EnrollmentRequest.create(dataSources),
+					queryById: Training.EnrollmentRequest.queryById(dataSources),
+					list: Training.EnrollmentRequest.list(dataSources),
+					changeStatus: Training.EnrollmentRequest.changeStatus(dataSources),
+				},
+			};
+		},
+	};
 }

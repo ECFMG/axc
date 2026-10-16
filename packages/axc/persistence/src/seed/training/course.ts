@@ -1,0 +1,33 @@
+import type { Domain } from '@axc/domain';
+export const sampleCourses: Domain.Contexts.Training.Course.Course[] = [
+	{
+		id: 'course-001',
+		title: 'AI Security Foundations',
+		summary: 'Secure AI-assisted development.',
+		modality: 'online',
+		status: 'active',
+		tags: ['ai', 'security'],
+		createdAt: '2026-01-01T00:00:00.000Z',
+		updatedAt: '2026-01-15T00:00:00.000Z',
+	},
+	{
+		id: 'course-002',
+		title: 'Cloud Fundamentals',
+		summary: 'Infrastructure and security basics.',
+		modality: 'in-person',
+		status: 'active',
+		tags: ['cloud'],
+		createdAt: '2026-02-01T00:00:00.000Z',
+		updatedAt: '2026-02-15T00:00:00.000Z',
+	},
+	{ id: 'course-003', title: 'Responsible AI', summary: 'Practical governance.', modality: 'hybrid', status: 'active', tags: ['ai', 'governance'], createdAt: '2026-03-01T00:00:00.000Z', updatedAt: '2026-03-15T00:00:00.000Z' },
+	{ id: 'course-004', title: 'Draft TypeScript', summary: 'Typed applications.', modality: 'online', status: 'draft', tags: ['typescript'], createdAt: '2026-04-01T00:00:00.000Z', updatedAt: '2026-04-15T00:00:00.000Z' },
+	{ id: 'course-005', title: 'Retired JavaScript', summary: 'Historical material.', modality: 'in-person', status: 'retired', tags: ['javascript'], createdAt: '2026-05-01T00:00:00.000Z', updatedAt: '2026-05-15T00:00:00.000Z' },
+	{ id: 'course-006', title: 'Data Engineering', summary: 'Data pipelines.', modality: 'hybrid', status: 'active', tags: ['data'], createdAt: '2026-06-01T00:00:00.000Z', updatedAt: '2026-06-15T00:00:00.000Z' },
+	{ id: 'course-007', title: 'Security Operations', summary: 'Incident response.', modality: 'online', status: 'active', tags: ['operations'], createdAt: '2026-07-01T00:00:00.000Z', updatedAt: '2026-07-15T00:00:00.000Z' },
+	{ id: 'course-008', title: 'Web Accessibility', summary: 'Inclusive interfaces.', modality: 'in-person', status: 'draft', tags: ['web'], createdAt: '2026-08-01T00:00:00.000Z', updatedAt: '2026-08-15T00:00:00.000Z' },
+	{ id: 'course-009', title: 'Testing Practice', summary: 'Reliable applications.', modality: 'hybrid', status: 'retired', tags: ['testing'], createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-15T00:00:00.000Z' },
+	{ id: 'course-010', title: 'Design Systems', summary: 'Interface patterns.', modality: 'online', status: 'active', tags: ['design'], createdAt: '2026-10-01T00:00:00.000Z', updatedAt: '2026-10-15T00:00:00.000Z' },
+	{ id: 'course-011', title: 'Database Design', summary: 'Reliable storage.', modality: 'in-person', status: 'active', tags: ['data', 'security'], createdAt: '2026-11-01T00:00:00.000Z', updatedAt: '2026-11-15T00:00:00.000Z' },
+	{ id: 'course-012', title: 'Team Leadership', summary: 'Collaborative delivery.', modality: 'hybrid', status: 'active', tags: ['leadership'], createdAt: '2026-12-01T00:00:00.000Z', updatedAt: '2026-12-15T00:00:00.000Z' },
+];
