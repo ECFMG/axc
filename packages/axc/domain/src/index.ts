@@ -7,6 +7,11 @@ export type DomainRepository<T> = Repository<T>;
 export * as Domain from './domain/index.ts';
 
 export interface DomainDataSource {
+	Enrollment: {
+		EnrollmentRequest: {
+			EnrollmentRequestUnitOfWork: Contexts.Enrollment.EnrollmentRequest.EnrollmentRequestUnitOfWork;
+		};
+	};
 	Course: {
 		Course: {
 			CourseUnitOfWork: Contexts.Course.Course.CourseUnitOfWork;

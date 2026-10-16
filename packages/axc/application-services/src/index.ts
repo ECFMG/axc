@@ -1,5 +1,6 @@
 import type { DataSourcesFactory } from '@axc/persistence';
 import { Course, type CourseContextApplicationService } from './contexts/course/index.ts';
+import { Enrollment, type EnrollmentContextApplicationService } from './contexts/enrollment/index.ts';
 
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
@@ -25,6 +26,7 @@ export interface ApplicationServices {
 		getStatus(): HealthStatus;
 	};
 	Course: CourseContextApplicationService;
+	Enrollment: EnrollmentContextApplicationService;
 }
 
 export interface ApplicationServicesFactory {
@@ -58,6 +60,7 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 				},
 			},
 			Course: Course(dataSources),
+			Enrollment: Enrollment(dataSources),
 		};
 	};
 
