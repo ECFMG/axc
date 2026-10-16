@@ -8,6 +8,9 @@ description: Procedure for the independent requirements review of an uncommitted
 Self-review does not count. Spawn the project agent `requirements_reviewer` (defined in
 `.codex/agents/reviewer.toml`) with `fork_turns: "none"`.
 
+## When
+Once, after your self-check and the full local checks are green, before the final `pnpm run verify` and the commit. Not after every layer.
+
 ## What to pass
 Only two things: the path(s) of the task specification and the base commit hash. Do not include
 your reasoning, your requirement map, or a summary of what you changed — the reviewer must rebuild
@@ -21,7 +24,7 @@ own tests pass; the reviewer ran its own probes.
 ## Acting on findings
 - Fix blockers and majors that are within the task's scope. Ignore style preferences and anything that would expand scope; record each rejected finding with the reason.
 - After fixing, spawn a fresh reviewer with the same two inputs.
-- Stop when a review returns `verdict: ready`, or after 2 rounds.
+- Stop when a review returns `verdict: ready`, or after 2 rounds. Round 2 only when round 1 had a blocker or major; minors are fixed without a re-review.
 
 ## Reporting
 Paste the final reviewer table and verdict into your summary, followed by the findings of each
