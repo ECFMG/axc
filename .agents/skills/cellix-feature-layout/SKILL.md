@@ -33,6 +33,10 @@ When a path below is missing there, apply the rule as written.
 ## rest — `packages/axc/rest/src/contexts/<context>/<aggregate>/`
 - Request parsing, validation, status codes, response and error bodies, with tests beside the handlers. Services receive typed input; the package root exports only what `apps/api` uses.
 
+## docs — `apps/docs/docs/`
+- API documentation: `api/<feature>.md` (path, query/body parameters, defaults and limits, response shape, each error status with its body). Decisions: `adr/NNNN-<slug>.md` (MADR: context, decision, consequences).
+- Every new page is listed in `apps/docs/sidebars.ts`. Docusaurus derives the id by dropping the `NNNN-` prefix of each path segment, so `adr/0001-storage.md` is `adr/storage` (or the frontmatter `id`). `test:arch` fails on a sidebar id without a document or a document missing from the sidebar.
+
 ## Enforcement
 `pnpm run test:arch` runs the vendored CellixJS convention suites against each axc package plus
 this repo's layer and feature-file rules, all from `packages/axc-verification/archunit-tests`.

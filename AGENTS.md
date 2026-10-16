@@ -15,8 +15,8 @@ work before starting it.
 ## Hard rules
 - Read the task and every referenced spec in full before editing. Map each requirement to the file that implements it and the test that proves it; keep that map in context and report it in the final summary. Do not write plans or notes into the repository.
 - Change only what the task requires. Do not reformat, move or rename unrelated code; keep existing formatting on lines you do not change. Mention pre-existing gaps in the summary instead of fixing them.
-- Work on the current branch, uncommitted. Do not create or switch branches, commit or push.
-- Dependencies are fixed. Do not add, remove or upgrade packages; the lockfile is regenerated only by `pnpm install --offline` after a `package.json` change the task demands.
+- Work on the current branch. When every requirement is met and `pnpm run verify` passes, commit once with a conventional message (`feat(<area>): …`) and the pre-commit hook active. Never `--no-verify`, never push, never create or switch branches. Do not run `.codex/hooks/stop-gate.mjs` yourself; the Stop hook runs it.
+- Dependencies are fixed. Do not add, remove or upgrade packages. `pnpm-lock.yaml` changes only as the output of `pnpm install --offline` after a `package.json` change the task demands — that output is allowed even where a task lists the lockfile outside its write boundary; report its diff stat.
 - Each concept has one source of truth; import it from the layer that owns it. Dependencies a feature needs are required constructor or factory parameters wired in `apps/api`, never optional with a silent default.
 - HTTP parsing, status codes and error bodies live in `rest`; application services take typed input. Error responses never include stack traces, driver messages or internal identifiers.
 - Build Mongo filters field by field from validated criteria; never pass raw request values or unescaped text into filters or regexes. Filtering, sorting and paging run in MongoDB, not in memory.

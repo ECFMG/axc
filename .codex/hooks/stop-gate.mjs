@@ -35,6 +35,21 @@ function listChangedPaths(root) {
 		.map((line) => line.slice(3));
 }
 
+// Paths changed by commits the agent made in this run (HEAD ahead of the
+// branch's upstream). The gate must still run when the agent committed, so a
+// clean working tree alone does not skip it.
+function listCommittedPaths(root) {
+	const upstream = run('git', ['rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}'], root);
+	if (upstream.status !== 0) {
+		return [];
+	}
+	const result = run('git', ['diff', '--name-only', `${upstream.stdout.trim()}...HEAD`], root);
+	if (result.status !== 0) {
+		return [];
+	}
+	return result.stdout.split('\n').filter((line) => line.trim() !== '');
+}
+
 function touchesPackageManifest(changedPaths) {
 	return changedPaths.some((path) => path === 'package.json' || path.endsWith('/package.json'));
 }
@@ -106,7 +121,9 @@ function main() {
 		return;
 	}
 
-	const changedPaths = listChangedPaths(root);
+	const uncommittedPaths = listChangedPaths(root);
+	const committedPaths = listCommittedPaths(root);
+	const changedPaths = [...new Set([...uncommittedPaths, ...committedPaths])];
 	if (changedPaths.length === 0) {
 		respond({ continue: true });
 		return;
@@ -120,7 +137,15 @@ function main() {
 
 	const checks = touchesPackageManifest(changedPaths) ? [LOCKFILE_CHECK, ...GATE_CHECKS] : GATE_CHECKS;
 	const { results, failure } = runChecks(root, checks);
-	appendEvidence(evidencePath, { at: new Date().toISOString(), continuation: continuationCount, changedFiles: changedPaths.length, passed: failure === undefined, checks: results });
+	appendEvidence(evidencePath, {
+		at: new Date().toISOString(),
+		continuation: continuationCount,
+		changedFiles: changedPaths.length,
+		uncommittedFiles: uncommittedPaths.length,
+		committedFiles: committedPaths.length,
+		passed: failure === undefined,
+		checks: results,
+	});
 
 	if (failure === undefined) {
 		rmSync(statePath, { force: true });
