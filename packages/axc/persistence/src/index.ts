@@ -1,1 +1,2 @@
-export type { UnitOfWork } from '@cellix/domain-seedwork/unit-of-work';
+export type { DataSources, DataSourcesFactory } from './datasources/index.ts';
+export { DataSourcesFactoryImpl } from './datasources/index.ts';
