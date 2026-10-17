@@ -29,7 +29,9 @@ Complete this review after implementation and before the final verification comm
 6. Is one context name used across domain, application services, persistence, data-source namespaces, and public API types?
 7. Does application-service context composition alias entity APIs and declare explicit service interfaces, as in Cellix?
 8. Where are application-facing input, output, and error contracts defined? Does production transport avoid importing persistence contracts and unnecessary domain internals?
+   Does each public operation declare its input in an application-service file, without exposing persistence query, page, filter, or repository types? Is each public method implemented by its own curried operation file rather than inline in the entity `index.ts`?
 9. Where are request validation and HTTP error mapping implemented?
+   Do application failures contain only codes and details, with HTTP status numbers mapped in REST? Are the direct application error and transport status/code both tested?
 10. Are package root `index.ts` files limited to public contracts, exports, and composition?
 
 ## Dependency Direction

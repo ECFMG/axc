@@ -25,8 +25,10 @@ Expected shape:
 
 - Context and entity `index.ts` files expose named service interfaces and compose operations. When a context and entity can share a name, alias the imported API (`Community as CommunityApi`) and import its explicit service type (`CommunityApplicationService`).
 - Operation files receive `DataSources` before accepting their command or query.
+- Each public entity operation has its own file, with its input contract declared in application services. Entity `index.ts` imports and composes operations rather than implementing them inline. Public service method types do not come from persistence, apart from the injected `DataSources` type used internally.
 - Queries use `readonlyDataSource`.
 - Mutations use the domain data source and scoped transactions.
+- Application failures expose codes and details; REST owns the mapping to HTTP status numbers.
 - The chosen context name is the same in application APIs and persistence namespaces.
 
 ## Domain
