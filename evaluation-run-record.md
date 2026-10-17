@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper |
+| Reviewer | Henry Casper (self-review; operator re-ran `pnpm run verify`, `pnpm run test`, a forced `test:arch` and a direct `docusaurus build` after the run, and read the rollout logs for timing, approvals and token counts) |
+| Harness | OpenAI Codex CLI v0.163.0 |
+| Model | GPT-6.1-Sol (medium reasoning); reviewer sub-agent GPT-6.1-Sol (medium reasoning, 15-tool-call budget) |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Task Set | A |
+| Run Type | Harness Engineering Iteration 16 |
+| Harness Engineering Used | Harness v16 (`hac-oai-16` @ `6ddd87c`), identical to the v16-B run: (1) `apps/docs/turbo.json` and `archunit-tests/turbo.json` declare real build/test inputs (`docs/**`, `sidebars.ts`, `$TURBO_ROOT$/packages/axc/**`, acceptance features) so the docs build and `test:arch` cannot be served from a stale cache; stop-gate evidence records `turboCached/turboTotal` per check; (2) `docs-sidebar.test.ts` in `test:arch` fails on dangling sidebar ids or unlisted docs; (3) feature-file shape rule rejects an unparameterised `Then` reused by >5 scenarios in a package; (4) `requirements_reviewer` at medium effort, ≤15 tool calls, acceptance suite + one probe per endpoint, no re-run of the full gate, ≤400 words; one review round unless a blocker/major; (5) AGENTS.md: commit once on green with the hook active, never run `stop-gate.mjs` manually, `pnpm install --offline` lockfile output allowed inside the write boundary; stop gate also inspects committed-but-unpushed paths; (6) docs at `apps/docs/docs/api/<feature>.md`, ADR `adr/NNNN-<slug>.md` with the sidebar id rule in `cellix-feature-layout`; (7) `[sandbox_workspace_write] network_access = true` in `.codex/config.toml`; (8) `snyk-verify.mjs` reports the quota notice explicitly. Purpose: measure v16 on Task A against v15-A (90, ~$1.60, 7 approvals, 12m57s, 4.99M tokens). |
+| Config / Diff Notes | Node 24.21.0, pnpm 11.11.0, Codex CLI v0.163.0, approval policy on-request, workspace-write sandbox with network access enabled by the project config; `~/.codex/rules/default.rules` empty; hooks trusted (unchanged `.codex/hooks.json`); `$TMPDIR/codex-stop-gate` and acceptance `target/` cleared; port 7071 free; `pnpm run verify` green before the run. New Codex session at 20:06 EDT, `task-set-a-prompt.md` pasted verbatim; 73 tool calls, 38 `python3 - <<'PY'` heredoc writes, 0 `apply_patch`. Session log (UTC): specs, skills and seedwork read 00:06–00:08; domain `course.entity.ts`, persistence model/seed/read repository, application service, REST handler, `ServiceMongoose` and `apps/api` wiring 00:08–00:13; docs `apps/docs/docs/api/courses.md` and ADR `apps/docs/docs/adr/0001-catalog-storage.md` listed in the sidebar as `adr/catalog-storage` (correct id); `requirements_reviewer` spawned once at 00:14:25 (1m58s, 10 tool calls) and returned `ready` with no blocker or major — it did not start its own host this time, probed the live endpoint and ran the acceptance suite; agent ran `pnpm run verify` + Snyk and committed `6ac0909` with the pre-commit hook active (verify + Snyk re-ran, no `--no-verify`) at 00:17:33; final summary 00:19:29; Stop hook ran the gate on the committed result (8 checks passed, `committedFiles: 53`, `uncommittedFiles: 0`, 0 continuations, one evidence line). Lockfile +120/−23, `pnpm install --offline` output only, no version added/removed/bumped. Output: 53 files changed (+1,294/−33), no planning or notes files, harness files untouched, 0 PreToolUse denials. |
+| Branch / Commit | `hac-oai-16-a-out` @ `6ac0909` (agent's own commit) |
+| Requirements Completed / Attempted | 11 / 11 (A1–A11), per the agent's table, the reviewer's evidence table and the operator's re-run |
+| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All suites pass / 0 failed (operator `pnpm run verify` 18 + 18 + 31 Turbo tasks; `pnpm run test` 31/31 tasks). `@axc` package tests: application-services 8, persistence 46, rest 66, service-mongoose 8 (128 checks) over 62 vitest-cucumber scenarios, every `Then` parameterised — the most reused is `Then the response status is 400 for "page"` ×7 (the shape rule limits *unparameterised* steps to ≤5 reuses, so this passes; v15-A had generic steps reused across up to 83 scenarios). Archunit: 64 passed / 0 failed on a forced run; `@cellix/archunit-tests` 10 passed. Acceptance: 17 scenarios passed / 0 failed (`cucumber-report-api.json`: 16 in `courses.feature` + 1 healthcheck) in the agent's run, the reviewer's run and the operator's re-run. Docs: direct `docusaurus build` succeeds; `@apps/docs:build` executed, not cached, when the docs changed. `pnpm install --frozen-lockfile` passes. |
+| Static Analysis / Security Findings | No new findings. Biome, typecheck, build, knip clean. `pnpm audit` passes `--audit-level=high`; the moderate advisories (uuid, smol-toml) and the ignored braces advisory are unchanged from the base. Snyk ran in the agent's final verify, the pre-commit hook and the operator's re-run: 23 projects tested, no vulnerable paths, monthly-quota notice printed and reported as such by `snyk-verify.mjs`. Dependencies are catalog/workspace versions only. Query validation is typed field-by-field in `rest` (five field errors on a combined invalid request), regex input escaped in the read repository, pagination capped at 50 and executed in MongoDB; 500 bodies carry no internals. |
+| Input Tokens | 9,038,444 total (main 8,573,298 + reviewer 465,146); 358,124 uncached |
+| Cached Tokens | 8,680,320 (main 8,302,208 + reviewer 378,112) |
+| Output Tokens | 35,453 (main 32,727 incl. 9,832 reasoning; reviewer 2,726) |
+| Total Tokens or Credits Used | 9,073,897 tokens (main 8,606,025; reviewer 467,872), 1.8x v15-A (4.99M main). The reviewer ran once and is cheap (0.47M); the growth is in the main session — more context re-read per turn (cached input 8.3M across 73 calls) while uncached input (271k) and output (33k) stayed modest. Agent again reported usage as unavailable; figures from `node scripts/codex-session-usage.mjs` on `rollout-2026-10-16T20-05-38-01a1472d-*.jsonl` and `…T20-14-25-01a14735-*.jsonl` |
+| Estimated Cost | ~$1.94 (main ~$1.70 = $0.54 uncached input + $0.83 cached + $0.33 output; reviewer ~$0.24) at GPT-6.1-Sol API list prices ($2.00 / $0.10 / $10.00 per 1M); 1.2x v15-A (~$1.60). Cost is dominated by cached context, so the lever is turns/tool calls, not uncached input |
+| Elapsed Time | 13m 25s (2026-10-16 20:06–20:19 EDT), including one review round (1m58s) |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, 0 agent questions, **0 approval prompts** (v15-A: 7). Hook decisions: 0 PreToolUse denials, 0 PostToolUse Biome reports, Stop gate passed first time (0 continuations). No operator action after the run: the agent committed. |
+| Reviewer Notes | Clean run: every v15-A deduction and every v15/v16-B harness defect is absent — correct ADR sidebar id and a green docs build, cache-correct gates (stop-gate counts show the cache hits were post-commit re-runs of identical inputs), no generic reused steps, one evidence line, hook-enforced commit, 0 approvals, and the reviewer did not pre-start a host (v16-B's false blocker did not recur — one round, `ready`). Observations: (n) main-session tokens rose from 4.99M to 8.6M for the same scope — the harness now loads four skills, a longer AGENTS.md and a reviewer table into every turn, and the agent runs per-layer vitest plus the full `pnpm run test` plus `verify`; cost up ~$0.34; (o) all 53 files still written through Python heredocs (38) rather than `apply_patch`; (p) reviewer rows 'Existing tests partially met' and 'Validation untestable' were written before the final verify and never updated, so the table is slightly stale relative to the commit; (q) 62 unit scenarios for an 11-requirement read endpoint is proportionate (v15-A: 83+ with shared steps); (r) local MongoDB binary download on first use is an environment limitation, not a code one. |
+| Final Rubric Score | **92 / 100** (self-score per SRD Appendix 1 against `packages/ocom`, same strictness as v15-A 90 / v16-B 88). Functional Correctness 5/5 (20): all A1–A11 and A-AC1–A-AC12 met from MongoDB, confirmed by live probes, the reviewer and the operator's re-run; documentation builds. Test and Validation 4/5 (12): parameterised scenarios across every layer, boundary and escaping tests, 17 acceptance scenarios; deduction for tests still generated in the same heredoc batch as their implementation and grouped default-response assertions. Architecture 5/5 (15): ocom read-side structure end to end, 64/64 convention checks on a forced run. Security and Guardrails 5/5 (15): typed validation, escaped regex, capped pagination, no new advisories, Snyk green, lockfile generated not edited, hook-enforced commit. Harness Engineering 5/5 (10): every v16 mechanism behaved as designed — 0 approvals, 0 denials, single review round, cache-correct evidence, commit-on-green. Context/Token/Cost 3/5 (6): ~$1.94 and 9.1M tokens, above v15-A despite the cheaper reviewer. Developer Workflow Fit 5/5 (10): 0 interventions, 0 approvals, 13 minutes, committed result, reviewer table and evidence path in the summary. Operational/Vendor Readiness 4/5 (4): unchanged. |
+| Recommendation | Continue (iteration 17 targets cost only — functional/harness levels are at ceiling on both tasks: prefer `apply_patch` over heredocs, run the full `pnpm run test` once instead of per layer before `verify`, trim per-turn context (shorter skills, no echoing full test output), and make the reviewer refresh its table after the final verify and cite stop-gate evidence instead of 'untestable'; keep the v16 reviewer budget since one round sufficed here) |
