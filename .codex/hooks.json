@@ -1,0 +1,17 @@
+{
+	"description": "agentCourses harness: the agent can only finish when pnpm run verify passes.",
+	"hooks": {
+		"Stop": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/verify-gate.mjs\"",
+						"statusMessage": "Running pnpm run verify (full gate)",
+						"timeout": 1200
+					}
+				]
+			}
+		]
+	}
+}
