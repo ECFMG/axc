@@ -1,0 +1,63 @@
+import type { Domain } from '@axc/domain';
+
+type Course = Domain.Contexts.Catalog.Course.Course;
+
+export const courses: readonly Course[] = [
+	{
+		id: 'course-001',
+		title: 'AI Security Foundations',
+		summary: 'Introductory course on secure AI-assisted development.',
+		modality: 'online',
+		status: 'active',
+		tags: ['ai', 'security'],
+		createdAt: '2026-01-01T00:00:00.000Z',
+		updatedAt: '2026-06-12T00:00:00.000Z',
+	},
+	{
+		id: 'course-002',
+		title: 'Cloud Essentials',
+		summary: 'Learn SECURITY controls for cloud workloads.',
+		modality: 'online',
+		status: 'active',
+		tags: ['cloud'],
+		createdAt: '2026-01-02T00:00:00.000Z',
+		updatedAt: '2026-06-11T00:00:00.000Z',
+	},
+	{
+		id: 'course-003',
+		title: 'Defensive Engineering',
+		summary: 'Build reliable applications.',
+		modality: 'hybrid',
+		status: 'draft',
+		tags: ['Security', 'engineering'],
+		createdAt: '2026-01-03T00:00:00.000Z',
+		updatedAt: '2026-06-10T00:00:00.000Z',
+	},
+	{ id: 'course-004', title: 'Assistant Design', summary: 'Build useful agents.', modality: 'online', status: 'draft', tags: ['ai'], createdAt: '2026-01-04T00:00:00.000Z', updatedAt: '2026-06-09T00:00:00.000Z' },
+	{ id: 'course-005', title: 'Database Design', summary: 'Relational modeling fundamentals.', modality: 'in-person', status: 'active', tags: ['data'], createdAt: '2026-01-05T00:00:00.000Z', updatedAt: '2026-06-08T00:00:00.000Z' },
+	{ id: 'course-006', title: 'Effective Testing', summary: 'Practical test techniques.', modality: 'hybrid', status: 'active', tags: ['testing'], createdAt: '2026-01-06T00:00:00.000Z', updatedAt: '2026-06-07T00:00:00.000Z' },
+	{ id: 'course-007', title: 'Frontend Foundations', summary: 'Accessible user interfaces.', modality: 'online', status: 'active', tags: ['web'], createdAt: '2026-01-07T00:00:00.000Z', updatedAt: '2026-06-06T00:00:00.000Z' },
+	{
+		id: 'course-008',
+		title: 'Legacy Operations',
+		summary: 'Maintain older infrastructure.',
+		modality: 'in-person',
+		status: 'retired',
+		tags: ['operations'],
+		createdAt: '2026-01-08T00:00:00.000Z',
+		updatedAt: '2026-06-05T00:00:00.000Z',
+	},
+	{ id: 'course-009', title: 'Modern Leadership', summary: 'Lead technical teams.', modality: 'hybrid', status: 'active', tags: ['leadership'], createdAt: '2026-01-09T00:00:00.000Z', updatedAt: '2026-06-04T00:00:00.000Z' },
+	{ id: 'course-010', title: 'Network Basics', summary: 'Understand network protocols.', modality: 'in-person', status: 'draft', tags: ['networking'], createdAt: '2026-01-10T00:00:00.000Z', updatedAt: '2026-06-03T00:00:00.000Z' },
+	{
+		id: 'course-011',
+		title: 'Python Introduction',
+		summary: 'Learn programming fundamentals.',
+		modality: 'online',
+		status: 'retired',
+		tags: ['python'],
+		createdAt: '2026-01-11T00:00:00.000Z',
+		updatedAt: '2026-06-02T00:00:00.000Z',
+	},
+	{ id: 'course-012', title: 'Responsible AI', summary: 'Evaluate models responsibly.', modality: 'hybrid', status: 'active', tags: ['ai', 'ethics'], createdAt: '2026-01-12T00:00:00.000Z', updatedAt: '2026-06-01T00:00:00.000Z' },
+];
