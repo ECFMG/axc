@@ -20,16 +20,20 @@
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
+		"test": "vitest run --silent --reporter=dot",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
+		"@cellix/api-services-spec": "workspace:*",
 		"@cellix/mongoose-seedwork": "workspace:*",
 		"mongodb-memory-server-core": "catalog:",
 		"mongoose": "catalog:"
 	},
 	"devDependencies": {
+		"@amiceli/vitest-cucumber": "^6.3.0",
 		"@cellix/config-typescript": "workspace:*",
 		"rimraf": "catalog:",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

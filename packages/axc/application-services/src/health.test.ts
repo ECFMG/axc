@@ -10,7 +10,10 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({
+			environment: 'test',
+			dataSources: { readonlyDataSource: { Catalog: { Course: { search: () => Promise.reject(new Error('Health does not query courses')) } } } },
+		}).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
