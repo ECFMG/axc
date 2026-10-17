@@ -9,6 +9,7 @@ Complete this review after implementation and before the final verification comm
 3. Which applicable Cellix capability or package was reused?
 4. What are the applicable reference and planned destination trees, including parent and sibling composition files?
 5. Which reference files, suffixes, exports, tests, and behavior apply? Which were intentionally omitted, and why?
+6. For a command aggregate, where are the equivalents of the service-ticket props adapter, converter, repository `getNewInstance` and rehydration, unit-of-work converter/repository wiring, and entity persistence composition? Is `*.domain-adapter.ts` more than a storage collection?
 
 ## Domain Modeling Classification
 
@@ -49,6 +50,7 @@ Complete this review after implementation and before the final verification comm
 6. For each specified failure, do tests assert both the status or result and the error code, as well as any required absence of state change or side effect?
 7. Do tests verify material response, state-transition, and audit fields directly rather than only counts or broad status checks?
 8. If an adapter differs from the Cellix reference technology, which observable semantics must match, and where are the relevant commit, rollback, isolation, serialization, or copying behaviors tested?
+   Where do focused adapter/converter tests prove stored-record ↔ aggregate round trips, including nested audit or history data? Where do repository tests prove creation through the repository factory, retrieval, and save through conversion, and where does a composition test prove the initialized unit of work?
 9. For high-risk rules, would targeted mutation testing or fault injection materially strengthen the evidence, and if so, was it performed or explicitly justified as unnecessary?
 10. When contract documentation is required, does it cover every affected operation's input, success output, status or result, and specified errors?
 
