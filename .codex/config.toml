@@ -1,0 +1,4 @@
+# Run settings for this harness, kept in the repo so every machine runs the same model and effort.
+# Codex loads this file only when the folder is trusted (see .codex/README.md).
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"

@@ -4,7 +4,7 @@ Read this before exploring. It replaces the usual orientation reads; open only t
 
 ## Done means
 
-- `pnpm run verify` passes. You do not run it yourself: when you finish, a Stop hook runs the full gate (Biome, typecheck, build, Knip, e18e, architecture, unit and Serenity acceptance tests, audit, Snyk) outside the sandbox and sends back only what failed. Fix the cause and finish again.
+- The CI steps pass: `pnpm install --frozen-lockfile`, then `pnpm run verify`. You do not run them yourself: when you finish, a Stop hook runs both outside the sandbox (Biome, typecheck, build, Knip, e18e, architecture, unit and Serenity acceptance tests, audit, Snyk) and sends back only what failed. Fix the cause and finish again.
 - Every requirement and acceptance criterion in the task is proven by a test.
 - While working, use the fast checks below. They run inside the sandbox.
 
@@ -12,10 +12,12 @@ Read this before exploring. It replaces the usual orientation reads; open only t
 
 - Write only inside the task's write boundary. Never edit `packages/cellix/**` (vendored), root config (`package.json`, `turbo.json`, `biome.json`, `knip.json`, `pnpm-workspace.yaml`), any `turbo.json` or tsconfig base, `.codex/`, `AGENTS.md`, CI, or `.env*`.
 - Fix findings in code. Never weaken a check, test config, or ignore list.
-- A dependency between workspace packages (`workspace:*`) or a dev dependency already in the catalog (`catalog:`) is fine: add it to that package's `package.json`, run `pnpm install --offline`, and name it in your summary. No new third-party packages.
+- A dependency between workspace packages (`workspace:*`) or a dev dependency already in the catalog (`catalog:`) is fine: add it to that package's `package.json` and name it in your summary. A hook then runs `pnpm install` outside the sandbox and updates `pnpm-lock.yaml` for you. Never run `pnpm install` yourself, and never edit or revert `pnpm-lock.yaml`. No new third-party packages.
 - Do not create branches, commit, or push.
 
 ## Repo map
+
+Before adding or changing a feature, read the `cellix-slice` skill (`.agents/skills/cellix-slice/SKILL.md`): folder layout per layer, how `apps/api` injects data access, validation rules and where each test goes.
 
 - `apps/api/src/index.ts`: composition root. One `.registerAzureFunctionHttpHandler(name, { route, methods, authLevel: 'anonymous' }, restHandlerCreator)` per route. `host.json` sets `routePrefix` to `""`, so `route` is the full path (for example `api/things`).
 - `packages/axc/rest`: Hono app (`createRestApp`). HTTP parsing, validation, status codes, error bodies.
@@ -27,7 +29,7 @@ Read this before exploring. It replaces the usual orientation reads; open only t
 - Unit tests sit next to the code as `src/*.test.ts`. `application-services` has the Vitest setup to copy: `vitest.config.ts`, `tsconfig.vitest.json`, the `test` script and its devDependencies.
 - `packages/axc-verification/acceptance-api`: Serenity/Cucumber over HTTP against the real `apps/api` host. Add `src/features/<capability>.feature` and `src/step-definitions/<capability>.steps.ts`, following `healthcheck.*`; the existing globs pick them up. Never call Hono or application services directly here.
 - `apps/docs/docs/*.md` with `apps/docs/sidebars.ts`: API docs. Sidebar ids must match file names.
-- Reference architecture: `/Volumes/files/src/cellixjs`. Read only what a specific decision needs.
+- Reference architecture: CellixJS at `/Volumes/files/src/cellixjs` (or https://github.com/CellixJs/cellixjs if that path doesn't exist). Read only what the skill doesn't cover.
 
 ## Fast checks (inside the sandbox)
 

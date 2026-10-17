@@ -1,13 +1,25 @@
 {
-	"description": "agentCourses harness: the agent can only finish when pnpm run verify passes.",
+	"description": "agentCourses harness: keep dependencies installed outside the sandbox, and only let the agent finish when the CI steps pass.",
 	"hooks": {
+		"PostToolUse": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/verify-gate.mjs\" sync",
+						"statusMessage": "Checking package.json changes",
+						"timeout": 300
+					}
+				]
+			}
+		],
 		"Stop": [
 			{
 				"hooks": [
 					{
 						"type": "command",
-						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/verify-gate.mjs\"",
-						"statusMessage": "Running pnpm run verify (full gate)",
+						"command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/verify-gate.mjs\" stop",
+						"statusMessage": "Running the CI steps (frozen install + pnpm run verify)",
 						"timeout": 1200
 					}
 				]
