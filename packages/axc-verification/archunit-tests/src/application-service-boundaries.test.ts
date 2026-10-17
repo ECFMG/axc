@@ -8,7 +8,10 @@ const packageDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '.
 const contextsRoot = path.resolve(packageDir, '../../axc/application-services/src/contexts');
 
 async function sourceFiles(directory: string): Promise<string[]> {
-	const entries = await readdir(directory, { withFileTypes: true });
+	const entries = await readdir(directory, { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
+		if (directory === contextsRoot && error.code === 'ENOENT') return [];
+		throw error;
+	});
 	const nested = await Promise.all(entries.filter((entry) => entry.isDirectory()).map((entry) => sourceFiles(path.join(directory, entry.name))));
 	return [...entries.filter((entry) => entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')).map((entry) => path.join(directory, entry.name)), ...nested.flat()];
 }
