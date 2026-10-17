@@ -22,7 +22,8 @@
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
 		"@axc/rest": "workspace:*",
-		"@cellix/api-core": "workspace:*"
+		"@cellix/api-core": "workspace:*",
+		"@axc/persistence": "workspace:*"
 	},
 	"devDependencies": {
 		"@cellix/config-rolldown": "workspace:*",

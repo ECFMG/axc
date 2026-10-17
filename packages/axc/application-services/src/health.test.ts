@@ -10,7 +10,10 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({
+			environment: 'test',
+			dataSourcesFactory: { withSystemPassport: () => ({ readonlyDataSource: { Catalog: { Course: { CourseReadRepo: { search: async () => ({ items: [], page: 1, pageSize: 10, totalItems: 0, totalPages: 0 }) } } } } }) },
+		}).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
