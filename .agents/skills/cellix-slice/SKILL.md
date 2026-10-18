@@ -98,4 +98,5 @@ Rules:
 ## Docs
 
 - One page per resource in `apps/docs/docs/`: path, parameters or body, success response, every error case with status and code. Add its id to `apps/docs/sidebars.ts`; ids must match file names.
-- When you make an architectural choice the task doesn't dictate (for example an in-memory store instead of MongoDB), add a short decision record in `apps/docs/docs/decisions/NNNN-<title>.md` and list it in the sidebar.
+- When you make an architectural choice the task doesn't dictate (for example an in-memory store instead of MongoDB), add a decision record `apps/docs/docs/decisions/NNNN-<title>.md` in the CellixJS MADR short format: front matter `id: NNNN-<title>`, `status: accepted` and `date`, then the sections Context and Problem Statement, Considered Options, Decision Outcome, Consequences. Docusaurus drops a leading `NNNN-` from doc ids unless `id` is set, so always set it and list the page in the sidebar as `decisions/NNNN-<title>`.
+- Keep one traceability page, `apps/docs/docs/traceability.md` (front matter `id: traceability`, listed in the sidebar): a table per task mapping each requirement and acceptance criterion id to the test file and test or scenario name that proves it. Add a section to it instead of creating a second page.

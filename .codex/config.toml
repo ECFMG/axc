@@ -2,3 +2,14 @@
 # Codex loads this file only when the folder is trusted (see .codex/README.md).
 model = "gpt-6.1-sol"
 model_reasoning_effort = "medium"
+
+# The turborepo and portless skills come from main and are not needed for feature work.
+# Disabling them keeps their descriptions out of every request and stops the agent from reading
+# the 952-line turborepo skill, which earlier runs did. Their files stay untouched.
+[[skills.config]]
+path = "../.agents/skills/turborepo/SKILL.md"
+enabled = false
+
+[[skills.config]]
+path = "../.agents/skills/portless/SKILL.md"
+enabled = false

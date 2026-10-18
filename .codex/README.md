@@ -6,7 +6,7 @@ What is in here and how to rerun it on another machine.
 | --- | --- |
 | `../AGENTS.md` | Rules the agent reads on every request: definition of done, scope, repo map, token discipline |
 | `../.agents/skills/cellix-slice/SKILL.md` | CellixJS layout and patterns, loaded only when the agent works on a feature |
-| `config.toml` | Model and reasoning effort (`gpt-6.1-sol`, medium), so every machine runs the same settings |
+| `config.toml` | Model and reasoning effort (`gpt-6.1-sol`, medium), so every machine runs the same settings; turns off the bundled turborepo and portless skills, which feature work doesn't need |
 | `hooks.json` | Registers the two hooks below |
 | `hooks/verify-gate.mjs` | `sync` (after each tool call): if a `package.json` changed, runs `pnpm install` outside the sandbox. `stop` (when the agent finishes): checks the write boundary, then runs what CI runs (`pnpm install --frozen-lockfile`, `pnpm run verify`) and sends back only the failing lines, at most 3 times |
 
