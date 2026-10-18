@@ -27,6 +27,7 @@ Before adding or changing a feature, read the `cellix-slice` skill (`.agents/ski
 - `packages/axc/service-mongoose`: Mongoose infrastructure only.
 - Each `packages/axc/*` package exposes its API through `src/index.ts` (the Knip entry). Unused exports fail Knip.
 - Unit tests sit next to the code as `src/*.test.ts`. `application-services` has the Vitest setup to copy: `vitest.config.ts`, `tsconfig.vitest.json`, the `test` script and its devDependencies.
+- Never add tests to `packages/axc-verification/archunit-tests`; it holds architecture rules only. Documentation is proven by the docs build inside verify, so don't write tests that read docs files.
 - `packages/axc-verification/acceptance-api`: Serenity/Cucumber over HTTP against the real `apps/api` host. Add `src/features/<capability>.feature` and `src/step-definitions/<capability>.steps.ts`, following `healthcheck.*`; the existing globs pick them up. Never call Hono or application services directly here.
 - `apps/docs/docs/*.md` with `apps/docs/sidebars.ts`: API docs. Sidebar ids must match file names.
 - Reference architecture: CellixJS at `/Volumes/files/src/cellixjs` (or https://github.com/CellixJs/cellixjs if that path doesn't exist). Read only what the skill doesn't cover.
@@ -36,11 +37,11 @@ Before adding or changing a feature, read the `cellix-slice` skill (`.agents/ski
 | Need | Command |
 | --- | --- |
 | Format and lint changed files | `pnpm exec biome check --write <paths>` |
-| Typecheck one package and its dependencies | `pnpm exec turbo run typecheck --filter=<package>` |
-| Unit tests for one package | `pnpm exec turbo run test --filter=<package>` |
+| Typecheck one package and its dependencies | `pnpm exec turbo run typecheck --filter=<package> --output-logs=errors-only` |
+| Unit tests for one package | `pnpm exec turbo run test --filter=<package> --output-logs=errors-only` |
 | Unused files and exports | `pnpm run knip` |
 
-Acceptance tests need the Functions host, so only the Stop hook runs them.
+Architecture and acceptance tests run only in the Stop hook (acceptance needs the Functions host). Do not run `test:arch`, `test:acceptance` or `pnpm run verify` yourself.
 
 ## Token discipline
 

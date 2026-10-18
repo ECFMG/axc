@@ -43,7 +43,7 @@ function shell(command, cwd) {
 }
 
 // The command chain stops at the first failing step, so the excerpt starts at the last `$ <command>` line.
-// Short steps (Knip, audit, Snyk, install) are sent whole; long Turbo output is reduced to error lines plus the line after each.
+// Short steps (Knip, audit, Snyk, install) are sent whole; long Turbo output is reduced to error lines plus the two lines after each.
 function excerpt(log) {
 	const all = log.split('\n').filter((line) => line.trim() !== '' && !NOISE.some((pattern) => pattern.test(line)));
 	const lastStep = all.findLastIndex((line) => line.startsWith('$ '));
@@ -56,6 +56,7 @@ function excerpt(log) {
 		if (SIGNAL.test(line)) {
 			keep.add(index);
 			keep.add(index + 1);
+			keep.add(index + 2);
 		}
 	});
 	const picked = [...keep]
