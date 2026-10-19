@@ -1,0 +1,72 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"env": {
+		"FORCE_COLOR": "0",
+		"NO_COLOR": "1",
+		"TURBO_TELEMETRY_DISABLED": "1",
+		"TURBO_NO_UPDATE_NOTIFIER": "1"
+	},
+	"enabledMcpjsonServers": ["e18e", "bothy-board"],
+	"permissions": {
+		"allow": [
+			"Bash(pnpm run:*)",
+			"Bash(pnpm --filter:*)",
+			"Bash(pnpm -F:*)",
+			"Bash(pnpm exec biome:*)",
+			"Bash(pnpm exec tsgo:*)",
+			"Bash(pnpm exec turbo:*)",
+			"Bash(pnpm exec vitest:*)",
+			"Bash(pnpm exec cucumber-js:*)",
+			"Bash(pnpm exec knip:*)",
+			"Bash(pnpm install --frozen-lockfile:*)",
+			"Bash(pnpm install --offline:*)",
+			"Bash(pnpm why:*)",
+			"Bash(pnpm list:*)",
+			"Bash(node scripts/verify.mjs:*)",
+			"Bash(git status:*)",
+			"Bash(git diff:*)",
+			"Bash(git log:*)",
+			"Bash(git show:*)",
+			"Bash(git add:*)",
+			"Bash(git commit:*)",
+			"Bash(git restore:*)",
+			"Bash(git stash:*)",
+			"Bash(git branch --show-current)",
+			"Bash(git rev-parse:*)",
+			"Bash(git ls-files:*)",
+			"Bash(mkdir -p apps/:*)",
+			"Bash(mkdir -p packages/:*)",
+			"mcp__e18e"
+		],
+		"deny": ["Bash(git push --force:*)", "Bash(git push -f:*)", "Bash(git reset --hard:*)", "Bash(git clean:*)"]
+	},
+	"hooks": {
+		"SessionStart": [
+			{
+				"matcher": "startup",
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.mjs\"", "timeout": 60 }]
+			}
+		],
+		"PreToolUse": [
+			{
+				"matcher": "Edit|Write|MultiEdit|NotebookEdit",
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-edit.mjs\"", "timeout": 15 }]
+			},
+			{
+				"matcher": "Bash",
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-bash.mjs\"", "timeout": 15 }]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write|MultiEdit",
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-biome.mjs\"", "timeout": 30 }]
+			}
+		],
+		"Stop": [
+			{
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-verify.mjs\"", "timeout": 1800 }]
+			}
+		]
+	}
+}
