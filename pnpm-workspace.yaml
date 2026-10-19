@@ -29,7 +29,7 @@ catalog:
   '@vitest/coverage-istanbul': 4.1.11
   archunit: ^2.1.63
   graphql: ^16.10.0
-  hono: 4.13.10
+  hono: 4.13.11
   mongodb: 6.18.0
   mongodb-memory-server: ^10.1.4
   mongodb-memory-server-core: 10.1.4
@@ -43,19 +43,25 @@ catalog:
   vitest: 4.1.11
 
 auditConfig:
-  ignoreGhsas: []
+  ignoreGhsas:
+    # braces: no patched release yet (<=3.0.3); mirrors SNYK-JS-BRACES-19963945 in .snyk
+    - GHSA-vfj7-8cjw-p6xm
 
 overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
-  hono: 4.13.10
+  hono: 4.13.11
   serialize-javascript: 7.1.2
   'shell-quote': 1.11.0
   sirv: 3.0.2
   vitest: 4.1.11
   '@vitest/browser-playwright': 4.1.11
   '@vitest/mocker': 4.1.11
+  http-cache-semantics: 4.3.0
+  qs: 6.16.1
+  source-map-js: 1.2.2
+  tinypool: 2.2.0
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
@@ -67,5 +73,5 @@ allowBuilds:
   mongodb-memory-server: false
 
 minimumReleaseAgeExclude:
-  - hono@4.13.10
+  - hono@4.13.11
   - shell-quote@1.11.0

@@ -37,4 +37,14 @@ ignore:
         reason: uuid 11+ is ESM-only and breaks the Azure Functions bundle
         expires: 2026-10-28T22:44:29.364Z
         created: 2026-09-28T22:44:29.367Z
+  SNYK-JS-URIJS-20341609:
+    - '*':
+        reason: No upgrade or patch available (uri-js 4.4.1 is latest; docs build-time only via ajv@6)
+        expires: 2026-11-19T00:00:00.000Z
+        created: 2026-10-19T00:00:00.000Z
+  SNYK-JS-POSTCSSSELECTORPARSER-20510276:
+    - '*':
+        reason: Fix only in 7.x; cssnano 6 (via Docusaurus) requires 6.x. Docs build-time only
+        expires: 2026-11-19T00:00:00.000Z
+        created: 2026-10-19T00:00:00.000Z
 patch: {}
