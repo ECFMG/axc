@@ -9,8 +9,9 @@ alwaysApply: true
 - Use at most one follow-up read batch to resolve a specific unknown. A failed check permits the reads needed to fix it.
 - Do not reopen a file or successful command, summarize intermediate work, or start a second exploration, review pass, or subagent.
 - Write each new file once. Make a follow-up edit only to resolve a specific unknown or failed check.
-- Format changed files once with `pnpm exec biome check --write --no-errors-on-unmatched <paths>`.
-- Run one affected-package check through `node scripts/agent-check.mjs -- <command>`. That command includes the affected package test and `pnpm run knip`.
+- Run one affected-package check through `node scripts/agent-check.mjs -- <command>`. In that command, format changed paths first, then typecheck and test affected packages, then run `pnpm run knip`.
+- When typecheck and lint diagnostics conflict on the same lines, fix both in one edit before rerunning that check.
+- After two failed edits to the same block, read the full diagnostic list once and rewrite that block once.
 - Run `pnpm run verify` once through the same wrapper. The wrapper rejects another full verify after a pass and allows one rerun only after a failed verify.
 - Do not run acceptance or the full suite as a separate command. They run inside `pnpm run verify`.
 - On failure, fix the reported cause, rerun only the failed package through the wrapper, then run one more wrapped verify.
@@ -20,4 +21,4 @@ alwaysApply: true
 
 - Trust the wrapper's `PASS` result. Do not inspect its successful log.
 - On failure, use its first error block. Read more of the temporary log only when that block cannot identify the cause.
-- Final reply: changes, commands, pass or fail, limitations, dependency justification, and security findings. Do not narrate the work.
+- Final reply: changed files and endpoints, one line per command, pass or fail, limitations, dependency justification, and security findings. Do not restate behavior from the requirements or narrate the work. Use at most 12 lines, excluding file paths.

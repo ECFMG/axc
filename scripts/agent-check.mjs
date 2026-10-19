@@ -88,22 +88,36 @@ function findFailedCheck(lines) {
 }
 
 function findErrorBlock(lines) {
-	const specificPatterns = [
-		/^\s*[×✗]\s*/,
+	const linePatterns = [/^\s*×\s*/, /\bFound \d+ errors?\b/i, /\bUnused exports?(?:ed)?\b/i, /\blint\/\S+/, /\berror TS\d+:/i];
+	const diagnostics = [
+		...new Set(
+			lines
+				.map(stripTaskPrefix)
+				.filter((line) => linePatterns.some((pattern) => pattern.test(line)))
+				.map((line) => line.trimEnd()),
+		),
+	];
+	if (diagnostics.length > 0) {
+		const shown = diagnostics.slice(0, 40);
+		if (diagnostics.length > shown.length) {
+			shown.push(`${diagnostics.length - shown.length} more diagnostics in the log.`);
+		}
+		return shown;
+	}
+
+	const blockPatterns = [
+		/^\s*✗\s*/,
 		/\bfunction timed out\b/i,
 		/\bExecution failed\b/i,
-		/\bFound \d+ errors?\b/i,
-		/\bUnused exports?(?:ed)?\b/i,
 		/\bUndefined(?: step|\. Implement with)\b/,
 		/\bis not a function\b/,
 		/\d+ failing\b/i,
 		/\bscenarios?.*\bfailed\b/i,
 		/\bFAIL\b/,
 		/AssertionError:/,
-		/\berror TS\d+:/i,
 		/\bFailed Tests\b/i,
 	];
-	const specificIndexes = specificPatterns.map((pattern) => lines.findIndex((line) => pattern.test(line))).filter((candidate) => candidate !== -1);
+	const specificIndexes = blockPatterns.map((pattern) => lines.findIndex((line) => pattern.test(stripTaskPrefix(line)))).filter((candidate) => candidate !== -1);
 	const index = specificIndexes.length > 0 ? Math.min(...specificIndexes) : lines.findIndex((line) => /\[ELIFECYCLE\]|\bERROR\b/.test(line));
 
 	if (index === -1) {
@@ -111,4 +125,8 @@ function findErrorBlock(lines) {
 	}
 
 	return lines.slice(Math.max(0, index - 1), Math.min(lines.length, index + 16));
+}
+
+function stripTaskPrefix(line) {
+	return line.replace(/^\s*@?[^:\s]+:[^:\s]+:\s*/, '');
 }
