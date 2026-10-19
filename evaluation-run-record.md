@@ -17,8 +17,8 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Branch / Commit | et-ant-1-b-out|
 | Requirements Completed / Attempted | 17 / 17 (B1–B17) |
 | Acceptance Criteria Passed / Total | 15 / 15 (B-AC1–B-AC15) |
-| Tests Passed / Failed | acceptance 18/18, unit tests (persistence 58/58, application-services 507/507, rest 155/155) |
-| Static Analysis / Security Findings | Biome, typecheck 23/23, build 18/18, knip, e18e, architecture tests 19/19, audit 8 vulnerabilities, Snyk 6 open issues |
+| Tests Passed / Failed | acceptance 42/42 (courses 17, enrollment requests 24, healthcheck 1), unit tests (persistence 58/58, application-services 507/507, rest 155/155) |
+| Static Analysis / Security Findings | Biome, typecheck 23/23, build 18/18, knip, e18e, architecture tests 19/19, audit 0 at high threshold (2 moderate, 2 previously accepted high ignored), Snyk 0 open issues (10 ignored) |
 | Input Tokens | 73.9k |
 | Cached Tokens | 17.0m |
 | Output Tokens | 177.8k |
