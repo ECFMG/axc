@@ -1,4 +1,6 @@
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
 const VERIFY_LIMIT = 'One wrapped pnpm run verify already ran. Repeat it only after that verify fails, and only once.';
@@ -71,5 +73,9 @@ export function rawBroadCommandReason(text) {
 }
 
 function budgetPath(cwd) {
-	return resolve(cwd, process.env.AXC_CHECK_BUDGET ?? '.axc-check-budget.json');
+	if (process.env.AXC_CHECK_BUDGET) {
+		return resolve(cwd, process.env.AXC_CHECK_BUDGET);
+	}
+	const worktree = createHash('sha256').update(resolve(cwd)).digest('hex').slice(0, 16);
+	return resolve(tmpdir(), `axc-check-budget-${worktree}.json`);
 }
