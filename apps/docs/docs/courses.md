@@ -4,6 +4,8 @@
 
 The route is served by `@axc/rest`. Validation, filtering, sorting, and pagination happen in `@axc/application-services`. The courses come from an in-memory seed of 16 courses in `@axc/persistence`, which `@apps/api` wires in at startup. No database or external service is involved.
 
+To ask to enroll in an active course, see [Enrollment requests](enrollment-requests.md).
+
 ## Request
 
 ```http

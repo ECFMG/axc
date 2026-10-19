@@ -10,21 +10,21 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Model | Opus 5|
 | License / Plan | |
 | Codebase | ECFMG/axc |
-| Task Set | A |
+| Task Set | B |
 | Run Type | Baseline |
 | Harness Engineering Used | N/A |
 | Config / Diff Notes | N/A |
-| Branch / Commit | et-ant-0-a-out|
-| Requirements Completed / Attempted | 11 / 11 (A1–A11) |
-| Acceptance Criteria Passed / Total | 12 / 12 (A-AC1–A-AC12) |
-| Tests Passed / Failed | acceptance 18/18, unit tests (persistence 26, application-services 174, rest 44) |
-| Static Analysis / Security Findings | Biome, typecheck, knip, e18e, architecture tests 17/17, audit, Snyk 0 open issues |
-| Input Tokens | 38.8k |
-| Cached Tokens | 10.9m |
-| Output Tokens | 120.5k |
-| Total Tokens or Credits Used | 159.3k |
-| Estimated Cost | $7.26 |
-| Elapsed Time | 21 minutes 51 seconds|
+| Branch / Commit | et-ant-1-b-out|
+| Requirements Completed / Attempted | 17 / 17 (B1–B17) |
+| Acceptance Criteria Passed / Total | 15 / 15 (B-AC1–B-AC15) |
+| Tests Passed / Failed | acceptance 18/18, unit tests (persistence 58/58, application-services 507/507, rest 155/155) |
+| Static Analysis / Security Findings | Biome, typecheck 23/23, build 18/18, knip, e18e, architecture tests 19/19, audit 8 vulnerabilities, Snyk 6 open issues |
+| Input Tokens | 73.9k |
+| Cached Tokens | 17.0m |
+| Output Tokens | 177.8k |
+| Total Tokens or Credits Used | 251.7k |
+| Estimated Cost | $10.50 |
+| Elapsed Time | 26 minutes 59 seconds|
 | Number of Human Interventions / Redirects | 0 |
 | Reviewer Notes | (leave blank for now) |
 | Final Rubric Score | (leave blank for now) |

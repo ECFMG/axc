@@ -1,4 +1,4 @@
-import type { Course } from '@axc/domain';
+import type { Course, EnrollmentRequestRepository } from '@axc/domain';
 import { describe, expect, it } from 'vitest';
 import { type CourseSearchCriteria, parseCourseQuery, type QueryParameterError, type RawCourseQuery, searchCourses } from './course-catalog.ts';
 import { buildApplicationServicesFactory } from './index.ts';
@@ -496,7 +496,14 @@ describe('searchCourses', () => {
 });
 
 describe('ApplicationServices courses.search', () => {
-	const servicesFor = (courses: readonly Course[]) => buildApplicationServicesFactory({ environment: 'test', courseRepository: { getAll: () => Promise.resolve(courses) } }).forRequest();
+	const unusedEnrollmentRequestRepository: EnrollmentRequestRepository = {
+		nextId: () => Promise.reject(new Error('not used by course search')),
+		getById: () => Promise.reject(new Error('not used by course search')),
+		getAll: () => Promise.reject(new Error('not used by course search')),
+		save: () => Promise.reject(new Error('not used by course search')),
+	};
+	const servicesFor = (courses: readonly Course[]) =>
+		buildApplicationServicesFactory({ environment: 'test', courseRepository: { getAll: () => Promise.resolve(courses) }, enrollmentRequestRepository: unusedEnrollmentRequestRepository }).forRequest();
 
 	it('returns the default page of repository courses for an empty query', async () => {
 		const services = await servicesFor(fixtures);
