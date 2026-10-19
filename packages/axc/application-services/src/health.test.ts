@@ -10,7 +10,17 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({
+			environment: 'test',
+			courses: { list: () => Promise.resolve([]), findById: () => Promise.resolve(undefined) },
+			enrollmentRequests: {
+				list: () => Promise.resolve([]),
+				findById: () => Promise.resolve(undefined),
+				insert: () => Promise.resolve(),
+				replace: () => Promise.resolve(),
+				nextId: () => 'enroll-001',
+			},
+		}).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
