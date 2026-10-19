@@ -9,6 +9,7 @@ alwaysApply: true
 - Use at most one follow-up read batch to resolve a specific unknown. A failed check permits the reads needed to fix it.
 - Do not reopen a file or successful command, summarize intermediate work, or start a second exploration, review pass, or subagent.
 - Write each new file once. Make a follow-up edit only to resolve a specific unknown or failed check.
+- Dependencies are installed before the run. Do not run `pnpm install` during implementation or validation.
 - Format changed files once with `pnpm exec biome check --write --no-errors-on-unmatched <paths>`.
 - Run one affected-package check through `node scripts/agent-check.mjs -- <command>`. That command includes the affected package test and `pnpm run knip`.
 - Run `pnpm run verify` once through the same wrapper. The wrapper rejects another full verify after a pass and allows one rerun only after a failed verify.

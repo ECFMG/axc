@@ -110,5 +110,44 @@ function findErrorBlock(lines) {
 		return lines.filter((line) => line.trim() !== '').slice(-12);
 	}
 
-	return lines.slice(Math.max(0, index - 1), Math.min(lines.length, index + 16));
+	const window = lines.slice(Math.max(0, index - 1), Math.min(lines.length, index + 16));
+	return isVitestSelection(lines[index]) ? includeVitestContext(lines, window) : window;
+}
+
+function isVitestSelection(line) {
+	return line !== undefined && (/^\s*FAIL\b/.test(line) || /AssertionError:/.test(line) || /\bFailed Tests\b/i.test(line));
+}
+
+function includeVitestContext(lines, window) {
+	const present = new Set(window);
+	const additions = [];
+	for (const line of [findTestName(lines), ...labeledContext(lines, 'Expected'), ...labeledContext(lines, 'Received'), findSourceLocation(lines)]) {
+		if (line !== undefined && !present.has(line)) {
+			present.add(line);
+			additions.push(line);
+		}
+	}
+	return additions.length === 0 ? window : [...window, ...additions];
+}
+
+function findTestName(lines) {
+	return lines.find((line) => /^\s*FAIL\s+\S/.test(line));
+}
+
+function findSourceLocation(lines) {
+	return lines.find((line) => /^\s*(?:❯|at )\s+\S+:\d+:\d+/.test(line));
+}
+
+function labeledContext(lines, label) {
+	const pattern = new RegExp(String.raw`^\s*[-+]?\s*${label}\b`, 'i');
+	const index = lines.findIndex((line) => pattern.test(line));
+	if (index === -1) {
+		return [];
+	}
+	const context = [lines[index]];
+	const value = lines.slice(index + 1).find((line) => line.trim() !== '');
+	if (value !== undefined && value.trim().length <= 200 && !/Expected|Received/i.test(value)) {
+		context.push(value);
+	}
+	return context;
 }
