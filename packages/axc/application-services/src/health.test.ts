@@ -1,4 +1,4 @@
-import { courseCatalog } from '@axc/persistence';
+import { courseCatalog, createEnrollmentRequestRepository } from '@axc/persistence';
 import { describe, expect, it } from 'vitest';
 import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
 
@@ -11,7 +11,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }, courseCatalog).forRequest();
+		const services = await buildApplicationServicesFactory({ environment: 'test' }, courseCatalog, createEnrollmentRequestRepository()).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');

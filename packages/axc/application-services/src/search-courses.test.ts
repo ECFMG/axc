@@ -1,5 +1,5 @@
 import type { Course } from '@axc/domain';
-import { courseCatalog } from '@axc/persistence';
+import { courseCatalog, createEnrollmentRequestRepository } from '@axc/persistence';
 import { describe, expect, it } from 'vitest';
 import { type ApplicationServices, buildApplicationServicesFactory } from './index.ts';
 
@@ -212,7 +212,7 @@ async function search(query: Record<string, string[]>): Promise<Extract<Awaited<
 }
 
 async function outcome(query: Record<string, string[]>): Promise<ReturnType<ApplicationServices['courses']['search']>> {
-	const services = await buildApplicationServicesFactory({ environment: 'test' }, courseCatalog).forRequest();
+	const services = await buildApplicationServicesFactory({ environment: 'test' }, courseCatalog, createEnrollmentRequestRepository()).forRequest();
 	return services.courses.search(query);
 }
 

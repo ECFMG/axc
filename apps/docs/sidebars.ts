@@ -5,10 +5,11 @@ const sidebars = {
 		'intro',
 		'healthcheck',
 		'courses',
+		'enrollment-requests',
 		{
 			type: 'category',
 			label: 'Architecture decisions',
-			items: ['adr/in-memory-course-catalog'],
+			items: ['adr/in-memory-course-catalog', 'adr/in-memory-enrollment-requests'],
 		},
 	],
 } satisfies SidebarsConfig;

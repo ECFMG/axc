@@ -96,3 +96,7 @@ curl -s "https://api.agentcourses.localhost/api/courses?q=security&modality=onli
 ```
 
 Local `pnpm run dev` publishes the API through portless at `https://api.agentcourses.localhost`. A git worktree named `feature-a` uses `https://api.agentcourses.feature-a.localhost` when `WORKTREE_NAME=feature-a`.
+
+## Related
+
+Learners submit enrollment requests for active courses. See [Enrollment requests](./enrollment-requests.md).
