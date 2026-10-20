@@ -5,11 +5,11 @@ This record describes only the work in this chat. The supplied baseline already 
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
-| Developer / Operator | Codex; user authorized publication |
+| Developer / Operator | Dane Fortun -- Codex; user authorized publication |
 | Reviewer | |
 | Harness | Codex Desktop |
-| Model | gpt-6.1-sol, as recorded in the current turn log |
-| License / Plan | Not independently verified for this evaluation |
+| Model | gpt-6.1-sol, medium reasoning -- as recorded in the current turn log |
+| License / Plan | Business Pro Lite |
 | Codebase | ECFMG/axc |
 | Task Set | B, including Task A regression coverage |
 | Run Type | Final completion/validation of supplied implemented baseline |
