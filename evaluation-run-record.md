@@ -5,7 +5,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | Cursor |
 | Developer / Operator | Ethan Nguyen |
-| Reviewer | (leave blank for now) |
+| Reviewer | Ethan Nguyen |
 | Harness | Cursor |
 | Model | Grok 4.7 high-fast |
 | License / Plan | Cursor Team Plan |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | About $6.45 at Cursor's published Grok 4.7 Fast short-context list price ($4 input, $1 cache read, $12 output per 1M tokens). The dashboard did not show a cost. Long-context Fast rates would put the same tokens near $9.67. At the other harness's published rates ($2 uncached input, $0.10 cached input, $10 output per 1M), this token mix is about $1.69. That figure is a comparison, not the billed cost. The Team plan may cover this inside included usage. |
 | Elapsed Time | 15m 58s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Reviewer Notes | Strict SRD score added October 20, 2026. The evidence rows are unchanged. evaluation-run-record-unscored.md keeps the original blank review. Functional correctness 20/20: 17 of 17 requirements and 15 of 15 acceptance criteria. Tests and validation 12/15: verify passed and package tests cover the enrollment rules. HTTP acceptance only covers one combined search, one invalid pageSize, and one create plus retrieval. Architecture 15/15. Security 12/15: 0 open findings and 10 ignored, including highs. Harness effectiveness 6/10: there is no earlier Task B to beat. Quality held on the larger task. One run does not show repeatability. Token and cost efficiency 6/10: 4,929,633 tokens, about $6.45, and 15m 58s. Acceptable for the expanded task, and not low. Developer workflow 8/10: 0 interventions and 171 tool calls. Operational readiness 2/5. Total 81/100. |
+| Final Rubric Score | 81/100 |
+| Recommendation | Continue |
