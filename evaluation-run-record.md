@@ -5,7 +5,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | Cursor |
 | Developer / Operator | Ethan Nguyen |
-| Reviewer | (leave blank for now) |
+| Reviewer | Ethan Nguyen |
 | Harness | Cursor |
 | Model | Grok 4.7 high-fast |
 | License / Plan | Cursor Team Plan |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | About $3.95 at Cursor's published Grok 4.7 Fast short-context list price ($4 input, $1 cache read, $12 output per 1M tokens). The dashboard did not show a cost. Long-context Fast rates would put the same tokens near $5.93. At the other harness's published rates ($2 uncached input, $0.10 cached input, $10 output per 1M), this token mix is about $1.21. That figure is a comparison, not the billed cost. The Team plan may cover this inside included usage. |
 | Elapsed Time | 11m 40s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Reviewer Notes | Strict SRD score added October 20, 2026. The evidence rows are unchanged. evaluation-run-record-unscored.md keeps the original blank review. Functional correctness 20/20. Tests and validation 12/15: verify passed and package tests cover the required cases. HTTP acceptance is only three scenarios, so the HTTP contract is not fully proven. Architecture 15/15. Security 12/15: 0 open findings and 10 ignored, including highs. Harness effectiveness 6/10: tokens fell 3.0% and time fell 11.7% from Iteration 2. That is some improvement, and it is not dramatic. Token and cost efficiency 8/10: 2,747,929 tokens, about $3.95, and 11m 40s. Close to Iteration 2, not a new low. Developer workflow 8/10: 0 interventions, 121 tool calls, and one install inside the run. Operational readiness 2/5. Total 83/100. |
+| Final Rubric Score | 83/100 |
+| Recommendation | Continue |
