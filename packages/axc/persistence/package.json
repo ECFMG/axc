@@ -19,10 +19,12 @@
 		"prebuild": "pnpm run lint",
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
+		"test": "node --experimental-strip-types --test src/course-seed.test.ts",
 		"watch": "tsgo --watch",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
+		"@axc/domain": "workspace:*",
 		"@cellix/domain-seedwork": "workspace:*"
 	},
 	"devDependencies": {
