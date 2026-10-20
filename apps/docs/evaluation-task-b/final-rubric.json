@@ -1,0 +1,73 @@
+{
+  "title": "Task B final operational rubric",
+  "assessment_type": "Post hoc primary-assistant self-assessment; not an independent review or controlled comparative harness benchmark",
+  "policy_origin": "Six categories named in the task specifications. No fixed scoring weights or rating anchors were supplied for this run; this assessment explicitly uses equal weights and the anchors below. Policies from other runs are not applied.",
+  "rating_scale": {
+    "0": "Requirement area not achieved",
+    "1": "Major deficiencies",
+    "2": "Needs improvement",
+    "3": "Adequate with material limitations",
+    "4": "Strong with a specific shortfall",
+    "5": "Fully supported by available evidence for the task scope"
+  },
+  "equal_weighting": true,
+  "categories": [
+    {
+      "name": "Functional correctness",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "All B1\u2013B17 and B-AC1\u2013B-AC15 have implementation/test evidence; Task A search preserved. Validations, all transition rules, duplicates, retrieval, filtering and audit trail are exercised."
+    },
+    {
+      "name": "Tests and validation",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "Final npm test, lint, build, typecheck and architecture checks pass. 653 unit/integration tests, 4 live Azure Functions acceptance scenarios and 19 architecture checks. Turbo cache reuse is disclosed in the logs; the new endpoint cases and host workflow ran."
+    },
+    {
+      "name": "Architecture and codebase alignment",
+      "score": 4,
+      "maximum": 5,
+      "rationale": "Existing Hono boundary, factory and Azure composition preserved; no dependencies added, no vendor changes. Deduction: enrollment lifecycle rules and concrete repository remain in application-services instead of using the existing domain/persistence package boundaries and repository contract. This is workable for the sample but weaker DDD separation."
+    },
+    {
+      "name": "Security and guardrail compliance",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "Changed paths stay within the allowed boundary; malformed bodies and invalid types are rejected; duplicate/state invariants are enforced; detached copies protect storage. No authentication, production settings, secrets, root lockfile, vendored code or external integrations changed. No dedicated security scan is claimed."
+    },
+    {
+      "name": "Context/token/cost efficiency",
+      "score": 2,
+      "maximum": 5,
+      "rationale": "Original primary turn made 42 model requests with 3,534,836 tokens, including 3,407,744 cached input tokens. Broad searches, repeated full-context calls and repeated packaging/accounting add overhead. Cache reuse makes the price estimate modest, but token handling needs improvement. No matched Task B baseline establishes relative savings; the projection miss is disclosed separately and is not itself the score rule."
+    },
+    {
+      "name": "Developer workflow fit",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "Runnable source, documented endpoints, branch-ready changes, portable archive, applicable patch, validation logs, complete final-response accounting, separate approval-review counters, rate assumptions and explicit limitations are available. GitHub publication is part of this authorized follow-up."
+    }
+  ],
+  "overall_score": 26,
+  "overall_maximum": 30,
+  "percentage": 86.66666666666667,
+  "scope": "Original Task B implementation, including Task A regression coverage. Follow-up tokens excluded.",
+  "projection": {
+    "total_tokens": 350000,
+    "assumptions": "Estimate before source inspection: 15\u201325 model calls averaging 14k input and 1\u20132k output tokens; full course/enrollment implementation, focused tests, lint/build. Cached input included in input; reasoning included in output. Estimate is not measured usage."
+  },
+  "forecast_error": {
+    "measured_primary_tokens": 3534836,
+    "measured_with_approval_reviews": 3579360,
+    "original_projection_tokens": 350000,
+    "combined_multiple_of_projection": 10.226742857142858,
+    "note": "Forecast error is separate from the operational efficiency assessment."
+  },
+  "limitations": [
+    "Self-assessment, not a human reviewer grade.",
+    "No matched Task B comparison or independent security audit.",
+    "In-memory state and anonymous operator identifiers are sample-scope limitations, not claims of production readiness."
+  ],
+  "recommendation": "Candidate for sample-workflow pilot; improve domain separation and context efficiency before broader use."
+}

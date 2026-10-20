@@ -14,4 +14,5 @@ Cellix.initializeInfrastructureServices<ApiContext, ApplicationServices>((servic
 	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
 	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+	.registerAzureFunctionHttpHandler('enrollmentRequests', { route: 'api/enrollment-requests/{*path}', methods: ['GET', 'POST', 'PATCH'], authLevel: 'anonymous' }, restHandlerCreator)
 	.startUp();

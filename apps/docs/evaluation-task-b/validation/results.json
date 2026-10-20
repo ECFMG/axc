@@ -1,0 +1,38 @@
+[
+  {
+    "check": "test",
+    "command": "npm test",
+    "exit_code": 0,
+    "duration_seconds": 15.48,
+    "log": "test.log"
+  },
+  {
+    "check": "lint",
+    "command": "npm run lint",
+    "exit_code": 0,
+    "duration_seconds": 0.27,
+    "log": "lint.log"
+  },
+  {
+    "check": "build",
+    "command": "npm run build",
+    "exit_code": 0,
+    "duration_seconds": 3.403,
+    "log": "build.log",
+    "note": "Reran after docs cache input correction; Docusaurus rebuilt and api/enrollment-requests/index.html exists."
+  },
+  {
+    "check": "architecture",
+    "command": "npm run test:arch",
+    "exit_code": 0,
+    "duration_seconds": 0.34,
+    "log": "architecture.log"
+  },
+  {
+    "check": "typecheck",
+    "command": "npm run typecheck",
+    "exit_code": 0,
+    "duration_seconds": 0.68,
+    "log": "typecheck.log"
+  }
+]

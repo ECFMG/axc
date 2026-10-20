@@ -1,0 +1,62 @@
+{
+  "status": "Estimate from measured original-task tokens; not a billing statement",
+  "currency": "USD",
+  "rate_source": "User-supplied screenshot pricing-reference.png, received 2026-10-20; rates are assumed, not independently verified current prices.",
+  "rates": {
+    "uncached_input_per_million_usd": 2.0,
+    "cached_input_per_million_usd": 0.1,
+    "output_per_million_usd": 10.0,
+    "cache_write_per_million_usd": 2.5,
+    "long_input_threshold_tokens": 272000,
+    "long_input_cache_multiplier": 2
+  },
+  "scope": "Original implementation turn including its final assistant response; follow-up costing, scoring and publication are excluded.",
+  "primary": {
+    "components_usd": {
+      "uncached_input": 0.201862,
+      "cached_input": 0.3407744,
+      "output": 0.26161,
+      "cache_write": 0.0
+    },
+    "total_usd": 0.8042464
+  },
+  "automatic_approval_reviews_same_rate_scenario": [
+    {
+      "turn_id": "01a15afa-fdda-7c03-93bf-6c1ef89f1c32",
+      "assumed_rates": "Same screenshot rates as primary; actual codex-auto-review price unavailable.",
+      "components_usd": {
+        "uncached_input": 0.028778,
+        "cached_input": 0.0006016,
+        "output": 0.00162,
+        "cache_write": 0.0
+      },
+      "total_usd": 0.0309996
+    },
+    {
+      "turn_id": "01a15afb-b760-7691-a2fb-10a728fc468d",
+      "assumed_rates": "Same screenshot rates as primary; actual codex-auto-review price unavailable.",
+      "components_usd": {
+        "uncached_input": 0.007284,
+        "cached_input": 0.0020224,
+        "output": 0.00091,
+        "cache_write": 0.0
+      },
+      "total_usd": 0.0102164
+    }
+  ],
+  "approval_review_scenario_total_usd": 0.041216,
+  "combined_same_rate_scenario_total_usd": 0.8454624000000001,
+  "cache_write_tokens": 0,
+  "maximum_request_input_tokens": {
+    "primary": 116709,
+    "approval_reviews": 23866
+  },
+  "long_context_surcharge_applied": false,
+  "notes": [
+    "Uncached input = input_tokens minus cached_input_tokens.",
+    "Reasoning tokens are included in output; do not charge them twice. Cached input is included in input; charge cached tokens only at the cached rate.",
+    "Per-request token_usage_record events confirm no cache writes and no request above 272,000 input tokens. Canonical token totals use cumulative ending minus starting counters.",
+    "Approval reviews use model codex-auto-review; the supplied screenshot only names gpt-6.1-sol, so the combined amount is a clearly labelled same-rate scenario.",
+    "No actual monetary billing counters were available."
+  ]
+}

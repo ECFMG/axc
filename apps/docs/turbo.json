@@ -1,0 +1,8 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"inputs": ["src/**", "docs/**", "sidebars.ts", "docusaurus.config.ts", "tsconfig*.json", "scripts/**", "package.json"]
+		}
+	}
+}

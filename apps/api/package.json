@@ -6,7 +6,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"test": "tsgo --noEmit --project tsconfig.test.json && node --experimental-strip-types --test src/courses.test.ts",
+		"test": "tsgo --noEmit --project tsconfig.test.json && node --experimental-strip-types --test src/*.test.ts",
 		"prebuild": "pnpm run lint",
 		"build": "tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs",
 		"typecheck": "tsgo --noEmit",

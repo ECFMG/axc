@@ -3,9 +3,11 @@ import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functio
 import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
 import { Hono } from 'hono';
 import { parseCourseQuery } from './course-query.ts';
+import { enrollmentRoutes } from './enrollment-routes.ts';
 
 export function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {
 	const app = new Hono();
+	enrollmentRoutes(app, applicationServicesFactory);
 	app.get('/api/courses', async (c) => {
 		const { query, issues } = parseCourseQuery(new URL(c.req.url).searchParams);
 		if (issues.length) {

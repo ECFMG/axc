@@ -1,0 +1,26 @@
+Final rubric: 26/30 (86.7%)
+
+Post hoc primary-assistant self-assessment; not an independent or controlled-comparison score. Six equally weighted categories, 0–5 each.
+
+Functional correctness: 5/5
+All B1–B17 and B-AC1–B-AC15 have implementation/test evidence; Task A search preserved. Validations, all transition rules, duplicates, retrieval, filtering and audit trail are exercised.
+
+Tests and validation: 5/5
+Final npm test, lint, build, typecheck and architecture checks pass. 653 unit/integration tests, 4 live Azure Functions acceptance scenarios and 19 architecture checks. Turbo cache reuse is disclosed in the logs; the new endpoint cases and host workflow ran.
+
+Architecture and codebase alignment: 4/5
+Existing Hono boundary, factory and Azure composition preserved; no dependencies added, no vendor changes. Deduction: enrollment lifecycle rules and concrete repository remain in application-services instead of using the existing domain/persistence package boundaries and repository contract. This is workable for the sample but weaker DDD separation.
+
+Security and guardrail compliance: 5/5
+Changed paths stay within the allowed boundary; malformed bodies and invalid types are rejected; duplicate/state invariants are enforced; detached copies protect storage. No authentication, production settings, secrets, root lockfile, vendored code or external integrations changed. No dedicated security scan is claimed.
+
+Context/token/cost efficiency: 2/5
+Original primary turn made 42 model requests with 3,534,836 tokens, including 3,407,744 cached input tokens. Broad searches, repeated full-context calls and repeated packaging/accounting add overhead. Cache reuse makes the price estimate modest, but token handling needs improvement. No matched Task B baseline establishes relative savings; the projection miss is disclosed separately and is not itself the score rule.
+
+Developer workflow fit: 5/5
+Runnable source, documented endpoints, branch-ready changes, portable archive, applicable patch, validation logs, complete final-response accounting, separate approval-review counters, rate assumptions and explicit limitations are available. GitHub publication is part of this authorized follow-up.
+
+Cost estimate from completed original-task counters and user-supplied screenshot:
+Primary: USD 0.8042464. Approval reviews at the same assumed rates: USD 0.041216. Combined same-rate scenario: USD 0.8454624 (about USD 0.85). Actual billing amounts and approval-review pricing are unavailable.
+
+Original accounting is complete through 2026-10-20T20:26:57.901Z, including the final response. Follow-up usage is excluded. See usage.json and cost-estimate.json.

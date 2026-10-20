@@ -1,0 +1,43 @@
+Task B course search and enrollment workflow — completed
+
+Branch: df-oai-0-b-out in outputs/axc. Implementation and evaluation publication authorized by the follow-up request; see publication.json for the destination and recorded commit.
+Starting commit: d6153e2f09645297fc17749a438e7728d9754fe0
+Starting-source option: Task A seeded comparison. No named source archive was supplied; used the clean checkout containing the supplied specifications, with the user's subsequent instruction to create the output branch. Inspected a baseline ZIP made directly from that commit (514 entries, SHA256 1fb7e51473f69ee60a8971c9cad577db44ab91eeb1a3065c09883feb4acee275).
+
+Requirements satisfied
+- Task A A1–A11 and A-AC1–A-AC12: preserved the existing 12-course catalog, keyword and combined filtering, validated pagination, all sorts, consistent errors, regression tests and API documentation.
+- B1: course search remains available.
+- B2–B7: creation returns 201/pending; validates existing active course, email and 20–500-character justification; rejects duplicate pending/approved requests with 409.
+- B8–B9: retrieve including audit history; list with independent and combined status, courseId and learnerEmail filters.
+- B10–B14: status updates enforce all four allowed transitions, return 409 for invalid transitions, require non-empty rejection reason, and append audit entries on creation and every successful change.
+- B15–B17 / B-AC1–B-AC15: endpoint tests cover all required cases, including every invalid transition, concurrent duplicate creation, malformed inputs and unchanged history after failures. Host acceptance exercises the workflow through Azure Functions. Existing tests pass. API documentation covers all endpoints, models, inputs, responses and error cases.
+
+Implementation
+- Enrollment domain model, pure transition function, service and process-local repository in the existing application-services package, following its existing model/service convention. No workspace or external dependencies added. The detached serializable request model is the response mapper; reads/writes cannot expose stored mutable references.
+- REST validation and consistent error mapping in a dedicated Hono sub-app, with one Azure Functions wildcard registration matching collection, item and status routes.
+- Factory-scoped repository survives requests; synchronous check-and-insert prevents duplicate requests within one process. Email normalization is case-insensitive. Caller-supplied status/history cannot bypass service creation rules.
+- Added package-local docs cache inputs because the inherited build inputs omitted docs and sidebar changes.
+- API docs: apps/docs/docs/api/courses.md and apps/docs/docs/api/enrollment-requests.md. Site sidebar includes both.
+
+Validation
+- npm test: PASS, 26/26 Turbo tasks, 103/103 endpoint tests; all 4/4 host acceptance scenarios pass (2 course search, 1 enrollment workflow, 1 health).
+- Existing and new unit/integration suites: 653 passed tests across packages, plus the four acceptance scenarios. Architecture: 19 passed checks (9 application, 10 vendored Cellix).
+- npm run lint: PASS.
+- npm run build: PASS, 18/18 tasks. Docusaurus documentation rebuilt after the cache correction.
+- npm run test:arch: PASS.
+- npm run typecheck: PASS. Acceptance step definitions type-check as part of the final check.
+- git diff --check: PASS. Final changed-file paths are within the authorized source boundary. No vendored Cellix files, root lockfile, authentication or production configuration changed.
+- First sandboxed npm test failed when the existing MongoDB memory-server could not bind a local socket. The authorized rerun with local socket access passed; no vendor modifications were needed. Final logs are in validation/ and mirrored in apps/docs/evaluation-task-b/validation/.
+- Installed pnpm is 12.11.2 versus repository pin 11.9.0. Direct pnpm invocations used --pm-on-fail=ignore; no package manager or dependency declarations were changed except the API test script.
+
+Assumptions and limits
+- Sample in-memory state is lost on restart and is not shared across processes. Durable storage and multi-process uniqueness are outside this fixture-backed task.
+- changedBy is a supplied operator identifier, matching the sample's existing anonymous routing convention.
+- Justification and reason are trimmed. Email uses conventional ASCII email validation and normalization, with local/domain length and dot checks; quoted-local-part and internationalized addresses are not supported.
+- No remaining implementation or validation blockers. Original final-response token accounting is complete; no missing original-turn counters.
+
+Usage
+- Original projection: 350,000 total tokens, based on 15–25 calls averaging about 14,000 input tokens plus 1,000–2,000 output tokens. This underestimated repeated context size and the number of validation/reporting calls.
+- Complete recorded counts, cumulative baselines/endpoints, timestamps, log paths and task/turn IDs are in usage.json. Cached input is included in input; reasoning is included in output. Automatic approval reviews are separate from primary Codex usage. No implementation subagents were used.
+- Estimated primary cost USD 0.8042464 using user-supplied rates. Approval reviews add USD 0.041216 if priced at those same rates (unverified for their model); combined same-rate scenario USD 0.8454624. No billing amount is claimed.
+- Original task accounting is complete through 2026-10-20T20:26:57.901Z and includes its final response. Primary tokens: 3,534,836; automatic approval-review tokens: 44,524; combined: 3,579,360. All follow-up turns are excluded. Final operational self-assessment: 26/30 (86.7%); see final-rubric.json for category evidence and limitations.

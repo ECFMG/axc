@@ -1,3 +1,7 @@
+import { createEnrollmentService, type EnrollmentService } from './enrollments.ts';
+
+export { EnrollmentError, type EnrollmentFilters, type EnrollmentRequest } from './enrollment-model.ts';
+
 import { type CoursePage, type CourseQuery, searchCourses } from './courses.ts';
 
 export type { Course, CoursePage, CourseQuery } from './courses.ts';
@@ -20,6 +24,7 @@ export interface ApiContext {
 }
 
 export interface ApplicationServices {
+	enrollmentRequests: EnrollmentService;
 	courses: {
 		search(query: CourseQuery): CoursePage;
 	};
@@ -43,9 +48,11 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const enrollmentRequests = createEnrollmentService();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			courses: { search: searchCourses },
+			enrollmentRequests,
 			health: {
 				getStatus(): HealthStatus {
 					return {

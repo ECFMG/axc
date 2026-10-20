@@ -1,0 +1,10 @@
+{
+  "repository": "ECFMG/axc",
+  "remote_url": "git@github.com:ECFMG/axc.git",
+  "branch": "df-oai-0-b-out",
+  "branch_url": "https://github.com/ECFMG/axc/tree/df-oai-0-b-out",
+  "scope": "Original Task B implementation, completed token accounting, user-rate cost estimate, final operational rubric and validation findings.",
+  "authorization": "User follow-up explicitly requested posting all work to this branch, superseding the earlier no-commit/no-push instruction.",
+  "commit_reference": "The Git commit containing this file; see branch history.",
+  "status": "Commit prepared for the named branch; verify the GitHub branch history or the external publication receipt for push completion."
+}
