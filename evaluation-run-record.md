@@ -5,7 +5,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | Cursor |
 | Developer / Operator | Ethan Nguyen |
-| Reviewer | (leave blank for now) |
+| Reviewer | Ethan Nguyen |
 | Harness | Cursor |
 | Model | Grok 4.7 high-fast |
 | License / Plan | Cursor Team Plan |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | About $5.49 short-context list price; about $8.24 long-context estimate; about $1.73 at the comparison harness rates, not billed cost |
 | Elapsed Time | 16m 59s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Reviewer Notes | Strict SRD score added October 20, 2026. The evidence rows are unchanged. evaluation-run-record-unscored.md keeps the original blank review. Functional correctness 20/20: 17 of 17 requirements and 15 of 15 acceptance criteria. Tests and validation 12/15: verify passed and application tests cover the enrollment matrix. HTTP acceptance is three feature scenarios plus the healthcheck, so most rules are not proven over HTTP. Architecture 15/15. Security 12/15: 0 open findings and 10 ignored, including highs. Harness effectiveness 8/10: tokens fell 21.7% from Iteration 3 Task B. Time rose from 15m 58s to 16m 59s and output rose. Two areas improved, and speed did not. Token and cost efficiency 8/10: 3,857,689 tokens and about $5.49. Better than Iteration 3 Task B, and not a low result. Developer workflow 8/10: 0 interventions. One affected check failed typecheck before the passing verify. Operational readiness 2/5. Total 85/100. |
+| Final Rubric Score | 85/100 |
+| Recommendation | Continue |
