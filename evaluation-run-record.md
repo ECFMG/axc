@@ -4,15 +4,15 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Field | Value |
 | --- | --- |
 | Team | xAI |
-| Developer / Operator | julian. Unsure of the full name. Taken from the local account path `/Users/julian`. The branch prefix `jsm` was not confirmed as initials. |
+| Developer / Operator | Julian Memis |
 | Reviewer | (leave blank for now) |
-| Harness | Grok Build. Session agent name `grok-build-plan`. Unsure whether this field should instead be the agent id `ag1.e91299b2290f492fb81379253e67bc71`. |
+| Harness | Baseline (no harness) |
 | Model | `grok-4.7-build` (Grok 4.7). Reasoning effort: high. |
-| License / Plan | Unknown. Unsure: the session usage record has no license or plan field. |
+| License / Plan |  |
 | Codebase | ECFMG/axc |
 | Task Set | A |
-| Run Type | Baseline. Unsure: inferred from branch `jsm-xai-0-a-out`, reading `0` as the baseline run. |
-| Harness Engineering Used | None added for this run. Grok Build defaults and the repository instructions were used. No skills, workflows, or agent config were added. Sandbox profile: off. |
+| Run Type | Baseline |
+| Harness Engineering Used | N/A |
 | Config / Diff Notes | In-memory catalog of 15 courses behind a domain port. `@axc/service-mongoose` was left unchanged. `pnpm-lock.yaml` records only workspace links (`@axc/application-services` and `@axc/persistence` to `@axc/domain`; `@apps/api` to `@axc/persistence`). No third-party packages were added. Root `README.md` was left unchanged because it is outside the task write boundary. Staged diff: 29 files, +1506 / −13. |
 | Branch / Commit | Branch `jsm-xai-0-a-out`. No new commit. HEAD remains `fe47c38`. The staged changes are uncommitted. The pre-commit hook runs `pnpm run verify`, which stopped at `pnpm audit --audit-level=high`. |
 | Requirements Completed / Attempted | 11/11 functional requirements attempted and implemented (A1–A11), plus the course model and a 15-course seed. The commit deliverable was attempted and did not complete. |
@@ -24,8 +24,8 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Output Tokens | 95,350. Reasoning tokens: 67,195. Unsure whether reasoning is already included in the 95,350. The stored total equals input plus output, so reasoning is not added a second time. |
 | Total Tokens or Credits Used | 8,302,894 tokens across 68 model calls. Unsure: no separate credit balance was recorded. |
 | Estimated Cost | $1.74. `usage.json` records 17,417,968,800 `costUsdTicks` for model `grok-4.7-build`. The Grok user guide defines that field as 10^10 ticks per USD, so 17,417,968,800 / 1e10 = $1.74179688. Same snapshot as Input Tokens. This form-filling turn is not included. |
-| Elapsed Time | About 37 minutes, from session start 2026-10-09 18:06:39Z to last activity 18:43:41Z. Unsure of the intended end boundary: the usage snapshot closed earlier, at 18:35:38Z (about 29 minutes). |
+| Elapsed Time | 28 minutes and 15 seconds |
 | Number of Human Interventions / Redirects | 0 during the Task A implementation. The operator sent the task prompt and did not redirect the work. |
 | Reviewer Notes | (leave blank for now) |
 | Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue. Unsure: the uncommitted result could be scored as Remediate if a landed commit is required. The audit failure is in existing dependencies. |
+| Recommendation | Continue to harness |
