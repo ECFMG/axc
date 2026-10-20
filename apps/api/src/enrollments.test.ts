@@ -153,6 +153,7 @@ describe('enrollment request workflow', () => {
 		const { call, patch } = setup();
 		await error(await call('GET', '/missing'), 404, 'ENROLLMENT_REQUEST_NOT_FOUND');
 		await error(await patch('missing', 'approved'), 404, 'ENROLLMENT_REQUEST_NOT_FOUND');
+		await error(await call('PATCH', '/missing/status', { status: 'rejected', changedBy: 'reviewer' }), 400, 'INVALID_REQUEST');
 	});
 	for (const data of [null, [], 'string']) it(`rejects non-object body ${JSON.stringify(data)}`, async () => error(await setup().call('POST', '', data), 400, 'INVALID_REQUEST'));
 	it('rejects malformed JSON', async () => {
@@ -166,5 +167,13 @@ describe('enrollment request workflow', () => {
 		request.statusHistory.length = 0;
 		assert.equal((await factory.forRequest()).enrollmentRequests.get(request.id).statusHistory.length, 1);
 		assert.deepEqual(await (await setup().call('GET')).json(), []);
+	});
+	it('returns a safe error envelope for unexpected application failures', async () => {
+		const app = createRestApp({
+			forRequest: () => Promise.reject(new Error('private infrastructure detail')),
+		});
+		const response = await app.request('/api/enrollment-requests');
+		assert.equal(response.status, 500);
+		assert.deepEqual(await response.json(), { error: { code: 'INTERNAL_ERROR', message: 'The request could not be completed.', details: [] } });
 	});
 });

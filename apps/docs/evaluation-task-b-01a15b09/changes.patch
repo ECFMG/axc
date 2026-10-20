@@ -1,0 +1,125 @@
+--- a/apps/api/src/enrollments.test.ts
++++ b/apps/api/src/enrollments.test.ts
+@@ -153,6 +153,7 @@
+ 		const { call, patch } = setup();
+ 		await error(await call('GET', '/missing'), 404, 'ENROLLMENT_REQUEST_NOT_FOUND');
+ 		await error(await patch('missing', 'approved'), 404, 'ENROLLMENT_REQUEST_NOT_FOUND');
++		await error(await call('PATCH', '/missing/status', { status: 'rejected', changedBy: 'reviewer' }), 400, 'INVALID_REQUEST');
+ 	});
+ 	for (const data of [null, [], 'string']) it(`rejects non-object body ${JSON.stringify(data)}`, async () => error(await setup().call('POST', '', data), 400, 'INVALID_REQUEST'));
+ 	it('rejects malformed JSON', async () => {
+@@ -167,4 +168,12 @@
+ 		assert.equal((await factory.forRequest()).enrollmentRequests.get(request.id).statusHistory.length, 1);
+ 		assert.deepEqual(await (await setup().call('GET')).json(), []);
+ 	});
++	it('returns a safe error envelope for unexpected application failures', async () => {
++		const app = createRestApp({
++			forRequest: () => Promise.reject(new Error('private infrastructure detail')),
++		});
++		const response = await app.request('/api/enrollment-requests');
++		assert.equal(response.status, 500);
++		assert.deepEqual(await response.json(), { error: { code: 'INTERNAL_ERROR', message: 'The request could not be completed.', details: [] } });
++	});
+ });
+--- a/apps/docs/docs/api/enrollment-requests.md
++++ b/apps/docs/docs/api/enrollment-requests.md
+@@ -74,7 +74,7 @@
+ }
+ ```
+ 
+-Returns HTTP **200** and the complete updated request. The ID, course, learner, justification, creation timestamp and prior history are preserved. `updatedAt` and the new history entry's `changedAt` are the same ISO UTC timestamp. Each entry records the previous status, new status, operator and optional reason (`null` when absent). `changedBy` must be a non-empty string. Rejection requires a non-empty string reason; a supplied reason for any other transition must also be non-empty.
++Returns HTTP **200** and the complete updated request. The ID, course, learner, justification, creation timestamp and prior history are preserved. `updatedAt` and the new history entry's `changedAt` are the same ISO UTC timestamp. Each entry records the previous status, new status, operator and optional reason (`null` when absent). `changedBy` must be a non-empty string. The transition rule itself enforces a non-empty operator and a non-empty rejection reason, including when called directly. Rejection requires a non-empty string reason; a supplied reason for any other transition must also be non-empty.
+ 
+ | From | Allowed destination |
+ | --- | --- |
+--- a/packages/axc/application-services/src/enrollment-model.ts
++++ b/packages/axc/application-services/src/enrollment-model.ts
+@@ -55,6 +55,9 @@
+ 	return value as EnrollmentStatus;
+ }
+ export function transition(request: EnrollmentRequest, toStatus: EnrollmentStatus, changedBy: string, reason: string | null, changedAt: string): EnrollmentRequest {
++	changedBy = text(changedBy, 'changedBy');
++	if (reason !== null) reason = text(reason, 'reason');
++	if (toStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+ 	const allowed: Record<EnrollmentStatus, readonly EnrollmentStatus[]> = { pending: ['approved', 'rejected', 'cancelled'], approved: ['cancelled'], rejected: [], cancelled: [] };
+ 	if (!allowed[request.status].includes(toStatus)) throw new EnrollmentError('INVALID_STATUS_TRANSITION', 409, `Cannot change ${request.status} to ${toStatus}.`);
+ 	return { ...request, status: toStatus, updatedAt: changedAt, statusHistory: [...request.statusHistory, { fromStatus: request.status, toStatus, changedAt, changedBy, reason }] };
+--- a/packages/axc/application-services/src/enrollments.ts
++++ b/packages/axc/application-services/src/enrollments.ts
+@@ -57,6 +57,7 @@
+ 			const toStatus = status(body.status);
+ 			const changedBy = text(body.changedBy, 'changedBy');
+ 			const reason = body.reason === undefined || body.reason === null ? null : text(body.reason, 'reason');
++			// Validate input before looking up the request; the transition also protects direct callers.
+ 			if (toStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+ 			return store.save(transition(get(id), toStatus, changedBy, reason, new Date().toISOString()));
+ 		},
+--- /dev/null
++++ b/packages/axc/application-services/src/enrollments.test.ts
+@@ -0,0 +1,66 @@
++import { describe, expect, it } from 'vitest';
++import { type EnrollmentRequest, transition } from './enrollment-model.ts';
++import { createEnrollmentService } from './enrollments.ts';
++
++const input = { courseId: 'course-001', learnerEmail: 'learner@example.org', justification: 'I need this course for upcoming development work.' };
++const now = '2026-06-27T10:00:00.000Z';
++function pending(): EnrollmentRequest {
++	return { id: 'enroll-test', ...input, status: 'pending', createdAt: now, updatedAt: now, statusHistory: [{ fromStatus: null, toStatus: 'pending', changedAt: now, changedBy: 'system', reason: null }] };
++}
++
++describe('enrollment transition rules', () => {
++	for (const reason of [null, '', '   ']) {
++		it(`requires a rejection reason in the transition rule: ${JSON.stringify(reason)}`, () => {
++			const request = pending();
++			expect(() => transition(request, 'rejected', 'reviewer', reason, now)).toThrow();
++			expect(request).toEqual(pending());
++		});
++	}
++	it('requires an operator even when called outside the application service', () => {
++		expect(() => transition(pending(), 'approved', ' ', null, now)).toThrow();
++	});
++	it('appends a normalized rejection entry without mutating the previous snapshot', () => {
++		const request = pending();
++		const changedAt = '2026-06-28T10:00:00.000Z';
++		const result = transition(request, 'rejected', ' reviewer ', ' Missing prerequisite. ', changedAt);
++		expect(result.status).toBe('rejected');
++		expect(result.createdAt).toBe(now);
++		expect(result.updatedAt).toBe(changedAt);
++		expect(result.statusHistory).toEqual([...request.statusHistory, { fromStatus: 'pending', toStatus: 'rejected', changedAt, changedBy: 'reviewer', reason: 'Missing prerequisite.' }]);
++		expect(request).toEqual(pending());
++	});
++});
++
++describe('enrollment service storage invariants', () => {
++	it('ignores caller-supplied generated fields and protects persisted data on every return path', () => {
++		const service = createEnrollmentService();
++		const created = service.create({ ...input, id: 'injected', status: 'approved', statusHistory: [], createdAt: 'invalid' });
++		expect(created.id).not.toBe('injected');
++		expect(created.status).toBe('pending');
++		expect(created.statusHistory).toHaveLength(1);
++		const originalId = created.id;
++		created.statusHistory.length = 0;
++		created.learnerEmail = 'tampered@example.org';
++		const listed = service.list({})[0];
++		if (!listed) throw new Error('Missing persisted request');
++		const entry = listed.statusHistory[0];
++		if (!entry) throw new Error('Missing creation history');
++		entry.changedBy = 'tampered';
++		const fetched = service.get(originalId);
++		fetched.status = 'cancelled';
++		expect(service.get(originalId).status).toBe('pending');
++		expect(service.get(originalId).statusHistory[0]?.changedBy).toBe('system');
++		expect(() => service.create(input)).toThrow('An active request already exists');
++		const updated = service.changeStatus(originalId, { status: 'approved', changedBy: 'reviewer' });
++		updated.statusHistory.length = 0;
++		expect(service.get(originalId).statusHistory).toHaveLength(2);
++	});
++	it('does not save invalid creation or status updates', () => {
++		const service = createEnrollmentService();
++		expect(() => service.create({ ...input, justification: 'short' })).toThrow();
++		expect(service.list({})).toEqual([]);
++		const original = service.create(input);
++		expect(() => service.changeStatus(original.id, { status: 'rejected', changedBy: 'reviewer' })).toThrow();
++		expect(service.get(original.id)).toEqual(original);
++	});
++});

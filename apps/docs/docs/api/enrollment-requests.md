@@ -74,7 +74,7 @@ For rejection:
 }
 ```
 
-Returns HTTP **200** and the complete updated request. The ID, course, learner, justification, creation timestamp and prior history are preserved. `updatedAt` and the new history entry's `changedAt` are the same ISO UTC timestamp. Each entry records the previous status, new status, operator and optional reason (`null` when absent). `changedBy` must be a non-empty string. Rejection requires a non-empty string reason; a supplied reason for any other transition must also be non-empty.
+Returns HTTP **200** and the complete updated request. The ID, course, learner, justification, creation timestamp and prior history are preserved. `updatedAt` and the new history entry's `changedAt` are the same ISO UTC timestamp. Each entry records the previous status, new status, operator and optional reason (`null` when absent). `changedBy` must be a non-empty string. The transition rule itself enforces a non-empty operator and a non-empty rejection reason, including when called directly. Rejection requires a non-empty string reason; a supplied reason for any other transition must also be non-empty.
 
 | From | Allowed destination |
 | --- | --- |

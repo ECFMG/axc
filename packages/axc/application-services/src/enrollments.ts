@@ -57,6 +57,7 @@ export function createEnrollmentService() {
 			const toStatus = status(body.status);
 			const changedBy = text(body.changedBy, 'changedBy');
 			const reason = body.reason === undefined || body.reason === null ? null : text(body.reason, 'reason');
+			// Validate input before looking up the request; the transition also protects direct callers.
 			if (toStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
 			return store.save(transition(get(id), toStatus, changedBy, reason, new Date().toISOString()));
 		},

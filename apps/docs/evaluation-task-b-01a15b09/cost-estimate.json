@@ -1,0 +1,39 @@
+{
+  "currency": "USD",
+  "type": "Rate-based estimate, not measured billing or plan-credit consumption",
+  "scope": "Completed original primary model turn only; follow-up costing/scoring/publication excluded",
+  "pricing_source": "User-supplied image attached to the follow-up request",
+  "model": "gpt-6.1-sol",
+  "rates_per_million_tokens": {
+    "uncached_input": 2,
+    "cached_input": 0.1,
+    "output": 10,
+    "cache_write": 2.5
+  },
+  "billable_tokens": {
+    "uncached_input": 66088,
+    "cached_input": 2370176,
+    "output": 12768,
+    "cache_write": 0
+  },
+  "cost_components_usd": {
+    "uncached_input": 0.132176,
+    "cached_input": 0.2370176,
+    "output": 0.12768,
+    "cache_write": 0.0
+  },
+  "estimated_total_usd": 0.4968736,
+  "rounded_usd": 0.5,
+  "maximum_request_input_tokens": 97908,
+  "long_context_threshold": 272000,
+  "long_context_multiplier_applied": false,
+  "assumptions": [
+    "Use supplied rates as requested, without claiming independently verified current pricing.",
+    "Cached input is subtracted from input before pricing uncached input.",
+    "Reasoning output is already included in output.",
+    "Cache-write usage is zero according to cumulative counters.",
+    "None of the 33 recorded model requests exceeds the supplied 272K threshold.",
+    "Automatic approval-review model usage, if incurred, is unavailable and excluded.",
+    "Codex subscription billing may differ from this token-rate calculation."
+  ]
+}

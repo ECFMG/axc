@@ -1,0 +1,34 @@
+Task B: Course Search and Enrollment Request Workflow
+
+Completed against the supplied GitHub branch df-oai-0-b-out, archive commit cd44fba54579483058c1dbff52696a10b1745eff. The branch already included Task A search and the Task B workflow; this run inspected, preserved, strengthened, and validated that implementation. During the original task, no commits or GitHub writes were made; publication was authorized in the follow-up.
+
+Requirements satisfied:
+- Task A: required eight-field Course model, 12 mixed immutable fixtures, case-insensitive title/summary/tag search, modality/status/tag filters, pagination, three ascending sort choices, 400 validation envelopes, empty results, API documentation.
+- Task B B1–B17: active-course enrollment creation, email/justification validation, pending initial state, duplicate pending/approved prevention, retrieval and combined filtering, all four allowed status transitions, 409 invalid transitions, rejection reason, creation/status audit history, tests and endpoint/error documentation.
+- Added direct transition-rule enforcement of operator and rejection reason, preserving input-validation precedence at the service boundary. Added tests for direct rule calls, immutability, generated-field protection, failed-operation atomicity, and safe unexpected-error responses. Updated enrollment documentation.
+- Only five files differ from the supplied archive; see source-manifest.json and changes.patch. No dependencies added, no vendored Cellix edits, no authentication or production/environment/deployment configuration changes.
+
+Validation (pnpm is the repository's declared package manager):
+- pnpm run lint: PASS (217 files).
+- pnpm run build: PASS (18 tasks; API deploy ZIP and documentation site generated locally, nothing deployed).
+- pnpm test: PASS on final run (666 unit/integration tests; 4 local-host acceptance scenarios). Some unchanged tasks reused successful local results from this run.
+- pnpm run test:arch: PASS (19 checks).
+- pnpm run typecheck: PASS (21 tasks).
+- Initial sandboxed test attempt failed because MongoDB could not open a local port. Rerunning with local-server access passed the full suite. See test.log, test-unsandboxed.log, and test-final.log.
+- Docusaurus update-check and Node deprecation notices are non-blocking.
+
+Acceptance: Task A's 12 acceptance criteria and Task B's 15 acceptance criteria are satisfied by implementation review and the unit/integration/acceptance evidence. Not all criteria are separate Cucumber scenarios.
+
+Deliverables:
+- axc-task-b.zip: complete source, preserving the original archive's files and applying this run's five-file delta; excludes newly generated dependencies/build outputs.
+- changes.patch: exact delta from the supplied branch archive.
+- courses.md / enrollment-requests.md: API documentation, also present under apps/docs/docs/api/ in the ZIP.
+- source-manifest.json: baseline revision/hash, changed-file list.
+- usage.json: cumulative-counter boundaries, measured token differences, separate estimate and completeness status.
+- *.log: dependency setup and validation evidence.
+
+Assumptions/limitations:
+Requests remain process-local in-memory sample data; restarts lose requests and separate instances do not coordinate duplicates. changedBy is the existing caller-supplied sample operator identifier. No implementation or validation blockers remain. Domain rules, repository, and serializable response model remain in the existing application-services package, as in the supplied baseline.
+
+Projected usage: 800,000–1,800,000 total model tokens, assuming full feature work, regression checks, and several validation passes. This was an estimate recorded before implementation, not a substitute for usage. The baseline proved largely implemented. Actual recorded usage includes repeated context input and can exceed the estimate.
+Recorded usage: see usage.json. Cached input is included in input; reasoning output is included in output. No subagents used. The original final-response counters have now been recovered; primary accounting is complete. Costing/scoring/publication follow-up usage is excluded. Actual billing is unmeasured. The follow-up cost-estimate.json applies user-supplied rates: USD 0.4968736 (about USD 0.50).

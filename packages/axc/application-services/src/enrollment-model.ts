@@ -55,6 +55,9 @@ export function status(value: unknown): EnrollmentStatus {
 	return value as EnrollmentStatus;
 }
 export function transition(request: EnrollmentRequest, toStatus: EnrollmentStatus, changedBy: string, reason: string | null, changedAt: string): EnrollmentRequest {
+	changedBy = text(changedBy, 'changedBy');
+	if (reason !== null) reason = text(reason, 'reason');
+	if (toStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
 	const allowed: Record<EnrollmentStatus, readonly EnrollmentStatus[]> = { pending: ['approved', 'rejected', 'cancelled'], approved: ['cancelled'], rejected: [], cancelled: [] };
 	if (!allowed[request.status].includes(toStatus)) throw new EnrollmentError('INVALID_STATUS_TRANSITION', 409, `Cannot change ${request.status} to ${toStatus}.`);
 	return { ...request, status: toStatus, updatedAt: changedAt, statusHistory: [...request.statusHistory, { fromStatus: request.status, toStatus, changedAt, changedBy, reason }] };

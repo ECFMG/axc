@@ -1,0 +1,17 @@
+{
+  "source_url": "https://github.com/ECFMG/axc/tree/df-oai-0-b-out",
+  "archive_url": "https://codeload.github.com/ECFMG/axc/zip/refs/heads/df-oai-0-b-out",
+  "source_archive_sha256": "e3ac3f198b59b0fef393c6b0f3ed685389241f389380a190cbbc55b46b596a2a",
+  "archive_commit": "cd44fba54579483058c1dbff52696a10b1745eff",
+  "changed_files": [
+    "apps/api/src/enrollments.test.ts",
+    "apps/docs/docs/api/enrollment-requests.md",
+    "packages/axc/application-services/src/enrollment-model.ts",
+    "packages/axc/application-services/src/enrollments.ts",
+    "packages/axc/application-services/src/enrollments.test.ts"
+  ],
+  "dependencies_added": false,
+  "committed_at_original_delivery": false,
+  "publication_branch": "df-oai-0-b-out",
+  "publication_reference": "Commit containing apps/docs/evaluation-task-b-01a15b09"
+}
