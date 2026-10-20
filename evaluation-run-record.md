@@ -5,7 +5,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | Cursor |
 | Developer / Operator | Ethan Nguyen |
-| Reviewer | (leave blank for now) |
+| Reviewer | Ethan Nguyen |
 | Harness | Cursor |
 | Model | Grok 4.7 high-fast |
 | License / Plan | Cursor Team Plan |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | N/A — dashboard did not show a cost |
 | Elapsed Time | 16m 44s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Reviewer Notes | Strict SRD score added October 20, 2026. The evidence rows are unchanged. evaluation-run-record-unscored.md keeps the original blank review. Functional correctness 20/20. Tests and validation 15/15: 8 course acceptance scenarios, the unit tests, and verify passed. Architecture 9/15: the catalog fixture lives in @axc/persistence, and this run does not keep application services off that package. Iteration 1 had to correct that boundary. Security 12/15: 0 open findings, with known high advisories still ignored, so this is not a clean security result. Harness effectiveness 6/10: the SRD neutral score, because no harness iteration had been attempted. Token and cost efficiency 4/10: 6,110,805 tokens, 16m 44s, and a later list price of about $7.53. Expensive for one endpoint. Developer workflow 8/10: 0 interventions, with a long run. Operational readiness 2/5: training use is fine, and the production approval path is not established. Total 76/100. |
+| Final Rubric Score | 76/100 |
+| Recommendation | Continue |
