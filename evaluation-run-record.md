@@ -5,7 +5,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | Cursor |
 | Developer / Operator | Ethan Nguyen |
-| Reviewer | (leave blank for now) |
+| Reviewer | Ethan Nguyen |
 | Harness | Cursor |
 | Model | Grok 4.7 high-fast |
 | License / Plan | Cursor Team Plan |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | About $2.81 at Cursor's published Grok 4.7 Fast short-context list price ($4 input, $1 cache read, $12 output per 1M tokens). The dashboard did not show a cost. Long-context Fast rates would put the same tokens near $4.22. At the other harness's published rates ($2 uncached input, $0.10 cached input, $10 output per 1M), this token mix is about $1.05. That figure is a comparison, not the billed cost. The Team plan may cover this inside included usage. |
 | Elapsed Time | 13m 2s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Reviewer Notes | Strict SRD score added October 20, 2026. The evidence rows are unchanged. evaluation-run-record-unscored.md keeps the original blank review. Functional correctness 20/20. Tests and validation 12/15: verify passed and package tests cover the required cases. HTTP acceptance is only the default page, one combined filter, and an invalid pageSize. Architecture 15/15. Security 12/15: 0 open findings and 10 ignored, including highs. Harness effectiveness 8/10: tokens fell 37.0% and list price fell from about $3.95 to about $2.81 versus Iteration 3. Time rose from 11m 40s to 13m 02s. Cost improved and speed did not, and one run is not repeatability, so this is not 10/10. Token and cost efficiency 10/10: 1,732,533 tokens and about $2.81. Developer workflow 8/10: 0 human redirects. The agent ran pnpm install, a sandboxed verify failed, and the unsandboxed rerun passed. Operational readiness 2/5. Total 87/100. |
+| Final Rubric Score | 87/100 |
+| Recommendation | Continue |
