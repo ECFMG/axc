@@ -1,0 +1,22 @@
+{
+  "name": "Operational final assessment, October 20, 2026",
+  "status": "Post hoc primary-assistant assessment requested after baseline inspection; not the original controlled-experiment policy",
+  "categories": "Same six category names and equal five-point maxima as supplied RUBRIC_POLICY v1",
+  "general_anchors": {
+    "5": "Fully supported for the operational task",
+    "4": "Strong, with a limited evidence gap",
+    "3": "Adequate or mixed measured outcomes",
+    "2": "Weak with material gaps",
+    "1": "Minimal evidence",
+    "0": "Absent or failed"
+  },
+  "efficiency_anchors": {
+    "5": "Repeated matched trials demonstrate token/cost improvement without quality regression",
+    "4": "Credible comparison shows improved time, tokens and cost with no observed quality regression, but controlled repeated trials remain absent",
+    "3": "Complete accounting and passing quality, with mixed elapsed-time versus token/cost results",
+    "2": "Complete accounting but worse measured time, tokens and cost, or substantial comparison gaps",
+    "1": "Partial usage or cost evidence",
+    "0": "No usable accounting"
+  },
+  "separation": "This final operational grade does not satisfy or replace the strict v1 matched-comparison requirements. Original controlled-policy result stays incomplete."
+}

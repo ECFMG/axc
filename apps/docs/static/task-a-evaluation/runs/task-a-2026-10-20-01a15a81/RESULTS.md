@@ -55,4 +55,4 @@ python3 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and
 
 Recovery reads only the original task segment and reviewer segment. All later follow-up usage is excluded. `complete` becomes true only when a final-response event, subsequent token counters, and task completion are present for every actor.
 
-No implementation, validation or token-accounting blockers remain. The rubric supports 25/25 assessed points; the overall /30 score remains incomplete because matched efficiency evidence is absent. This native Codex run does not establish controller-enforced savings.
+No implementation, validation or token-accounting blockers remain. Final operational assessment is 28/30 (93.3%) after baseline inspection. The separate original controlled-policy result remains 25/25 assessed, overall /30 incomplete because matched repeated efficiency trials are absent. This native Codex run does not establish controller-enforced savings.

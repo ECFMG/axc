@@ -1,0 +1,38 @@
+{
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/15/rollout-2026-10-15T09-12-17-01a13fb0-30d6-7bb2-9c3b-02ab2d3c2ea4_01a13fb1-28b2-7860-b91a-48aee38b1ad9.jsonl",
+  "turn_id": "01a13fb1-293f-7b51-b015-f507a73aad04",
+  "started_at": "2026-10-15T13:12:17.483Z",
+  "completed_at": "2026-10-15T13:18:16.360Z",
+  "elapsed_ms": 358877,
+  "starting_counters": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_output_tokens": 0,
+    "total_tokens": 0
+  },
+  "ending_counters": {
+    "input_tokens": 2275591,
+    "cached_input_tokens": 2212096,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 11677,
+    "reasoning_output_tokens": 2064,
+    "total_tokens": 2287268
+  },
+  "measured_usage": {
+    "input_tokens": 2275591,
+    "cached_input_tokens": 2212096,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 11677,
+    "reasoning_output_tokens": 2064,
+    "total_tokens": 2287268
+  },
+  "calculation": "ending cumulative minus starting cumulative; never sum snapshots",
+  "complete": true,
+  "final_response_accounted": true,
+  "recorded_through": "2026-10-15T13:18:16.355Z",
+  "maximum_input_tokens_per_request": 94000,
+  "estimated_usd_same_supplied_rates": "0.4649696",
+  "scope": "Original baseline turn only, including final response. Later conversations excluded."
+}

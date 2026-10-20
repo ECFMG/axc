@@ -31,7 +31,7 @@ This record covers the fresh Task A implementation from AXC `fe47c38`, original 
 | Elapsed Time | Original main turn: 2026-10-20T18:10:41.463Z through final usage at 18:16:04.008Z (approximately 5m 23s); exact completion event retained in source log |
 | Number of Human Interventions / Redirects | 1 source selection: fresh isolated AXC copy at fe47c38 |
 | Reviewer Notes | Independent source review: no issues. Rubric is a primary-assistant evidence assessment, not a human or independent rubric audit. |
-| Final Rubric Score | 25/25 assessed; overall /30 incomplete because efficiency evidence is unscored under supplied policy |
+| Final Rubric Score | **28/30 (93.3%) final operational assessment** after baseline inspection; strict controlled-policy /30 remains incomplete. These are separate assessments. |
 | Recommendation | Candidate for Pilot; controlled efficiency claim requires matched repeated trials |
 
 ## Usage scope and cost
@@ -44,7 +44,7 @@ The supplied long-context condition applies above 272K input tokens per request.
 
 ## Final rubric
 
-Policy: supplied `RUBRIC_POLICY.json`, version 1, six equally weighted five-point categories. Independent Cavecrew review informs source quality; the primary assistant assigns the evidence-backed scores below.
+**Final operational score: 28/30 (93.3%).** Six equally weighted five-point categories, using disclosed post hoc anchors in `operational-rubric-policy.json`. Independent Cavecrew review informs source quality; the primary assistant assigns this operational assessment. The supplied controlled-experiment policy remains unchanged and separately incomplete.
 
 | Category | Score / 5 | Evidence |
 | --- | ---: | --- |
@@ -52,9 +52,28 @@ Policy: supplied `RUBRIC_POLICY.json`, version 1, six equally weighted five-poin
 | Tests and validation | 5 | All eight final gate groups pass; 45 new tests execute without skips. Full-suite rerun has 23/26 cached tasks; independent and submitted checks execute. |
 | Architecture and codebase alignment | 5 | Existing composition and public contracts preserved; scoped fixture read model; reviewer reports no issues. |
 | Security and guardrail compliance | 5 | Raw validation exercised; allowed/protected boundaries preserved; no dedicated security scan claimed. |
-| Context/token/cost efficiency | Unscored | No predeclared matched repeated comparison with equivalent quality exists. Complete counters and low estimated dollar cost do not establish savings. |
+| Context/token/cost efficiency | 3 | Complete direct baseline verified: candidate is 14.87% faster on completed-turn wall time, but uses 27.08% more tokens and costs 14.27% more. Mixed operational outcomes; no controlled savings claim. |
 | Developer workflow fit | 5 | Runnable source, applicable patch, API docs, validation, model settings, complete final-response usage, reviewer evidence and limitations supplied. |
-| **Observed subtotal** | **25/25** | **Overall /30 remains incomplete. Missing efficiency score is neither zero nor full credit.** |
+| **Final operational total** | **28/30** | **93.3%. Strict controlled-policy result remains incomplete: 25/25 assessed, efficiency unscored.** |
+
+
+## Verified historical baselines and elapsed time
+
+The following pushed branches were fetched and pinned. Original local JSONL logs were inspected to verify the complete baseline counters and recover the missing final response for the incremental baseline. No baseline branch was modified or revalidated.
+
+| Run | Pinned branch commit | Complete tokens | Estimated USD at same rates | Complete original-turn elapsed |
+| --- | --- | ---: | ---: | --- |
+| [df-oai-0-out direct baseline](https://github.com/ECFMG/axc/blob/bef3cd20d3a4bc60348a53dd9800c9fdf6f8b94e/evaluation-run-record.md) | bef3cd2 | 2,303,819 | 0.6490460 | 6m 18.875s |
+| [df-oai-0-a-out incremental baseline](https://github.com/ECFMG/axc/blob/8e325498aa3b617c208f0cb5c8e564af2331c1b1/evaluation-run-record.md), final counters now recovered | 8e32549 | 2,287,268 | 0.4649696 | 5m 58.877s |
+| October 20 candidate, including reviewer | original task 01a15a82 | 2,927,583 | 0.7416588 | 5m 22.550s |
+
+The direct baseline is selected because it starts from matching clean `fe47c38` with the same `gpt-6.1-sol` model and medium reasoning. Current consumption is **27.08% higher in tokens**, **14.27% higher in estimated cost**, and **14.87% lower in elapsed time**. The candidate includes reviewer usage; the baseline has no subagents. This is retrospective descriptive evidence, not a controlled causal harness experiment.
+
+The user’s **5m 11.098s** timing is retained. It exactly matches `df-oai-0-a-out`’s provisional snapshot interval, 13:12:17.483Z–13:17:28.581Z, whose published record excludes final-response usage. Its completed task ends at 13:18:16.360Z, giving **5m 58.877s**. Against the supplied snapshot figure, current elapsed is 11.452 seconds (3.68%) longer; those measurement scopes differ and are not used interchangeably.
+
+The final **28/30 operational assessment** credits mixed efficiency as 3/5. It uses disclosed post hoc anchors. The original strict `RUBRIC_POLICY.json` v1 still requires matched repeated trials; its overall /30 is incomplete, and no controlled 28/30 target attainment or token/cost saving is claimed. Historical baseline grades used different grading criteria and are not directly compared with this score.
+
+[Baseline snapshots, recovered counters and comparison](apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/baseline-comparison/) · [Final rubric](apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/final-rubric.md) · [Operational anchors](apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/operational-rubric-policy.json)
 
 ## Publication integration
 

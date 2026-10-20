@@ -68,12 +68,20 @@
   },
   "no_force_push": true,
   "pricing": "Estimated API-equivalent cost from original complete counters and user-supplied Standard rates, not billed charges.",
-  "rubric": "25/25 assessed; overall /30 incomplete per supplied policy; efficiency unscored without matched repeated comparisons.",
+  "rubric": "Final operational grade 28/30 (93.3%), post hoc after verifying pushed baselines. Separate strict v1 result remains 25/25 assessed and overall /30 incomplete.",
   "evidence_relocations": {
     "independent-host.json": "independent-host.log",
     "submitted/tests-00.json": "submitted/tests-00.jsonl",
     "publication-submitted/tests-00.json": "publication-submitted/tests-00.jsonl"
   },
   "packaging_note": "Initial artifact lint identified stderr/JSONL files with .json suffixes. Renamed copies to .log/.jsonl without changing contents; no linter configuration or source validation changed.",
-  "commit_validation": "Eight Task A validation groups are run explicitly. The commit hook is bypassed to avoid rewriting frozen evidence via lint-staged and invoking additional unrelated external audit services. No full pnpm verify or new dedicated security scan is claimed."
+  "commit_validation": "Eight Task A validation groups are run explicitly. The commit hook is bypassed to avoid rewriting frozen evidence via lint-staged and invoking additional unrelated external audit services. No full pnpm verify or new dedicated security scan is claimed.",
+  "baseline_comparison": "baseline-comparison/comparison.json",
+  "latest_update_scope": "Baseline verification, timing reconciliation and rubric/report updates only; original measured usage and source are unchanged.",
+  "latest_update_validation": {
+    "lint": "passed; baseline-update-lint.log",
+    "json_parsing": "all run JSON files parse",
+    "original_source_unchanged": true,
+    "validation_scope": "Reports/evidence-only update. Prior source validation at 15900a5 (91 API cases, full suite, 29 Hono/29 Azure HTTP checks and other gates) remains applicable; code tests are not rerun for this documentation-only change."
+  }
 }

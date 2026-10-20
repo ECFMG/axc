@@ -1,0 +1,96 @@
+{
+  "kind": "Retrospective operational comparison; not a controlled causal experiment",
+  "selected_baseline": "df-oai-0-out",
+  "selection_reason": "Complete direct implementation from matching pre-feature source fe47c38, same model and medium reasoning. df-oai-0-a-out root describes an incremental existing-feature run.",
+  "baselines": [
+    {
+      "branch": "df-oai-0-out",
+      "commit": "bef3cd20d3a4bc60348a53dd9800c9fdf6f8b94e",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium",
+      "run_type": "fresh implementation at fe47c38",
+      "usage": {
+        "input_tokens": 2286707,
+        "cached_input_tokens": 2155520,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 17112,
+        "reasoning_output_tokens": 2571,
+        "total_tokens": 2303819
+      },
+      "estimated_usd": "0.649046",
+      "elapsed_ms": 378875,
+      "complete": true,
+      "evidence": "df-oai-0-out/recovered-usage.json",
+      "baseline_quality": "Passing quality reported by committed evidence; not rerun during this follow-up."
+    },
+    {
+      "branch": "df-oai-0-a-out",
+      "commit": "8e325498aa3b617c208f0cb5c8e564af2331c1b1",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium",
+      "run_type": "incremental run on existing implementation d6153e2",
+      "usage": {
+        "input_tokens": 2275591,
+        "cached_input_tokens": 2212096,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 11677,
+        "reasoning_output_tokens": 2064,
+        "total_tokens": 2287268
+      },
+      "estimated_usd": "0.4649696",
+      "elapsed_ms": 358877,
+      "complete": true,
+      "evidence": "df-oai-0-a-out/recovered-usage.json",
+      "baseline_quality": "Passing quality reported by committed evidence; not rerun during this follow-up."
+    }
+  ],
+  "candidate": {
+    "branch": "df-oai-4-a-out",
+    "measured_run_id": "01a15a82-26af-7c30-b6cb-7a52c449e651",
+    "usage": {
+      "input_tokens": 2906909,
+      "cached_input_tokens": 2778368,
+      "output_tokens": 20674,
+      "reasoning_output_tokens": 3423,
+      "total_tokens": 2927583
+    },
+    "estimated_usd": "0.7416588",
+    "elapsed_ms": 322550,
+    "elapsed_scope": "Original root turn, includes overlapping reviewer; reviewer duration is not added to wall-clock time.",
+    "complete": true
+  },
+  "comparisons": [
+    {
+      "baseline_branch": "df-oai-0-out",
+      "total_token_change": 623764,
+      "total_token_change_percent": 27.0752172805242,
+      "estimated_usd_change": "0.0926128",
+      "estimated_cost_change_percent": 14.269065674852014,
+      "elapsed_change_ms": -56325,
+      "elapsed_change_percent": -14.866380732431539
+    },
+    {
+      "baseline_branch": "df-oai-0-a-out",
+      "total_token_change": 640315,
+      "total_token_change_percent": 27.99475181745208,
+      "estimated_usd_change": "0.2766892",
+      "estimated_cost_change_percent": 59.5069441098945,
+      "elapsed_change_ms": -36327,
+      "elapsed_change_percent": -10.122409627811201
+    }
+  ],
+  "user_supplied_elapsed_ms": 311098,
+  "user_supplied_elapsed_source": "User states 5 minutes 11 seconds 98 milliseconds. This exactly equals df-oai-0-a-out task start 13:12:17.483Z through provisional counters 13:17:28.581Z. Retained as a supplied/snapshot-window figure, not substituted for completed-turn wall time.",
+  "user_elapsed_delta_ms": 11452,
+  "user_elapsed_delta_percent": 3.6811551343949533,
+  "df_oai_0_a_out_recovery": "Published record stops at 2099009 tokens and lacks final response. Local JSONL recovery now gives 2287268 complete tokens and 358877 ms including final response. Source branch itself is unchanged.",
+  "controlled_comparison_eligible": false,
+  "confounders": [
+    "Single retrospective run per workflow, no predeclared paired repeated trials or alternating order.",
+    "Candidate includes 340519 reviewer tokens; selected direct baseline has no subagents.",
+    "Native context/skills, dates and validation work differ.",
+    "Incremental df-oai-0-a-out source scope differs from fresh implementation.",
+    "Published integration preserves newer branch dependencies; historical baseline quality is not rerun."
+  ],
+  "efficiency_interpretation": "Candidate is faster on completed-turn wall time than either historical run, but uses more tokens and higher same-rate estimated cost. Mixed evidence supports operational efficiency 3/5, not a savings claim or a controlled-policy efficiency score."
+}
