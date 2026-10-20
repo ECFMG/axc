@@ -5,7 +5,7 @@ This record covers the fresh Task A implementation from AXC `fe47c38`, original 
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
-| Developer / Operator | User-directed Codex run |
+| Developer / Operator | Dane Fortun; User-directed Codex run |
 | Reviewer | Cavecrew independent source reviewer; rubric assessment by primary assistant |
 | Harness | Supplied openai-harness-v7.12.02-updated.zip inspected; native Codex run with frozen independent verifiers |
 | Model | gpt-6.1-sol, medium reasoning for both actors, verified from turn context; service tier unavailable |
