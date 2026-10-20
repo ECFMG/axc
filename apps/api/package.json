@@ -19,7 +19,7 @@
 		"clean": "rimraf dist deploy",
 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
 		"start": "node --experimental-strip-types scripts/start-host.ts",
-		"test:courses": "node --test --experimental-strip-types src/courses.test.ts"
+		"test:courses": "node --test --experimental-strip-types src/courses.test.ts test/courses.test.mjs"
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",

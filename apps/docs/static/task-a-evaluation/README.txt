@@ -1,3 +1,5 @@
+October 20, 2026 run: see runs/task-a-2026-10-20-01a15a81/ and the repository-root evaluation-run-record.md. Existing top-level files below describe the earlier run and remain preserved.
+
 Task A completed results
 
 Estimated original-task cost: USD 0.93. Exact estimate: USD 0.9338396, at user-supplied rates.

@@ -1,0 +1,120 @@
+{
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "changed_files": [
+    "apps/api/package.json",
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "apps/docs/docs/courses.md",
+    "packages/axc/application-services/src/courses.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/course-query.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "source_archive": "openai-harness-v7.12.02-updated.zip",
+  "archive_sha256": "14a5f3c308670fc4d04ced33c514976b42dc3db1187fa4cb65b00ed3f50dbf90",
+  "source_choice": "Fresh export of AXC fe47c38, explicitly selected by user. Archive supplies harness/verifiers, not AXC source.",
+  "commands": [
+    {
+      "command": "pnpm run build --env-mode=loose",
+      "exit_code": 0,
+      "result": "18/18 tasks, including documentation site",
+      "log": "build.log"
+    },
+    {
+      "command": "pnpm test --env-mode=loose",
+      "exit_code": 1,
+      "result": "Initial sandbox run: MongoDB listen EPERM; superseded by successful local-server run",
+      "log": "test.log"
+    },
+    {
+      "command": "pnpm test --env-mode=loose",
+      "exit_code": 0,
+      "result": "26/26 tasks; 45 new API cases, existing unit/integration tests and 1 health acceptance scenario pass",
+      "log": "test-local-server.log"
+    },
+    {
+      "command": "pnpm run lint",
+      "exit_code": 0,
+      "result": "199 files checked",
+      "log": "lint.log"
+    },
+    {
+      "command": "pnpm run typecheck --env-mode=loose",
+      "exit_code": 0,
+      "result": "21/21 tasks",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "pnpm run test:arch --env-mode=loose",
+      "exit_code": 0,
+      "result": "15/15 tasks, 9 architecture cases",
+      "log": "architecture.log"
+    },
+    {
+      "command": "node course_acceptance.mjs",
+      "exit_code": 0,
+      "result": "29/29 independent Hono checks",
+      "log": "independent.json"
+    },
+    {
+      "command": "node course_acceptance.mjs --host",
+      "exit_code": 0,
+      "result": "29/29 independent real Azure HTTP checks after granting local-server access",
+      "log": "independent-host-local-server.json"
+    },
+    {
+      "command": "task_a_gates.evaluate(repo, base, out, changed=verified_changed_files)",
+      "exit_code": 0,
+      "result": "45/45 submitted tests, no skipped cases, documentation gate passed",
+      "log": "submitted/result.json"
+    }
+  ],
+  "requirements": {
+    "A1": "satisfied",
+    "A2": "satisfied",
+    "A3": "satisfied",
+    "A4": "satisfied",
+    "A5": "satisfied",
+    "A6": "satisfied",
+    "A7": "satisfied",
+    "A8": "satisfied",
+    "A9": "satisfied",
+    "A10": "satisfied",
+    "A11": "satisfied"
+  },
+  "acceptance_criteria": {
+    "A-AC1": "passed",
+    "A-AC2": "passed",
+    "A-AC3": "passed",
+    "A-AC4": "passed",
+    "A-AC5": "passed",
+    "A-AC6": "passed",
+    "A-AC7": "passed",
+    "A-AC8": "passed",
+    "A-AC9": "passed",
+    "A-AC10": "passed",
+    "A-AC11": "passed",
+    "A-AC12": "passed"
+  },
+  "review": {
+    "result": "No issues",
+    "actor": "Cavecrew reviewer",
+    "scope": "Changed source, tests and documentation against both Task A documents"
+  },
+  "write_boundary": "All 8 feature changes are inside allowed paths. No vendored Cellix source, authentication, production configuration, dependencies or lockfile changed.",
+  "commits_created": false,
+  "blockers": [],
+  "limitations": [
+    "Fixtures are local and read-only by specification.",
+    "Native Codex execution uses archived verifiers; no controlled harness model experiment or comparative savings claim.",
+    "Runtime is Node 24.21.0, pnpm 12.11.2; manifest declares pnpm 11.9.0. Dependency copies preserve existing locked installed versions."
+  ],
+  "dependency_setup": "Offline install failed due missing cached vitest-cucumber tarball; cloned existing installed dependencies with local relative workspace links. No network install or dependency changes.",
+  "packaging": "Source zip includes baseline tracked files and feature additions only; excludes dependencies, generated deployment output, local settings, reports and secrets.",
+  "packaging_checks": {
+    "patch_applies_to_base": true,
+    "patched_files_equal_delivered_source": true,
+    "source_zip_crc_passed": true,
+    "original_repository_clean": true
+  }
+}

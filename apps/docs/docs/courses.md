@@ -14,7 +14,7 @@
 | `pageSize` | Integer from `1` to `50`, written as decimal digits. | `10` |
 | `sort` | `title`, `createdAt` or `updatedAt`. Ascending; title compares case-insensitively. Equal values use ascending ID as a stable tie-break. | `title` |
 
-Repeated recognized parameters return 400. Unknown parameters are ignored. Enum values are case-sensitive. Negative, fractional, scientific-notation, whitespace-padded and unsafe integer values are rejected. Pages beyond the final page return empty items with the requested page and correct totals.
+Repeated or unknown parameters return HTTP 400. Enum values are case-sensitive. Negative, fractional, scientific-notation, whitespace-padded and unsafe integer values are rejected. Pages beyond the final page return empty items with the requested page and correct totals.
 
 ## Success response
 

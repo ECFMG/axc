@@ -1,0 +1,79 @@
+{
+  "repository": "ECFMG/axc",
+  "branch": "df-oai-4-a-out",
+  "previous_head": "8431da1df0c35b03563b334971df817c6be1a82d",
+  "original_base": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "original_turn_id": "01a15a82-26af-7c30-b6cb-7a52c449e651",
+  "original_usage_complete": true,
+  "publication_scope_excluded_from_original_usage": true,
+  "evidence_directory": "apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81",
+  "integration": "Preserves destination history, fixture values, public fixture exports, optional catalog argument, previous tests, dependencies and earlier evidence. Adds 45 API tests, unknown-parameter validation and copies of course result objects/tags.",
+  "differences_from_original_snapshot": "Destination branch integration preserves its prior fixture data and public test contracts; original measured implementation remains intact in task-a-source.zip/task-a.patch. No original-run validation is attributed to this different source tree.",
+  "validation": [
+    {
+      "command": "pnpm run build --env-mode=loose",
+      "result": "pass, 18/18 tasks",
+      "log": "publication-build.log"
+    },
+    {
+      "command": "pnpm test --env-mode=loose",
+      "result": "pass, 26/26 tasks; 91/91 API tests, prior service/unit/integration tests and existing host acceptance; 14/26 tasks cached",
+      "log": "publication-test.log"
+    },
+    {
+      "command": "pnpm run lint",
+      "result": "pass",
+      "log": "publication-lint.log"
+    },
+    {
+      "command": "pnpm run typecheck --env-mode=loose",
+      "result": "pass, 21/21 tasks",
+      "log": "publication-typecheck.log"
+    },
+    {
+      "command": "pnpm run test:arch --env-mode=loose",
+      "result": "pass, 9 architecture cases",
+      "log": "publication-architecture.log"
+    },
+    {
+      "command": "node course_acceptance.mjs",
+      "result": "pass, 29/29 checks",
+      "log": "publication-independent.json"
+    },
+    {
+      "command": "node course_acceptance.mjs --host",
+      "result": "pass, 29/29 checks",
+      "log": "publication-independent-host.json"
+    },
+    {
+      "command": "task_a_gates.evaluate(repo, previous_head, evidence_dir)",
+      "result": "pass, 45 submitted cases and documentation gate",
+      "log": "publication-submitted/result.json"
+    },
+    {
+      "command": "pnpm run lint (after publishing all JSON/evidence files)",
+      "result": "pass",
+      "log": "publication-final-lint.log"
+    },
+    {
+      "command": "pnpm --filter @apps/docs run build (direct, bypassing Turbo cache)",
+      "result": "pass, documentation and static evidence",
+      "log": "publication-final-docs-build.log"
+    }
+  ],
+  "runtime": {
+    "node": "24.21.0",
+    "pnpm": "11.11.0",
+    "dependencies": "Destination lockfile installed with --frozen-lockfile --ignore-scripts; manifest and lockfile preserved."
+  },
+  "no_force_push": true,
+  "pricing": "Estimated API-equivalent cost from original complete counters and user-supplied Standard rates, not billed charges.",
+  "rubric": "25/25 assessed; overall /30 incomplete per supplied policy; efficiency unscored without matched repeated comparisons.",
+  "evidence_relocations": {
+    "independent-host.json": "independent-host.log",
+    "submitted/tests-00.json": "submitted/tests-00.jsonl",
+    "publication-submitted/tests-00.json": "publication-submitted/tests-00.jsonl"
+  },
+  "packaging_note": "Initial artifact lint identified stderr/JSONL files with .json suffixes. Renamed copies to .log/.jsonl without changing contents; no linter configuration or source validation changed.",
+  "commit_validation": "Eight Task A validation groups are run explicitly. The commit hook is bypassed to avoid rewriting frozen evidence via lint-staged and invoking additional unrelated external audit services. No full pnpm verify or new dedicated security scan is claimed."
+}

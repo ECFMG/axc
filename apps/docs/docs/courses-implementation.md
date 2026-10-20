@@ -23,3 +23,7 @@ Application-service tests check fixture validity, uniqueness, immutability, stab
 Delivery evidence records specification hashes, starting commit, changed-file scope, command exit statuses, logs, and measured Codex token counters. This delivery reuses the prior local Task A implementation at d6153e2 on its pre-feature base fe47c38, with updated test registration and documentation. No controlled optimization experiment or token savings claim is made. Original task usage, including the final response and reviewer, is complete in usage.json. Publication follow-up usage is excluded.
 
 See [validation results](courses-validation.md) for current checks and their evidence locations.
+
+## October 20 publication integration
+
+The original fresh implementation is preserved in the October 20 source snapshot and patch. The published branch keeps its existing fixture values and public fixture/catalog contracts while adding strict unknown-parameter validation, independent copies of returned courses and tags, and 45 additional API test cases. Earlier test files and dependency/security changes remain intact. Original implementation usage and publication integration are separate scopes. Current evidence is under `apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/`.

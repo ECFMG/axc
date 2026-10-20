@@ -1,0 +1,531 @@
+--- a/apps/api/package.json
++++ b/apps/api/package.json
+@@ -17,7 +17,8 @@
+ 		"format:check": "biome format .",
+ 		"clean": "rimraf dist deploy",
+ 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
+-		"start": "node --experimental-strip-types scripts/start-host.ts"
++		"start": "node --experimental-strip-types scripts/start-host.ts",
++		"test": "node --test test/courses.test.mjs"
+ 	},
+ 	"dependencies": {
+ 		"@axc/application-services": "workspace:*",
+--- a/apps/api/src/index.ts
++++ b/apps/api/src/index.ts
+@@ -13,4 +13,5 @@
+ 	})
+ 	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
+ 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
+ 	.startUp();
+--- /dev/null
++++ b/apps/api/test/courses.test.mjs
+@@ -0,0 +1,169 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { buildApplicationServicesFactory } from '@axc/application-services';
++import { createRestApp } from '@axc/rest';
++
++const app = createRestApp(buildApplicationServicesFactory({ environment: 'test' }));
++const request = (query = '') => app.request(`/api/courses${query ? `?${query}` : ''}`);
++async function page(query = '') {
++	const response = await request(query);
++	assert.equal(response.status, 200);
++	assert.match(response.headers.get('content-type'), /application\/json/);
++	return response.json();
++}
++const all = (await page('pageSize=50')).items;
++const ids = (courses) => courses.map((course) => course.id).sort();
++
++test('default page, model, mixed fixtures and title sort', async () => {
++	const result = await page();
++	assert.equal(result.page, 1);
++	assert.equal(result.pageSize, 10);
++	assert.equal(result.items.length, 10);
++	assert.ok(all.length >= 12);
++	assert.equal(result.totalItems, all.length);
++	assert.equal(result.totalPages, Math.ceil(all.length / 10));
++	assert.equal(new Set(all.map((course) => course.id)).size, all.length);
++	assert.equal(new Set(all.map((course) => course.modality)).size, 3);
++	assert.equal(new Set(all.map((course) => course.status)).size, 3);
++	for (const course of all) {
++		for (const key of ['id', 'title', 'summary', 'createdAt', 'updatedAt']) assert.equal(typeof course[key], 'string');
++		assert.ok(Array.isArray(course.tags) && course.tags.every((tag) => typeof tag === 'string'));
++		for (const key of ['createdAt', 'updatedAt']) assert.equal(new Date(course[key]).toISOString(), course[key]);
++	}
++	assert.deepEqual(
++		result.items.map((course) => course.title.toLowerCase()),
++		all
++			.slice(0, 10)
++			.map((course) => course.title.toLowerCase())
++			.sort(),
++	);
++});
++for (const [field, term] of [
++	['title', 'Pottery'],
++	['summary', 'compost'],
++	['tags', 'WCAG'],
++]) {
++	test(`case-insensitive search matches ${field} alone`, async () => {
++		const expected = all.filter((course) => [course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(term.toLowerCase())));
++		assert.equal(expected.length, 1);
++		const other = ['title', 'summary', 'tags'].filter((key) => key !== field).flatMap((key) => (key === 'tags' ? expected[0].tags : [expected[0][key]]));
++		assert.ok(other.every((value) => !value.toLowerCase().includes(term.toLowerCase())));
++		assert.deepEqual(ids((await page(`q=${term.toUpperCase()}`)).items), ids(expected));
++	});
++}
++for (const [field, values] of [
++	['modality', ['online', 'in-person', 'hybrid']],
++	['status', ['draft', 'active', 'retired']],
++	['tag', ['AI', 'security', 'WCAG']],
++]) {
++	for (const value of values)
++		test(`${field} filter: ${value}`, async () => {
++			const expected = all.filter((course) => (field === 'tag' ? course.tags.some((tag) => tag.toLowerCase() === value.toLowerCase()) : course[field] === value));
++			assert.ok(expected.length);
++			const result = await page(`${field}=${value}&pageSize=50`);
++			assert.deepEqual(ids(result.items), ids(expected));
++			assert.equal(result.totalItems, expected.length);
++		});
++}
++for (const query of ['q=SECURITY&modality=online&status=active', 'modality=hybrid&status=draft&tag=AI']) {
++	test(`AND filters: ${query}`, async () => {
++		const params = new URLSearchParams(query);
++		const expected = all.filter(
++			(course) =>
++				(!params.has('q') || [course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(params.get('q').toLowerCase()))) &&
++				(!params.has('tag') || course.tags.some((tag) => tag.toLowerCase() === params.get('tag').toLowerCase())) &&
++				['modality', 'status'].every((field) => !params.has(field) || course[field] === params.get(field)),
++		);
++		assert.ok(expected.length);
++		const result = await page(`${query}&pageSize=50`);
++		assert.deepEqual(ids(result.items), ids(expected));
++		assert.equal(result.totalItems, expected.length);
++	});
++}
++test('pagination boundaries, complete pages and no duplicates', async () => {
++	const pages = await Promise.all([1, 2, 3].map((number) => page(`page=${number}&pageSize=5`)));
++	assert.deepEqual(
++		pages.flatMap((result) => result.items).map((course) => course.id),
++		all.map((course) => course.id),
++	);
++	assert.deepEqual(
++		pages.map((result) => result.page),
++		[1, 2, 3],
++	);
++	assert.ok(pages.every((result) => result.pageSize === 5 && result.totalItems === all.length && result.totalPages === 3));
++	assert.equal((await page('pageSize=1')).items.length, 1);
++	assert.equal((await page('pageSize=50')).items.length, all.length);
++	assert.deepEqual((await page('page=9007199254740991&pageSize=50')).items, []);
++});
++for (const field of ['title', 'createdAt', 'updatedAt'])
++	test(`ascending sort: ${field}`, async () => {
++		const result = await page(`sort=${field}&pageSize=50`);
++		const values = result.items.map((course) => course[field].toLowerCase());
++		assert.deepEqual(values, [...values].sort());
++		assert.equal(result.totalItems, all.length);
++	});
++for (const query of [
++	'modality=remote',
++	'status=deleted',
++	'sort=-title',
++	'page=0',
++	'page=-1',
++	'page=1.5',
++	'page=abc',
++	'page=',
++	'page=1e2',
++	'page=9007199254740992',
++	'pageSize=0',
++	'pageSize=51',
++	'pageSize=abc',
++	'pageSize=',
++	'pageSize=2.5',
++	'pageSize=Infinity',
++	'modality=',
++	'status=',
++	'sort=',
++	'page=1&page=2',
++	'q=ai&q=security',
++	'unknown=x',
++]) {
++	test(`invalid query: ${query}`, async () => {
++		const response = await request(query);
++		assert.equal(response.status, 400);
++		const body = await response.json();
++		assert.equal(body.error.code, 'INVALID_QUERY_PARAMETER');
++		assert.equal(body.error.message, 'One or more query parameters are invalid.');
++		assert.ok(body.error.details.some((detail) => detail.field === query.split('=')[0] && typeof detail.message === 'string'));
++		if (query === 'pageSize=51') assert.equal(body.error.details[0].message, 'pageSize must be between 1 and 50.');
++	});
++}
++test('validation collects issues before creating services', async () => {
++	const rejecting = createRestApp({
++		forRequest() {
++			throw new Error('Invalid request must not resolve services');
++		},
++	});
++	const response = await rejecting.request('/api/courses?page=0&status=nope&pageSize=51');
++	assert.equal(response.status, 400);
++	assert.equal((await response.json()).error.details.length, 3);
++});
++test('no matches and empty search have explicit metadata', async () => {
++	assert.deepEqual(await page('q=__no_match__'), { items: [], page: 1, pageSize: 10, totalItems: 0, totalPages: 0 });
++	assert.deepEqual(await page('q=%20%20'), await page());
++	assert.deepEqual((await page('tag=__no_match__')).items, []);
++});
++test('service results cannot mutate subsequent requests', async () => {
++	const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
++	const query = { page: 1, pageSize: 50, sort: 'title' };
++	const result = services.courses.search(query);
++	result.items[0].title = 'Changed';
++	result.items[0].tags.push('changed');
++	assert.deepEqual(services.courses.search(query).items, all);
++});
++test('health contract stays available', async () => {
++	const response = await app.request('/health');
++	assert.equal(response.status, 200);
++	const health = await response.json();
++	assert.equal(health.status, 'ok');
++	assert.equal(health.service, 'agentCourses-api');
++	assert.equal(health.environment, 'test');
++});
+--- /dev/null
++++ b/apps/docs/docs/courses.md
+@@ -0,0 +1,70 @@
++# Course catalog
++
++`GET /api/courses` returns a local training catalog without external services. The twelve fixed fixtures include all modalities and statuses. The endpoint follows the existing anonymous, read-only health route pattern.
++
++## Query parameters
++
++| Parameter | Meaning | Default |
++| --- | --- | --- |
++| `q` | Case-insensitive substring search across title, summary and tags | No keyword filter |
++| `modality` | Exact enum: `online`, `in-person`, `hybrid` | All modalities |
++| `status` | Exact enum: `draft`, `active`, `retired` | All statuses |
++| `tag` | Case-insensitive exact match against any tag | All tags |
++| `page` | Positive safe integer, up to 9007199254740991 | `1` |
++| `pageSize` | Integer from 1 through 50 | `10` |
++| `sort` | `title`, `createdAt`, or `updatedAt`, ascending | `title` |
++
++Filters combine with AND. Keyword and tag values are trimmed; an empty keyword adds no filter. An empty tag matches no fixtures. Titles sort case-insensitively; equal values use ID as a stable tie-breaker. Dates are ISO strings and sort chronologically. Pagination follows filtering and sorting. A page beyond the last page returns an empty list. Repeated or unknown parameters, empty enum/numeric values, unsafe integers and unsupported enum values return HTTP 400.
++
++## Request
++
++```http
++GET /api/courses?q=security&modality=online&status=active&tag=ai&page=1&pageSize=5&sort=title
++```
++
++## Success response
++
++HTTP 200, `application/json`:
++
++```json
++{
++  "items": [{
++    "id": "course-001",
++    "title": "AI Security Foundations",
++    "summary": "Introductory course on secure AI-assisted development.",
++    "modality": "online",
++    "status": "active",
++    "tags": ["ai", "security"],
++    "createdAt": "2026-01-01T00:00:00.000Z",
++    "updatedAt": "2026-06-12T00:00:00.000Z"
++  }],
++  "page": 1,
++  "pageSize": 5,
++  "totalItems": 1,
++  "totalPages": 1
++}
++```
++
++Every course includes the fields above. `totalItems` and `totalPages` describe all filtered results. No matches return HTTP 200 with `items: []`, `totalItems: 0`, and `totalPages: 0`, retaining the requested pagination values.
++
++## Error response
++
++`GET /api/courses?pageSize=51` returns HTTP 400, `application/json`:
++
++```json
++{
++  "error": {
++    "code": "INVALID_QUERY_PARAMETER",
++    "message": "One or more query parameters are invalid.",
++    "details": [{ "field": "pageSize", "message": "pageSize must be between 1 and 50." }]
++  }
++}
++```
++
++Validation collects all invalid fields before resolving application services. Numeric query values use decimal digits only; fractions, signs, whitespace and exponent syntax are rejected.
++
++## Validation
++
++After installing the existing locked dependencies, run `pnpm run build --env-mode=loose`, `pnpm --filter @apps/api test`, `pnpm test --env-mode=loose`, `pnpm run lint`, `pnpm run typecheck --env-mode=loose`, and `pnpm run test:arch --env-mode=loose` from the repository root. The API tests use the actual composed Hono application and public application-service exports. The existing acceptance runner additionally starts the Azure Functions host.
++
++The fixture catalog is intentional for this sample. Persistence, catalog writes, authentication changes and new dependencies are outside this task.
+--- /dev/null
++++ b/packages/axc/application-services/src/courses.ts
+@@ -0,0 +1,171 @@
++/** Local catalog read model. No external services are required. */
++export interface Course {
++	id: string;
++	title: string;
++	summary: string;
++	modality: 'online' | 'in-person' | 'hybrid';
++	status: 'draft' | 'active' | 'retired';
++	tags: readonly string[];
++	createdAt: string;
++	updatedAt: string;
++}
++export interface CourseQuery {
++	q?: string;
++	modality?: Course['modality'];
++	status?: Course['status'];
++	tag?: string;
++	page: number;
++	pageSize: number;
++	sort: 'title' | 'createdAt' | 'updatedAt';
++}
++export interface CoursePage {
++	items: readonly Course[];
++	page: number;
++	pageSize: number;
++	totalItems: number;
++	totalPages: number;
++}
++
++const courses: readonly Course[] = [
++	{
++		id: 'course-001',
++		title: 'AI Security Foundations',
++		summary: 'Introductory course on secure AI-assisted development.',
++		modality: 'online',
++		status: 'active',
++		tags: ['ai', 'security'],
++		createdAt: '2026-01-01T00:00:00.000Z',
++		updatedAt: '2026-06-12T00:00:00.000Z',
++	},
++	{
++		id: 'course-002',
++		title: 'Urban Gardening',
++		summary: 'Grow herbs and compost in small spaces.',
++		modality: 'in-person',
++		status: 'active',
++		tags: ['sustainability', 'community'],
++		createdAt: '2026-01-02T00:00:00.000Z',
++		updatedAt: '2026-06-11T00:00:00.000Z',
++	},
++	{
++		id: 'course-003',
++		title: 'Web Accessibility',
++		summary: 'Build digital experiences for everyone.',
++		modality: 'hybrid',
++		status: 'active',
++		tags: ['design', 'WCAG'],
++		createdAt: '2026-01-03T00:00:00.000Z',
++		updatedAt: '2026-06-10T00:00:00.000Z',
++	},
++	{
++		id: 'course-004',
++		title: 'Pottery Workshop',
++		summary: 'Shape clay using hand-building techniques.',
++		modality: 'in-person',
++		status: 'draft',
++		tags: ['art', 'hands-on'],
++		createdAt: '2026-01-04T00:00:00.000Z',
++		updatedAt: '2026-06-09T00:00:00.000Z',
++	},
++	{
++		id: 'course-005',
++		title: 'Data Storytelling',
++		summary: 'Turn numerical findings into clear explanations.',
++		modality: 'online',
++		status: 'active',
++		tags: ['data', 'communication'],
++		createdAt: '2026-01-05T00:00:00.000Z',
++		updatedAt: '2026-06-08T00:00:00.000Z',
++	},
++	{
++		id: 'course-006',
++		title: 'Project Leadership',
++		summary: 'Coordinate teams and practical delivery plans.',
++		modality: 'hybrid',
++		status: 'retired',
++		tags: ['management', 'communication'],
++		createdAt: '2026-01-06T00:00:00.000Z',
++		updatedAt: '2026-06-07T00:00:00.000Z',
++	},
++	{
++		id: 'course-007',
++		title: 'Conversational Spanish',
++		summary: 'Practice everyday dialogue and listening skills.',
++		modality: 'in-person',
++		status: 'active',
++		tags: ['language', 'beginner'],
++		createdAt: '2026-01-07T00:00:00.000Z',
++		updatedAt: '2026-06-06T00:00:00.000Z',
++	},
++	{
++		id: 'course-008',
++		title: 'Cybersecurity Basics',
++		summary: 'Recognize threats and protect personal devices.',
++		modality: 'online',
++		status: 'draft',
++		tags: ['security', 'technology'],
++		createdAt: '2026-01-08T00:00:00.000Z',
++		updatedAt: '2026-06-05T00:00:00.000Z',
++	},
++	{
++		id: 'course-009',
++		title: 'Photography Fieldwork',
++		summary: 'Explore composition and natural light.',
++		modality: 'hybrid',
++		status: 'active',
++		tags: ['art', 'photography'],
++		createdAt: '2026-01-09T00:00:00.000Z',
++		updatedAt: '2026-06-04T00:00:00.000Z',
++	},
++	{
++		id: 'course-010',
++		title: 'Mindful Movement',
++		summary: 'Combine gentle activity with focused breathing.',
++		modality: 'in-person',
++		status: 'retired',
++		tags: ['wellness', 'beginner'],
++		createdAt: '2026-01-10T00:00:00.000Z',
++		updatedAt: '2026-06-03T00:00:00.000Z',
++	},
++	{
++		id: 'course-011',
++		title: 'Python for Analysts',
++		summary: 'Analyze tables and automate reports.',
++		modality: 'online',
++		status: 'active',
++		tags: ['data', 'technology'],
++		createdAt: '2026-01-11T00:00:00.000Z',
++		updatedAt: '2026-06-02T00:00:00.000Z',
++	},
++	{
++		id: 'course-012',
++		title: 'Responsible Automation',
++		summary: 'Compare security controls for automated systems.',
++		modality: 'hybrid',
++		status: 'draft',
++		tags: ['ai', 'science'],
++		createdAt: '2026-01-12T00:00:00.000Z',
++		updatedAt: '2026-06-01T00:00:00.000Z',
++	},
++];
++const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
++
++export function searchCourses(query: CourseQuery): CoursePage {
++	const keyword = query.q?.trim().toLowerCase() ?? '';
++	const tag = query.tag?.trim().toLowerCase();
++	// ponytail: linear scan suits twelve fixtures; use indexed persistence when the catalog grows.
++	const matches = courses.filter(
++		(course) =>
++			(!query.modality || course.modality === query.modality) &&
++			(!query.status || course.status === query.status) &&
++			(tag === undefined || course.tags.some((value) => value.toLowerCase() === tag)) &&
++			(!keyword || [course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(keyword))),
++	);
++	matches.sort((a, b) => compare(a[query.sort].toLowerCase(), b[query.sort].toLowerCase()) || compare(a.id, b.id));
++	const totalItems = matches.length;
++	const totalPages = Math.ceil(totalItems / query.pageSize);
++	const start = query.page > totalPages ? totalItems : (query.page - 1) * query.pageSize;
++	// Copy nested tags so consumers cannot change the shared fixtures.
++	const items = matches.slice(start, start + query.pageSize).map((course) => ({ ...course, tags: [...course.tags] }));
++	return { items, page: query.page, pageSize: query.pageSize, totalItems, totalPages };
++}
+--- a/packages/axc/application-services/src/index.ts
++++ b/packages/axc/application-services/src/index.ts
+@@ -1,3 +1,7 @@
++import { type CoursePage, type CourseQuery, searchCourses } from './courses.ts';
++
++export type { Course, CoursePage, CourseQuery } from './courses.ts';
++
+ export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
+ export const HEALTH_PROJECT_CODE = 'axc' as const;
+ 
+@@ -16,6 +20,7 @@
+ }
+ 
+ export interface ApplicationServices {
++	courses: { search(query: CourseQuery): CoursePage };
+ 	health: {
+ 		getStatus(): HealthStatus;
+ 	};
+@@ -38,6 +43,7 @@
+ export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+ 	const forRequest = (): Promise<ApplicationServices> =>
+ 		Promise.resolve({
++			courses: { search: searchCourses },
+ 			health: {
+ 				getStatus(): HealthStatus {
+ 					return {
+--- /dev/null
++++ b/packages/axc/rest/src/course-query.ts
+@@ -0,0 +1,42 @@
++import type { CourseQuery } from '@axc/application-services';
++
++interface QueryIssue {
++	field: string;
++	message: string;
++}
++const fields = ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort'];
++export function parseCourseQuery(params: URLSearchParams): { query: CourseQuery; issues: QueryIssue[] } {
++	const issues: QueryIssue[] = [];
++	for (const [field] of params) {
++		if (!fields.includes(field)) issues.push({ field, message: `${field} is not supported.` });
++	}
++	for (const field of fields) {
++		if (params.getAll(field).length > 1) issues.push({ field, message: `${field} must be supplied at most once.` });
++	}
++	function choice<T extends string>(field: string, allowed: readonly T[], fallback: T): T {
++		const value = params.get(field);
++		if (value === null) return fallback;
++		const match = allowed.find((candidate) => candidate === value);
++		if (match !== undefined) return match;
++		issues.push({ field, message: `${field} must be one of: ${allowed.join(', ')}.` });
++		return fallback;
++	}
++	function integer(field: string, fallback: number, maximum: number, message: string): number {
++		const raw = params.get(field);
++		if (raw === null) return fallback;
++		const value = Number(raw);
++		if (/^\d+$/.test(raw) && Number.isSafeInteger(value) && value >= 1 && value <= maximum) return value;
++		issues.push({ field, message });
++		return fallback;
++	}
++	const query: CourseQuery = {
++		page: integer('page', 1, Number.MAX_SAFE_INTEGER, 'page must be a positive safe integer.'),
++		pageSize: integer('pageSize', 10, 50, 'pageSize must be between 1 and 50.'),
++		sort: choice('sort', ['title', 'createdAt', 'updatedAt'], 'title'),
++	};
++	if (params.has('modality')) query.modality = choice('modality', ['online', 'in-person', 'hybrid'], 'online');
++	if (params.has('status')) query.status = choice('status', ['draft', 'active', 'retired'], 'active');
++	if (params.has('q')) query.q = params.get('q') ?? '';
++	if (params.has('tag')) query.tag = params.get('tag') ?? '';
++	return { query, issues };
++}
+--- a/packages/axc/rest/src/index.ts
++++ b/packages/axc/rest/src/index.ts
+@@ -2,9 +2,18 @@
+ import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functions';
+ import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
+ import { Hono } from 'hono';
++import { parseCourseQuery } from './course-query.ts';
+ 
+ export function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {
+ 	const app = new Hono();
++
++	app.get('/api/courses', async (c) => {
++		const { query, issues } = parseCourseQuery(new URL(c.req.url).searchParams);
++		if (issues.length) return c.json({ error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details: issues } }, 400);
++		const authorization = c.req.header('Authorization');
++		const services = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
++		return c.json(services.courses.search(query));
++	});
+ 
+ 	app.get('/health', async (c) => {
+ 		const authorization = c.req.header('Authorization');

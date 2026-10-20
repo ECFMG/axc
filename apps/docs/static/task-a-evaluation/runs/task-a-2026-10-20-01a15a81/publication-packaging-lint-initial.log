@@ -1,0 +1,253 @@
+$ biome lint
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:1:1 parse ━━━━━━━━━━
+
+  × String values must be double quoted.
+  
+  > 1 │ node:events:505
+      │ ^^^^
+    2 │     throw er; // Unhandled 'error' event
+    3 │     ^
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:1:5 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+  > 1 │ node:events:505
+      │     ^^^^^^^^
+    2 │     throw er; // Unhandled 'error' event
+    3 │     ^
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:1:13 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+  > 1 │ node:events:505
+      │             ^^^
+    2 │     throw er; // Unhandled 'error' event
+    3 │     ^
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:2:5 parse ━━━━━━━━━━
+
+  × String values must be double quoted.
+  
+    1 │ node:events:505
+  > 2 │     throw er; // Unhandled 'error' event
+      │     ^^^^^
+    3 │     ^
+    4 │ 
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:2:11 parse ━━━━━━━━━━
+
+  × String values must be double quoted.
+  
+    1 │ node:events:505
+  > 2 │     throw er; // Unhandled 'error' event
+      │           ^^
+    3 │     ^
+    4 │ 
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:2:13 parse ━━━━━━━━━━
+
+  × unexpected character `;`
+  
+    1 │ node:events:505
+  > 2 │     throw er; // Unhandled 'error' event
+      │             ^
+    3 │     ^
+    4 │ 
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:2:15 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+    1 │ node:events:505
+  > 2 │     throw er; // Unhandled 'error' event
+      │               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 3 │     ^
+  > 4 │ 
+  > 5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:3:5 parse ━━━━━━━━━━
+
+  × unexpected character `^`
+  
+    1 │ node:events:505
+    2 │     throw er; // Unhandled 'error' event
+  > 3 │     ^
+      │     ^
+    4 │ 
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:5:51 parse ━━━━━━━━━━
+
+  × Invalid fraction part
+  
+    3 │     ^
+    4 │ 
+  > 5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+      │                                                   ^
+    6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+    7 │     at listenInCluster (node:net:2437:12)
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:14 parse ━━━━━━━━━━
+
+  × unexpected character `.`
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │              ^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:34 parse ━━━━━━━━━━
+
+  × String values must be double quoted.
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                  ^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:37 parse ━━━━━━━━━━
+
+  × expected `,` but instead found `_listen2`
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                     ^^^^^^^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Remove _listen2
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:33 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                 ^^^^^^^^^^^^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:47 parse ━━━━━━━━━━
+
+  × unexpected character `(`
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                               ^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:48 parse ━━━━━━━━━━
+
+  × String values must be double quoted.
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                                ^^^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:52 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                                    ^^^^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:57 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                                         ^^^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:61 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                                             ^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:62 parse ━━━━━━━━━━
+
+  × End of file expected
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                                              ^^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+  i Use an array for a sequence of values: `[1, 2]`
+  
+
+apps/docs/static/task-a-evaluation/runs/task-a-2026-10-20-01a15a81/independent-host.json:6:64 parse ━━━━━━━━━━
+
+  × unexpected character `)`
+  
+    5 │ Error: listen EPERM: operation not permitted 127.0.0.1
+  > 6 │     at Server.setupListenHandle [as _listen2] (node:net:2306:21)
+      │                                                                ^
+    7 │     at listenInCluster (node:net:2437:12)
+    8 │     at node:net:2666:7
+  
+
+The number of diagnostics exceeds the limit allowed. Use --max-diagnostics to increase it.
+Diagnostics not shown: 203.
+Checked 232 files in 74ms. No fixes applied.
+Found 223 errors.
+lint ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+
+[ELIFECYCLE] Command failed with exit code 1.

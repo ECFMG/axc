@@ -1,0 +1,70 @@
+{
+  "currency": "USD",
+  "kind": "estimated API-equivalent cost, not billed charges or Codex subscription allocation",
+  "scope": "Original Task A turn and reviewer, through both final responses. This follow-up, integration, commits and publication are excluded.",
+  "model": "gpt-6.1-sol",
+  "mode": "Standard-rate scenario requested by user; actual service tier not logged",
+  "rate_source": "User-supplied pricing screenshot, preserved as pricing-reference.png. Base prices also checked against official OpenAI pricing on 2026-10-20.",
+  "official_source": "https://developers.openai.com/api/docs/pricing",
+  "rates_usd_per_million_tokens": {
+    "uncached_input": "2.00",
+    "cached_input": "0.10",
+    "cache_write_input": "2.50",
+    "output": "10.00"
+  },
+  "long_context_rule": "User-supplied rule: input/cache rates double for requests exceeding 272000 input tokens. No original-task request crossed that threshold.",
+  "formula": "((input - cached_input - cache_write_input) * 2.00 + cached_input * 0.10 + cache_write_input * 2.50 + output * 10.00) / 1000000; cache_write_input = 0.",
+  "actors": [
+    {
+      "actor": "main",
+      "session_id": "01a15a81-c85e-7fa2-a22d-0c72e25f1db3",
+      "turn_id": "01a15a82-26af-7c30-b6cb-7a52c449e651",
+      "tokens": {
+        "uncached_input": 87179,
+        "cached_input": 2480384,
+        "cache_write_input": 0,
+        "output": 19501
+      },
+      "request_count": 31,
+      "maximum_request_input_tokens": 108832,
+      "long_context_request_count": 0,
+      "estimated_usd_by_component": {
+        "uncached_input": "0.174358",
+        "cached_input": "0.2480384",
+        "cache_write_input": "0.00",
+        "output": "0.19501"
+      },
+      "estimated_usd": "0.6174064"
+    },
+    {
+      "actor": "reviewer",
+      "session_id": "01a15a84-8126-7ee0-b7f2-3e5b32f2846f",
+      "turn_id": "01a15a84-813d-7b33-9285-6da855ca91bd",
+      "tokens": {
+        "uncached_input": 41362,
+        "cached_input": 297984,
+        "cache_write_input": 0,
+        "output": 1173
+      },
+      "request_count": 6,
+      "maximum_request_input_tokens": 63170,
+      "long_context_request_count": 0,
+      "estimated_usd_by_component": {
+        "uncached_input": "0.082724",
+        "cached_input": "0.0297984",
+        "cache_write_input": "0.00",
+        "output": "0.01173"
+      },
+      "estimated_usd": "0.1242524"
+    }
+  ],
+  "estimated_total_usd": "0.7416588",
+  "estimated_total_usd_rounded": "0.74",
+  "usage_complete": true,
+  "original_task_total_tokens": 2927583,
+  "billing_counters_available": false,
+  "pricing_uncertainties": [
+    "Actual Codex billing, subscription fees, credits and service tier are unavailable. This is a hypothetical API-equivalent estimate at the supplied standard rates."
+  ],
+  "double_counting_note": "Cached tokens are charged at cached rates instead of uncached rates. Reasoning output is already inside output and is not charged twice."
+}

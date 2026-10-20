@@ -173,5 +173,6 @@ export function searchCourses(query: CourseQuery, catalog: readonly Course[] = c
 	const totalItems = matches.length;
 	const totalPages = Math.ceil(totalItems / query.pageSize);
 	const start = query.page > totalPages ? totalItems : (query.page - 1) * query.pageSize;
-	return { items: matches.slice(start, start + query.pageSize), page: query.page, pageSize: query.pageSize, totalItems, totalPages };
+	const items = matches.slice(start, start + query.pageSize).map((course) => ({ ...course, tags: [...course.tags] }));
+	return { items, page: query.page, pageSize: query.pageSize, totalItems, totalPages };
 }

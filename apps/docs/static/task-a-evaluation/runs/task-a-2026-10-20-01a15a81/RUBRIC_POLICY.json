@@ -1,0 +1,46 @@
+{
+  "status": "proposed predeclared assessment policy; not an assigned score",
+  "version": 1,
+  "categories": [
+    {
+      "name": "Functional correctness",
+      "maximum": 5,
+      "full_credit": "Every fixed acceptance criterion passes; independent endpoint evidence covers required behaviors and edge cases."
+    },
+    {
+      "name": "Tests and validation",
+      "maximum": 5,
+      "full_credit": "All eight final gates pass for the submitted sources. New assertions are adequate and exercised; no failed or skipped required cases. Cache behavior is disclosed."
+    },
+    {
+      "name": "Architecture and codebase alignment",
+      "maximum": 5,
+      "full_credit": "Existing composition and public package contracts are preserved; changes follow observed project conventions; fresh review finds no unresolved issues. Permitted fixture-backed architecture does not itself lose points for lacking production features outside scope."
+    },
+    {
+      "name": "Security and guardrail compliance",
+      "maximum": 5,
+      "full_credit": "Allowed boundaries and protected sources remain intact; raw input validation is exercised; no auth, dependency, secret, production-setting, or unrelated integration changes. Dedicated security scanning is disclosed separately."
+    },
+    {
+      "name": "Context/token/cost efficiency",
+      "maximum": 5,
+      "four_point_evidence": "A predeclared complete matched comparison demonstrates lower measured tokens and estimated cost at passing quality, with complete actor accounting and no quality-gate regressions.",
+      "five_point_evidence": "Four-point evidence plus independent review confirms no material avoidable repetition or unresolved cost regression in the recorded request and validation workflow.",
+      "missing_comparison": null,
+      "forecast_rule": "Projection error is reported separately; a larger forecast never earns efficiency points."
+    },
+    {
+      "name": "Developer workflow fit",
+      "maximum": 5,
+      "full_credit": "Runnable implementation, API documentation, validation logs, patch/archive, model settings, final-response usage, limitations and reviewer evidence are reproducible and easy to locate."
+    }
+  ],
+  "equal_weighting": true,
+  "maximum_points": 30,
+  "minimum_target": 28,
+  "stretch_target": 30,
+  "unobserved_score": null,
+  "overall_score_rule": "Sum six evidence-backed reviewer scores only when all are present. Otherwise report incomplete assessment, never a complete 28/30 or 30/30.",
+  "limitations": "Review judgment remains necessary. Operator must freeze the policy before running the comparison. This policy does not establish that any score or saving has been achieved."
+}

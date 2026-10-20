@@ -4,16 +4,20 @@ interface QueryIssue {
 	field: string;
 	message: string;
 }
-
+const fields = ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort'];
 export function parseCourseQuery(params: URLSearchParams): { query: CourseQuery; issues: QueryIssue[] } {
 	const issues: QueryIssue[] = [];
-	for (const field of ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort']) {
+	for (const [field] of params) {
+		if (!fields.includes(field)) issues.push({ field, message: `${field} is not supported.` });
+	}
+	for (const field of fields) {
 		if (params.getAll(field).length > 1) issues.push({ field, message: `${field} must be supplied at most once.` });
 	}
 	function choice<T extends string>(field: string, allowed: readonly T[], fallback: T): T {
 		const value = params.get(field);
 		if (value === null) return fallback;
-		if (allowed.includes(value as T)) return value as T;
+		const match = allowed.find((candidate) => candidate === value);
+		if (match !== undefined) return match;
 		issues.push({ field, message: `${field} must be one of: ${allowed.join(', ')}.` });
 		return fallback;
 	}
