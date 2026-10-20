@@ -1,0 +1,15 @@
+{
+  "branch": "df-oai-4-a-out",
+  "repository": "ECFMG/axc",
+  "destination_base_commit": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "original_task_base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "existing_branch_changes_preserved": true,
+  "publication_validation": "All eight gates rerun on destination branch and passed, using its frozen lockfile and pnpm 11.11.0.",
+  "original_task_usage_complete": true,
+  "original_task_total_tokens": 4506559,
+  "estimated_cost_usd": 0.9338396,
+  "assessed_rubric_subtotal": "25/25",
+  "overall_score": null,
+  "overall_score_reason": "Efficiency comparison missing; policy requires null.",
+  "scope": "Original task token usage and token-equivalent cost exclude this follow-up publication turn. Source archive and task-a.patch retain the original task base; Git branch additionally preserves existing destination changes."
+}

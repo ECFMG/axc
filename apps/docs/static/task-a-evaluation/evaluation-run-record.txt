@@ -1,0 +1,24 @@
+Evaluation Run Record
+Team: OpenAI
+Developer / Operator: Codex
+Reviewer: Cavecrew reviewer (independent code review and evidence assessment)
+Harness: openai-harness-v7.12.03-low-cost, native advisory use
+Model: gpt-6.1-sol
+License / Plan: not independently verified
+Codebase: ECFMG/axc
+Task Set: A / TS-A-CATALOG-SEARCH
+Run Type: Final delivery, prior implementation reused
+Harness Engineering Used: supplied independent endpoint oracle and submitted-test/documentation gate; no harness edits
+Config / Diff Notes: reuse existing fixture-backed implementation; improve test registration and update documentation; 13 changed files
+Branch / Commit: original task patch against fe47c38d32376c5e8bcd1d67838160064fd5de99; follow-up publication to df-oai-4-a-out
+Requirements Completed / Attempted: 11 / 11
+Acceptance Criteria Passed / Total: 12 / 12
+Tests Passed / Failed: API 46 / 0; independent Hono 29 / 0; independent Azure HTTP 29 / 0; full tests pass
+Static Analysis / Security Findings: lint/typecheck/architecture pass; no fresh review findings; no dedicated security scan
+Input / Cached / Output / Reasoning / Total Tokens: 4,489,800 / 4,322,816 / 16,759 / 3,179 / 4,506,559. Original task including final response and reviewer; complete. Publication follow-up excluded.
+Estimated Cost: USD 0.9338396 (USD 0.93 rounded), using user-supplied rates; not a billed charge
+Elapsed Time: original task boundaries and final recorded timestamp are in usage.json
+Number of Human Interventions / Redirects: 0 after initial task specification
+Reviewer Notes: No code issues. All eight gates pass. Efficiency comparison absent.
+Final Rubric Score: 25/25 observed; overall /30 incomplete because efficiency comparison is unavailable. See final-rubric.json.
+Recommendation: Candidate for Pilot, subject to independent rubric review

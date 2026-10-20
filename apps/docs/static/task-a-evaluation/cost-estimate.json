@@ -1,0 +1,37 @@
+{
+  "currency": "USD",
+  "basis": "User-supplied screenshot rates; estimated token-equivalent cost, not a billed charge or verified current tariff. Original Task A only; publication follow-up excluded.",
+  "rates_usd_per_million": {
+    "uncached_input": 2,
+    "cached_input": 0.1,
+    "output": 10,
+    "cache_write": 2.5
+  },
+  "usage": {
+    "input_tokens": 4489800,
+    "cached_input_tokens": 4322816,
+    "output_tokens": 16759,
+    "reasoning_output_tokens": 3179,
+    "total_tokens": 4506559
+  },
+  "uncached_input_tokens": 166984,
+  "cache_write_input_tokens": 0,
+  "long_context": {
+    "threshold_input_tokens": 272000,
+    "input_and_cache_multiplier": 2,
+    "maximum_primary_call_input_tokens": 121405,
+    "maximum_reviewer_call_input_tokens": 59631,
+    "triggered": false
+  },
+  "components": {
+    "uncached_input_usd": 0.333968,
+    "cached_input_usd": 0.4322816,
+    "output_usd": 0.16759,
+    "cache_writes_usd": 0.0
+  },
+  "estimated_total_usd": 0.9338396,
+  "rounded_estimated_total_usd": 0.93,
+  "usage_complete": true,
+  "missing_usage": [],
+  "double_counting": "Cached input replaces standard pricing for that subset. Reasoning output is included in output. No extra charge is added for either subset."
+}

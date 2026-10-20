@@ -1,0 +1,98 @@
+{
+  "session_id": "01a15a54-b4ed-7db0-a4ac-7e3baf5afc59",
+  "turn_id": "01a15a54-b785-7d63-abb9-2851199f20a2",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/20/rollout-2026-10-20T13-21-03-01a15a54-b4ed-7db0-a4ac-7e3baf5afc59.jsonl",
+  "scope": "All inspection, planning, implementation, validation, reporting, and final assistant response in the original task turn. Later follow-ups excluded.",
+  "start": {
+    "timestamp": "2026-10-20T17:21:03.884Z",
+    "counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "basis": "Last cumulative snapshot before task_started; zero for a new session."
+  },
+  "projected_estimate": {
+    "total_tokens": 1800000,
+    "range": [
+      800000,
+      3500000
+    ],
+    "recorded_at": "2026-10-20T17:21:37.190526+00:00",
+    "assumptions": "Approximately 20\u201350 model calls with 40k\u201380k input context each, cached input included; one endpoint, local checks, optional focused review. Estimate is not measured usage."
+  },
+  "status": "complete",
+  "missing_usage": [],
+  "subagents": [
+    {
+      "name": "cavecrew_reviewer",
+      "session_id": "01a15a58-d36a-77a3-81a8-5a60c7628ada",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/20/rollout-2026-10-20T13-25-33-01a15a58-d36a-77a3-81a8-5a60c7628ada.jsonl",
+      "turn_id": "01a15a58-d3af-76d3-be76-9a6220b6eaf4",
+      "start": {
+        "timestamp": "2026-10-20T17:25:33.242Z",
+        "counters": {
+          "input_tokens": 0,
+          "cached_input_tokens": 0,
+          "output_tokens": 0,
+          "reasoning_output_tokens": 0,
+          "total_tokens": 0
+        },
+        "basis": "Last cumulative snapshot before task_started; zero for a new session."
+      },
+      "end": {
+        "timestamp": "2026-10-20T17:26:05.860Z",
+        "counters": {
+          "input_tokens": 341664,
+          "cached_input_tokens": 303616,
+          "output_tokens": 1110,
+          "reasoning_output_tokens": 123,
+          "total_tokens": 342774
+        },
+        "event_ordinal": 50
+      },
+      "measured_usage": {
+        "input_tokens": 341664,
+        "cached_input_tokens": 303616,
+        "output_tokens": 1110,
+        "reasoning_output_tokens": 123,
+        "total_tokens": 342774
+      },
+      "complete": true,
+      "missing_usage": [],
+      "missing_counters": []
+    }
+  ],
+  "end": {
+    "timestamp": "2026-10-20T17:27:50.612Z",
+    "counters": {
+      "input_tokens": 4148136,
+      "cached_input_tokens": 4019200,
+      "output_tokens": 15649,
+      "reasoning_output_tokens": 3056,
+      "total_tokens": 4163785
+    },
+    "event_ordinal": 324
+  },
+  "measured_usage": {
+    "input_tokens": 4148136,
+    "cached_input_tokens": 4019200,
+    "output_tokens": 15649,
+    "reasoning_output_tokens": 3056,
+    "total_tokens": 4163785
+  },
+  "missing_counters": [],
+  "aggregate_measured_usage": {
+    "input_tokens": 4489800,
+    "cached_input_tokens": 4322816,
+    "output_tokens": 16759,
+    "reasoning_output_tokens": 3179,
+    "total_tokens": 4506559
+  },
+  "complete": true,
+  "updated_at": "2026-10-20T17:28:14.771379+00:00",
+  "accounting_notes": "Cumulative ending minus starting counters. Cached input is included in input; reasoning output is included in output. Neither is added twice. Parent and reviewer logs are disjoint. No follow-up turn usage is included.",
+  "label": "Complete original task usage, including final response"
+}

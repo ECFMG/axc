@@ -6,6 +6,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
+		"test": "tsgo --noEmit --project tsconfig.test.json && pnpm run test:courses",
 		"prebuild": "pnpm run lint",
 		"build": "tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs",
 		"typecheck": "tsgo --noEmit",
@@ -17,7 +18,8 @@
 		"format:check": "biome format .",
 		"clean": "rimraf dist deploy",
 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
-		"start": "node --experimental-strip-types scripts/start-host.ts"
+		"start": "node --experimental-strip-types scripts/start-host.ts",
+		"test:courses": "node --test --experimental-strip-types src/courses.test.ts"
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
