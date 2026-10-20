@@ -5,7 +5,7 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | --- | --- |
 | Team | Cursor |
 | Developer / Operator | Ethan Nguyen |
-| Reviewer | (leave blank for now) |
+| Reviewer | Ethan Nguyen |
 | Harness | Cursor |
 | Model | Grok 4.7 high-fast |
 | License / Plan | Cursor Team Plan |
@@ -26,6 +26,6 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Estimated Cost | N/A — dashboard did not show a cost |
 | Elapsed Time | 25m 10s |
 | Number of Human Interventions / Redirects | 0 |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Reviewer Notes | Strict SRD score added October 20, 2026. The evidence rows are unchanged. evaluation-run-record-unscored.md keeps the original blank review. Functional correctness 20/20. Tests and validation 9/15: verify passed and REST unit tests cover course cases, but the acceptance suite does not cover course search. That coverage hole is real. Architecture 15/15: application services and REST do not import persistence, and the boundary tests passed. Security 12/15: 0 open findings and 10 ignored, including highs. Harness effectiveness 4/10: tokens fell about 15.9% from baseline, and time rose from 16m 44s to 25m 10s. The boundary rule helped. The run got much slower. Token and cost efficiency 4/10: 5,140,548 tokens, 25m 10s, later list price about $6.71. Still expensive. Developer workflow 8/10: 0 interventions, and the run was slow enough to be friction. Operational readiness 2/5. Total 74/100. |
+| Final Rubric Score | 74/100 |
+| Recommendation | Remediate |
