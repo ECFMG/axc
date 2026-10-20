@@ -30,7 +30,7 @@
       "name": "Context/token/cost efficiency",
       "score": null,
       "maximum": 5,
-      "rationale": "No predeclared matched comparison establishes relative efficiency; complete token accounting alone does not justify a score."
+      "rationale": "Selected complete historical df-oai-0-out baseline records 2,303,819 tokens and USD 0.649046. Current aggregate is 95.61% more tokens and 43.88% more estimated cost. Run scopes differ; no predeclared matched repeated comparison establishes a causal harness effect or satisfies this policy."
     },
     {
       "name": "Developer workflow fit",
@@ -55,5 +55,7 @@
     "within_declared_range": false,
     "note": "Forecast error is reported separately and does not earn or deduct efficiency points."
   },
-  "limitations": "This is an evidence-backed reviewer assessment under the supplied proposed policy, not an independently audited 30-point score. No 28/30 or 30/30 claim is made."
+  "limitations": "This is an evidence-backed reviewer assessment under the supplied proposed policy, not an independently audited 30-point score. No 28/30 or 30/30 claim is made.",
+  "historical_comparison": "baseline-comparison/comparison.json",
+  "baseline_comparison_review": "Cavecrew reviewer verified interpretation and percentage differences; five assessed scores unchanged."
 }

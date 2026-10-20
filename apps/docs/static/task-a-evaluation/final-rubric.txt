@@ -8,3 +8,5 @@ Context/token/cost efficiency: unscored. No predeclared matched comparison estab
 Developer workflow fit: 5/5. Source, patch roundtrip, API documentation, current validation logs, original final-response accounting and cost estimate are available. Stale pending-usage statements corrected and reviewer rechecked.
 
 Observed subtotal: 25/25. Overall /30 assessment: incomplete. A matched comparison is required to score efficiency. No complete /30 score is claimed.
+
+Baseline inspection: both df-oai-0-a-out and df-oai-0-out contain historical runs. Selected complete df-oai-0-out baseline: 2,303,819 tokens and estimated USD 0.649046. Current original-task aggregate: 4,506,559 tokens and USD 0.9338396, increases of 95.61% and 43.88%. No causal savings or efficiency-score claim is supported by this retrospective comparison. See root evaluation-run-record.md and baseline-comparison/comparison.json.

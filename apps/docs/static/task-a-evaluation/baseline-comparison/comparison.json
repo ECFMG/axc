@@ -1,0 +1,105 @@
+{
+  "kind": "retrospective descriptive comparison, not a controlled savings experiment",
+  "selected_baseline": {
+    "branch": "df-oai-0-out",
+    "branch_commit": "bef3cd20d3a4bc60348a53dd9800c9fdf6f8b94e",
+    "implementation_commit": "7c0c875",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "medium",
+    "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+    "usage": {
+      "input_tokens": 2286707,
+      "cached_input_tokens": 2155520,
+      "output_tokens": 17112,
+      "reasoning_output_tokens": 2571,
+      "total_tokens": 2303819
+    },
+    "cost_usd": 0.649046,
+    "accounting_complete": true,
+    "local_log_verified": true,
+    "evidence_path": "df-oai-0-out/apps/docs/evaluation-runs/task-a-2026-10-14-01a13c21/usage.json",
+    "final_response_accounted_for": true,
+    "reported_quality": "A1\u2013A11 and12/12 acceptance criteria; full tests/lint/build/typecheck/architecture pass; baseline not rerun in this follow-up."
+  },
+  "candidate": {
+    "branch": "df-oai-4-a-out",
+    "implementation_commit": "894163a8eeef683101b5f2d929e7a2484535af9e",
+    "usage": {
+      "input_tokens": 4489800,
+      "cached_input_tokens": 4322816,
+      "output_tokens": 16759,
+      "reasoning_output_tokens": 3179,
+      "total_tokens": 4506559
+    },
+    "primary_usage": {
+      "input_tokens": 4148136,
+      "cached_input_tokens": 4019200,
+      "output_tokens": 15649,
+      "reasoning_output_tokens": 3056,
+      "total_tokens": 4163785
+    },
+    "reviewer_usage": {
+      "input_tokens": 341664,
+      "cached_input_tokens": 303616,
+      "output_tokens": 1110,
+      "reasoning_output_tokens": 123,
+      "total_tokens": 342774
+    },
+    "cost_usd": 0.9338396,
+    "accounting_complete": true,
+    "final_response_accounted_for": true,
+    "followup_usage_excluded": true
+  },
+  "observed_differences": {
+    "total_tokens": 2202740,
+    "total_tokens_increase_percent": 95.61254595087549,
+    "cost_usd": 0.2847936,
+    "cost_increase_percent": 43.87880057807921,
+    "token_reduction_percent": -95.61254595087549,
+    "cost_reduction_percent": -43.87880057807921
+  },
+  "other_baselines": [
+    {
+      "branch": "df-oai-0-a-out",
+      "branch_commit": "8e325498aa3b617c208f0cb5c8e564af2331c1b1",
+      "record": "Root evaluation-run-record.md",
+      "total_tokens": 2099009,
+      "complete": false,
+      "reason_not_selected": "Later incremental run on an existing implementation; original final-response counters missing in branch record."
+    },
+    {
+      "branch": "df-oai-0-a-out",
+      "record": "evidence/task-a-2026-10-14-direct-codex/usage.json",
+      "total_tokens": 2376618,
+      "complete": true,
+      "local_log_verified": true,
+      "estimated_cost_usd_same_rates": 0.5790616,
+      "note": "Distinct earlier direct implementation run; retained as supporting historical evidence. Not combined with other run totals."
+    },
+    {
+      "branch": "df-oai-0-a-out",
+      "record": "evidence/task-a-2026-10-14-01a13c21/usage.json",
+      "total_tokens": 2303819,
+      "complete": true,
+      "note": "Duplicate of selected baseline; not counted twice."
+    },
+    {
+      "branch": "df-oai-0-a-out",
+      "record": "evidence/v7.12-baseline/evaluation-records/task-a-baseline.md",
+      "model": "gemma4:26b / Ollama",
+      "total_tokens": 255219,
+      "quality": "0/8 Task A final validation groups passed",
+      "reason_not_selected": "Different provider/model and failing feature quality; cannot establish accepted-task efficiency."
+    }
+  ],
+  "interpretation": "Current run consumed95.61% more tokens and43.88% higher estimated cost than selected historical baseline. No improvement is demonstrated by these totals; differences cannot be attributed causally to the harness.",
+  "controlled_comparison_eligible": false,
+  "confounders": [
+    "One run per workflow; no predeclared paired repetitions or alternating order.",
+    "Current run reuses prior implementation d6153e2; baseline directly implemented Task A.",
+    "Current run includes a separately measured fresh reviewer; baseline uses no subagents.",
+    "Native host context, injected skills and validation workloads are not frozen or identical.",
+    "Current branch publication uses newer inherited dependencies; historical quality evidence is not revalidated here."
+  ],
+  "rubric_effect": "Efficiency remains null under frozen RUBRIC_POLICY v1; observed subtotal25/25, overall /30 incomplete. Historical rubric scores used different criteria and are not directly comparable."
+}

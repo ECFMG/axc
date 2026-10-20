@@ -1,0 +1,17 @@
+{
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T15-05-32-01a13bce-3595-72e2-9312-9d2093fecb08.jsonl",
+  "turn_id": "01a13bcf-4777-7551-95a9-83ab897b5f64",
+  "measured_usage": {
+    "input_tokens": 2359033,
+    "cached_input_tokens": 2270976,
+    "output_tokens": 17585,
+    "reasoning_output_tokens": 2393,
+    "total_tokens": 2376618
+  },
+  "final_response_accounted_for": true,
+  "matches_branch_record": true,
+  "ending_timestamp": "2026-10-14T19:12:43.819Z",
+  "maximum_call_input_tokens": 105910,
+  "cache_write_input_tokens": 0,
+  "method": "Ending cumulative minus starting cumulative; stop before next task_started. Original final response verified. Follow-ups excluded."
+}

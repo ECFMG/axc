@@ -1,0 +1,12 @@
+{
+  "reviewer": "Cavecrew reviewer",
+  "result": "No material correction needed.",
+  "checks": [
+    "Selected complete baseline matches local source-log verification.",
+    "Token increase 95.6125%; estimated cost increase 43.8788%.",
+    "Multiple df-oai-0-a-out runs kept separate; duplicate session not counted twice.",
+    "Retrospective consumption comparison is not causal harness evidence.",
+    "Efficiency null; observed subtotal 25/25; overall /30 incomplete."
+  ],
+  "scope": "Follow-up evidence review; usage excluded from original task."
+}

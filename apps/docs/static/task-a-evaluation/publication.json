@@ -11,5 +11,9 @@
   "assessed_rubric_subtotal": "25/25",
   "overall_score": null,
   "overall_score_reason": "Efficiency comparison missing; policy requires null.",
-  "scope": "Original task token usage and token-equivalent cost exclude this follow-up publication turn. Source archive and task-a.patch retain the original task base; Git branch additionally preserves existing destination changes."
+  "scope": "Original task token usage and token-equivalent cost exclude this follow-up publication turn. Source archive and task-a.patch retain the original task base; Git branch additionally preserves existing destination changes.",
+  "root_evaluation_record": "evaluation-run-record.md",
+  "historical_baseline_comparison": "apps/docs/static/task-a-evaluation/baseline-comparison/comparison.json",
+  "historical_token_increase_percent": 95.61254595087547,
+  "historical_cost_increase_percent": 43.8788005780792
 }

@@ -1,0 +1,76 @@
+{
+  "session_id": "01a13c21-5e20-7fe0-a4ae-5d958c1dee69",
+  "turn_id": "01a13c21-8928-7be2-90d2-d1c101637a75",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/14/rollout-2026-10-14T16-36-22-01a13c21-5e20-7fe0-a4ae-5d958c1dee69.jsonl",
+  "task_start": "2026-10-14T20:36:33.206Z",
+  "baseline_captured_at": "2026-10-14T20:36:46.500998Z",
+  "starting_cumulative": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_output_tokens": 0,
+    "total_tokens": 0
+  },
+  "baseline_basis": "Fresh session: no token_count events precede task_started. Initial cumulative baseline is zero, inferred from fresh log; no explicit pre-task counter event exists.",
+  "scope": "All inspection, planning, implementation, validation and reporting in original turn. Excludes follow-up turns.",
+  "projected_estimate": {
+    "total_tokens": 500000,
+    "assumptions": "Cumulative API tokens across roughly 15-30 model calls with growing context, one local endpoint and focused validation; not unique context tokens or measured usage."
+  },
+  "completeness_status": "complete (fresh-session zero baseline inferred)",
+  "subagents": [],
+  "measurement_captured_at": "2026-10-14T20:43:49.106871+00:00",
+  "recorded_through": "2026-10-14T20:42:52.074Z",
+  "ending_cumulative": {
+    "input_tokens": 2286707,
+    "cached_input_tokens": 2155520,
+    "output_tokens": 17112,
+    "reasoning_output_tokens": 2571,
+    "total_tokens": 2303819
+  },
+  "measured_task_usage": {
+    "input_tokens": 2286707,
+    "cached_input_tokens": 2155520,
+    "output_tokens": 17112,
+    "reasoning_output_tokens": 2571,
+    "total_tokens": 2303819
+  },
+  "calculation": "ending cumulative minus starting cumulative; cumulative snapshots are never summed. Cached input is included in input; reasoning output is included in output.",
+  "final_response_accounted_for": true,
+  "missing_usage": [],
+  "baseline_limitation": "No explicit pre-task cumulative token_count event exists. Zero is inferred from this fresh session, whose first task_started is the measured task. All available task token counters are retained.",
+  "monetary_cost": null,
+  "monetary_cost_status": "Actual billed charge unavailable. Separate rate-based estimate uses user-supplied pricing and recorded original-task counters.",
+  "followup_recovery": "On next user message, run work/update_usage.py before answering. It selects only original-turn token_count events, stopping before the next task_started. Update completeness only if original final response counters are present.",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "medium",
+  "plan": "Business Pro Lite",
+  "plan_source": "User supplied; not independently verified",
+  "rate_based_cost_estimate": {
+    "currency": "USD",
+    "source": "User-provided pricing screenshot in follow-up message; not independently verified pricing or actual billed charge",
+    "rates_per_million_tokens": {
+      "uncached_input": 2,
+      "cached_input": 0.1,
+      "output": 10,
+      "cache_writes": 2.5
+    },
+    "uncached_input_tokens": 131187,
+    "cached_input_tokens": 2155520,
+    "output_tokens": 17112,
+    "cache_write_tokens": 0,
+    "cache_write_source": "Final original-turn token_usage_record.turn_token_usage.cache_write_input_tokens",
+    "maximum_input_tokens_per_request": 93237,
+    "long_context_threshold": 272000,
+    "long_context_input_cache_multiplier": 2,
+    "long_context_multiplier_applied": false,
+    "components_usd": {
+      "uncached_input": 0.262374,
+      "cached_input": 0.215552,
+      "output": 0.17112,
+      "cache_writes": 0.0
+    },
+    "total_usd": 0.649046,
+    "note": "Cached input is deducted from total input before applying uncached rate; reasoning output is already included in output. Business Pro Lite subscription charge/credits are not inferred from API-equivalent rates. Follow-up usage excluded."
+  }
+}
