@@ -43,7 +43,7 @@ Add pages under `apps/docs/docs/` and register the id in `apps/docs/sidebars.ts`
 
 ## Known verify failures
 
-`verify` runs steps in order and stops at the first failure. On a clean tree every step passes except the last, Snyk, which reports a medium finding in `hono@4.13.10`. Done means verify reaches Snyk and Snyk reports only that finding. Report it as pre-existing. If verify prints Snyk: SKIPPED, treat that as done too and report it.
+`verify` runs steps in order and stops at the first failure. Its last two steps, `pnpm audit` and Snyk, can fail on third-party findings already present on main. A finding is pre-existing when its exact `package@version` appears in `git show main:pnpm-lock.yaml`; check each finding that way once. If audit fails only on pre-existing findings, run `pnpm run snyk` once to finish the check. Done means every step before audit passes and every audit and Snyk finding is pre-existing: list them as pre-existing and stop. Do not upgrade packages, edit `.snyk` or audit config, or rerun verify to clear them. If verify prints Snyk: SKIPPED, treat that as done too and report it.
 
 ## Task files
 
