@@ -3,11 +3,11 @@
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
-| Developer / Operator | Not recorded |
+| Developer / Operator | Dane Fortun |
 | Reviewer | |
 | Harness | Codex Desktop |
-| Model | `gpt-6.1-sol`; automatic approval reviews used `codex-auto-review` |
-| License / Plan | Not specified by operator |
+| Model | `gpt-6.1-sol`; medium reasoning, automatic approval reviews used `codex-auto-review` |
+| License / Plan | Business Pro Lite |
 | Codebase | ECFMG/axc |
 | Task Set | B — Course Search and Enrollment Request Workflow; Task A seeded starting point |
 | Run Type | Final direct implementation run |
