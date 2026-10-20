@@ -1,3 +1,8 @@
+import { type CourseCatalog, type CoursePage, type CourseQueryInput, searchCourses } from './courses.ts';
+
+export type { Course, CourseCatalog, CoursePage, CourseQueryDetail, CourseQueryInput } from './courses.ts';
+export { InvalidCourseQueryError } from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -19,6 +24,9 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: {
+		search(query: CourseQueryInput): CoursePage;
+	};
 }
 
 export interface ApplicationServicesFactory {
@@ -35,7 +43,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 	return 'local';
 }
 
-export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+export function buildApplicationServicesFactory(context: ApiContext, courses: CourseCatalog): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -47,6 +55,11 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						environment: context.environment,
 						timestamp: new Date().toISOString(),
 					};
+				},
+			},
+			courses: {
+				search(query: CourseQueryInput): CoursePage {
+					return searchCourses(courses.list(), query);
 				},
 			},
 		});
