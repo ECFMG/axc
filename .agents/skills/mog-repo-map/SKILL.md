@@ -27,7 +27,7 @@ Each package's public API = `src/index.ts`. Imports use `.ts` extensions (`./x.t
 
 ## Query validation (REST boundary)
 
-- Collect every problem into `details: [{ field, message }]`, then return one 400 (code/shape per task).
+- Collect every problem (field + message) first, then return one 400. The error body is exactly the task spec's shape (names, nesting, codes) — build it in one `errorBody()`; the skeleton's is a placeholder.
 - Integers: digits only → `Number.isSafeInteger` → range (huge values are 400, never `Infinity`).
 - `?x=` (empty) is present and invalid, not absent.
 - Enum values: the feature's exported `as const` array (flat domain constant; app-services has no `@axc/domain` dep); REST imports it, never retypes.
@@ -55,6 +55,7 @@ import { type ApplicationServicesFactory, type <Feature>Query, type <Thing>Kind,
 import type { Hono } from 'hono';
 
 interface Detail { field: string; message: string }
+const errorBody = (details: Detail[]) => ({ details }); // placeholder: use the task spec's error shape
 const isKind = (v: string): v is <Thing>Kind => (<thing>Kinds as readonly string[]).includes(v);
 const intParam = (raw: string | undefined, field: string, [min, max, fallback]: [number, number, number], details: Detail[]): number => {
 	if (raw === undefined) return fallback;
@@ -70,7 +71,7 @@ export function register<Feature>Routes(app: Hono, factory: ApplicationServicesF
 		const limit = intParam(c.req.query('limit'), 'limit', [1, 100, 20], details);
 		const kind = c.req.query('kind');
 		if (kind !== undefined && !isKind(kind)) details.push({ field: 'kind', message: `must be one of ${<thing>Kinds.join(', ')}` });
-		if (details.length > 0) return c.json({ error: '<ERROR_CODE>', details }, 400);
+		if (details.length > 0) return c.json(errorBody(details), 400);
 		const query: <Feature>Query = kind !== undefined && isKind(kind) ? { limit, kind } : { limit };
 		const services = await factory.forRequest(c.req.header('Authorization'));
 		return c.json(services.<feature>.list(query));
