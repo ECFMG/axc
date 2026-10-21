@@ -38,6 +38,7 @@ Each package's public API = `src/index.ts`. Imports use `.ts` extensions (`./x.t
 ```ts
 export const <thing>Kinds = ['a', 'b'] as const;
 export type <Thing>Kind = (typeof <thing>Kinds)[number];
+export const is<Thing>Kind = (v: unknown): v is <Thing>Kind => (<thing>Kinds as readonly unknown[]).includes(v);
 export interface <Thing> { id: string; kind: <Thing>Kind }
 export interface <Feature>Query { kind?: <Thing>Kind; limit: number }
 const <thing>s: readonly <Thing>[] = [{ id: 't1', kind: 'a' }, { id: 't2', kind: 'b' }];
@@ -46,7 +47,7 @@ export const list<Thing>s = (q: <Feature>Query): <Thing>[] => <thing>s.filter((t
 `application-services/src/index.ts` — imports + wiring only (no `.filter(` `.sort(` `.slice(` or `seed|fixture|sample|mock… = [{` here):
 ```ts
 import { list<Thing>s, type <Feature>Query, type <Thing> } from './<feature>.ts';
-export { <thing>Kinds, type <Feature>Query } from './<feature>.ts';
+export { is<Thing>Kind, <thing>Kinds, type <Feature>Query } from './<feature>.ts';
 // ApplicationServices: <feature>: { list(q: <Feature>Query): <Thing>[] };   forRequest object: <feature>: { list: list<Thing>s },
 ```
 `rest/src/<feature>.routes.ts` (flat file — no new folders under `packages/axc/**`; only `/health` stays inline in `rest/src/index.ts`):
@@ -79,89 +80,7 @@ export function register<Feature>Routes(app: Hono, factory: ApplicationServicesF
 ```
 Mount: `rest/src/index.ts` imports `register<Feature>Routes` from `./<feature>.routes.ts` and calls it before `return app`; `apps/api/src/index.ts` adds `.registerAzureFunctionHttpHandler('<feature>', { route: 'api/<feature>', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)`.
 
-**Write command** (same flat folders). Pure domain rules + transitions → `application-services/src/<feature>.rules.ts` (no I/O, no clock) with `<feature>.rules.test.ts`. Cellix would put them in `@axc/domain`, but app-services doesn't depend on it and adding the dep churns the lockfile, so they stay here; REST reaches them via `@axc/application-services`.
-```ts
-import { type <Thing>Kind, <thing>Kinds } from './<feature>.ts';
-
-export const is<Thing>Kind = (v: unknown): v is <Thing>Kind => (<thing>Kinds as readonly unknown[]).includes(v);
-export const canChangeKind = (from: <Thing>Kind, to: <Thing>Kind): boolean => from !== to;
-```
-`application-services/src/<feature>.store.ts` — typed domain error + store with injectable id/clock (tests pass `{ newId, now }`):
-```ts
-import type { <Thing>, <Thing>Kind } from './<feature>.ts';
-import { canChangeKind } from './<feature>.rules.ts';
-
-export type <Feature>ErrorCode = 'not_found' | 'invalid_state';
-export class <Feature>Error extends Error {
-	readonly code: <Feature>ErrorCode;
-	constructor(code: <Feature>ErrorCode, message: string) {
-		super(message);
-		this.code = code;
-	}
-}
-let seq = 0;
-export const create<Thing>Store = ({ newId, now } = { newId: () => `<thing>-${++seq}`, now: () => new Date() }) => {
-	const items = new Map<string, <Thing> & { updatedAt: string }>();
-	const save = (t: <Thing>) => {
-		const saved = { ...t, updatedAt: now().toISOString() };
-		items.set(t.id, saved);
-		return saved;
-	};
-	return {
-		create: (kind: <Thing>Kind) => save({ id: newId(), kind }),
-		update(id: string, kind: <Thing>Kind) {
-			const t = items.get(id);
-			if (!t) throw new <Feature>Error('not_found', `<thing> ${id} not found`);
-			if (!canChangeKind(t.kind, kind)) throw new <Feature>Error('invalid_state', `cannot change ${t.kind} to ${kind}`);
-			return save({ ...t, kind });
-		},
-	};
-};
-export type <Thing>Store = ReturnType<typeof create<Thing>Store>;
-```
-`application-services/src/index.ts`: export `<Feature>Error`, `type <Feature>ErrorCode` (store) and `is<Thing>Kind` (rules); `ApplicationServices.<feature>` becomes `{ list(q: <Feature>Query): <Thing>[] } & <Thing>Store`; in `buildApplicationServicesFactory`, before `forRequest`, `const <feature>Store = create<Thing>Store();` (once per process, so state survives requests) and `forRequest` returns `<feature>: { list: list<Thing>s, ...<feature>Store }`.
-`rest/src/<feature>.commands.ts` — body parse (malformed / non-object → 400), path param, one status mapper:
-```ts
-import { type ApplicationServicesFactory, <Feature>Error, type <Feature>ErrorCode, is<Thing>Kind } from '@axc/application-services';
-import type { Context, Hono } from 'hono';
-
-const errorBody = (details: { field: string; message: string }[]) => ({ details }); // placeholder: task spec's shape
-const STATUS = { not_found: 404, invalid_state: 409 } as const satisfies Record<<Feature>ErrorCode, number>;
-const fail = (c: Context, e: unknown) => {
-	if (e instanceof <Feature>Error) return c.json(errorBody([{ field: 'id', message: e.message }]), STATUS[e.code]);
-	throw e;
-};
-const readObject = async (c: Context): Promise<Record<string, unknown> | undefined> => {
-	try {
-		const body: unknown = await c.req.json();
-		return typeof body === 'object' && body !== null && !Array.isArray(body) ? (body as Record<string, unknown>) : undefined;
-	} catch {
-		return undefined;
-	}
-};
-
-export function register<Feature>Commands(app: Hono, factory: ApplicationServicesFactory): void {
-	app.post('/api/<feature>', async (c) => {
-		const body = await readObject(c);
-		if (!body) return c.json(errorBody([{ field: 'body', message: 'must be a JSON object' }]), 400);
-		const { kind } = body;
-		if (!is<Thing>Kind(kind)) return c.json(errorBody([{ field: 'kind', message: 'invalid' }]), 400);
-		const services = await factory.forRequest(c.req.header('Authorization'));
-		return c.json(services.<feature>.create(kind), 201);
-	});
-	app.patch('/api/<feature>/:id', async (c) => {
-		const { kind } = (await readObject(c)) ?? {};
-		if (!is<Thing>Kind(kind)) return c.json(errorBody([{ field: 'kind', message: 'invalid' }]), 400);
-		const services = await factory.forRequest(c.req.header('Authorization'));
-		try {
-			return c.json(services.<feature>.update(c.req.param('id'), kind));
-		} catch (e) {
-			return fail(c, e);
-		}
-	});
-}
-```
-Mount it beside the routes (`register<Feature>Commands(app, applicationServicesFactory)`).
+**Write endpoints** (POST/PUT/PATCH/DELETE): read `.agents/skills/mog-repo-map/write-skeleton.md` in your first read batch.
 
 `acceptance-api/src/features/<feature>.feature` + `src/step-definitions/<feature>.steps.ts`:
 ```gherkin
@@ -219,8 +138,8 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 - **Step wiring** (`acceptance-api/cucumber.yaml`): features from `src/features/**/*.feature`; steps via `require` = `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` (loaded through `tsx/cjs`). A new step file must be `src/step-definitions/<feature>.steps.ts` — any other name/folder is never loaded (undefined steps).
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.
 - **Step patterns are global** across every `.steps.ts`: reuse an existing pattern; a second definition matching the same text makes the run fail as ambiguous.
-- **4xx**: `Send` doesn't throw — `Ensure.that(resolved(LastResponse.status()), equals(404))`, then `Ensure.that(responseBody<E>(), property('<field>', equals(v)))`.
-- **Step API**: `@cucumber/cucumber` Given/When/Then · core `actorCalled`, `Question` · rest `Send.a(GetRequest.to(p))`, `PostRequest.to(p).with(body)`, `LastResponse.status()` · assertions `Ensure`, `equals`, `isTrue`, `isGreaterThan`, `property`, `containItemsWhereEachItem`, `containAtLeastOneItemThat`, `not`.
+- **4xx**: `Send` doesn't throw — assert the status step, then `Ensure.that(responseBody<E>(), property('<field>', equals(v)))`.
+- **Step API** beyond the skeleton: `Given`, `Question`, `PostRequest.to(p).with(body)`, `isTrue`, `containAtLeastOneItemThat`, `not`.
 - **Derived check**: an async `Question.about` is `Question<Promise<T>>`, so pass it through `resolved()` (else TS2345 `Expectation<boolean>` vs `Expectation<Promise<boolean>>`):
   `const nonEmpty = Question.about('non-empty', (a) => a.answer(responseBody<T[]>()).then((xs) => xs.length > 0));` → `Ensure.that(resolved(nonEmpty), equals(true))`.
 - **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; an AC no scenario can prove (docs, process) gets a `# ac-meta: <ID>-AC<n>` line in the .feature instead. The evidence table reuses ids.
