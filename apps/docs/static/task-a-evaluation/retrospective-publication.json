@@ -1,0 +1,17 @@
+{
+  "branch": "df-oai-5-a-out",
+  "assessed_source_commit": "968809298923f4fe631b4f81d6e5f85dc86569eb",
+  "score": 25,
+  "maximum": 30,
+  "provisional": false,
+  "application_code_changed": false,
+  "original_usage_and_cost_changed": false,
+  "tests_rerun": false,
+  "checks": [
+    "Rubric arithmetic",
+    "JSON parsing",
+    "Record link verification",
+    "Documentation diff whitespace checks"
+  ],
+  "independent_review": false
+}

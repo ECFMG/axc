@@ -20,18 +20,18 @@ Usage covers the original task from 2026-10-21 14:15:53.887 UTC through its fina
 
 ## Final rubric assessment
 
-The six equally weighted categories come from the supplied harness policy. The evidence supports a **23/25 subtotal across five scored categories**. A complete score out of 30 remains unavailable because the policy leaves efficiency unscored without a matched comparison. These are Codex self-assessment scores; the independent reviewer field remains blank.
+The final retrospective assistant assessment is **25/30 (83.3%)** for the published Task A source. This uses the same six categories as the original policy, with a disclosed qualitative efficiency judgment. Independent human review remains pending.
 
 | Category | Score | Evidence and qualification |
 | --- | ---: | --- |
-| Functional correctness | 5/5 | All fixed requirements and acceptance criteria pass; 29/29 independent checks in both endpoint modes. |
-| Tests and validation | 5/5 | Required command categories pass, new submitted tests execute, and cache use is disclosed. |
-| Architecture and codebase alignment | 4/5 | Existing composition, package boundaries and health behavior are preserved; independent design review is still absent. |
-| Security and guardrail compliance | 5/5 | Allowed implementation boundaries preserved; raw validation exercised; no production/auth/dependency changes in the implementation. Dedicated security scanning was not run. |
-| Context/token/cost efficiency | Unscored / 5 | The required predeclared matched comparison was not run. Token volume and forecast error cannot substitute for comparison evidence. |
-| Developer workflow fit | 4/5 | Source, patch, docs, validation and complete original usage are available; independent review evidence remains absent. |
+| Functional correctness | 5/5 | All A1–A11 requirements and A-AC1–A-AC12 criteria are covered; the two independent endpoint runs pass 29/29 checks each. |
+| Tests and validation | 5/5 | Build, full tests, lint, typecheck, architecture, both endpoint modes and submitted-test/documentation gate passed for the implementation. Submitted new assertions executed directly; existing Turbo cache use is disclosed. |
+| Architecture and codebase alignment | 4/5 | The existing application service factory, public exports, Hono injection, Cellix composition root and health behavior are preserved. Source/architecture checks pass. This is a self-assessment; no independent reviewer has approved the design. |
+| Security and guardrail compliance | 5/5 | All 11 implementation changes stay in allowed paths; protected configuration, auth behavior, vendored Cellix and dependency manifests were preserved. Raw enum, number, duplicate and unknown-parameter validation is exercised. Dedicated security scanning was not run. |
+| Context/token/cost efficiency | 2/5 | Conservative retrospective assessment: complete original-turn accounting records 2,310,482 tokens and USD 0.6025832 estimated cost. No equivalent Task A comparison is established in this assessment. The 2/5 rating is qualitative, not proof of measured savings; forecast error does not determine the score. |
+| Developer workflow fit | 4/5 | Runnable source, patch, docs, test evidence and now complete original-turn token accounting are provided. A separate independent reviewer packet/sign-off and a matched efficiency experiment are absent. |
 
-The rubric's 28/30 target and 30/30 stretch target have not been established. An independent reviewer and a matched efficiency experiment are needed to close the assessment.
+This retrospective total does not certify a matched efficiency experiment. The archived strict-policy assessment remains 23/25 across observed categories with overall /30 unassigned. Its predeclared-comparison requirement was not fulfilled. Neither forecast error nor absolute cost is treated as proof of savings. The original strict assessment and the final retrospective rubric are both preserved in the static evidence.
 
 ## Validation and publication
 
