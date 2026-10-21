@@ -200,7 +200,8 @@ Layering: no cycles; domain ↛ persistence/service-mongoose/application-service
 
 ## Facts (pre-answered — don't hunt)
 
-- **Docs**: `apps/docs/docs/<feature>.md` — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
+- **Routes** (proven): one `registerAzureFunctionHttpHandler` per route template, listing every method it serves; names unique — `('<feature>', { route: 'api/<feature>', methods: ['GET', 'POST'], … })`, `('<feature>-item', { route: 'api/<feature>/{id}', methods: ['PATCH'], … })`. Azure templates use `{id}`, Hono `:id` (`c.req.param('id')`); Hono sees the full path.
+- **Docs**: the path/file the task names (else `apps/docs/docs/<feature>.md`) — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
 - **knip** (`knip.json`): exports from non-entry files must be imported somewhere — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
 - **Lockfile**: on it already — `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter`, vitest (application-services), `@serenity-js/*`, `@cucumber/cucumber`, `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`. Anything else = lockfile churn.
 
