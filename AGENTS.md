@@ -22,10 +22,6 @@ Do not modify existing `packages/cellix` files; they must match upstream CellixJ
 
 Each new endpoint needs a Hono route in `packages/axc/rest/src/index.ts` and a `registerAzureFunctionHttpHandler` entry in `apps/api/src/index.ts`. `host.json` `routePrefix` is empty, so register the full path.
 
-## Data access
-
-Application services get data through ApiContext, built in `apps/api/src/index.ts` `.setContext(...)`, the same way health gets `environment`. Persistence exports the implementation; apps/api creates it and puts it in the context. Unit tests pass an in-memory instance the same way.
-
 ## Cellix
 
 Open a file under `packages/cellix/` only when a symbol imported by a slice file is not defined there. Open that module only.
