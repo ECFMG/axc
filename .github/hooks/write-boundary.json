@@ -1,5 +1,5 @@
 {
-	"_comment": "Zero-token AXC write boundary for Copilot CLI preToolUse. Tune here; enforce via write-boundary.py from enforce-agent-workflow.sh. Do not vendor .claude/.",
+	"_comment": "Zero-token AXC write boundary. Tune here; enforced by write-boundary.py (Copilot preToolUse) and scripts/write-guard.mjs (.grok/hooks PreToolUse). Do not vendor .claude/.",
 	"allowed_write_globs": ["apps/api/**", "apps/docs/**", "packages/axc/**", "packages/axc-verification/**", "packages/cellix/**", ".agents-work/**"],
 	"_comment_agents_work": ".agents-work/** is for Copilot multi-agent workflow markers only; SCORE default path does not load .github/agents/*.",
 	"path_deny": [
@@ -26,6 +26,7 @@
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)git\\s+push\\b[^|;&]*\\s(--force|--force-with-lease|-f)(\\s|$)", "Force push. Do this yourself if you really mean it."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+push\\s+\\S+\\s+(main|master|prod|production)(\\s|$)", "Direct push to a protected branch. Open a PR from another branch if needed."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+reset\\s+--hard", "Discards uncommitted work irreversibly."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+(?:-C\\s+\\S+\\s+)?(?:config\\s+(?!--get|-l\\b|--list)|init\\b)", "Writes git config/repo setup shared by every worktree. Do this yourself."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+clean\\s+-[a-zA-Z]*[fd]", "Deletes untracked files irreversibly."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+checkout\\s+\\.\\s*$", "Discards all unstaged changes."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(curl|wget)\\b[^|]*\\|\\s*(sudo\\s+)?(ba)?sh", "Piping a download straight into a shell."],

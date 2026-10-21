@@ -1,0 +1,10 @@
+{
+	"hooks": {
+		"PreToolUse": [
+			{
+				"matcher": "run_terminal_command|search_replace|hashline_edit|write",
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/write-guard.mjs\"", "timeout": 10 }]
+			}
+		]
+	}
+}

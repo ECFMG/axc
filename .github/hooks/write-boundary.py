@@ -178,7 +178,7 @@ def check_bash_deny(cmd: str, bash_deny: list) -> str | None:
             continue
         pattern, reason = item[0], item[1]
         try:
-            if re.search(pattern, cmd, re.I):
+            if re.search(pattern, cmd, re.I | re.M):  # per line: a newline can't hide a command
                 return reason
         except re.error:
             continue
