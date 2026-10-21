@@ -10,7 +10,33 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory(
+			{ environment: 'test' },
+			{
+				courses: {
+					getById() {
+						return Promise.resolve(undefined);
+					},
+					list() {
+						return Promise.resolve([]);
+					},
+				},
+				enrollmentRequests: {
+					getById() {
+						return Promise.resolve(undefined);
+					},
+					list() {
+						return Promise.resolve([]);
+					},
+					add() {
+						return Promise.resolve();
+					},
+					save() {
+						return Promise.resolve();
+					},
+				},
+			},
+		).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
