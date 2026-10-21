@@ -81,4 +81,6 @@ Omitted from the edges above because most packages use them: @cellix/config-type
 
 ## Notes added during the task
 
-- `GET /api/courses` is registered in `apps/api/src/index.ts` and handled in `packages/axc/rest/src/index.ts`; the fixture catalog is in-memory in `packages/axc/persistence`.
+- A Hono route is not reachable until apps/api registers an Azure Functions handler for that same path, the way GET /health is registered, with authLevel: 'anonymous'. host.json sets routePrefix to an empty string.
+- Package exports point at dist. Build a package before Vitest can see a new export. If dist/ disagrees with src/, trust src/.
+- pnpm test does not run pnpm run test:arch.
