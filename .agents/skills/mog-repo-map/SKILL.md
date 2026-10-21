@@ -91,7 +91,7 @@ test:arch → test + acceptance → audit → snyk (minutes; acceptance dominate
 | --- | --- |
 | lint/format path | `pnpm exec biome check <path>` (tabs) |
 | unit one package | `pnpm exec turbo run test --filter=@axc/<pkg> --output-logs=errors-only` |
-| full gate once (arch + acceptance live here) | `pnpm run verify 2>&1 \| tail -n 40` |
+| full gate once (arch + acceptance live here) | `pnpm run verify > /tmp/verify.log 2>&1 \|\| node scripts/verify-excerpt.mjs /tmp/verify.log` |
 
 Node: `.nvmrc` → 24.x (`engines.node >=24`).
 

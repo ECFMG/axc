@@ -30,10 +30,10 @@ Arch + acceptance run only in the final gate. Re-run one of them alone only to d
 ### Single final verify
 
 ```bash
-pnpm run verify
+pnpm run verify > /tmp/verify.log 2>&1 || node scripts/verify-excerpt.mjs /tmp/verify.log
 ```
 
-Use **once** before final completion. Husky runs verify on commit — do not bypass with `--no-verify`.
+Use **once** before final completion. Pass → no output (report `verify OK`). Fail → excerpt only (≤80 lines: failed tasks, error lines + context); open `/tmp/verify.log` by line range only if the excerpt is not enough. Husky runs verify on commit — do not bypass with `--no-verify`.
 
 ## Validation Matrix
 
@@ -47,7 +47,7 @@ Use **once** before final completion. Husky runs verify on commit — do not byp
 
 ## Failure Recovery
 
-1. Read the failing output
+1. Read the excerpt from `scripts/verify-excerpt.mjs` (failure only — never paste full logs)
 2. Fix the root cause
 3. Re-run the failing step only
 4. Re-run earlier steps only if the fix could regress them
