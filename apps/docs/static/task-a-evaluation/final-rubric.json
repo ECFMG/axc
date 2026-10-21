@@ -1,0 +1,61 @@
+{
+  "task_set": "TS-A-CATALOG-SEARCH",
+  "scorer": "Codex self-assessment",
+  "human_operator": "Dane Fortun",
+  "independent_reviewer": null,
+  "assessment_date": "2026-10-21",
+  "policy": "rubric-policy.json copied unchanged from supplied harness",
+  "categories": [
+    {
+      "category": "Functional correctness",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "All A1\u2013A11 requirements and A-AC1\u2013A-AC12 criteria are covered; the two independent endpoint runs pass 29/29 checks each."
+    },
+    {
+      "category": "Tests and validation",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "Build, full tests, lint, typecheck, architecture, both endpoint modes and submitted-test/documentation gate passed for the implementation. Submitted new assertions executed directly; existing Turbo cache use is disclosed."
+    },
+    {
+      "category": "Architecture and codebase alignment",
+      "score": 4,
+      "maximum": 5,
+      "rationale": "The existing application service factory, public exports, Hono injection, Cellix composition root and health behavior are preserved. Source/architecture checks pass. This is a self-assessment; no independent reviewer has approved the design."
+    },
+    {
+      "category": "Security and guardrail compliance",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "All 11 implementation changes stay in allowed paths; protected configuration, auth behavior, vendored Cellix and dependency manifests were preserved. Raw enum, number, duplicate and unknown-parameter validation is exercised. Dedicated security scanning was not run."
+    },
+    {
+      "category": "Context/token/cost efficiency",
+      "score": null,
+      "maximum": 5,
+      "rationale": "No predeclared complete matched comparison exists. Under RUBRIC_POLICY.json, missing comparison evidence is unscored. No savings or 4/5 efficiency claim is supported; the large forecast error is reported separately."
+    },
+    {
+      "category": "Developer workflow fit",
+      "score": 4,
+      "maximum": 5,
+      "rationale": "Runnable source, patch, docs, test evidence and now complete original-turn token accounting are provided. A separate independent reviewer packet/sign-off and a matched efficiency experiment are absent."
+    }
+  ],
+  "scored_subtotal": 23,
+  "scored_maximum": 25,
+  "overall_maximum": 30,
+  "overall_score": null,
+  "status": "Incomplete overall assessment: 23/25 observed subtotal; efficiency category unscored. This is not a complete 23/30 or 28/30 score.",
+  "missing_evidence": [
+    "Predeclared complete matched efficiency comparison; no such experiment was run.",
+    "Independent reviewer sign-off."
+  ],
+  "forecast": {
+    "projected_tokens": 80000,
+    "actual_original_turn_tokens": 2310482,
+    "actual_to_forecast_ratio": 28.881025,
+    "scoring_rule": "Forecast error does not earn or determine efficiency points."
+  }
+}

@@ -1,3 +1,9 @@
+import { searchCourses } from './course-search.ts';
+import type { CourseSearchResult, RawCourseQuery } from './course-types.ts';
+
+export { searchCourses } from './course-search.ts';
+export type { Course, CourseModality, CoursePage, CourseQueryError, CourseSearchResult, CourseSort, CourseStatus, RawCourseQuery } from './course-types.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -16,6 +22,9 @@ export interface ApiContext {
 }
 
 export interface ApplicationServices {
+	courses: {
+		search(query?: RawCourseQuery): CourseSearchResult;
+	};
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -38,6 +47,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
+			courses: { search: searchCourses },
 			health: {
 				getStatus(): HealthStatus {
 					return {

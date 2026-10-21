@@ -1,0 +1,56 @@
+[
+  {
+    "path": "apps/api/src/index.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "apps/api/test/courses.test.mjs",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "apps/docs/sidebars.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "packages/axc/application-services/src/course-fixtures.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "packages/axc/application-services/src/course-search.test.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "packages/axc/application-services/src/course-search.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "packages/axc/application-services/src/course-types.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "packages/axc/application-services/src/index.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  },
+  {
+    "path": "packages/axc/rest/src/index.ts",
+    "passed": true,
+    "result": "{\"passed\":true}",
+    "errors": ""
+  }
+]

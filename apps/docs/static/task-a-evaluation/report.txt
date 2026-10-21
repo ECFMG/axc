@@ -1,0 +1,26 @@
+Task A — Course Catalog Search Endpoint
+
+Completion: A1–A11 and A-AC1–A-AC12 satisfied. No implementation blockers remain.
+
+Implemented GET /api/courses with a typed Course model and 15 varied fixtures; case-insensitive keyword search across title/summary/tags; modality/status/tag filters combined with AND; default and bounded pagination; ascending title/createdAt/updatedAt sorts; consistent HTTP 400 errors; and empty no-match results. Raw duplicate and unknown query parameters are rejected. Existing health behavior and authorization forwarding are preserved. Added unit and actual local HTTP tests, API documentation and sidebar navigation.
+
+Deliverables:
+- task-a-source.zip: complete source tree, excluding dependencies and generated build/deployment artifacts.
+- task-a.patch: all 11 changed files, checked for clean application to the declared baseline.
+- source-manifest.json: baseline, changed paths and archive checksum.
+- validation/: successful command logs, independent checks, submitted-test gate and initial sandbox failure evidence.
+- usage.json: recorded counters, boundaries, estimate and completeness status.
+
+Source provenance: The supplied openai-harness-v7.12.02-updated.zip contains the harness and independent validators, not AXC application source. Used an isolated source copy of /Users/dfortun/axc at pre-feature commit fe47c38d32376c5e8bcd1d67838160064fd5de99. The existing checkout already had a different completed Task A implementation; it was not reused or modified. The supplied Task A documents governed the work. Harness workflow/model settings were inspected as archive content and were not substituted for the user's instructions. During original implementation no commits, branches, remote writes or external service integrations were created. The later user request authorizes publication to df-oai-5-a-out. All source changes stay inside the allowed boundary; Cellix, authentication, environment, host settings, lockfile and deployment configuration remain unchanged.
+
+Validation: Build (including docs), lint, typecheck, architecture (9 tests), full workspace tests (25 successful workspace tasks, including existing unit suites and 1 health acceptance scenario), new HTTP tests (16), both independent oracles (29/29 each), submitted-test/documentation gate and 9 source contracts all pass. See validation/summary.json. Existing Turbo caches were used for unchanged packages; submitted tests and independent oracles executed directly. Initial TypeScript and sandbox issues were corrected or rerun successfully; no failing final validation remains. Offline installation lacked a tarball; dependencies were cloned from the installed local checkout without adding or upgrading packages.
+
+Projection: 80,000 total tokens, recorded before source/document inspection. Assumed archive investigation, implementation, focused/full validation and reporting, with no subagents. This forecast substantially underestimated repeated full-context input, including cached input. It is not measured usage and has not been revised to fit the result.
+
+Actual usage: usage.json is authoritative. Measurement starts at the original task_started event and uses ending total_token_usage minus the starting cumulative baseline; snapshots are never summed. The first usage event's cumulative and per-call counters match, supporting an inferred zero baseline for this new session. Cached input is included in input; reasoning output is included in output. No subagents were used. Monetary cost and billing credits are unmeasured. The original final assistant response has now been recovered from the JSONL; original-task accounting is complete. All follow-up usage is excluded. The original local log path and IDs are recorded in usage.json.
+
+Follow-up evaluation: Dane Fortun; Business Pro Lite. Original-task API-equivalent estimate: USD $0.6025832. Rubric: 23/25 scored subtotal; overall /30 incomplete because efficiency comparison evidence is missing. See cost-estimate.json and final-rubric.json.
+
+Publication branch revalidation: all eight command categories and the submitted-test/documentation gate pass with the existing branch dependency/security updates preserved. See publication-validation.zip.
+
+The published patch is packaged as task-a-patch.zip, retaining task-a.patch inside.

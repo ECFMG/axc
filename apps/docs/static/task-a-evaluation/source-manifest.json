@@ -1,0 +1,23 @@
+{
+  "application_source": "/Users/dfortun/axc",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "provided_archive": "/Users/dfortun/Downloads/openai-harness-v7.12.02-updated.zip",
+  "provided_archive_role": "Harness and independent validators only; contains no AXC application source. Local pre-feature AXC source used.",
+  "changed_files": [
+    "apps/api/package.json",
+    "apps/api/src/index.ts",
+    "apps/api/test/courses.test.mjs",
+    "apps/docs/docs/courses.md",
+    "apps/docs/sidebars.ts",
+    "packages/axc/application-services/src/course-fixtures.ts",
+    "packages/axc/application-services/src/course-search.test.ts",
+    "packages/axc/application-services/src/course-search.ts",
+    "packages/axc/application-services/src/course-types.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "boundary_check_passed": true,
+  "dependencies_added": false,
+  "commits_created": false,
+  "archive_sha256": "60b129268ed9d56482b3b6ba44e741e706a693849f520791aee58d485b8e14d8"
+}

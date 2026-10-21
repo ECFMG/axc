@@ -1,0 +1,16 @@
+{
+  "branch": "df-oai-5-a-out",
+  "repository": "https://github.com/ECFMG/axc",
+  "publication_parent": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "implementation_baseline": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "operator": "Dane Fortun",
+  "plan": "Business Pro Lite",
+  "original_task_total_tokens": 2310482,
+  "original_task_usage_complete": true,
+  "follow_up_usage_excluded": true,
+  "all_eight_command_categories_passed": true,
+  "submitted_gate_passed": true,
+  "existing_branch_dependency_and_security_updates_preserved": true,
+  "publication_changes": "Original Task A patch, evaluation docs and sidebar entry, root evaluation-run-record.md, and report artifacts under apps/docs/static/task-a-evaluation.",
+  "rubric_status": "23/25 observed subtotal; overall /30 incomplete; efficiency unscored without matched comparison. Codex self-assessment."
+}

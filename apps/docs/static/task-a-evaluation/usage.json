@@ -1,0 +1,85 @@
+{
+  "session_id": "01a15ed1-6c08-7493-89a3-d68a22129bc0",
+  "task_turn_id": "01a15ed1-8d18-7501-bb20-454b23dcc3db",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/21/rollout-2026-10-21T10-15-45-01a15ed1-6c08-7493-89a3-d68a22129bc0.jsonl",
+  "model": "gpt-6.1-sol",
+  "measurement": {
+    "task_started_at": "2026-10-21T14:15:53.887Z",
+    "baseline_captured_at": "2026-10-21T14:16:12.736938+00:00",
+    "starting_counter_basis": "No pre-task snapshot exists. Baseline inferred as first cumulative counters minus first per-call counters; all are zero in this fresh session.",
+    "first_usage_event_at": "2026-10-21T14:15:58.537Z",
+    "recorded_through": "2026-10-21T14:25:21.773Z",
+    "record_written_at": "2026-10-21T14:31:33.494740+00:00",
+    "task_completed_at": "2026-10-21T14:25:21.846Z",
+    "following_turn_start_at": "2026-10-21T14:31:02.651Z",
+    "scope": "Original task only: inspection, planning, implementation, validation, reporting and final assistant response. Later follow-up turns excluded.",
+    "calculation": "ending cumulative total_token_usage minus starting cumulative counters; do not sum snapshots",
+    "starting_cumulative": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "ending_cumulative": {
+      "input_tokens": 2291450,
+      "cached_input_tokens": 2195072,
+      "output_tokens": 19032,
+      "reasoning_output_tokens": 3332,
+      "total_tokens": 2310482
+    },
+    "first_total_token_usage": {
+      "input_tokens": 38550,
+      "cached_input_tokens": 22912,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 110,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 38660
+    },
+    "first_last_token_usage": {
+      "input_tokens": 38550,
+      "cached_input_tokens": 22912,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 110,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 38660
+    },
+    "cache_write_input_tokens": 0
+  },
+  "measured_usage": {
+    "input_tokens": 2291450,
+    "cached_input_tokens": 2195072,
+    "output_tokens": 19032,
+    "reasoning_output_tokens": 3332,
+    "total_tokens": 2310482
+  },
+  "estimated_usage": {
+    "total_tokens": 80000,
+    "assumptions": "Initial estimate before document inspection: archive investigation, implementation, focused and full validation, and reporting; no subagents planned. Estimate is not measured usage."
+  },
+  "completeness": {
+    "status": "complete",
+    "complete": true,
+    "final_assistant_response_accounted_for": true,
+    "missing_usage": [],
+    "missing_counter_fields": []
+  },
+  "inclusion_rules": {
+    "cached_input_included_in_input": true,
+    "reasoning_output_included_in_output": true
+  },
+  "subagents": {
+    "used": false,
+    "usage": []
+  },
+  "cost": {
+    "measured_dollars": null,
+    "measured_credits": null,
+    "status": "API-equivalent estimate available separately; actual billing dollars and credits remain unmeasured.",
+    "estimated_api_equivalent_usd": 0.6025832,
+    "estimate_source": "cost-estimate.json"
+  },
+  "follow_up_recovery": "Original final response recovered on 2026-10-21. Original accounting is complete; all later turns, including cost/rubric/publication work, are excluded.",
+  "operator": "Dane Fortun",
+  "plan": "Business Pro Lite"
+}

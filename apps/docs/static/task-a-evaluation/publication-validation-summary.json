@@ -1,0 +1,85 @@
+[
+  {
+    "name": "build",
+    "command": [
+      "pnpm",
+      "run",
+      "build",
+      "--env-mode=loose"
+    ],
+    "exit_code": 0,
+    "seconds": 15.74
+  },
+  {
+    "name": "test",
+    "command": [
+      "pnpm",
+      "test",
+      "--env-mode=loose"
+    ],
+    "exit_code": 0,
+    "seconds": 19.25
+  },
+  {
+    "name": "lint",
+    "command": [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    "exit_code": 0,
+    "seconds": 0.56
+  },
+  {
+    "name": "typecheck",
+    "command": [
+      "pnpm",
+      "run",
+      "typecheck",
+      "--env-mode=loose"
+    ],
+    "exit_code": 0,
+    "seconds": 2.13
+  },
+  {
+    "name": "architecture",
+    "command": [
+      "pnpm",
+      "run",
+      "test:arch",
+      "--env-mode=loose"
+    ],
+    "exit_code": 0,
+    "seconds": 2.66
+  },
+  {
+    "name": "http",
+    "command": [
+      "pnpm",
+      "--filter",
+      "@apps/api",
+      "test:courses"
+    ],
+    "exit_code": 0,
+    "seconds": 0.62
+  },
+  {
+    "name": "oracle",
+    "command": [
+      "node",
+      "/Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-3/work/openai-harness-v7.12.02/course_acceptance.mjs"
+    ],
+    "exit_code": 0,
+    "seconds": 0.13
+  },
+  {
+    "name": "oracle-host",
+    "command": [
+      "node",
+      "/Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-3/work/openai-harness-v7.12.02/course_acceptance.mjs",
+      "--host"
+    ],
+    "exit_code": 0,
+    "seconds": 4.39
+  }
+]
