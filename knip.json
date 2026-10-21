@@ -38,7 +38,7 @@
 			"project": ["src/**/*.ts"]
 		},
 		"packages/axc-verification/acceptance-api": {
-			"entry": ["cucumber.yaml", "src/serenity.ts", "src/world.ts", "src/step-definitions/**/*.ts", "src/infrastructure.ts"],
+			"entry": ["cucumber.yaml", "src/serenity.ts", "src/world.ts", "src/step-definitions/**/*.ts", "src/infrastructure.ts", "src/questions.ts"],
 			"project": ["src/**/*.ts"],
 			"ignoreUnresolved": ["progress-bar", "@serenity-js/cucumber", "tsx/cjs"],
 			"ignoreDependencies": ["@serenity-js/cucumber", "tsx"]
