@@ -6,7 +6,7 @@
 		"build": {
 			"description": "Compiles TypeScript and bundles each package",
 			"dependsOn": ["^build"],
-			"inputs": ["src/**", "tsconfig*.json", "rolldown.config.ts", "scripts/**", "host.json", "package.json"],
+			"inputs": ["src/**", "docs/**", "docusaurus.config.ts", "sidebars.ts", "tsconfig*.json", "rolldown.config.ts", "scripts/**", "host.json", "package.json"],
 			"outputs": ["dist/**", "deploy/**", "*.zip", "*.tsbuildinfo", "build/**"]
 		},
 		"typecheck": {
@@ -22,6 +22,12 @@
 		"test:arch": {
 			"description": "Runs architecture fitness tests",
 			"dependsOn": ["^build", "@cellix/config-vitest#build", "@cellix/archunit-tests#build"],
+			"outputs": []
+		},
+		"docs:check": {
+			"description": "Checks API documentation fences and headings in the rendered site",
+			"dependsOn": ["build"],
+			"cache": false,
 			"outputs": []
 		},
 		"test:acceptance": {

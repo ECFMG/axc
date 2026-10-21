@@ -48,6 +48,7 @@ Complete this review after implementation and before the final verification comm
 2. For each material rule, what plausible incorrect implementation does its test reject? Would omitting, weakening, inverting, or incorrectly ordering the rule cause at least one test to fail?
 3. Where multiple rules are exercised together, do focused cases or independently discriminating data prove each rule rather than allowing one result to mask another?
 4. Do predicate-based behaviors include counterexamples that satisfy the other relevant conditions, and do assertions identify the complete expected result or ordering?
+   For every quantified acceptance criterion, how many distinct executed test inputs are present, and what exact expected result does each assert? For Task Set A's A-AC11, identify two separate course-search filter combinations and the counterexamples that expose an ignored `q`, `modality`, or `status` predicate.
 5. Do composed public-path tests prove the externally visible workflow?
 6. For each specified failure, do tests assert both the status or result and the error code, as well as any required absence of state change or side effect?
 7. Do tests verify material response, state-transition, and audit fields directly rather than only counts or broad status checks?
