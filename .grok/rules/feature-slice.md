@@ -84,3 +84,4 @@ Omitted from the edges above because most packages use them: @cellix/config-type
 - A Hono route is not reachable until apps/api registers an Azure Functions handler for that same path, the way GET /health is registered, with authLevel: 'anonymous'. host.json sets routePrefix to an empty string.
 - Package exports point at dist. Build a package before Vitest can see a new export. If dist/ disagrees with src/, trust src/.
 - pnpm test does not run pnpm run test:arch.
+- apps/docs markdown sits outside turbo build inputs, which list src/**. Force `@apps/docs` to rebuild after a docs change.

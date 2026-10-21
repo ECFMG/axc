@@ -1,5 +1,10 @@
+import { readCourseCatalog } from '@axc/persistence';
+import { type CourseListResult, type CourseQueryInput, listCourses } from './list-courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
+
+export type { CourseListResult, CoursePage, CourseQueryError, CourseQueryErrorDetail, CourseQueryInput } from './list-courses.ts';
 
 export type HealthEnvironment = 'local' | 'test' | 'production';
 
@@ -19,6 +24,9 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: {
+		list(query: CourseQueryInput): CourseListResult;
+	};
 }
 
 export interface ApplicationServicesFactory {
@@ -36,6 +44,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const courses = readCourseCatalog();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -47,6 +56,11 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						environment: context.environment,
 						timestamp: new Date().toISOString(),
 					};
+				},
+			},
+			courses: {
+				list(query: CourseQueryInput): CourseListResult {
+					return listCourses(courses, query);
 				},
 			},
 		});
