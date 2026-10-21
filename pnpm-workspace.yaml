@@ -51,7 +51,8 @@ overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
-  hono: 4.13.10
+  follow-redirects: 1.16.1
+  hono: 4.13.11
   http-cache-semantics: 4.3.0
   postcss-selector-parser: 7.1.6
   serialize-javascript: 7.1.2
@@ -59,9 +60,12 @@ overrides:
   sirv: 3.0.2
   source-map-js: 1.2.2
   tinypool: 2.1.2
-  vitest: 4.1.11
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/mocker': 4.1.11
+  vitest: 4.1.12
+  '@vitest/browser-playwright': 4.1.12
+  '@vitest/mocker': 4.1.12
+  launch-editor: 2.14.2
+  vite: 8.3.3 
+
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
