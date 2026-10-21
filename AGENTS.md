@@ -4,7 +4,7 @@ CellixJS architecture; reference `/Volumes/files/src/cellixjs` (targeted reads o
 
 ## Territory
 
-Branch `mog-xai-1`. Local commits only — no push/PR. Don't drive `mog-xai-1-a-out*`; don't run `task-set-a-prompt.md` yourself.
+Branch `mog-xai-1`. Local commits only — no push/PR. Don't drive `mog-xai-1-a-out*`; don't run `task-set-*-prompt.md` yourself.
 
 ## Write boundary
 
@@ -18,8 +18,8 @@ Traps:
 ## SCORE path
 
 1. Load `mog-repo-map` → it answers layout/conventions. Batch the reads you need once, then write; first write by ~call 6.
-2. Finish with `run-validation` (one chained commit; husky verify is the single gate).
-3. Never read: `docs/eval-contract.md`, `docs/score-metering.md`, `.husky/`, archunit/`test:arch` internals, `dist/`, `deploy/`, `docs/skills-archive/`, agent memory. Never write memory.
+2. Typecheck/test green → run the `run-validation` chain at once (no diff/status/re-read review), foreground, long timeout; husky verify is the single gate.
+3. Never read: `pnpm-lock.yaml`, `node_modules/`, `docs/eval-contract.md`, `docs/score-metering.md`, `.husky/`, archunit/`test:arch` internals, `dist/`, `deploy/`, `docs/skills-archive/`, agent memory. Never write memory.
 4. Fail-repair or harness prep only: open `docs/mog-critique.md` by path (3–10 rounds, stop when clean).
 
 ## Output (token budget)

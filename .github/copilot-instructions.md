@@ -49,6 +49,3 @@ Use `.agents/skills/` (symlinked from `.github/skills/` for Copilot discovery).
 **`mog-repo-map`** then **`run-validation`** (mandatory): one chained commit, husky verify = single gate. `docs/mog-critique.md` by path for fail-repair only.
 Others archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`) — not loaded.
 
-## Later Eval (do not implement here)
-
-`GET /api/courses` catalog search (TS-A-CATALOG-SEARCH): A1–A11, A-AC1–12, ≥12 seeded courses, invalid → 400 `INVALID_QUERY_PARAMETER`, empty → 200 empty `items`.

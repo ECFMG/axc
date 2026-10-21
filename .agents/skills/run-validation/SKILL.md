@@ -7,16 +7,18 @@ description: Final gate for AXC changes — one chained format + stage + commit;
 
 While iterating: package-scoped only (`pnpm exec turbo run typecheck|test --filter=<pkg> --output-logs=errors-only`). No `test:arch` / acceptance / full verify mid-task.
 
-## Final gate — ONE command
+## Final gate — ONE command, right after typecheck/test go green
+
+No diff / `git status` / re-read review first. Takes minutes: run it in the **foreground with a long shell timeout** (≥15 min); don't background it or poll a log.
 
 ```bash
-{ . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; pnpm exec biome check --write apps/api apps/docs packages/axc packages/axc-verification >/tmp/biome.log 2>&1 || { tail -n 40 /tmp/biome.log; false; } && git add -A apps/api apps/docs packages/axc packages/axc-verification && git commit -qm "<feature summary>" && git log --oneline -1
+{ . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; pnpm exec biome check --write apps/api apps/docs packages/axc packages/axc-verification >/tmp/biome.log 2>&1 || { tail -n 40 /tmp/biome.log; false; } && git add -A apps/api apps/docs packages/axc packages/axc-verification && git commit -qm "<feature summary>"
 ```
 
-Verify runs **once**: inside husky `pre-commit` (full `pnpm run verify`, quiet). Don't run `pnpm run verify` yourself — that doubles it. Red verify blocks the commit and prints a ≤80-line excerpt + full log path.
+Verify runs **once**, inside husky `pre-commit` (full `pnpm run verify`). Don't run `pnpm run verify` yourself.
 
-- Success → one line (`<sha> <msg>`). Report `verify OK <sha>`.
-- Fail → fix from the excerpt; open the log by line range only if needed; re-run the same command.
-- No extra steps: no separate A-AC grep, `git status`, or log reads after success. Don't read `.husky/`, `docs/score-metering.md` or agent memory; don't write memory.
+- Success → exactly one line: `verify ok · acceptance N/N · <sha>`. Report it; stop.
+- Fail → commit blocked; ≤80-line excerpt + full log path. Fix, re-run the same command. Open the log by line range only if the excerpt isn't enough.
+- No separate AC grep, `git status` or log reads after success. Never read `.husky/`, `docs/score-metering.md`, `pnpm-lock.yaml`, `node_modules/` or agent memory; never write memory.
 - Never `--no-verify`. SKIPPED gate ≠ pass.
 - Repeated failure → `docs/mog-critique.md` (by path; 3–10 rounds).

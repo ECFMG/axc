@@ -6,11 +6,14 @@ fi
 
 pnpm exec lint-staged --quiet
 
-# Full gate; agent-friendly output: silent on success, excerpt + log path on failure.
+# Single gate. Silent here on success (post-commit prints the one-line summary); excerpt + log path on failure.
 VERIFY_LOG="${TMPDIR:-/tmp}/axc-verify-$(basename "$PWD").log"
+SUMMARY="$(git rev-parse --git-dir)/axc-verify-summary"
+rm -f "$SUMMARY"
 if ! pnpm run verify >"$VERIFY_LOG" 2>&1; then
 	# excerpt exits 0 when it finds no known failure pattern -> fall back to the tail
 	node scripts/verify-excerpt.mjs "$VERIFY_LOG" && tail -n 30 "$VERIFY_LOG"
 	echo "verify FAILED — full log: $VERIFY_LOG"
 	exit 1
 fi
+node scripts/verify-summary.mjs "$VERIFY_LOG" >"$SUMMARY" 2>/dev/null || echo "verify ok" >"$SUMMARY"
