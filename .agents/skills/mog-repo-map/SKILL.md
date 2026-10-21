@@ -56,7 +56,7 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 ## Tests
 
 - **Unit**: vitest only in `application-services` (`vitest.config.ts` = `mergeConfig(nodeConfig)` from `@cellix/config-vitest`; `test: vitest run --silent --reporter=dot`). `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
-- **Acceptance** (`packages/axc-verification/acceptance-api`): `cucumber.yaml` loads `src/features/**/*.feature` + `src/step-definitions/**/*.steps.ts`. `world.ts` gives actors `CallAnApi.at(<host origin>)` → relative paths `GetRequest.to('/api/<route>?k=v')`. Steps: `actorCalled('API client')`, `Send.a(...)`, `LastResponse.status()` / `.body<T>()`, `Ensure.that(resolved(q), equals(v))` — copy `step-definitions/healthcheck.steps.ts`. Host port from `acceptance-port.ts`; runs only in the final gate.
+- **Acceptance** (`packages/axc-verification/acceptance-api`): `cucumber.yaml` loads `src/features/**/*.feature` + `src/step-definitions/**/*.steps.ts`. `world.ts` gives actors `CallAnApi.at(<host origin>)` → relative paths `GetRequest.to('/api/<route>?k=v')`. Steps: `actorCalled('API client')`, `Send.a(...)`, `LastResponse.status()` / `.body<T>()`, `Ensure.that(resolved(q), equals(v))` — copy `step-definitions/healthcheck.steps.ts`. `Question.about(…, cb)`: `cb` not `async` unless it awaits (`useAwait`). Host port from `acceptance-port.ts`; runs only in the final gate.
 - **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; the evidence table reuses ids.
 
 ## Biome (`biome.json`)
