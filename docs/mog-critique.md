@@ -1,11 +1,4 @@
----
-name: mog-critique
-description: >
-  Mog-owned adversarial self-critique (3–10 rounds). Load on harness prep or
-  acceptance/verify fail repair only — NOT on clean/default SCORE
-  (SCORE stays mog-repo-map + run-validation only).
----
-
+<!-- Not a discoverable skill. Open by path for harness prep or verify/acceptance fail-repair only — never on a clean SCORE. -->
 # Skill: Mog Critique
 
 Structured adversarial self-critique to raise accuracy on risky or failing work.

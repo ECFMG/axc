@@ -19,7 +19,8 @@ const fail =
 	/(ELIFECYCLE|ERR_PNPM|husky - .*failed|\bFAIL\b|\bFailed:|failed with exit code|exit code [1-9]|AssertionError|\berror\b|Error:|error TS\d+|✖|✗|×|\b\d+ failed\b|Unhealthy|Unable to |not ok|policy failed|Cannot find|Unexpected|is not assignable|Unused [\w ]+|Shutting down forcibly)/i;
 const auditRow = /^│ (high|critical|Package|Vulnerable versions|Patched versions|More info)\b/;
 const listHead = /^Unused [\w ]+ \((\d+)\)/; // knip section: include its rows
-const noise = /(DeprecationWarning|--trace-deprecation|^\s*$|Spawning: |SERENITY COMMAND LINE|^\[?[^\]]*\]? ?-{5,}$|Progress: resolved|0 errors?\b|\b0 failed\b|no errors)/i;
+const noise =
+	/(DeprecationWarning|--trace-deprecation|^\s*$|Spawning: |SERENITY COMMAND LINE|^\[?[^\]]*\]? ?-{5,}$|Progress: resolved|Configuration hints|more similar hints|Remove (from ignore|redundant)|0 errors?\b|\b0 failed\b|no errors)/i;
 const cmdEcho = /^(\$ |> |\. \w)/; // echoed commands, not results
 
 const hits = new Set();

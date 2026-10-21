@@ -4,7 +4,7 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 	. "$NVM_DIR/nvm.sh" >/dev/null 2>&1 && nvm use >/dev/null 2>&1 || true
 fi
 
-pnpm exec lint-staged
+pnpm exec lint-staged --quiet
 
 # Full gate; agent-friendly output: silent on success, excerpt + log path on failure.
 VERIFY_LOG="${TMPDIR:-/tmp}/axc-verify-$(basename "$PWD").log"

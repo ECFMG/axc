@@ -46,7 +46,7 @@ pnpm run verify           # full gate — respect husky pre-commit
 ## Skills
 
 Use `.agents/skills/` (symlinked from `.github/skills/` for Copilot discovery).
-**`mog-repo-map`** then **`run-validation`** (mandatory) → `pnpm run verify`. `mog-critique` opt-in (fail-repair).
+**`mog-repo-map`** then **`run-validation`** (mandatory): one chained commit, husky verify = single gate. `docs/mog-critique.md` by path for fail-repair only.
 Others archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`) — not loaded.
 
 ## Later Eval (do not implement here)

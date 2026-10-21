@@ -70,7 +70,7 @@ Do not weaken `pnpm run verify`, husky, architecture tests, or other guardrails.
 3. **Read existing code**: Understand patterns in the area you're changing; prefer porting from `/Volumes/files/src/cellixjs` over rewriting Cellix
 4. **Implement**: Minimal correct changes inside the write boundary
 5. **Test**: Add/update tests if logic/behavior changed
-6. **Verify**: Use `.agents/skills/run-validation` (mandatory default path) ending in `pnpm run verify`
+6. **Verify**: Use `.agents/skills/run-validation` (mandatory default path): one chained commit; husky verify is the single gate
 7. **Signal completion**: `echo done > .agents-work/current/implementer.done` as your **last** action
 8. **Report**: Summarize changes and assumptions — do not declare overall done
 
@@ -85,7 +85,7 @@ Write `.agents-work/current/implementer.done` only AFTER builds/tests pass. Writ
 
 ## Required Reading
 
-- Skills (when applicable): `.agents/skills/run-validation/SKILL.md` (**mandatory** for validation), `.agents/skills/mog-repo-map/SKILL.md` (map), opt-in `mog-critique` (fail-repair)
+- Skills (when applicable): `.agents/skills/run-validation/SKILL.md` (**mandatory** for validation), `.agents/skills/mog-repo-map/SKILL.md` (map), `docs/mog-critique.md` by path (fail-repair only)
 - Not loaded: archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`)
 - Domain seedwork instructions under `packages/cellix/domain-seedwork/.github/instructions/` when touching domain seedwork
 
