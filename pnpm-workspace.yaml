@@ -52,11 +52,13 @@ overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
+  fast-uri: 3.1.9
   follow-redirects: 1.16.1
   hono: 4.13.11
   http-cache-semantics: 4.3.0
   launch-editor: 2.14.2
   postcss-selector-parser: 7.1.6
+  qs: 6.16.1
   serialize-javascript: 7.1.2
   'shell-quote': 1.11.0
   sirv: 3.0.2
@@ -78,5 +80,6 @@ allowBuilds:
   protobufjs: false
 
 minimumReleaseAgeExclude:
+  - fast-uri@3.1.9
   - hono@4.13.11
   - shell-quote@1.11.0
