@@ -8,7 +8,7 @@ pnpm exec lint-staged --quiet
 
 # Single gate. Silent here on success (post-commit prints the one-line summary); excerpt + log path on failure.
 VERIFY_LOG="${TMPDIR:-/tmp}/axc-verify-$(basename "$PWD").log"
-SUMMARY="$(git rev-parse --git-dir)/axc-verify-summary"
+SUMMARY="${TMPDIR:-/tmp}/axc-verify-summary-$(basename "$PWD").txt"
 rm -f "$SUMMARY"
 if ! pnpm run verify >"$VERIFY_LOG" 2>&1; then
 	# excerpt exits 0 when it finds no known failure pattern -> fall back to the tail

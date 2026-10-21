@@ -22,7 +22,8 @@
 		"test:arch": {
 			"description": "Runs architecture fitness tests",
 			"dependsOn": ["^build", "@cellix/config-vitest#build", "@cellix/archunit-tests#build"],
-			"outputs": []
+			"outputs": [],
+			"cache": false
 		},
 		"test:acceptance": {
 			"description": "Runs Serenity/Cucumber acceptance tests",
