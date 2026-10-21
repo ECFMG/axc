@@ -1,0 +1,339 @@
+$ biome lint
+packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs:16:22 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    14 │ 		const url = `/api/enrollment-requests${path}`;
+    15 │ 		// Recreate Hono per request, matching the Cellix Azure adapter lifetime.
+  > 16 │ 		return process.env['COURSE_TEST_BASE_URL'] ? fetch(`${process.env['COURSE_TEST_BASE_URL']}${url}`, init) : createRestApp(factory).request(url, init);
+       │ 		                   ^^^^^^^^^^^^^^^^^^^^^^
+    17 │ 	};
+    18 │ 	const create = (overrides = {}) => send('', 'POST', { courseId: 'course-001', learnerEmail: email, justification, ...overrides });
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     14  14 │       const url = `/api/enrollment-requests${path}`;
+     15  15 │       // Recreate Hono per request, matching the Cellix Azure adapter lifetime.
+     16     │ - → → return·process.env['COURSE_TEST_BASE_URL']·?·fetch(`${process.env['COURSE_TEST_BASE_URL']}${url}`,·init)·:·createRestApp(factory).request(url,·init);
+         16 │ + → → return·process.env.COURSE_TEST_BASE_URL·?·fetch(`${process.env['COURSE_TEST_BASE_URL']}${url}`,·init)·:·createRestApp(factory).request(url,·init);
+     17  17 │     };
+     18  18 │     const create = (overrides = {}) => send('', 'POST', { courseId: 'course-001', learnerEmail: email, justification, ...overrides });
+  
+
+packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs:16:69 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    14 │ 		const url = `/api/enrollment-requests${path}`;
+    15 │ 		// Recreate Hono per request, matching the Cellix Azure adapter lifetime.
+  > 16 │ 		return process.env['COURSE_TEST_BASE_URL'] ? fetch(`${process.env['COURSE_TEST_BASE_URL']}${url}`, init) : createRestApp(factory).request(url, init);
+       │ 		                                                                  ^^^^^^^^^^^^^^^^^^^^^^
+    17 │ 	};
+    18 │ 	const create = (overrides = {}) => send('', 'POST', { courseId: 'course-001', learnerEmail: email, justification, ...overrides });
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     14  14 │       const url = `/api/enrollment-requests${path}`;
+     15  15 │       // Recreate Hono per request, matching the Cellix Azure adapter lifetime.
+     16     │ - → → return·process.env['COURSE_TEST_BASE_URL']·?·fetch(`${process.env['COURSE_TEST_BASE_URL']}${url}`,·init)·:·createRestApp(factory).request(url,·init);
+         16 │ + → → return·process.env['COURSE_TEST_BASE_URL']·?·fetch(`${process.env.COURSE_TEST_BASE_URL}${url}`,·init)·:·createRestApp(factory).request(url,·init);
+     17  17 │     };
+     18  18 │     const create = (overrides = {}) => send('', 'POST', { courseId: 'course-001', learnerEmail: email, justification, ...overrides });
+  
+
+packages/axc/application-services/src/enrollment-request.ts:73:29 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    71 │ export function parseEnrollmentCreation(value: unknown): Pick<EnrollmentRequest, 'courseId' | 'learnerEmail' | 'justification'> {
+    72 │ 	const body = object(value);
+  > 73 │ 	const courseId = text(body['courseId'], 'courseId');
+       │ 	                           ^^^^^^^^^^
+    74 │ 	const learnerEmail = email(body['learnerEmail']);
+    75 │ 	const justification = text(body['justification'], 'justification');
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     71  71 │   export function parseEnrollmentCreation(value: unknown): Pick<EnrollmentRequest, 'courseId' | 'learnerEmail' | 'justification'> {
+     72  72 │     const body = object(value);
+     73     │ - → const·courseId·=·text(body['courseId'],·'courseId');
+         73 │ + → const·courseId·=·text(body.courseId,·'courseId');
+     74  74 │     const learnerEmail = email(body['learnerEmail']);
+     75  75 │     const justification = text(body['justification'], 'justification');
+  
+
+packages/axc/application-services/src/enrollment-request.ts:74:34 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    72 │ 	const body = object(value);
+    73 │ 	const courseId = text(body['courseId'], 'courseId');
+  > 74 │ 	const learnerEmail = email(body['learnerEmail']);
+       │ 	                                ^^^^^^^^^^^^^^
+    75 │ 	const justification = text(body['justification'], 'justification');
+    76 │ 	if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     72  72 │     const body = object(value);
+     73  73 │     const courseId = text(body['courseId'], 'courseId');
+     74     │ - → const·learnerEmail·=·email(body['learnerEmail']);
+         74 │ + → const·learnerEmail·=·email(body.learnerEmail);
+     75  75 │     const justification = text(body['justification'], 'justification');
+     76  76 │     if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+  
+
+packages/axc/application-services/src/enrollment-request.ts:75:34 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    73 │ 	const courseId = text(body['courseId'], 'courseId');
+    74 │ 	const learnerEmail = email(body['learnerEmail']);
+  > 75 │ 	const justification = text(body['justification'], 'justification');
+       │ 	                                ^^^^^^^^^^^^^^^
+    76 │ 	if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+    77 │ 	return { courseId, learnerEmail, justification };
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     73  73 │     const courseId = text(body['courseId'], 'courseId');
+     74  74 │     const learnerEmail = email(body['learnerEmail']);
+     75     │ - → const·justification·=·text(body['justification'],·'justification');
+         75 │ + → const·justification·=·text(body.justification,·'justification');
+     76  76 │     if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+     77  77 │     return { courseId, learnerEmail, justification };
+  
+
+packages/axc/application-services/src/enrollment-request.ts:83:11 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    81 │ 	const body = object(value);
+    82 │ 	const filter: EnrollmentFilter = {};
+  > 83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+       │ 	         ^^^^^^^^
+    84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+    85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     81  81 │     const body = object(value);
+     82  82 │     const filter: EnrollmentFilter = {};
+     83     │ - → if·(body['status']·!==·undefined)·filter.status·=·status(body['status']);
+         83 │ + → if·(body.status·!==·undefined)·filter.status·=·status(body['status']);
+     84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+     85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+  
+
+packages/axc/application-services/src/enrollment-request.ts:83:64 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    81 │ 	const body = object(value);
+    82 │ 	const filter: EnrollmentFilter = {};
+  > 83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+       │ 	                                                              ^^^^^^^^
+    84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+    85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     81  81 │     const body = object(value);
+     82  82 │     const filter: EnrollmentFilter = {};
+     83     │ - → if·(body['status']·!==·undefined)·filter.status·=·status(body['status']);
+         83 │ + → if·(body['status']·!==·undefined)·filter.status·=·status(body.status);
+     84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+     85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+  
+
+packages/axc/application-services/src/enrollment-request.ts:84:11 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    82 │ 	const filter: EnrollmentFilter = {};
+    83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+  > 84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+       │ 	         ^^^^^^^^^^
+    85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+    86 │ 	return filter;
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     82  82 │     const filter: EnrollmentFilter = {};
+     83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+     84     │ - → if·(body['courseId']·!==·undefined)·filter.courseId·=·text(body['courseId'],·'courseId');
+         84 │ + → if·(body.courseId·!==·undefined)·filter.courseId·=·text(body['courseId'],·'courseId');
+     85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+     86  86 │     return filter;
+  
+
+packages/axc/application-services/src/enrollment-request.ts:84:66 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    82 │ 	const filter: EnrollmentFilter = {};
+    83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+  > 84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+       │ 	                                                                ^^^^^^^^^^
+    85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+    86 │ 	return filter;
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     82  82 │     const filter: EnrollmentFilter = {};
+     83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+     84     │ - → if·(body['courseId']·!==·undefined)·filter.courseId·=·text(body['courseId'],·'courseId');
+         84 │ + → if·(body['courseId']·!==·undefined)·filter.courseId·=·text(body.courseId,·'courseId');
+     85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+     86  86 │     return filter;
+  
+
+packages/axc/application-services/src/enrollment-request.ts:85:11 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+    84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+  > 85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+       │ 	         ^^^^^^^^^^^^^^
+    86 │ 	return filter;
+    87 │ }
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+     84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+     85     │ - → if·(body['learnerEmail']·!==·undefined)·filter.learnerEmail·=·email(body['learnerEmail']);
+         85 │ + → if·(body.learnerEmail·!==·undefined)·filter.learnerEmail·=·email(body['learnerEmail']);
+     86  86 │     return filter;
+     87  87 │   }
+  
+
+packages/axc/application-services/src/enrollment-request.ts:85:75 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+    84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+  > 85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+       │ 	                                                                         ^^^^^^^^^^^^^^
+    86 │ 	return filter;
+    87 │ }
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+     84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+     85     │ - → if·(body['learnerEmail']·!==·undefined)·filter.learnerEmail·=·email(body['learnerEmail']);
+         85 │ + → if·(body['learnerEmail']·!==·undefined)·filter.learnerEmail·=·email(body.learnerEmail);
+     86  86 │     return filter;
+     87  87 │   }
+  
+
+packages/axc/application-services/src/enrollment-request.ts:91:33 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    89 │ export function parseEnrollmentChange(value: unknown): { status: EnrollmentStatus; changedBy: string; reason: string | null } {
+    90 │ 	const body = object(value);
+  > 91 │ 	const nextStatus = status(body['status']);
+       │ 	                               ^^^^^^^^
+    92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+    93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     89  89 │   export function parseEnrollmentChange(value: unknown): { status: EnrollmentStatus; changedBy: string; reason: string | null } {
+     90  90 │     const body = object(value);
+     91     │ - → const·nextStatus·=·status(body['status']);
+         91 │ + → const·nextStatus·=·status(body.status);
+     92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+     93  93 │     const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+  
+
+packages/axc/application-services/src/enrollment-request.ts:92:30 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    90 │ 	const body = object(value);
+    91 │ 	const nextStatus = status(body['status']);
+  > 92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+       │ 	                            ^^^^^^^^^^^
+    93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+    94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     90  90 │     const body = object(value);
+     91  91 │     const nextStatus = status(body['status']);
+     92     │ - → const·changedBy·=·text(body['changedBy'],·'changedBy');
+         92 │ + → const·changedBy·=·text(body.changedBy,·'changedBy');
+     93  93 │     const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+     94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+  
+
+packages/axc/application-services/src/enrollment-request.ts:93:22 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    91 │ 	const nextStatus = status(body['status']);
+    92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+  > 93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+       │ 	                    ^^^^^^^^
+    94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+    95 │ 	return { status: nextStatus, changedBy, reason };
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     91  91 │     const nextStatus = status(body['status']);
+     92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+     93     │ - → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+         93 │ + → const·reason·=·body.reason·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+     94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+     95  95 │     return { status: nextStatus, changedBy, reason };
+  
+
+packages/axc/application-services/src/enrollment-request.ts:93:54 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    91 │ 	const nextStatus = status(body['status']);
+    92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+  > 93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+       │ 	                                                    ^^^^^^^^
+    94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+    95 │ 	return { status: nextStatus, changedBy, reason };
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     91  91 │     const nextStatus = status(body['status']);
+     92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+     93     │ - → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+         93 │ + → const·reason·=·body['reason']·===·undefined·||·body.reason·===·null·?·null·:·text(body['reason'],·'reason');
+     94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+     95  95 │     return { status: nextStatus, changedBy, reason };
+  
+
+packages/axc/application-services/src/enrollment-request.ts:93:92 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━
+
+  i The computed expression can be simplified without the use of a string literal.
+  
+    91 │ 	const nextStatus = status(body['status']);
+    92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+  > 93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+       │ 	                                                                                          ^^^^^^^^
+    94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+    95 │ 	return { status: nextStatus, changedBy, reason };
+  
+  i Unsafe fix: Use a literal key instead.
+  
+     91  91 │     const nextStatus = status(body['status']);
+     92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+     93     │ - → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+         93 │ + → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body.reason,·'reason');
+     94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+     95  95 │     return { status: nextStatus, changedBy, reason };
+  
+
+Checked 205 files in 64ms. No fixes applied.
+Found 16 infos.

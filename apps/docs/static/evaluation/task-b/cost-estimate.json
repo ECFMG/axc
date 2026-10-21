@@ -1,0 +1,30 @@
+{
+  "scope": "Original Task B only, including both subagent turns and the original final response; excludes clarification and publication follow-ups.",
+  "status": "estimate_using_user_supplied_rates_not_actual_billing",
+  "currency": "USD",
+  "rate_source": "User-provided gpt-6.1-sol Standard Mode screenshot; not verified as current official pricing.",
+  "rates_per_million_tokens": {
+    "input": "2.00",
+    "cached_input": "0.10",
+    "cache_write": "2.50",
+    "output": "10.00"
+  },
+  "input_tokens": 7056935,
+  "cached_input_tokens": 6844544,
+  "uncached_input_tokens": 212391,
+  "cache_write_input_tokens": 0,
+  "output_tokens": 39811,
+  "reasoning_output_tokens_already_in_output": 10464,
+  "largest_recorded_input_tokens_per_snapshot": 144568,
+  "long_context_threshold_from_supplied_card": 272000,
+  "long_context_surcharge_applied": false,
+  "components_usd": {
+    "uncached_input": "0.424782",
+    "cached_input": "0.6844544",
+    "cache_write": "0",
+    "output": "0.39811"
+  },
+  "estimated_total_usd": "1.5073464",
+  "estimated_total_usd_rounded": "1.51",
+  "method": "Cumulative per-actor ending counters minus starting counters. Uncached input = input minus cached input; cached input priced once; reasoning not added again; zero cache writes confirmed from cumulative deltas. Per-call token_count last_token_usage inspected solely for threshold applicability."
+}

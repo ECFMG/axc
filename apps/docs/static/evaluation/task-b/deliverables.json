@@ -1,0 +1,30 @@
+{
+  "repository": "ECFMG/axc",
+  "branch": "df-oai-4-b-out",
+  "base_commit": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "commits_created": 0,
+  "pushed": false,
+  "changed_files": [
+    "apps/api/src/index.ts",
+    "apps/docs/docs/api/courses.md",
+    "apps/docs/docs/api/enrollment-requests.md",
+    "apps/docs/sidebars.ts",
+    "packages/axc-verification/acceptance-api/package.json",
+    "packages/axc-verification/acceptance-api/src/courses.test.ts",
+    "packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs",
+    "packages/axc-verification/acceptance-api/src/host-workflow-check.mjs",
+    "packages/axc/application-services/src/courses.ts",
+    "packages/axc/application-services/src/enrollment-request.ts",
+    "packages/axc/application-services/src/enrollment-store.ts",
+    "packages/axc/application-services/src/enrollments.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/course-query.ts",
+    "packages/axc/rest/src/index.ts"
+  ],
+  "source_archive": "axc-task-b-source.zip",
+  "source_sha256": "fa3204fbefaff3e69ae79ded87f88b75ae1030144af66db705915bb83aaae875",
+  "patch_sha256": "b2f1dbe50d834ac453aadb94c162309494f18b21085fe2e89125b676637476cb",
+  "write_boundary_passed": true,
+  "dependencies_changed": false,
+  "vendored_cellix_changed": false
+}

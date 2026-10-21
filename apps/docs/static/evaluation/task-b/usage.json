@@ -1,0 +1,167 @@
+{
+  "session_id": "01a15e85-7e77-7ff0-9695-37796f353d63",
+  "turn_id": "01a15e85-e119-7c60-9e17-aa7820891afb",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/21/rollout-2026-10-21T08-52-49-01a15e85-7e77-7ff0-9695-37796f353d63.jsonl",
+  "scope": "Original task turn: inspection, planning, implementation, validation, reporting, final response. Follow-ups excluded.",
+  "start": {
+    "timestamp": "2026-10-21T12:53:14.657Z",
+    "counters": {
+      "input_tokens": 0,
+      "cached_input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 0
+    },
+    "method": "No token_count before task_started in fresh session. Zero baseline confirmed by first cumulative snapshot equalling first last_token_usage."
+  },
+  "projection": {
+    "total_tokens": 2000000,
+    "assumptions": "Native cumulative input counts repeated context. Approximately 25-40 calls with 45k-65k input tokens each plus 10k-20k output; provisional before source inspection. Not measured usage.",
+    "recorded_at": "2026-10-21T12:53:53.629Z",
+    "timing_note": "Estimate recorded after initial document/archive listing, before implementation; the requested pre-inspection estimate timing was not met."
+  },
+  "complete": true,
+  "missing_usage": [],
+  "actors": [
+    {
+      "role": "main",
+      "session_id": "01a15e85-7e77-7ff0-9695-37796f353d63",
+      "turn_id": "01a15e85-e119-7c60-9e17-aa7820891afb",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/21/rollout-2026-10-21T08-52-49-01a15e85-7e77-7ff0-9695-37796f353d63.jsonl",
+      "measurement_start_timestamp": "2026-10-21T12:53:14.657Z",
+      "baseline_snapshot_timestamp": null,
+      "baseline_method": "Fresh-session zero baseline reconstructed: first total_token_usage equals first last_token_usage; no earlier token_count exists.",
+      "starting_cumulative_counters": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 5345268,
+        "cached_input_tokens": 5216768,
+        "output_tokens": 35185,
+        "reasoning_output_tokens": 10109,
+        "total_tokens": 5380453
+      },
+      "recorded_through": "2026-10-21T13:08:07.997Z",
+      "task_complete_timestamp": "2026-10-21T13:08:08.003Z",
+      "measured_usage": {
+        "input_tokens": 5345268,
+        "cached_input_tokens": 5216768,
+        "output_tokens": 35185,
+        "reasoning_output_tokens": 10109,
+        "total_tokens": 5380453
+      },
+      "complete": true,
+      "final_response_accounted_for": true,
+      "missing_usage": [],
+      "unmeasured_counters": []
+    },
+    {
+      "role": "subagent_investigator",
+      "session_id": "01a15e87-48be-7dd2-952f-bbb3376cd081",
+      "turn_id": "01a15e87-48d1-7ad1-aff9-5a0871d5c2c5",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/21/rollout-2026-10-21T08-54-46-01a15e87-48be-7dd2-952f-bbb3376cd081.jsonl",
+      "measurement_start_timestamp": "2026-10-21T12:54:46.746Z",
+      "baseline_snapshot_timestamp": null,
+      "baseline_method": "Fresh-session zero baseline reconstructed: first total_token_usage equals first last_token_usage; no earlier token_count exists.",
+      "starting_cumulative_counters": {
+        "input_tokens": 0,
+        "cached_input_tokens": 0,
+        "output_tokens": 0,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 0
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 840814,
+        "cached_input_tokens": 780416,
+        "output_tokens": 2334,
+        "reasoning_output_tokens": 91,
+        "total_tokens": 843148
+      },
+      "recorded_through": "2026-10-21T12:55:56.008Z",
+      "task_complete_timestamp": "2026-10-21T12:55:56.219Z",
+      "measured_usage": {
+        "input_tokens": 840814,
+        "cached_input_tokens": 780416,
+        "output_tokens": 2334,
+        "reasoning_output_tokens": 91,
+        "total_tokens": 843148
+      },
+      "complete": true,
+      "final_response_accounted_for": true,
+      "missing_usage": [],
+      "unmeasured_counters": []
+    },
+    {
+      "role": "subagent_reviewer",
+      "session_id": "01a15e87-48be-7dd2-952f-bbb3376cd081",
+      "turn_id": "01a15e8c-d1e6-78b0-a024-2e0bf0cb3809",
+      "source_log": "/Users/dfortun/.codex/sessions/2026/10/21/rollout-2026-10-21T08-54-46-01a15e87-48be-7dd2-952f-bbb3376cd081.jsonl",
+      "measurement_start_timestamp": "2026-10-21T13:00:49.525Z",
+      "baseline_snapshot_timestamp": "2026-10-21T12:55:56.008Z",
+      "baseline_method": "Last cumulative token_count before task_started.",
+      "starting_cumulative_counters": {
+        "input_tokens": 840814,
+        "cached_input_tokens": 780416,
+        "output_tokens": 2334,
+        "reasoning_output_tokens": 91,
+        "total_tokens": 843148
+      },
+      "ending_cumulative_counters": {
+        "input_tokens": 1711667,
+        "cached_input_tokens": 1627776,
+        "output_tokens": 4626,
+        "reasoning_output_tokens": 355,
+        "total_tokens": 1716293
+      },
+      "recorded_through": "2026-10-21T13:01:49.689Z",
+      "task_complete_timestamp": "2026-10-21T13:01:49.694Z",
+      "measured_usage": {
+        "input_tokens": 870853,
+        "cached_input_tokens": 847360,
+        "output_tokens": 2292,
+        "reasoning_output_tokens": 264,
+        "total_tokens": 873145
+      },
+      "complete": true,
+      "final_response_accounted_for": true,
+      "missing_usage": [],
+      "unmeasured_counters": []
+    }
+  ],
+  "counting_rules": [
+    "Ending cumulative counters minus starting cumulative counters; cumulative snapshots are never summed.",
+    "Cached input is already included in input. Reasoning output is already included in output.",
+    "Actor deltas are summed once for the aggregate. Subagent turns are measured separately.",
+    "Only these original turn IDs are measured; subsequent follow-up turns are excluded."
+  ],
+  "estimated_cost_usd": 1.5073464,
+  "cost_note": "Estimated using user-supplied rate card, not recorded billing. See cost-estimate.json. Original Task B scope only; publication follow-ups excluded.",
+  "updated_at": "2026-10-21T13:08:44.590835+00:00",
+  "measured_usage": {
+    "input_tokens": 7056935,
+    "cached_input_tokens": 6844544,
+    "output_tokens": 39811,
+    "reasoning_output_tokens": 10464,
+    "total_tokens": 7096746
+  },
+  "main_usage": {
+    "input_tokens": 5345268,
+    "cached_input_tokens": 5216768,
+    "output_tokens": 35185,
+    "reasoning_output_tokens": 10109,
+    "total_tokens": 5380453
+  },
+  "subagent_usage": {
+    "input_tokens": 1711667,
+    "cached_input_tokens": 1627776,
+    "output_tokens": 4626,
+    "reasoning_output_tokens": 355,
+    "total_tokens": 1716293
+  },
+  "final_response_accounted_for": true,
+  "status": "complete_original_task_including_final_response"
+}

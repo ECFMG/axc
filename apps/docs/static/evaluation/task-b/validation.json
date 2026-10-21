@@ -1,0 +1,54 @@
+{
+  "base_commit": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "full_suite": {
+    "passed": true,
+    "tasks": 25,
+    "feature_tests": 110
+  },
+  "host_enrollment": {
+    "passed": true,
+    "checks": 64,
+    "http_checks": 62,
+    "local_checks": 2
+  },
+  "course_oracle_memory": {
+    "passed": true,
+    "checks": 29
+  },
+  "course_oracle_http": {
+    "passed": true,
+    "checks": 29
+  },
+  "architecture": {
+    "passed": true,
+    "tests": 9
+  },
+  "lint": {
+    "passed": true,
+    "errors": 0,
+    "informational_suggestions": 16
+  },
+  "build": {
+    "passed": true,
+    "tasks": 18
+  },
+  "docs_build": {
+    "passed": true,
+    "uncached": true
+  },
+  "typecheck": {
+    "passed": true,
+    "tasks": 21
+  },
+  "patch_apply": {
+    "passed": true
+  },
+  "archive_integrity": {
+    "passed": true
+  },
+  "write_boundary": {
+    "passed": true,
+    "changed_files": 15
+  },
+  "remaining_blockers": []
+}

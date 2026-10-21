@@ -5,12 +5,14 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"test:acceptance": "rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features",
+		"test:acceptance": "pnpm run test:workflow && rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features",
 		"typecheck": "tsgo --noEmit",
 		"lint": "biome lint",
 		"format": "biome format --write",
 		"format:check": "biome format .",
-		"clean": "rimraf reports target"
+		"clean": "rimraf reports target",
+		"test:workflow": "node --experimental-strip-types --test src/*.test.mjs src/*.test.ts",
+		"test:host": "node src/host-workflow-check.mjs"
 	},
 	"dependencies": {
 		"@cucumber/cucumber": "catalog:",

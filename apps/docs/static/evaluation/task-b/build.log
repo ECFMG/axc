@@ -1,0 +1,406 @@
+$ turbo run build
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running build in 21 packages
+   • Remote caching disabled
+
+@cellix/api-services-spec:build: cache hit, replaying logs 0dec061adacab68d
+@cellix/config-vitest:build: cache hit, replaying logs 16751fd1e86b47e7
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 9ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs 3dda6e806ec10b46
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 11ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/api-core:build: cache hit, replaying logs 4820fbafdea8def0
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 13ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs 52289f606db48d2c
+@cellix/config-rolldown:build: $ tsgo --build
+@axc/application-services:build: cache hit, replaying logs b283c2eb32b2b5d1
+@cellix/domain-seedwork:build: cache hit, replaying logs 60db24aa0c851271
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: src/enrollment-request.ts:73:29 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     71 │ export function parseEnrollmentCreation(value: unknown): Pick<EnrollmentRequest, 'courseId' | 'learnerEmail' | 'justification'> {
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@axc/application-services:build:     72 │ 	const body = object(value);
+@axc/application-services:build:   > 73 │ 	const courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:        │ 	                           ^^^^^^^^^^
+@axc/application-services:build:     74 │ 	const learnerEmail = email(body['learnerEmail']);
+@cellix/domain-seedwork:build: Checked 23 files in 16ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@axc/application-services:build:     75 │ 	const justification = text(body['justification'], 'justification');
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      71  71 │   export function parseEnrollmentCreation(value: unknown): Pick<EnrollmentRequest, 'courseId' | 'learnerEmail' | 'justification'> {
+@axc/application-services:build:      72  72 │     const body = object(value);
+@axc/application-services:build:      73     │ - → const·courseId·=·text(body['courseId'],·'courseId');
+@axc/application-services:build:          73 │ + → const·courseId·=·text(body.courseId,·'courseId');
+@axc/application-services:build:      74  74 │     const learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:      75  75 │     const justification = text(body['justification'], 'justification');
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:74:34 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     72 │ 	const body = object(value);
+@axc/application-services:build:     73 │ 	const courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:   > 74 │ 	const learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:        │ 	                                ^^^^^^^^^^^^^^
+@axc/application-services:build:     75 │ 	const justification = text(body['justification'], 'justification');
+@axc/application-services:build:     76 │ 	if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      72  72 │     const body = object(value);
+@axc/application-services:build:      73  73 │     const courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:      74     │ - → const·learnerEmail·=·email(body['learnerEmail']);
+@axc/application-services:build:          74 │ + → const·learnerEmail·=·email(body.learnerEmail);
+@axc/application-services:build:      75  75 │     const justification = text(body['justification'], 'justification');
+@axc/application-services:build:      76  76 │     if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:75:34 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     73 │ 	const courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:     74 │ 	const learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:   > 75 │ 	const justification = text(body['justification'], 'justification');
+@axc/application-services:build:        │ 	                                ^^^^^^^^^^^^^^^
+@axc/application-services:build:     76 │ 	if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+@axc/application-services:build:     77 │ 	return { courseId, learnerEmail, justification };
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      73  73 │     const courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:      74  74 │     const learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:      75     │ - → const·justification·=·text(body['justification'],·'justification');
+@axc/application-services:build:          75 │ + → const·justification·=·text(body.justification,·'justification');
+@axc/application-services:build:      76  76 │     if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
+@axc/application-services:build:      77  77 │     return { courseId, learnerEmail, justification };
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:83:11 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     81 │ 	const body = object(value);
+@axc/application-services:build:     82 │ 	const filter: EnrollmentFilter = {};
+@axc/application-services:build:   > 83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:        │ 	         ^^^^^^^^
+@axc/application-services:build:     84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:     85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      81  81 │     const body = object(value);
+@axc/application-services:build:      82  82 │     const filter: EnrollmentFilter = {};
+@axc/application-services:build:      83     │ - → if·(body['status']·!==·undefined)·filter.status·=·status(body['status']);
+@axc/application-services:build:          83 │ + → if·(body.status·!==·undefined)·filter.status·=·status(body['status']);
+@axc/application-services:build:      84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:      85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:83:64 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     81 │ 	const body = object(value);
+@axc/application-services:build:     82 │ 	const filter: EnrollmentFilter = {};
+@axc/application-services:build:   > 83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:        │ 	                                                              ^^^^^^^^
+@axc/application-services:build:     84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:     85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      81  81 │     const body = object(value);
+@axc/application-services:build:      82  82 │     const filter: EnrollmentFilter = {};
+@axc/application-services:build:      83     │ - → if·(body['status']·!==·undefined)·filter.status·=·status(body['status']);
+@axc/application-services:build:          83 │ + → if·(body['status']·!==·undefined)·filter.status·=·status(body.status);
+@axc/application-services:build:      84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:      85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@cellix/archunit-tests:build: cache hit, replaying logs 511d9834841378c4
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:84:11 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     82 │ 	const filter: EnrollmentFilter = {};
+@cellix/local-dev:build: cache hit, replaying logs f90770db186973ff
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 23ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@axc/persistence:build: cache hit, replaying logs fc74ef494ca5ed72
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 14ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@axc/application-services:build:     83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:   > 84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:        │ 	         ^^^^^^^^^^
+@axc/application-services:build:     85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:     86 │ 	return filter;
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      82  82 │     const filter: EnrollmentFilter = {};
+@axc/application-services:build:      83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:      84     │ - → if·(body['courseId']·!==·undefined)·filter.courseId·=·text(body['courseId'],·'courseId');
+@axc/application-services:build:          84 │ + → if·(body.courseId·!==·undefined)·filter.courseId·=·text(body['courseId'],·'courseId');
+@axc/application-services:build:      85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:      86  86 │     return filter;
+@axc/application-services:build:   
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs 9162d0d760c31d0b
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:84:66 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     82 │ 	const filter: EnrollmentFilter = {};
+@axc/application-services:build:     83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@axc/application-services:build:   > 84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:        │ 	                                                                ^^^^^^^^^^
+@axc/application-services:build:     85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:     86 │ 	return filter;
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      82  82 │     const filter: EnrollmentFilter = {};
+@axc/application-services:build:      83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:      84     │ - → if·(body['courseId']·!==·undefined)·filter.courseId·=·text(body['courseId'],·'courseId');
+@axc/application-services:build:          84 │ + → if·(body['courseId']·!==·undefined)·filter.courseId·=·text(body.courseId,·'courseId');
+@axc/application-services:build:      85  85 │     if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:      86  86 │     return filter;
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:85:11 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 33ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@cellix/serenity-framework:build: cache hit, replaying logs 287cee8dc9ae14e5
+@axc/application-services:build:     83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:     84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:   > 85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:        │ 	         ^^^^^^^^^^^^^^
+@axc/persistence:build: $ pnpm run lint
+@axc/persistence:build: $ biome lint
+@axc/application-services:build:     86 │ 	return filter;
+@axc/application-services:build:     87 │ }
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:      84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:      85     │ - → if·(body['learnerEmail']·!==·undefined)·filter.learnerEmail·=·email(body['learnerEmail']);
+@axc/domain:build: cache hit, replaying logs df087007d74afb4b
+@axc/persistence:build: Checked 1 file in 7ms. No fixes applied.
+@axc/persistence:build: $ tsgo --build
+@axc/application-services:build:          85 │ + → if·(body.learnerEmail·!==·undefined)·filter.learnerEmail·=·email(body['learnerEmail']);
+@axc/domain:build: $ pnpm run lint
+@axc/domain:build: $ biome lint
+@axc/application-services:build:      86  86 │     return filter;
+@axc/application-services:build:      87  87 │   }
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:85:75 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     83 │ 	if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:     84 │ 	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:   > 85 │ 	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
+@axc/application-services:build:        │ 	                                                                         ^^^^^^^^^^^^^^
+@cellix/serenity-framework:build: $ pnpm run lint
+@axc/domain:build: Checked 1 file in 5ms. No fixes applied.
+@axc/domain:build: $ tsgo --build
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 34ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@axc/application-services:build:     86 │ 	return filter;
+@axc/application-services:build:     87 │ }
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      83  83 │     if (body['status'] !== undefined) filter.status = status(body['status']);
+@axc/application-services:build:      84  84 │     if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
+@axc/application-services:build:      85     │ - → if·(body['learnerEmail']·!==·undefined)·filter.learnerEmail·=·email(body['learnerEmail']);
+@axc/application-services:build:          85 │ + → if·(body['learnerEmail']·!==·undefined)·filter.learnerEmail·=·email(body.learnerEmail);
+@axc/application-services:build:      86  86 │     return filter;
+@axc/application-services:build:      87  87 │   }
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:91:33 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     89 │ export function parseEnrollmentChange(value: unknown): { status: EnrollmentStatus; changedBy: string; reason: string | null } {
+@axc/application-services:build:     90 │ 	const body = object(value);
+@axc/application-services:build:   > 91 │ 	const nextStatus = status(body['status']);
+@axc/application-services:build:        │ 	                               ^^^^^^^^
+@axc/application-services:build:     92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:     93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      89  89 │   export function parseEnrollmentChange(value: unknown): { status: EnrollmentStatus; changedBy: string; reason: string | null } {
+@axc/application-services:build:      90  90 │     const body = object(value);
+@axc/application-services:build:      91     │ - → const·nextStatus·=·status(body['status']);
+@axc/application-services:build:          91 │ + → const·nextStatus·=·status(body.status);
+@axc/application-services:build:      92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:      93  93 │     const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:92:30 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     90 │ 	const body = object(value);
+@axc/application-services:build:     91 │ 	const nextStatus = status(body['status']);
+@axc/application-services:build:   > 92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:        │ 	                            ^^^^^^^^^^^
+@axc/application-services:build:     93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:     94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      90  90 │     const body = object(value);
+@axc/application-services:build:      91  91 │     const nextStatus = status(body['status']);
+@axc/application-services:build:      92     │ - → const·changedBy·=·text(body['changedBy'],·'changedBy');
+@cellix/mongoose-seedwork:build: cache hit, replaying logs a77c268bb71dcb40
+@axc/application-services:build:          92 │ + → const·changedBy·=·text(body.changedBy,·'changedBy');
+@axc/application-services:build:      93  93 │     const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:      94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:93:22 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     91 │ 	const nextStatus = status(body['status']);
+@axc/application-services:build:     92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:   > 93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:        │ 	                    ^^^^^^^^
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 16ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@axc/application-services:build:     94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:     95 │ 	return { status: nextStatus, changedBy, reason };
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      91  91 │     const nextStatus = status(body['status']);
+@axc/application-services:build:      92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:      93     │ - → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+@axc/application-services:build:          93 │ + → const·reason·=·body.reason·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+@axc/application-services:build:      94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:      95  95 │     return { status: nextStatus, changedBy, reason };
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:93:54 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     91 │ 	const nextStatus = status(body['status']);
+@axc/application-services:build:     92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:   > 93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:        │ 	                                                    ^^^^^^^^
+@axc/application-services:build:     94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:     95 │ 	return { status: nextStatus, changedBy, reason };
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      91  91 │     const nextStatus = status(body['status']);
+@axc/application-services:build:      92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:      93     │ - → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+@axc/application-services:build:          93 │ + → const·reason·=·body['reason']·===·undefined·||·body.reason·===·null·?·null·:·text(body['reason'],·'reason');
+@axc/application-services:build:      94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:      95  95 │     return { status: nextStatus, changedBy, reason };
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: src/enrollment-request.ts:93:92 lint/complexity/useLiteralKeys  FIXABLE  ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+@axc/application-services:build: 
+@axc/application-services:build:   i The computed expression can be simplified without the use of a string literal.
+@axc/application-services:build:   
+@axc/application-services:build:     91 │ 	const nextStatus = status(body['status']);
+@axc/application-services:build:     92 │ 	const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:   > 93 │ 	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
+@axc/application-services:build:        │ 	                                                                                          ^^^^^^^^
+@axc/application-services:build:     94 │ 	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:     95 │ 	return { status: nextStatus, changedBy, reason };
+@axc/application-services:build:   
+@axc/application-services:build:   i Unsafe fix: Use a literal key instead.
+@axc/application-services:build:   
+@axc/application-services:build:      91  91 │     const nextStatus = status(body['status']);
+@axc/application-services:build:      92  92 │     const changedBy = text(body['changedBy'], 'changedBy');
+@axc/application-services:build:      93     │ - → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body['reason'],·'reason');
+@axc/application-services:build:          93 │ + → const·reason·=·body['reason']·===·undefined·||·body['reason']·===·null·?·null·:·text(body.reason,·'reason');
+@axc/application-services:build:      94  94 │     if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
+@axc/application-services:build:      95  95 │     return { status: nextStatus, changedBy, reason };
+@axc/application-services:build:   
+@axc/application-services:build: 
+@axc/application-services:build: Checked 6 files in 8ms. No fixes applied.
+@axc/application-services:build: Found 14 infos.
+@axc/application-services:build: $ tsgo --build
+@axc/service-mongoose:build: cache hit, replaying logs 2872339b220a6812
+@axc/service-mongoose:build: $ pnpm run lint
+@axc/service-mongoose:build: $ biome lint
+@axc/service-mongoose:build: Checked 1 file in 4ms. No fixes applied.
+@axc/service-mongoose:build: $ tsgo --build
+@axc/rest:build: cache hit, replaying logs 35adc14724914ab4
+@axc/rest:build: $ pnpm run lint
+@axc/rest:build: $ biome lint
+@axc/rest:build: Checked 2 files in 5ms. No fixes applied.
+@axc/rest:build: $ tsgo --build
+@apps/api:build: cache hit, replaying logs bf70968f3c7d88a1
+@apps/api:build: $ pnpm run lint
+@apps/api:build: $ biome lint
+@apps/api:build: Checked 2 files in 5ms. No fixes applied.
+@apps/api:build: $ tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs
+@apps/api:build: <DIR>/index.js.map  asset │ size: 514.91 kB
+@apps/api:build: <DIR>/index.js      chunk │ size: 297.59 kB
+@apps/api:build: 
+@apps/api:build: ✔ rolldown v1.0.0-beta.55 Finished in 18.68 ms
+@apps/api:build: $ cellix-prepare-func-deploy
+@apps/api:build: Azure Functions package: /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-2/work/linked-axc/apps/api/agentCourses-api.zip
+@apps/docs:build: cache hit, replaying logs 272e268b5e98f013
+@apps/docs:build: $ docusaurus build
+@apps/docs:build: [INFO] [en] Creating an optimized production build...
+@apps/docs:build: [webpackbar] ℹ Compiling Client
+@apps/docs:build: [webpackbar] ℹ Compiling Server
+@apps/docs:build: [webpackbar] ✔ Server: Compiled successfully in 3.26s
+@apps/docs:build: [webpackbar] ✔ Client: Compiled successfully in 6.07s
+@apps/docs:build: [SUCCESS] Generated static files in "build".
+@apps/docs:build: [INFO] Use `npm run serve` command to test your build locally.
+@apps/docs:build: ┌────────────────────────────────────────────────────────────┐
+@apps/docs:build: │            @docusaurus/core update check failed            │
+@apps/docs:build: │            Try running with sudo or get access             │
+@apps/docs:build: │            to the local update config store via            │
+@apps/docs:build: │ sudo chown -R $USER:$(id -gn $USER) /Users/dfortun/.config │
+@apps/docs:build: └────────────────────────────────────────────────────────────┘
+
+ Tasks:    18 successful, 18 total
+Cached:    18 cached, 18 total
+  Time:    65ms >>> FULL TURBO
+

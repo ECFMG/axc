@@ -1,0 +1,1202 @@
+diff --git a/apps/api/src/index.ts b/apps/api/src/index.ts
+index 91e9319..844cd20 100644
+--- a/apps/api/src/index.ts
++++ b/apps/api/src/index.ts
+@@ -13,4 +13,8 @@ Cellix.initializeInfrastructureServices<ApiContext, ApplicationServices>((servic
+ 	})
+ 	.initializeApplicationServices((context) => buildApplicationServicesFactory(context))
+ 	.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('courses', { route: 'api/courses', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('enrollment-requests', { route: 'api/enrollment-requests', methods: ['GET', 'POST'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('enrollment-request', { route: 'api/enrollment-requests/{id}', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)
++	.registerAzureFunctionHttpHandler('enrollment-request-status', { route: 'api/enrollment-requests/{id}/status', methods: ['PATCH'], authLevel: 'anonymous' }, restHandlerCreator)
+ 	.startUp();
+diff --git a/apps/docs/sidebars.ts b/apps/docs/sidebars.ts
+index e26a872..071400f 100644
+--- a/apps/docs/sidebars.ts
++++ b/apps/docs/sidebars.ts
+@@ -1,7 +1,7 @@
+ type SidebarsConfig = import('@docusaurus/plugin-content-docs').SidebarsConfig;
+ 
+ const sidebars = {
+-	docs: ['intro', 'healthcheck'],
++	docs: ['intro', 'healthcheck', 'api/courses', 'api/enrollment-requests'],
+ } satisfies SidebarsConfig;
+ 
+ module.exports = sidebars;
+diff --git a/packages/axc-verification/acceptance-api/package.json b/packages/axc-verification/acceptance-api/package.json
+index 3c51d9a..b3e53cf 100644
+--- a/packages/axc-verification/acceptance-api/package.json
++++ b/packages/axc-verification/acceptance-api/package.json
+@@ -5,12 +5,14 @@
+ 	"private": true,
+ 	"type": "module",
+ 	"scripts": {
+-		"test:acceptance": "rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features",
++		"test:acceptance": "pnpm run test:workflow && rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features",
+ 		"typecheck": "tsgo --noEmit",
+ 		"lint": "biome lint",
+ 		"format": "biome format --write",
+ 		"format:check": "biome format .",
+-		"clean": "rimraf reports target"
++		"clean": "rimraf reports target",
++		"test:workflow": "node --experimental-strip-types --test src/*.test.mjs src/*.test.ts",
++		"test:host": "node src/host-workflow-check.mjs"
+ 	},
+ 	"dependencies": {
+ 		"@cucumber/cucumber": "catalog:",
+diff --git a/packages/axc/application-services/src/index.ts b/packages/axc/application-services/src/index.ts
+index 726861c..14f7492 100644
+--- a/packages/axc/application-services/src/index.ts
++++ b/packages/axc/application-services/src/index.ts
+@@ -1,3 +1,10 @@
++import { type CoursePage, type CourseQuery, searchCourses } from './courses.ts';
++import { createEnrollmentService } from './enrollments.ts';
++
++export type { Course, CoursePage, CourseQuery } from './courses.ts';
++export type { EnrollmentRequest, EnrollmentStatus } from './enrollment-request.ts';
++export { EnrollmentError } from './enrollment-request.ts';
++
+ export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
+ export const HEALTH_PROJECT_CODE = 'axc' as const;
+ 
+@@ -16,6 +23,8 @@ export interface ApiContext {
+ }
+ 
+ export interface ApplicationServices {
++	courses: { search(query: CourseQuery): CoursePage };
++	enrollments: ReturnType<typeof createEnrollmentService>;
+ 	health: {
+ 		getStatus(): HealthStatus;
+ 	};
+@@ -36,8 +45,11 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
+ }
+ 
+ export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
++	const enrollments = createEnrollmentService();
+ 	const forRequest = (): Promise<ApplicationServices> =>
+ 		Promise.resolve({
++			courses: { search: searchCourses },
++			enrollments,
+ 			health: {
+ 				getStatus(): HealthStatus {
+ 					return {
+diff --git a/packages/axc/rest/src/index.ts b/packages/axc/rest/src/index.ts
+index def5a5f..1e5805c 100644
+--- a/packages/axc/rest/src/index.ts
++++ b/packages/axc/rest/src/index.ts
+@@ -1,10 +1,44 @@
+-import type { ApplicationServicesFactory } from '@axc/application-services';
++import { type ApplicationServicesFactory, EnrollmentError } from '@axc/application-services';
+ import type { HttpHandler, HttpRequest, InvocationContext } from '@azure/functions';
+ import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
+ import { Hono } from 'hono';
++import { parseCourseQuery } from './course-query.ts';
+ 
+ export function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {
+ 	const app = new Hono();
++	app.onError((error, c) => {
++		if (error instanceof EnrollmentError) return c.json({ error: { code: error.code, message: error.message, details: error.details } }, error.status);
++		return c.json({ error: { code: 'INTERNAL_ERROR', message: 'The request could not be completed.', details: [] } }, 500);
++	});
++	const services = (authorization: string | undefined) => (authorization === undefined ? applicationServicesFactory.forRequest() : applicationServicesFactory.forRequest(authorization));
++	async function body(request: { json(): Promise<unknown> }): Promise<unknown> {
++		try {
++			return await request.json();
++		} catch {
++			throw new EnrollmentError('INVALID_REQUEST', 400, 'The request could not be completed.', [{ field: 'body', message: 'A valid JSON body is required.' }]);
++		}
++	}
++	app.get('/api/courses', async (c) => {
++		const { query, issues } = parseCourseQuery(new URL(c.req.url).searchParams);
++		if (issues.length) return c.json({ error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details: issues } }, 400);
++		return c.json((await services(c.req.header('Authorization'))).courses.search(query));
++	});
++	app.post('/api/enrollment-requests', async (c) => {
++		const input = await body(c.req);
++		return c.json((await services(c.req.header('Authorization'))).enrollments.create(input), 201);
++	});
++	app.get('/api/enrollment-requests', async (c) => {
++		const params = new URL(c.req.url).searchParams;
++		for (const field of ['status', 'courseId', 'learnerEmail']) {
++			if (params.getAll(field).length > 1) throw new EnrollmentError('INVALID_REQUEST', 400, 'The request could not be completed.', [{ field, message: `${field} must be supplied at most once.` }]);
++		}
++		return c.json((await services(c.req.header('Authorization'))).enrollments.list(Object.fromEntries(params)));
++	});
++	app.get('/api/enrollment-requests/:id', async (c) => c.json((await services(c.req.header('Authorization'))).enrollments.get(c.req.param('id'))));
++	app.patch('/api/enrollment-requests/:id/status', async (c) => {
++		const input = await body(c.req);
++		return c.json((await services(c.req.header('Authorization'))).enrollments.changeStatus(c.req.param('id'), input));
++	});
+ 
+ 	app.get('/health', async (c) => {
+ 		const authorization = c.req.header('Authorization');
+diff --git a/apps/docs/docs/api/courses.md b/apps/docs/docs/api/courses.md
+new file mode 100644
+index 0000000..204c3a6
+--- /dev/null
++++ b/apps/docs/docs/api/courses.md
+@@ -0,0 +1,87 @@
++# Course catalog search
++
++`GET /api/courses` searches a fixed local catalog of twelve courses. Filters combine with AND. No database, account, credentials or external service is required for this read-only fixture catalog. The endpoint uses the application's existing anonymous route convention; authentication behavior elsewhere is unchanged.
++
++## Query parameters
++
++| Parameter | Behavior | Default |
++| --- | --- | --- |
++| `q` | Case-insensitive substring search within title, summary or any tag. Whitespace is trimmed. An empty keyword imposes no keyword filter. | None |
++| `modality` | Exactly `online`, `in-person` or `hybrid`. | Any |
++| `status` | Exactly `draft`, `active` or `retired`. | Any |
++| `tag` | Case-insensitive whole-tag match, with surrounding whitespace trimmed. An empty tag matches no fixtures. | Any |
++| `page` | Positive safe integer, written as decimal digits. | `1` |
++| `pageSize` | Integer from `1` to `50`, written as decimal digits. | `10` |
++| `sort` | `title`, `createdAt` or `updatedAt`. Ascending; title compares case-insensitively. Equal values use ascending ID as a stable tie-break. | `title` |
++
++Repeated recognized parameters return 400. Unknown parameters are ignored. Enum values are case-sensitive. Negative, fractional, scientific-notation, whitespace-padded and unsafe integer values are rejected. Pages beyond the final page return empty items with the requested page and correct totals.
++
++## Success response
++
++```http
++GET /api/courses?q=security&modality=online&status=active&tag=ai&page=1&pageSize=5&sort=title
++```
++
++HTTP 200, `Content-Type: application/json`:
++
++```json
++{
++  "items": [
++    {
++      "id": "course-001",
++      "title": "AI Security Foundations",
++      "summary": "Introductory course on secure AI-assisted development.",
++      "modality": "online",
++      "status": "active",
++      "tags": ["ai", "security"],
++      "createdAt": "2026-01-15T00:00:00.000Z",
++      "updatedAt": "2026-06-01T00:00:00.000Z"
++    }
++  ],
++  "page": 1,
++  "pageSize": 5,
++  "totalItems": 1,
++  "totalPages": 1
++}
++```
++
++Every course has all eight fields above. IDs are unique. Dates are UTC ISO strings. `totalItems` counts matches before pagination; `totalPages` is the ceiling of total items divided by page size.
++
++No matches return HTTP 200:
++
++```json
++{"items": [], "page": 1, "pageSize": 10, "totalItems": 0, "totalPages": 0}
++```
++
++## Error response
++
++Invalid `modality`, `status`, `page`, `pageSize` or `sort` values return HTTP 400. Validation runs even when other filters would produce no matches. Multiple errors can be included in `details`.
++
++For `GET /api/courses?pageSize=51`:
++
++```json
++{
++  "error": {
++    "code": "INVALID_QUERY_PARAMETER",
++    "message": "One or more query parameters are invalid.",
++    "details": [
++      {"field": "pageSize", "message": "pageSize must be between 1 and 50."}
++    ]
++  }
++}
++```
++
++## Local use and tests
++
++From the repository root, use the existing Node 24+ and pnpm setup. Install the existing lockfile with `pnpm install --frozen-lockfile`. Start the API using the documented local development workflow, then request:
++
++```sh
++curl 'http://127.0.0.1:7071/api/courses?tag=ai'
++pnpm test
++pnpm run lint
++pnpm run build
++pnpm run typecheck
++pnpm run test:arch
++```
++
++The `@axc-verification/acceptance-api` tests exercise the actual Hono app in memory after workspace dependencies build; they need no listening port or Azure Functions host. The existing Cucumber health scenario separately exercises the Azure host through HTTP. The delivered validation notes record independent course checks over HTTP.
+diff --git a/apps/docs/docs/api/enrollment-requests.md b/apps/docs/docs/api/enrollment-requests.md
+new file mode 100644
+index 0000000..32a40d2
+--- /dev/null
++++ b/apps/docs/docs/api/enrollment-requests.md
+@@ -0,0 +1,107 @@
++---
++title: Enrollment Requests API
++---
++
++# Enrollment Requests API
++
++This sample API stores requests in memory for the application factory lifetime. A process restart clears requests. Each worker has its own store; this sample does not provide durable or cross-worker uniqueness. No authentication is added. `changedBy` is a supplied operator identifier, not an authenticated identity.
++
++## Create
++
++`POST /api/enrollment-requests` returns **201** with the created request.
++
++```json
++{
++  "courseId": "course-001",
++  "learnerEmail": "learner@example.org",
++  "justification": "I need this course to prepare for secure development work."
++}
++```
++
++The course must exist and be active. Email is trimmed and lowercased for storage, filtering, and duplicate checks. Email validation checks common unquoted ASCII address syntax without checking deliverability. Justification is trimmed and must contain 20–500 JavaScript string units. Client-supplied IDs, status, timestamps, and audit history are ignored. Every request starts pending.
++
++```json
++{
++  "id": "enroll-2c16e3b2-f0f6-4d30-b5f4-e4d761329965",
++  "courseId": "course-001",
++  "learnerEmail": "learner@example.org",
++  "justification": "I need this course to prepare for secure development work.",
++  "status": "pending",
++  "createdAt": "2026-10-21T13:00:00.000Z",
++  "updatedAt": "2026-10-21T13:00:00.000Z",
++  "statusHistory": [
++    { "fromStatus": null, "toStatus": "pending", "changedAt": "2026-10-21T13:00:00.000Z", "changedBy": "system", "reason": null }
++  ]
++}
++```
++
++A learner can have only one pending or approved request per course. Rejected or cancelled requests allow a new request. A learner can request different courses.
++
++## Retrieve
++
++`GET /api/enrollment-requests/:id` returns **200** with the complete request, including `statusHistory`, in the same shape as creation.
++
++## List
++
++`GET /api/enrollment-requests?status=pending&courseId=course-001&learnerEmail=learner@example.org` returns **200** with a JSON array of complete requests. Empty results return `[]`.
++
++All filters are optional and combine with AND. Status accepts `pending`, `approved`, `rejected`, or `cancelled`. `courseId` matches exactly after trimming. `learnerEmail` uses the same normalization and validation as creation. Empty, invalid, or repeated recognized filters return 400. Unknown query fields are ignored. Results follow creation order; no pagination is specified for this sample endpoint.
++
++## Change status
++
++`PATCH /api/enrollment-requests/:id/status` returns **200** with the complete updated request.
++
++```json
++{ "status": "approved", "changedBy": "reviewer@example.org" }
++```
++
++```json
++{ "status": "rejected", "changedBy": "reviewer@example.org", "reason": "Prerequisite course is incomplete." }
++```
++
++`changedBy` must be a non-empty string. Rejection requires a non-empty reason after trimming. Reason is optional for other transitions; an omitted or null reason is recorded as null. A supplied string reason must be non-empty. Malformed JSON and non-object bodies return 400.
++
++Allowed transitions:
++
++| Current | Allowed next status |
++| --- | --- |
++| pending | approved, rejected, cancelled |
++| approved | cancelled |
++| rejected | none |
++| cancelled | none |
++
++Every successful change appends one history entry containing `fromStatus`, `toStatus`, `changedAt`, `changedBy`, and `reason`; updates `updatedAt`; and preserves `createdAt` and earlier history. Failed validation, duplicates, and invalid transitions do not change stored requests or history. Same-status updates return 409.
++
++For example, approval appends:
++
++```json
++{ "fromStatus": "pending", "toStatus": "approved", "changedAt": "2026-10-21T13:01:00.000Z", "changedBy": "reviewer@example.org", "reason": null }
++```
++
++## Errors
++
++All enrollment errors use this envelope:
++
++```json
++{
++  "error": {
++    "code": "INVALID_REQUEST",
++    "message": "The request could not be completed.",
++    "details": [{ "field": "justification", "message": "justification must be between 20 and 500 characters." }]
++  }
++}
++```
++
++Validation details identify the invalid field. Business-rule errors use an empty `details` array. Unexpected errors return a generic 500 response without internal exception details.
++
++| Scenario | HTTP | Code |
++| --- | --- | --- |
++| Missing course | 404 | COURSE_NOT_FOUND |
++| Draft or retired course | 409 | COURSE_NOT_ACTIVE |
++| Invalid body, email, justification, filter, status, operator, or rejection reason | 400 | INVALID_REQUEST |
++| Existing pending or approved learner/course request | 409 | DUPLICATE_ACTIVE_REQUEST |
++| Missing enrollment request | 404 | ENROLLMENT_REQUEST_NOT_FOUND |
++| Disallowed transition, including same status | 409 | INVALID_STATUS_TRANSITION |
++| Unexpected server error | 500 | INTERNAL_ERROR |
++
++For updates, body validation precedes request lookup, followed by transition validation. Invalid status values return 400; valid status values used in disallowed transitions return 409.
+diff --git a/packages/axc-verification/acceptance-api/src/courses.test.ts b/packages/axc-verification/acceptance-api/src/courses.test.ts
+new file mode 100644
+index 0000000..aa27ab5
+--- /dev/null
++++ b/packages/axc-verification/acceptance-api/src/courses.test.ts
+@@ -0,0 +1,151 @@
++import assert from 'node:assert/strict';
++import { describe, it } from 'node:test';
++import { buildApplicationServicesFactory, type CoursePage } from '../../../axc/application-services/dist/index.js';
++import { createRestApp } from '../../../axc/rest/dist/index.js';
++
++const app = createRestApp(buildApplicationServicesFactory({ environment: 'test' }));
++const request = (query = '') => app.request(`/api/courses${query ? `?${query}` : ''}`);
++async function page(query = ''): Promise<CoursePage> {
++	const response = await request(query);
++	assert.equal(response.status, 200);
++	assert.match(response.headers.get('content-type') ?? '', /application\/json/);
++	return response.json();
++}
++const ids = (result: CoursePage) => result.items.map((course) => course.id);
++
++describe('GET /api/courses', () => {
++	it('returns defaults and every required model field', async () => {
++		const result = await page();
++		assert.deepEqual({ ...result, items: [] }, { items: [], page: 1, pageSize: 10, totalItems: 12, totalPages: 2 });
++		assert.equal(result.items.length, 10);
++		assert.equal(result.items[0]?.title, 'AI Security Foundations');
++		for (const course of result.items) assert.deepEqual(Object.keys(course).sort(), ['createdAt', 'id', 'modality', 'status', 'summary', 'tags', 'title', 'updatedAt']);
++	});
++	for (const [keyword, expected] of [
++		['gArDeNiNg', ['course-002']],
++		['CoMpOsTiNg', ['course-002']],
++		['wCaG', ['course-003']],
++		['SeCuRiTy', ['course-001', 'course-008', 'course-012']],
++	] as const) {
++		it(`searches title, summary or tags case-insensitively: ${keyword}`, async () => assert.deepEqual(ids(await page(`q=${keyword}`)), expected));
++	}
++	for (const modality of ['online', 'in-person', 'hybrid']) {
++		it(`filters modality=${modality}`, async () => {
++			const result = await page(`modality=${modality}`);
++			assert.equal(result.totalItems, 4);
++			assert.ok(result.items.every((course) => course.modality === modality));
++		});
++	}
++	for (const [status, count] of [
++		['active', 7],
++		['draft', 3],
++		['retired', 2],
++	] as const) {
++		it(`filters status=${status}`, async () => {
++			const result = await page(`status=${status}`);
++			assert.equal(result.totalItems, count);
++			assert.ok(result.items.every((course) => course.status === status));
++		});
++	}
++	it('matches a whole tag case-insensitively', async () => {
++		assert.deepEqual(ids(await page('tag=AI')), ['course-001', 'course-012']);
++		assert.equal((await page('tag=secur')).totalItems, 0);
++	});
++	it('combines keyword, modality, status and tag with AND', async () => {
++		assert.deepEqual(ids(await page('q=security&modality=online&status=active&tag=ai')), ['course-001']);
++		assert.deepEqual(ids(await page('status=draft&modality=hybrid&tag=AI')), ['course-012']);
++		assert.equal((await page('q=security&modality=in-person&status=active')).totalItems, 0);
++	});
++	it('paginates without gaps or duplicates and reports totals before pagination', async () => {
++		const all = await page('pageSize=50');
++		const results = await Promise.all([1, 2, 3].map((number) => page(`page=${number}&pageSize=5`)));
++		assert.deepEqual(results.flatMap(ids), ids(all));
++		assert.deepEqual(
++			results.map((result) => result.items.length),
++			[5, 5, 2],
++		);
++		assert.ok(results.every((result) => result.totalItems === 12 && result.totalPages === 3));
++		assert.equal((await page('pageSize=1')).items.length, 1);
++		assert.deepEqual(await page('page=9007199254740991&pageSize=50'), { items: [], page: Number.MAX_SAFE_INTEGER, pageSize: 50, totalItems: 12, totalPages: 1 });
++	});
++	for (const sort of ['title', 'createdAt', 'updatedAt'] as const) {
++		it(`sorts ascending by ${sort}`, async () => {
++			const result = await page(`sort=${sort}&pageSize=50`);
++			const values = result.items.map((course) => course[sort].toLowerCase());
++			assert.deepEqual(values, [...values].sort());
++		});
++	}
++	it('returns valid empty metadata for no matches and whitespace-only keyword', async () => {
++		assert.deepEqual(await page('q=unfindable'), { items: [], page: 1, pageSize: 10, totalItems: 0, totalPages: 0 });
++		assert.equal((await page('q=%20%20')).totalItems, 12);
++	});
++	for (const query of [
++		'modality=remote',
++		'modality=Online',
++		'modality=',
++		'status=deleted',
++		'status=',
++		'sort=id',
++		'sort=',
++		'page=0',
++		'page=-1',
++		'page=1.5',
++		'page=1e2',
++		'page=NaN',
++		'page=9007199254740992',
++		'page=',
++		'pageSize=0',
++		'pageSize=51',
++		'pageSize=-1',
++		'pageSize=2.5',
++		'pageSize=Infinity',
++		'pageSize=',
++		'pageSize=%205',
++		'page=1&page=2',
++		'q=a&q=b',
++		'tag=ai&tag=data',
++	]) {
++		it(`rejects invalid query: ${query}`, async () => {
++			const response = await request(query);
++			assert.equal(response.status, 400);
++			const body = await response.json();
++			assert.deepEqual(Object.keys(body), ['error']);
++			assert.equal(body.error.code, 'INVALID_QUERY_PARAMETER');
++			assert.equal(body.error.message, 'One or more query parameters are invalid.');
++			assert.ok(body.error.details.length > 0);
++			assert.equal(body.error.details[0].field, query.split('=')[0]);
++			assert.equal(typeof body.error.details[0].message, 'string');
++		});
++	}
++	it('returns the exact specified envelope and validates before filtering', async () => {
++		const response = await request('q=unfindable&pageSize=51');
++		assert.equal(response.status, 400);
++		assert.deepEqual(await response.json(), { error: { code: 'INVALID_QUERY_PARAMETER', message: 'One or more query parameters are invalid.', details: [{ field: 'pageSize', message: 'pageSize must be between 1 and 50.' }] } });
++	});
++	it('aggregates validation issues', async () => {
++		const response = await request('page=0&status=broken');
++		assert.equal(response.status, 400);
++		assert.deepEqual(
++			(await response.json()).error.details.map((issue: { field: string }) => issue.field),
++			['page', 'status'],
++		);
++	});
++	it('preserves the existing health endpoint', async () => {
++		const response = await app.request('/health');
++		assert.equal(response.status, 200);
++		assert.equal((await response.json()).service, 'agentCourses-api');
++	});
++	it('passes the existing authorization header through the factory', async () => {
++		const headers: (string | undefined)[] = [];
++		const factory = buildApplicationServicesFactory({ environment: 'test' });
++		const recordingApp = createRestApp({
++			forRequest: (header?: string) => {
++				headers.push(header);
++				return factory.forRequest(header);
++			},
++		});
++		assert.equal((await recordingApp.request('/api/courses', { headers: { Authorization: 'test-only' } })).status, 200);
++		assert.equal((await recordingApp.request('/api/courses')).status, 200);
++		assert.deepEqual(headers, ['test-only', undefined]);
++	});
++});
+diff --git a/packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs b/packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs
+new file mode 100644
+index 0000000..a15c094
+--- /dev/null
++++ b/packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs
+@@ -0,0 +1,200 @@
++import assert from 'node:assert/strict';
++import { randomUUID } from 'node:crypto';
++import { describe, it } from 'node:test';
++import { buildApplicationServicesFactory } from '../../../axc/application-services/dist/index.js';
++import { createRestApp } from '../../../axc/rest/dist/index.js';
++
++const justification = 'I need this course to prepare for secure development work.';
++function client() {
++	const factory = buildApplicationServicesFactory({ environment: 'test' });
++	const email = `learner-${randomUUID()}@example.org`;
++	const send = (path = '', method = 'GET', body) => {
++		const init = { method, headers: { 'Content-Type': 'application/json' } };
++		if (body !== undefined) init.body = typeof body === 'string' ? body : JSON.stringify(body);
++		const url = `/api/enrollment-requests${path}`;
++		// Recreate Hono per request, matching the Cellix Azure adapter lifetime.
++		return process.env['COURSE_TEST_BASE_URL'] ? fetch(`${process.env['COURSE_TEST_BASE_URL']}${url}`, init) : createRestApp(factory).request(url, init);
++	};
++	const create = (overrides = {}) => send('', 'POST', { courseId: 'course-001', learnerEmail: email, justification, ...overrides });
++	const change = (id, status, extra = {}) => send(`/${id}/status`, 'PATCH', { status, changedBy: 'reviewer@example.org', ...extra });
++	return { send, create, change, email };
++}
++async function error(response, status, code, field) {
++	assert.equal(response.status, status);
++	const body = await response.json();
++	assert.equal(body.error.code, code);
++	assert.equal(typeof body.error.message, 'string');
++	assert.ok(Array.isArray(body.error.details));
++	if (field) assert.equal(body.error.details[0].field, field);
++}
++
++describe('enrollment request workflow', () => {
++	it('creates pending requests, maps required fields, retrieves history across handler instances', async () => {
++		const c = client();
++		const response = await c.create({ status: 'approved', statusHistory: [] });
++		assert.equal(response.status, 201);
++		const value = await response.json();
++		assert.deepEqual(Object.keys(value).sort(), ['courseId', 'createdAt', 'id', 'justification', 'learnerEmail', 'status', 'statusHistory', 'updatedAt']);
++		assert.equal(value.courseId, 'course-001');
++		assert.equal(value.learnerEmail, c.email);
++		assert.equal(value.status, 'pending');
++		assert.equal(value.justification, justification);
++		assert.equal(new Date(value.createdAt).toISOString(), value.createdAt);
++		assert.equal(value.updatedAt, value.createdAt);
++		assert.deepEqual(value.statusHistory, [{ fromStatus: null, toStatus: 'pending', changedAt: value.createdAt, changedBy: 'system', reason: null }]);
++		const retrieved = await c.send(`/${value.id}`);
++		assert.equal(retrieved.status, 200);
++		assert.deepEqual(await retrieved.json(), value);
++	});
++	for (const [courseId, status, code] of [
++		['missing', 404, 'COURSE_NOT_FOUND'],
++		['course-004', 409, 'COURSE_NOT_ACTIVE'],
++		['course-006', 409, 'COURSE_NOT_ACTIVE'],
++	]) {
++		it(`rejects unavailable course ${courseId}`, async () => error(await client().create({ courseId }), status, code));
++	}
++	for (const [field, value] of [
++		['learnerEmail', 'invalid'],
++		['learnerEmail', 'a..b@example.org'],
++		['learnerEmail', '.a@example.org'],
++		['learnerEmail', 'a@-example.org'],
++		['learnerEmail', '<a>@example.org'],
++		['learnerEmail', 'a@@example.org'],
++		['learnerEmail', 'x@example..org'],
++		['learnerEmail', 7],
++		['learnerEmail', null],
++		['justification', 'too short'],
++		['justification', 'x'.repeat(501)],
++		['justification', null],
++		['courseId', ''],
++		['courseId', null],
++	]) {
++		it(`validates ${field}=${JSON.stringify(value)}`, async () => error(await client().create({ [field]: value }), 400, 'INVALID_REQUEST', field));
++	}
++	for (const length of [20, 500]) it(`accepts justification boundary ${length}`, async () => assert.equal((await client().create({ justification: 'x'.repeat(length) })).status, 201));
++	for (const body of ['{', 'null', '[]', '"text"']) it(`rejects malformed or non-object JSON: ${body}`, async () => error(await client().send('', 'POST', body), 400, 'INVALID_REQUEST', 'body'));
++	it('rejects empty JSON body', async () => error(await client().send('', 'POST'), 400, 'INVALID_REQUEST', 'body'));
++	for (const status of ['pending', 'approved']) {
++		it(`prevents duplicate ${status} requests, normalizing email case and whitespace`, async () => {
++			const c = client();
++			const value = await (await c.create()).json();
++			if (status === 'approved') assert.equal((await c.change(value.id, 'approved')).status, 200);
++			await error(await c.create({ learnerEmail: ` ${c.email.toUpperCase()} ` }), 409, 'DUPLICATE_ACTIVE_REQUEST');
++			assert.equal((await c.create({ courseId: 'course-002' })).status, 201);
++		});
++	}
++	it('allows only one concurrent active request', async () => {
++		const c = client();
++		const responses = await Promise.all(Array.from({ length: 8 }, () => c.create()));
++		assert.equal(responses.filter((r) => r.status === 201).length, 1);
++		assert.equal(responses.filter((r) => r.status === 409).length, 7);
++	});
++	for (const status of ['rejected', 'cancelled'])
++		it(`permits a new request after ${status}`, async () => {
++			const c = client();
++			const value = await (await c.create()).json();
++			assert.equal((await c.change(value.id, status, { reason: 'Prerequisite is missing.' })).status, 200);
++			assert.equal((await c.create()).status, 201);
++		});
++	it('lists requests with each filter and combined AND filters', async () => {
++		const c = client();
++		const a = await (await c.create()).json();
++		const b = await (await c.create({ courseId: 'course-002' })).json();
++		await c.change(b.id, 'approved');
++		const check = async (query, predicate, expected) => {
++			const response = await c.send(query);
++			assert.equal(response.status, 200);
++			const values = await response.json();
++			assert.ok(Array.isArray(values));
++			assert.ok(values.every(predicate));
++			if (expected) assert.deepEqual(values.map((x) => x.id).sort(), expected.sort());
++		};
++		await check(`?learnerEmail=${c.email.toUpperCase()}`, (x) => x.learnerEmail === c.email, [a.id, b.id]);
++		await check('?status=approved', (x) => x.status === 'approved');
++		await check('?courseId=course-001', (x) => x.courseId === 'course-001');
++		await check(`?status=pending&courseId=course-001&learnerEmail=${c.email}`, (x) => x.status === 'pending' && x.courseId === 'course-001' && x.learnerEmail === c.email, [a.id]);
++		await check('?courseId=does-not-exist', () => true, []);
++	});
++	for (const query of ['status=bad', 'learnerEmail=bad', 'courseId=', 'status=pending&status=approved', 'courseId=a&courseId=b', 'learnerEmail=a@example.org&learnerEmail=b@example.org'])
++		it(`rejects invalid list filter ${query}`, async () => error(await client().send(`?${query}`), 400, 'INVALID_REQUEST'));
++	it('reports missing request for retrieval and valid update', async () => {
++		const c = client();
++		await error(await c.send('/missing'), 404, 'ENROLLMENT_REQUEST_NOT_FOUND');
++		await error(await c.change('missing', 'approved'), 404, 'ENROLLMENT_REQUEST_NOT_FOUND');
++	});
++	for (const next of ['approved', 'rejected', 'cancelled'])
++		it(`supports pending to ${next} with audit entry`, async () => {
++			const c = client();
++			const initial = await (await c.create()).json();
++			const response = await c.change(initial.id, next, { reason: 'Reviewer decision.' });
++			assert.equal(response.status, 200);
++			const updated = await response.json();
++			assert.equal(updated.status, next);
++			assert.equal(updated.createdAt, initial.createdAt);
++			assert.equal(updated.statusHistory.length, 2);
++			assert.deepEqual(updated.statusHistory[0], initial.statusHistory[0]);
++			assert.deepEqual(updated.statusHistory[1], { fromStatus: 'pending', toStatus: next, changedAt: updated.updatedAt, changedBy: 'reviewer@example.org', reason: 'Reviewer decision.' });
++		});
++	it('supports approved to cancelled with complete audit history', async () => {
++		const c = client();
++		const initial = await (await c.create()).json();
++		await c.change(initial.id, 'approved');
++		const response = await c.change(initial.id, 'cancelled');
++		assert.equal(response.status, 200);
++		const updated = await response.json();
++		assert.deepEqual(
++			updated.statusHistory.map((x) => [x.fromStatus, x.toStatus]),
++			[
++				[null, 'pending'],
++				['pending', 'approved'],
++				['approved', 'cancelled'],
++			],
++		);
++	});
++	for (const current of ['pending', 'approved', 'rejected', 'cancelled'])
++		for (const next of ['pending', 'approved', 'rejected', 'cancelled']) {
++			if ((current === 'pending' && next !== 'pending') || (current === 'approved' && next === 'cancelled')) continue;
++			it(`rejects ${current} to ${next} without mutating history`, async () => {
++				const c = client();
++				const value = await (await c.create()).json();
++				if (current !== 'pending') await c.change(value.id, current, { reason: 'Reviewer decision.' });
++				const before = await (await c.send(`/${value.id}`)).json();
++				await error(await c.change(value.id, next, { reason: 'Reviewer decision.' }), 409, 'INVALID_STATUS_TRANSITION');
++				assert.deepEqual(await (await c.send(`/${value.id}`)).json(), before);
++			});
++		}
++	for (const extra of [{ status: 'invalid' }, { changedBy: '' }, { changedBy: 7 }, { status: 'rejected' }, { status: 'rejected', reason: '' }, { status: 'rejected', reason: '   ' }, { status: 'rejected', reason: 7 }])
++		it(`validates status update ${JSON.stringify(extra)}`, async () => {
++			const c = client();
++			const initial = await (await c.create()).json();
++			await error(await c.change(initial.id, 'approved', extra), 400, 'INVALID_REQUEST');
++			assert.deepEqual(await (await c.send(`/${initial.id}`)).json(), initial);
++		});
++	it('rejects malformed status body without mutation', async () => {
++		const c = client();
++		const initial = await (await c.create()).json();
++		await error(await c.send(`/${initial.id}/status`, 'PATCH', '{'), 400, 'INVALID_REQUEST', 'body');
++		assert.deepEqual(await (await c.send(`/${initial.id}`)).json(), initial);
++	});
++	it('protects repository from mutations to service responses and isolates factories', async () => {
++		const first = buildApplicationServicesFactory({ environment: 'test' });
++		const service = (await first.forRequest()).enrollments;
++		const created = service.create({ courseId: 'course-001', learnerEmail: 'local@example.org', justification });
++		const id = created.id;
++		created.status = 'approved';
++		created.statusHistory.length = 0;
++		const list = service.list();
++		list[0].statusHistory[0].changedBy = 'tampered';
++		assert.equal(service.get(id).status, 'pending');
++		assert.equal(service.get(id).statusHistory[0].changedBy, 'system');
++		assert.equal((await first.forRequest()).enrollments.get(id).statusHistory.length, 1);
++		const other = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
++		assert.deepEqual(other.enrollments.list(), []);
++	});
++	it('keeps unexpected server errors generic', async () => {
++		const app = createRestApp({ forRequest: () => Promise.reject(new Error('private details')) });
++		const response = await app.request('/api/enrollment-requests');
++		assert.equal(response.status, 500);
++		assert.deepEqual(await response.json(), { error: { code: 'INTERNAL_ERROR', message: 'The request could not be completed.', details: [] } });
++	});
++});
+diff --git a/packages/axc-verification/acceptance-api/src/host-workflow-check.mjs b/packages/axc-verification/acceptance-api/src/host-workflow-check.mjs
+new file mode 100644
+index 0000000..590e1f9
+--- /dev/null
++++ b/packages/axc-verification/acceptance-api/src/host-workflow-check.mjs
+@@ -0,0 +1,56 @@
++import { spawn } from 'node:child_process';
++import { createServer } from 'node:net';
++import { resolve } from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const repo = fileURLToPath(new URL('../../../../', import.meta.url));
++const socket = createServer();
++await new Promise((ok) => socket.listen(0, '127.0.0.1', ok));
++const port = socket.address().port;
++await new Promise((ok) => socket.close(ok));
++const host = spawn(process.execPath, ['--experimental-strip-types', 'scripts/start-host.ts'], {
++	cwd: resolve(repo, 'apps/api'),
++	env: { ...process.env, PORT: String(port), NODE_ENV: 'test' },
++	detached: true,
++	stdio: ['ignore', 'pipe', 'pipe'],
++});
++let tail = '';
++const capture = (chunk) => {
++	tail = (tail + chunk.toString()).slice(-16000);
++};
++host.stdout.on('data', capture);
++host.stderr.on('data', capture);
++try {
++	let ready = false;
++	for (let i = 0; i < 120; i++) {
++		if (host.exitCode !== null) throw new Error(`Host exited: ${tail}`);
++		try {
++			const response = await fetch(`http://127.0.0.1:${port}/health`, { signal: AbortSignal.timeout(500) });
++			if (response.ok) {
++				ready = true;
++				break;
++			}
++		} catch {
++			/* The host is still starting or has already stopped. */
++		}
++		await new Promise((ok) => setTimeout(ok, 500));
++	}
++	if (!ready) throw new Error(`Host startup timeout: ${tail}`);
++	console.log(`Azure Functions host ready; exercising full enrollment workflow over HTTP.`);
++	const tests = spawn(process.execPath, ['--test', 'src/enrollment-requests.test.mjs'], {
++		cwd: resolve(repo, 'packages/axc-verification/acceptance-api'),
++		env: { ...process.env, COURSE_TEST_BASE_URL: `http://127.0.0.1:${port}` },
++		stdio: 'inherit',
++	});
++	const code = await new Promise((ok) => tests.on('exit', ok));
++	if (code !== 0) {
++		console.log(tail);
++		process.exitCode = 1;
++	}
++} finally {
++	try {
++		process.kill(-host.pid, 'SIGTERM');
++	} catch {
++		/* The host is still starting or has already stopped. */
++	}
++}
+diff --git a/packages/axc/application-services/src/courses.ts b/packages/axc/application-services/src/courses.ts
+new file mode 100644
+index 0000000..6f74335
+--- /dev/null
++++ b/packages/axc/application-services/src/courses.ts
+@@ -0,0 +1,177 @@
++/** Read model for the local, read-only course catalog. */
++export interface Course {
++	id: string;
++	title: string;
++	summary: string;
++	modality: 'online' | 'in-person' | 'hybrid';
++	status: 'draft' | 'active' | 'retired';
++	tags: readonly string[];
++	createdAt: string;
++	updatedAt: string;
++}
++
++export interface CourseQuery {
++	q?: string;
++	modality?: Course['modality'];
++	status?: Course['status'];
++	tag?: string;
++	page: number;
++	pageSize: number;
++	sort: 'title' | 'createdAt' | 'updatedAt';
++}
++
++export interface CoursePage {
++	items: readonly Course[];
++	page: number;
++	pageSize: number;
++	totalItems: number;
++	totalPages: number;
++}
++
++// Fixed fixtures keep tests independent of services, clocks and production data.
++export const courses: readonly Readonly<Course>[] = Object.freeze(
++	(
++		[
++			{
++				id: 'course-001',
++				title: 'AI Security Foundations',
++				summary: 'Introductory course on secure AI-assisted development.',
++				modality: 'online',
++				status: 'active',
++				tags: ['ai', 'security'],
++				createdAt: '2026-01-15T00:00:00.000Z',
++				updatedAt: '2026-06-01T00:00:00.000Z',
++			},
++			{
++				id: 'course-002',
++				title: 'Urban Gardening',
++				summary: 'Grow herbs and learn composting in small spaces.',
++				modality: 'in-person',
++				status: 'active',
++				tags: ['sustainability', 'community'],
++				createdAt: '2026-01-12T00:00:00.000Z',
++				updatedAt: '2026-03-02T00:00:00.000Z',
++			},
++			{
++				id: 'course-003',
++				title: 'Web Accessibility',
++				summary: 'Make digital experiences work for everyone.',
++				modality: 'hybrid',
++				status: 'active',
++				tags: ['design', 'WCAG'],
++				createdAt: '2026-01-03T00:00:00.000Z',
++				updatedAt: '2026-03-18T00:00:00.000Z',
++			},
++			{
++				id: 'course-004',
++				title: 'Intro to Pottery',
++				summary: 'Shape clay using hand-building techniques.',
++				modality: 'in-person',
++				status: 'draft',
++				tags: ['art', 'hands-on'],
++				createdAt: '2026-02-14T00:00:00.000Z',
++				updatedAt: '2026-03-08T00:00:00.000Z',
++			},
++			{
++				id: 'course-005',
++				title: 'Data Storytelling',
++				summary: 'Turn numerical findings into clear visual explanations.',
++				modality: 'online',
++				status: 'active',
++				tags: ['data', 'communication'],
++				createdAt: '2026-01-25T00:00:00.000Z',
++				updatedAt: '2026-04-06T00:00:00.000Z',
++			},
++			{
++				id: 'course-006',
++				title: 'Project Leadership',
++				summary: 'Coordinate teams, milestones and practical delivery plans.',
++				modality: 'hybrid',
++				status: 'retired',
++				tags: ['management', 'communication'],
++				createdAt: '2025-12-10T00:00:00.000Z',
++				updatedAt: '2026-02-20T00:00:00.000Z',
++			},
++			{
++				id: 'course-007',
++				title: 'Conversational Spanish',
++				summary: 'Practice everyday dialogue and listening skills.',
++				modality: 'in-person',
++				status: 'active',
++				tags: ['language', 'beginner'],
++				createdAt: '2026-02-02T00:00:00.000Z',
++				updatedAt: '2026-04-04T00:00:00.000Z',
++			},
++			{
++				id: 'course-008',
++				title: 'Cybersecurity Basics',
++				summary: 'Recognize common threats and protect personal devices.',
++				modality: 'online',
++				status: 'draft',
++				tags: ['security', 'technology'],
++				createdAt: '2026-02-20T00:00:00.000Z',
++				updatedAt: '2026-04-03T00:00:00.000Z',
++			},
++			{
++				id: 'course-009',
++				title: 'Photography Fieldwork',
++				summary: 'Explore composition and natural light through guided practice.',
++				modality: 'hybrid',
++				status: 'active',
++				tags: ['art', 'photography'],
++				createdAt: '2026-02-05T00:00:00.000Z',
++				updatedAt: '2026-03-25T00:00:00.000Z',
++			},
++			{
++				id: 'course-010',
++				title: 'Mindful Movement',
++				summary: 'Combine gentle activity with focused breathing.',
++				modality: 'in-person',
++				status: 'retired',
++				tags: ['wellness', 'beginner'],
++				createdAt: '2025-12-21T00:00:00.000Z',
++				updatedAt: '2026-02-25T00:00:00.000Z',
++			},
++			{
++				id: 'course-011',
++				title: 'Python for Analysts',
++				summary: 'Analyze tables and automate repeatable reports.',
++				modality: 'online',
++				status: 'active',
++				tags: ['data', 'technology'],
++				createdAt: '2026-03-01T00:00:00.000Z',
++				updatedAt: '2026-04-01T00:00:00.000Z',
++			},
++			{
++				id: 'course-012',
++				title: 'Responsible Automation',
++				summary: 'Compare security controls for automated systems.',
++				modality: 'hybrid',
++				status: 'draft',
++				tags: ['ai', 'science'],
++				createdAt: '2026-03-10T00:00:00.000Z',
++				updatedAt: '2026-04-07T00:00:00.000Z',
++			},
++		] satisfies Course[]
++	).map((course) => Object.freeze({ ...course, tags: Object.freeze(course.tags) })),
++);
++
++const compare = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
++
++export function searchCourses(query: CourseQuery, catalog: readonly Course[] = courses): CoursePage {
++	const q = query.q?.trim().toLowerCase() ?? '';
++	const tag = query.tag?.trim().toLowerCase();
++	// ponytail: linear scan suits this fixed catalog; use indexed persistence when the catalog grows.
++	const matches = catalog.filter(
++		(course) =>
++			(!query.modality || course.modality === query.modality) &&
++			(!query.status || course.status === query.status) &&
++			(tag === undefined || course.tags.some((value) => value.toLowerCase() === tag)) &&
++			(!q || [course.title, course.summary, ...course.tags].some((value) => value.toLowerCase().includes(q))),
++	);
++	matches.sort((a, b) => compare(query.sort === 'title' ? a.title.toLowerCase() : a[query.sort], query.sort === 'title' ? b.title.toLowerCase() : b[query.sort]) || compare(a.id, b.id));
++	const totalItems = matches.length;
++	const totalPages = Math.ceil(totalItems / query.pageSize);
++	const start = query.page > totalPages ? totalItems : (query.page - 1) * query.pageSize;
++	return { items: matches.slice(start, start + query.pageSize), page: query.page, pageSize: query.pageSize, totalItems, totalPages };
++}
+diff --git a/packages/axc/application-services/src/enrollment-request.ts b/packages/axc/application-services/src/enrollment-request.ts
+new file mode 100644
+index 0000000..8b37109
+--- /dev/null
++++ b/packages/axc/application-services/src/enrollment-request.ts
+@@ -0,0 +1,122 @@
++export const enrollmentStatuses = ['pending', 'approved', 'rejected', 'cancelled'] as const;
++export type EnrollmentStatus = (typeof enrollmentStatuses)[number];
++
++export interface StatusHistoryEntry {
++	fromStatus: EnrollmentStatus | null;
++	toStatus: EnrollmentStatus;
++	changedAt: string;
++	changedBy: string;
++	reason: string | null;
++}
++
++export interface EnrollmentRequest {
++	id: string;
++	courseId: string;
++	learnerEmail: string;
++	justification: string;
++	status: EnrollmentStatus;
++	createdAt: string;
++	updatedAt: string;
++	statusHistory: StatusHistoryEntry[];
++}
++
++export interface EnrollmentFilter {
++	status?: EnrollmentStatus;
++	courseId?: string;
++	learnerEmail?: string;
++}
++
++export class EnrollmentError extends Error {
++	readonly code: string;
++	readonly status: 400 | 404 | 409;
++	readonly details: { field: string; message: string }[];
++	constructor(code: string, status: 400 | 404 | 409, message: string, details: { field: string; message: string }[] = []) {
++		super(message);
++		this.name = 'EnrollmentError';
++		this.code = code;
++		this.status = status;
++		this.details = details;
++	}
++}
++
++export function invalid(field: string, message: string): never {
++	throw new EnrollmentError('INVALID_REQUEST', 400, 'The request could not be completed.', [{ field, message }]);
++}
++
++function object(value: unknown): Record<string, unknown> {
++	if (value === null || typeof value !== 'object' || Array.isArray(value)) invalid('body', 'A JSON object is required.');
++	return value as Record<string, unknown>;
++}
++
++function text(value: unknown, field: string): string {
++	if (typeof value !== 'string' || !value.trim()) invalid(field, `${field} must be a non-empty string.`);
++	return value.trim();
++}
++
++function email(value: unknown): string {
++	const normalized = text(value, 'learnerEmail').toLowerCase();
++	const [local = '', domain = '', ...extra] = normalized.split('@');
++	const validLocal = local.length > 0 && local.length <= 64 && /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+$/.test(local) && !local.startsWith('.') && !local.endsWith('.') && !local.includes('..');
++	const labels = domain.split('.');
++	const validDomain = labels.length >= 2 && labels.every((label) => label.length <= 63 && /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(label));
++	if (normalized.length > 254 || extra.length || !validLocal || !validDomain) invalid('learnerEmail', 'learnerEmail must be a valid email address.');
++	return normalized;
++}
++
++function status(value: unknown): EnrollmentStatus {
++	if (!enrollmentStatuses.includes(value as EnrollmentStatus)) invalid('status', `status must be one of: ${enrollmentStatuses.join(', ')}.`);
++	return value as EnrollmentStatus;
++}
++
++export function parseEnrollmentCreation(value: unknown): Pick<EnrollmentRequest, 'courseId' | 'learnerEmail' | 'justification'> {
++	const body = object(value);
++	const courseId = text(body['courseId'], 'courseId');
++	const learnerEmail = email(body['learnerEmail']);
++	const justification = text(body['justification'], 'justification');
++	if (justification.length < 20 || justification.length > 500) invalid('justification', 'justification must be between 20 and 500 characters.');
++	return { courseId, learnerEmail, justification };
++}
++
++export function parseEnrollmentFilter(value: unknown): EnrollmentFilter {
++	const body = object(value);
++	const filter: EnrollmentFilter = {};
++	if (body['status'] !== undefined) filter.status = status(body['status']);
++	if (body['courseId'] !== undefined) filter.courseId = text(body['courseId'], 'courseId');
++	if (body['learnerEmail'] !== undefined) filter.learnerEmail = email(body['learnerEmail']);
++	return filter;
++}
++
++export function parseEnrollmentChange(value: unknown): { status: EnrollmentStatus; changedBy: string; reason: string | null } {
++	const body = object(value);
++	const nextStatus = status(body['status']);
++	const changedBy = text(body['changedBy'], 'changedBy');
++	const reason = body['reason'] === undefined || body['reason'] === null ? null : text(body['reason'], 'reason');
++	if (nextStatus === 'rejected' && !reason) invalid('reason', 'reason is required for rejection.');
++	return { status: nextStatus, changedBy, reason };
++}
++
++const transitions: Record<EnrollmentStatus, readonly EnrollmentStatus[]> = {
++	pending: ['approved', 'rejected', 'cancelled'],
++	approved: ['cancelled'],
++	rejected: [],
++	cancelled: [],
++};
++
++export function changeEnrollmentStatus(request: EnrollmentRequest, change: ReturnType<typeof parseEnrollmentChange>, changedAt: string): EnrollmentRequest {
++	if (!transitions[request.status].includes(change.status)) throw new EnrollmentError('INVALID_STATUS_TRANSITION', 409, `Cannot change ${request.status} to ${change.status}.`);
++	return {
++		...request,
++		status: change.status,
++		updatedAt: changedAt,
++		statusHistory: [
++			...request.statusHistory,
++			{
++				fromStatus: request.status,
++				toStatus: change.status,
++				changedAt,
++				changedBy: change.changedBy,
++				reason: change.reason,
++			},
++		],
++	};
++}
+diff --git a/packages/axc/application-services/src/enrollment-store.ts b/packages/axc/application-services/src/enrollment-store.ts
+new file mode 100644
+index 0000000..3d62c98
+--- /dev/null
++++ b/packages/axc/application-services/src/enrollment-store.ts
+@@ -0,0 +1,25 @@
++import type { EnrollmentFilter, EnrollmentRequest } from './enrollment-request.ts';
++
++/** Sample repository. Copies prevent callers from changing stored records or history. */
++export function createEnrollmentStore() {
++	const records = new Map<string, EnrollmentRequest>();
++	return {
++		get(id: string): EnrollmentRequest | undefined {
++			const record = records.get(id);
++			return record ? structuredClone(record) : undefined;
++		},
++		list(filter: EnrollmentFilter = {}): EnrollmentRequest[] {
++			return [...records.values()]
++				.filter(
++					(record) =>
++						(filter.status === undefined || record.status === filter.status) &&
++						(filter.courseId === undefined || record.courseId === filter.courseId) &&
++						(filter.learnerEmail === undefined || record.learnerEmail === filter.learnerEmail),
++				)
++				.map((record) => structuredClone(record));
++		},
++		save(record: EnrollmentRequest): void {
++			records.set(record.id, structuredClone(record));
++		},
++	};
++}
+diff --git a/packages/axc/application-services/src/enrollments.ts b/packages/axc/application-services/src/enrollments.ts
+new file mode 100644
+index 0000000..d36d9ba
+--- /dev/null
++++ b/packages/axc/application-services/src/enrollments.ts
+@@ -0,0 +1,46 @@
++import { randomUUID } from 'node:crypto';
++import { type Course, courses } from './courses.ts';
++import { changeEnrollmentStatus, EnrollmentError, type EnrollmentRequest, parseEnrollmentChange, parseEnrollmentCreation, parseEnrollmentFilter } from './enrollment-request.ts';
++import { createEnrollmentStore } from './enrollment-store.ts';
++
++export function createEnrollmentService(catalog: readonly Course[] = courses) {
++	const store = createEnrollmentStore();
++	function get(id: string): EnrollmentRequest {
++		const request = store.get(id);
++		if (!request) throw new EnrollmentError('ENROLLMENT_REQUEST_NOT_FOUND', 404, 'Enrollment request not found.');
++		return request;
++	}
++	return {
++		get,
++		list(filter: unknown = {}): EnrollmentRequest[] {
++			return store.list(parseEnrollmentFilter(filter));
++		},
++		create(body: unknown): EnrollmentRequest {
++			const input = parseEnrollmentCreation(body);
++			const course = catalog.find((course) => course.id === input.courseId);
++			if (!course) throw new EnrollmentError('COURSE_NOT_FOUND', 404, 'Course not found.');
++			if (course.status !== 'active') throw new EnrollmentError('COURSE_NOT_ACTIVE', 409, 'Course is not active.');
++			// ponytail: synchronous check/save is atomic within one process; use a database constraint for multiple workers.
++			if (store.list({ courseId: input.courseId, learnerEmail: input.learnerEmail }).some((request) => request.status === 'pending' || request.status === 'approved')) {
++				throw new EnrollmentError('DUPLICATE_ACTIVE_REQUEST', 409, 'An active request already exists for this learner and course.');
++			}
++			const now = new Date().toISOString();
++			const request: EnrollmentRequest = {
++				...input,
++				id: `enroll-${randomUUID()}`,
++				status: 'pending',
++				createdAt: now,
++				updatedAt: now,
++				statusHistory: [{ fromStatus: null, toStatus: 'pending', changedAt: now, changedBy: 'system', reason: null }],
++			};
++			store.save(request);
++			return request;
++		},
++		changeStatus(id: string, body: unknown): EnrollmentRequest {
++			const change = parseEnrollmentChange(body);
++			const updated = changeEnrollmentStatus(get(id), change, new Date().toISOString());
++			store.save(updated);
++			return updated;
++		},
++	};
++}
+diff --git a/packages/axc/rest/src/course-query.ts b/packages/axc/rest/src/course-query.ts
+new file mode 100644
+index 0000000..14e7d83
+--- /dev/null
++++ b/packages/axc/rest/src/course-query.ts
+@@ -0,0 +1,38 @@
++import type { CourseQuery } from '@axc/application-services';
++
++interface QueryIssue {
++	field: string;
++	message: string;
++}
++
++export function parseCourseQuery(params: URLSearchParams): { query: CourseQuery; issues: QueryIssue[] } {
++	const issues: QueryIssue[] = [];
++	for (const field of ['q', 'modality', 'status', 'tag', 'page', 'pageSize', 'sort']) {
++		if (params.getAll(field).length > 1) issues.push({ field, message: `${field} must be supplied at most once.` });
++	}
++	function choice<T extends string>(field: string, allowed: readonly T[], fallback: T): T {
++		const value = params.get(field);
++		if (value === null) return fallback;
++		if (allowed.includes(value as T)) return value as T;
++		issues.push({ field, message: `${field} must be one of: ${allowed.join(', ')}.` });
++		return fallback;
++	}
++	function integer(field: string, fallback: number, maximum: number, message: string): number {
++		const raw = params.get(field);
++		if (raw === null) return fallback;
++		const value = Number(raw);
++		if (/^\d+$/.test(raw) && Number.isSafeInteger(value) && value >= 1 && value <= maximum) return value;
++		issues.push({ field, message });
++		return fallback;
++	}
++	const query: CourseQuery = {
++		page: integer('page', 1, Number.MAX_SAFE_INTEGER, 'page must be a positive safe integer.'),
++		pageSize: integer('pageSize', 10, 50, 'pageSize must be between 1 and 50.'),
++		sort: choice('sort', ['title', 'createdAt', 'updatedAt'], 'title'),
++	};
++	if (params.has('modality')) query.modality = choice('modality', ['online', 'in-person', 'hybrid'], 'online');
++	if (params.has('status')) query.status = choice('status', ['draft', 'active', 'retired'], 'active');
++	if (params.has('q')) query.q = params.get('q') ?? '';
++	if (params.has('tag')) query.tag = params.get('tag') ?? '';
++	return { query, issues };
++}
