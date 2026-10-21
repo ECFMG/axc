@@ -8,8 +8,9 @@ import { afterEach, beforeEach, test } from 'node:test';
 
 const gate = path.join(import.meta.dirname, 'stop-gate.mjs');
 let repo;
-// git hooks export GIT_DIR/GIT_INDEX_FILE; drop them so nothing here touches the real repo
-const cleanEnv = () => ({ ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_'))), TMPDIR: repo });
+// Hooks export GIT_DIR/GIT_INDEX_FILE: inherited, `git init` would rewrite the real repo's config (core.bare=true).
+// Drop every GIT_* var and ignore global/system config so probes only touch the temp repo.
+const cleanEnv = () => ({ ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_'))), GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1', TMPDIR: repo });
 const sh = (...args) => execFileSync('git', args, { cwd: repo, env: cleanEnv(), stdio: 'ignore' });
 const hook = (mode, input = {}) => execFileSync(process.execPath, [gate, mode], { cwd: repo, env: cleanEnv(), input: JSON.stringify({ sessionId: 's1', ...input }), encoding: 'utf8' });
 const blocked = (input) => {
@@ -51,10 +52,13 @@ test('stopHookActive → allow', () => {
 	assert.equal(blocked({ stopHookActive: true }), false);
 	assert.equal(blocked({ stop_hook_active: true }), false);
 });
-test('cap: 3 blocks per session, then allow; start is idempotent', () => {
-	writeFileSync(path.join(repo, 'a.md'), 'b\n');
+test('same state never blocks twice; cap 3 per session; start is idempotent', () => {
 	hook('start');
-	assert.deepEqual([blocked(), blocked(), blocked(), blocked()], [true, true, true, false]);
+	const edit = (v) => {
+		writeFileSync(path.join(repo, 'a.md'), `${v}\n`);
+		return blocked();
+	};
+	assert.deepEqual([edit('b'), blocked(), edit('c'), edit('d'), edit('e')], [true, false, true, true, false]);
 	assert.equal(blocked({ sessionId: 'other' }), false);
 });
 test('failed verify since start → block reason is the excerpt', () => {

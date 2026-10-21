@@ -2,7 +2,7 @@
 //   start: record HEAD + tree fingerprint once per session (SessionStart; UserPromptSubmit fallback).
 //   stop:  allow if nothing changed (pure Q&A) or the work is committed with a clean tree;
 //          otherwise block with the failed-verify excerpt or a one-line reason.
-//          Never blocks when stopHookActive is set; at most 3 blocks per session.
+//          Never blocks when stopHookActive is set, twice for the same tree state, or more than 3 times per session.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
@@ -38,7 +38,7 @@ function verifyExcerpt(root, since) {
 }
 
 export function decide(start, now, { stopHookActive = false, excerpt = '' } = {}) {
-	if (stopHookActive || start.blocks >= MAX_BLOCKS) return null;
+	if (stopHookActive || start.blocks >= MAX_BLOCKS || start.lastBlocked === `${now.head}:${now.fingerprint}`) return null;
 	if (now.head === start.head && now.fingerprint === start.fingerprint) return null;
 	if (now.head === start.head) return excerpt || 'Edits are not committed: run the first check, then the commit chain (husky verify is the gate).';
 	if (now.dirty && now.fingerprint !== start.fingerprint) return 'Committed, but the tree is dirty: commit or revert the leftover changes.';
@@ -59,9 +59,10 @@ function main() {
 	}
 	if (mode !== 'stop' || !existsSync(file)) return;
 	const start = JSON.parse(readFileSync(file, 'utf8'));
-	const reason = decide(start, snapshot(), { stopHookActive: Boolean(input.stopHookActive ?? input.stop_hook_active), excerpt: verifyExcerpt(root, start.at) });
+	const now = snapshot();
+	const reason = decide(start, now, { stopHookActive: Boolean(input.stopHookActive ?? input.stop_hook_active), excerpt: verifyExcerpt(root, start.at) });
 	if (!reason) return;
-	writeFileSync(file, JSON.stringify({ ...start, blocks: start.blocks + 1 }));
+	writeFileSync(file, JSON.stringify({ ...start, blocks: start.blocks + 1, lastBlocked: `${now.head}:${now.fingerprint}` }));
 	process.stdout.write(JSON.stringify({ decision: 'block', reason }));
 }
 
