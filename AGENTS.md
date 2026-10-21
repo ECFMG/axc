@@ -24,7 +24,13 @@ Each new endpoint needs a Hono route in `packages/axc/rest/src/index.ts` and a `
 
 ## Data access
 
-Application services get data through ApiContext, built in `apps/api/src/index.ts` `.setContext(...)`, the same way health gets `environment`. Persistence exports the implementation; apps/api creates it and puts it in the context. Unit tests pass an in-memory instance the same way.
+Follow this exact pattern. Do not invent another, and do not add a parameter to `buildApplicationServicesFactory` or change any exported signature to pass data.
+
+1. Define the read interface and its data types in `@axc/domain` (for example a `CourseCatalog` interface with the methods the use case needs).
+2. Implement that interface in `@axc/persistence` and export a factory that builds it (for example `createCourseCatalog()`); inside persistence import only domain types.
+3. In `apps/api/src/index.ts` (the composition root) create the implementation once and put it on ApiContext with `.setContext(...)`, exactly the way `environment` is already set for health.
+4. In `@axc/application-services` read the dependency off ApiContext and depend on the `@axc/domain` interface; import from `@axc/persistence` as `import type` only (enforced by `pnpm run test:arch`).
+5. Unit tests build the use case with an in-memory implementation of the same domain interface, passed through the same context.
 
 ## Cellix
 
