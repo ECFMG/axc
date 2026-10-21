@@ -66,7 +66,8 @@ Load **`mog-critique`** on **harness prep** or **acceptance/verify fail repair**
 | need | command |
 | --- | --- |
 | lint/format one area | `pnpm exec biome check <path>` |
-| test one package | `pnpm --filter <pkg> run test` |
+| typecheck one package | `pnpm exec turbo run typecheck --filter=<pkg> --output-logs=errors-only` |
+| test one package | `pnpm exec turbo run test --filter=<pkg> --output-logs=errors-only` |
 | everything, before done | `pnpm run verify` (once) |
 
 A gate reporting **SKIPPED** is not a pass — say so explicitly.
@@ -86,6 +87,15 @@ Write for the next AI agent, not a human reader. Chat prose is overhead; code/te
 - Never dump diffs, full file contents, or long green logs into chat — summarize failures only.
 - One line of intent before a batch of tool calls, not one per call.
 - If a sentence would not change what the next agent does, cut it.
+
+Token rules (tools):
+
+- turbo: always `--output-logs=errors-only`.
+- Long command output: `… 2>&1 | tail -n 40`; widen only if the error is cut.
+- Find with `rg -n` (or `grep -n`), then read only that line range — no whole-file reads to search.
+- Don't re-read a file you just wrote; the edit result is the source of truth.
+- No sub-agents / reviewer agents — work inline.
+- `test:arch` + `test:acceptance` run once, at the final gate (`pnpm run verify`) — not while iterating.
 
 ## Cost / usage (eval operators)
 

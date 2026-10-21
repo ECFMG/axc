@@ -20,13 +20,12 @@ Validate AXC changes before marking work complete. Keep context minimal: targete
 Prefer package-scoped commands while fixing:
 
 ```bash
-pnpm --filter @axc-verification/acceptance-api test:acceptance
-pnpm --filter @axc-verification/archunit-tests test:arch
-pnpm run lint
-pnpm run format:check
+pnpm exec biome check <paths>
+pnpm exec turbo run typecheck --filter=<pkg> --output-logs=errors-only
+pnpm exec turbo run test --filter=<pkg> --output-logs=errors-only
 ```
 
-Run build/test/arch/snyk individually only when diagnosing a failure — avoid repeating the full suite.
+Arch + acceptance run only in the final gate. Re-run one of them alone only to diagnose its own failure.
 
 ### Single final verify
 

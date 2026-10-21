@@ -59,7 +59,7 @@ packages/cellix/*                 vendored — read/reuse; edit only when portin
 | Acceptance | `acceptance-api` `*.feature` + `*.steps.ts` | cucumber globs both; copy `healthcheck.steps.ts` shape; boots host :7071 (slow) |
 | Arch | `archunit-tests` `dependency-rules.test.ts` | domain forbidden imports listed below |
 
-Package unit: `pnpm --filter @axc/<pkg> run test`.
+Package unit: `pnpm exec turbo run test --filter=@axc/<pkg> --output-logs=errors-only`.
 
 ## Boundary traps (fail verify / SCORE)
 
@@ -90,9 +90,8 @@ test:arch → test + acceptance → audit → snyk (minutes; acceptance dominate
 | need | command |
 | --- | --- |
 | lint/format path | `pnpm exec biome check <path>` (tabs) |
-| unit one package | `pnpm --filter @axc/<pkg> run test` |
-| arch only | `pnpm run test:arch` |
-| full gate once | `pnpm run verify` |
+| unit one package | `pnpm exec turbo run test --filter=@axc/<pkg> --output-logs=errors-only` |
+| full gate once (arch + acceptance live here) | `pnpm run verify 2>&1 \| tail -n 40` |
 
 Node: `.nvmrc` → 24.x (`engines.node >=24`).
 
@@ -111,4 +110,5 @@ Open only the files your change needs. Optional skills stay off unless required
 ## Agent-to-agent output
 
 Structured + terse for the next agent. Success → minimal/silent. Failure → what/where/next fix.
+Tools: turbo `--output-logs=errors-only` · `| tail` long output · grep → line-range read · no re-read after write · no sub-agents · arch/acceptance only at final gate.
 See AGENTS.md “Agent-to-agent output”.
