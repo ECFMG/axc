@@ -23,7 +23,7 @@
 		"e18e": "pnpm dlx @e18e/cli analyze --log-level error --quiet",
 		"audit": "pnpm audit --audit-level=high",
 		"snyk": "node scripts/snyk-verify.mjs",
-		"verify": "node scripts/check-script-policy.mjs && node scripts/check-ac-coverage.mjs && biome check . && pnpm run typecheck && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk",
+		"verify": "node scripts/check-script-policy.mjs && node scripts/check-ac-coverage.mjs && node --test scripts/*.test.mjs && biome check . && pnpm run typecheck && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk",
 		"prepare": "husky"
 	},
 	"optionalDependencies": {
