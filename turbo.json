@@ -42,6 +42,18 @@
 			"cache": false,
 			"persistent": true
 		},
+		"@apps/api#dev": {
+			"description": "API dev needs its own build + prepare:deploy (deploy/package.json + dist) or func loads zero functions; cached after first run",
+			"dependsOn": ["^build", "build", "@cellix/local-dev#build"],
+			"cache": false,
+			"persistent": true
+		},
+		"@apps/api#dev:worktree": {
+			"description": "Same as @apps/api#dev with WORKTREE_NAME hostname/port suffix",
+			"dependsOn": ["^build", "build", "@cellix/local-dev#build"],
+			"cache": false,
+			"persistent": true
+		},
 		"start": {
 			"description": "Starts the built API with the Azure Functions host",
 			"dependsOn": ["build"],

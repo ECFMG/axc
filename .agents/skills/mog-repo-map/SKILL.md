@@ -56,7 +56,7 @@ packages/cellix/*                 vendored — read/reuse; edit only when portin
 | Kind | Where | Notes |
 | --- | --- | --- |
 | Unit | vitest per package (`@cellix/config-vitest`) | e.g. `application-services` `health.test.ts` |
-| Acceptance | `acceptance-api` `*.feature` + `*.steps.ts` | cucumber globs both; copy `healthcheck.steps.ts` shape; boots host :7071 (slow) |
+| Acceptance | `acceptance-api` `*.feature` + `*.steps.ts` | cucumber globs both; copy `healthcheck.steps.ts` shape; boots host on 7071 (main) or 7071+worktree offset (`acceptance-port.ts`; harness 10771) — slow |
 | Arch | `archunit-tests` `dependency-rules.test.ts` | domain forbidden imports listed below |
 
 Package unit: `pnpm exec turbo run test --filter=@axc/<pkg> --output-logs=errors-only`.
