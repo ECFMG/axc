@@ -61,9 +61,7 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 ## Biome (`biome.json`)
 
 Tabs, single quotes, lineWidth 230, organizeImports on; the final chain runs `biome check --write`. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
-- `useAwait`: no `async` without `await` — return the promise or use `responseBody<T>()` (sync).
-- Readonly: `useReadonlyClassProperties` is not enabled; `readonly` optional.
-- `noNestedTernary` is not enabled; prefer `if`/lookup for 3+ branches anyway.
+- `useAwait`: no block-body `async` without `await` — return the promise or use `responseBody<T>()` (sync).
 
 TS4111 vs `useLiteralKeys`: keep `x['k']` + `// biome-ignore lint/complexity/useLiteralKeys: index signature` (as `acceptance-api/src/world.ts`).
 
