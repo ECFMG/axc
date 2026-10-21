@@ -5,9 +5,9 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 # mog-repo-map
 
-Answers layout + rules up front. **Never** open archunit / `test:arch` internals, `packages/cellix/**` sources you won't edit,
+Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open archunit / `test:arch` internals, `packages/cellix/**` sources you won't edit,
 `node_modules/`, `pnpm-lock.yaml`, `dist/`, `deploy/`, `docs/eval-contract.md`, `docs/score-metering.md`, `.husky/`,
-`docs/skills-archive/`, agent memory; never list cellixjs. Batch the reads you need in one go, then write. First write by ~call 6.
+`docs/skills-archive/`, agent memory; never list cellixjs. Aim ≤3 read calls (guideline, not a cap), then write all files in one pass.
 
 ## Layout
 
@@ -42,6 +42,7 @@ Each package's public API = `src/index.ts`. Imports use `.ts` extensions (`./x.t
 ## Facts (pre-answered — don't hunt)
 
 - Health is inline in `application-services/src/index.ts`; there is no `contexts/`.
+- **Docs**: `apps/docs/docs/<feature>.md` — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
 - **Domain imports**: none of `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest|persistence|service-mongoose|application-services` in `domain/src` (tests too).
 - **knip** (`knip.json`): exports from non-entry files must be imported somewhere — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
 - **Hono** (`hono/dist/types/request.d.ts`): `c.req.query('k'): string | undefined` · `c.req.query(): Record<string,string>` · `c.req.queries('k'): string[] | undefined`. Prefer per-key `query('k')` (no TS4111).
@@ -55,8 +56,9 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 
 ## Tests
 
+- **Assert properties**: every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
 - **Unit**: vitest only in `application-services` (`vitest.config.ts` = `mergeConfig(nodeConfig)` from `@cellix/config-vitest`; `test: vitest run --silent --reporter=dot`). `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
-- **Acceptance** (`packages/axc-verification/acceptance-api`): `cucumber.yaml` loads `src/features/**/*.feature` + `src/step-definitions/**/*.steps.ts`. `world.ts` gives actors `CallAnApi.at(<host origin>)` → relative paths `GetRequest.to('/api/<route>?k=v')`. Steps: `actorCalled('API client')`, `Send.a(...)`, `LastResponse.status()` / `.body<T>()`, `Ensure.that(resolved(q), equals(v))` — copy `step-definitions/healthcheck.steps.ts`. `Question.about(…, cb)`: `cb` not `async` unless it awaits (`useAwait`). Host port from `acceptance-port.ts`; runs only in the final gate.
+- **Acceptance** (`packages/axc-verification/acceptance-api`): `cucumber.yaml` loads `src/features/**/*.feature` + `src/step-definitions/**/*.steps.ts`. `world.ts` gives actors `CallAnApi.at(<host origin>)` → relative paths `GetRequest.to('/api/<route>?k=v')`. Steps: `actorCalled('API client')`, `Send.a(...)`, `LastResponse.status()` / `.body<T>()`, `Ensure.that(resolved(q), equals(v))` — copy `step-definitions/healthcheck.steps.ts`. Derived value: `Question.about('x', (actor) => actor.answer(LastResponse.body<T>()))`, assert via `Ensure.that(resolved(q), …)`. Host port from `acceptance-port.ts`; runs only in the final gate.
 - **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; the evidence table reuses ids.
 
 ## Biome (`biome.json`)

@@ -1,6 +1,6 @@
 # AXC agents (mog-xai-1)
 
-CellixJS architecture; reference `/Volumes/files/src/cellixjs` (targeted reads only, never list).
+CellixJS architecture; `/Volumes/files/src/cellixjs` only to port a missing package (never list).
 
 ## Territory
 
@@ -17,21 +17,21 @@ Traps:
 
 ## SCORE path
 
-1. Load `mog-repo-map` → it answers layout/conventions. Batch the reads you need once, then write; first write by ~call 6.
+1. Load `mog-repo-map` — authoritative; don't re-verify it in source or cellixjs. Aim ≤3 read calls (guideline), then write all files in one pass.
 2. Typecheck/test green → run the `run-validation` chain at once (no diff/status/re-read review), foreground, long timeout; husky verify is the single gate.
 3. Never read: `pnpm-lock.yaml`, `node_modules/`, `docs/eval-contract.md`, `docs/score-metering.md`, `.husky/`, archunit/`test:arch` internals, `dist/`, `deploy/`, `docs/skills-archive/`, agent memory. Never write memory.
 4. Fail-repair or harness prep only: open `docs/mog-critique.md` by path (3–10 rounds, stop when clean).
 
 ## Output (token budget)
 
-- Terse, structured; no preamble/narration. Success silent; errors = what/where/next fix. Never paste diffs, files or green logs.
+- No preamble, plans or narration between tool calls; don't restate files you wrote. Success silent; errors = what/where/next fix. Never paste diffs, files or green logs.
 - Shell: `nvm use` first (Node 24; Node 20 breaks pnpm 11). turbo `--output-logs=errors-only`; long output `| tail -n 40`.
-- Search `grep -rn` (rg only if installed) → read that line range. No re-reading what you wrote. No sub-agents.
+- Search `grep -rn` (rg only if installed) → read that line range; never cat whole files. No re-reading what you wrote. Batch edits into as few calls as possible. No sub-agents.
 - Arch + acceptance only in the final gate.
 
 ## Finish
 
-Evidence table: one row per requirement/AC id → PASS/FAIL + proving test/file.
+One line: `<sha> verify ok · acceptance N/N` (or the failure). Evidence table only if the task prompt asks for one.
 
 ## Eval operators
 

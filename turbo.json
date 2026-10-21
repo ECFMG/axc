@@ -5,22 +5,26 @@
 	"tasks": {
 		"build": {
 			"description": "Compiles TypeScript and bundles each package",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build"],
 			"inputs": ["src/**", "tsconfig*.json", "rolldown.config.ts", "scripts/**", "host.json", "package.json"],
 			"outputs": ["dist/**", "deploy/**", "*.zip", "*.tsbuildinfo", "build/**"]
 		},
 		"typecheck": {
 			"description": "Typechecks packages that expose a typecheck script",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build"],
 			"outputs": []
 		},
 		"test": {
 			"description": "Runs unit and integration tests",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build", "@cellix/config-vitest#build"],
 			"inputs": ["$TURBO_DEFAULT$", "**/*.test.ts"]
 		},
 		"test:arch": {
 			"description": "Runs architecture fitness tests",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build", "@cellix/config-vitest#build", "@cellix/archunit-tests#build"],
 			"outputs": [],
 			"cache": false
