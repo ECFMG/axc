@@ -18,19 +18,23 @@ An allowed path is not an instruction to use it. Use a package the slice already
 
 ## Build
 
-Match the slice's layering, error shape, and tests. Stay inside the write boundary the task states.
+Match the slice's layering, error shape, and tests. Stay inside the write boundary the task states. Add one acceptance scenario for each acceptance criterion the task names. Keep unit tests next to the use case.
 
 When the specification says the feature must run without external services, and the slice does not already persist through a database, keep the new data in memory in a package the composition root already wires. Do not be the first caller of an unused database adapter. Do not add a dependency unless the specification cannot be met without one.
 
 ## Check
 
-While editing, test the packages you changed. At the end, run each command the specification names, once. Do not invoke a wider audit, architecture, or security gate yourself.
+While editing, test the packages you changed. At the end, run each command the specification names, once. Then run `pnpm run test:arch` once. `pnpm test` does not include it. Fix a failure your change caused. Do not open `packages/cellix` to do that.
+
+Do not run `pnpm run verify`, Knip, audit, or Snyk yourself.
+
+Before you stop, compare the changed paths with the write boundary in the task. A workspace link in `pnpm-lock.yaml` is the only expected exception. Do not add a third-party dependency. Do not edit this rule file.
 
 If the task requires a commit and a hook runs a wider gate, let the hook run. When it fails on findings you did not introduce, record the failure and stop. Do not widen the change to clear those findings.
 
 ## Stop
 
-Stop when every named acceptance criterion is met and those commands have been run. Do not start a dev server or a local proxy unless a criterion needs a live URL. When it does, copy the public URL style from the doc you already read.
+Stop when every named acceptance criterion is met and those commands, including `pnpm run test:arch`, have been run. Do not start a dev server or a local proxy unless a criterion needs a live URL. When it does, copy the public URL style from the doc you already read.
 
 # Repo card
 
@@ -81,6 +85,3 @@ Omitted from the edges above because most packages use them: @cellix/config-type
 
 ## Notes added during the task
 
-- A Hono route is not reachable until apps/api registers an Azure Functions handler for that same path, the way GET /health is registered, with authLevel: 'anonymous'. host.json sets routePrefix to an empty string.
-- Package exports point at dist. Build a package before Vitest can see a new export. If dist/ disagrees with src/, trust src/.
-- pnpm test does not run pnpm run test:arch.
