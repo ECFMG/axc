@@ -8,7 +8,7 @@ description: Final gate for AXC changes — one chained format + stage + commit;
 ## First check — ONE command after writing (lint fails here, not at the commit gate)
 
 ```bash
-{ . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; { pnpm exec biome check --write <touched files> && pnpm exec turbo run typecheck test --filter='[HEAD]' --output-logs=errors-only; } >/tmp/check.log 2>&1 || { tail -n 40 /tmp/check.log; false; }
+{ . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; { pnpm exec biome check --write <touched files> && pnpm exec turbo run typecheck test --filter='[HEAD]' --output-logs=errors-only && pnpm run knip; } >/tmp/check.log 2>&1 || { tail -n 40 /tmp/check.log; false; }
 ```
 
 Silent = green. `[HEAD]` = packages changed vs HEAD (incl. new files). No `test:arch` / acceptance / full verify mid-task.
