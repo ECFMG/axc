@@ -21,9 +21,9 @@ Shell: `nvm use` first (Node 24). No narration, plans or sub-agents; success sil
 
 1. One batch: read `mog-repo-map` (authoritative — don't re-verify in source/cellixjs) + `run-validation`.
 2. Targeted `grep -rn` / line-range reads only (nothing >~2KB; never cat whole files). Aim ≤3 read calls (guideline).
-3. Write all files in one pass; small wiring file (<80 lines) needing >1 change → rewrite whole, imports on top. Never re-read what you wrote.
-4. Run the single first-check command (`run-validation`).
-5. Run the commit chain at once, foreground, long timeout (husky verify = only gate; arch + acceptance run there). Final output one line: `<sha> verify ok · acceptance N/N` (or the failure).
+3. Write all files in one pass: wiring file <~30 lines → whole rewrite, imports on top; larger → targeted edits.
+4. Immediately run the first-check command (`run-validation`), then on green the commit chain — no self-review or re-read between.
+5. Chain runs foreground, long timeout (husky verify = only gate; arch + acceptance run there). Final output one line: `<sha> verify ok · acceptance N/N` (or the failure).
 
 Never read: `pnpm-lock.yaml`, `node_modules/`, `dist/`, `deploy/`, `.husky/`, archunit/`test:arch` internals, `docs/skills-archive/`, agent memory (never write it). Never read or edit `evaluation-run-record.md` or eval/score docs (`docs/eval-contract.md`, `docs/score-metering.md`, `docs/harness-cost-usage.md`) — the operator fills them.
 

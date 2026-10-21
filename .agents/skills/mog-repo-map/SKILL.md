@@ -5,9 +5,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 # mog-repo-map
 
-Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open archunit / `test:arch` internals, `packages/cellix/**` sources you won't edit,
-`node_modules/`, `pnpm-lock.yaml`, `dist/`, `deploy/`, eval/score docs (see AGENTS), `.husky/`,
-`docs/skills-archive/`, agent memory; never list cellixjs. Aim ≤3 read calls (guideline, not a cap), then write all files in one pass.
+Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open `packages/cellix/**` sources you won't edit or anything AGENTS bans; never list cellixjs.
 
 ## Layout
 
@@ -43,7 +41,6 @@ Each package's public API = `src/index.ts`. Imports use `.ts` extensions (`./x.t
 
 - Health is inline in `application-services/src/index.ts`; there is no `contexts/`.
 - **Docs**: `apps/docs/docs/<feature>.md` — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
-- **Domain imports**: none of `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest|persistence|service-mongoose|application-services` in `domain/src` (tests too).
 - **knip** (`knip.json`): exports from non-entry files must be imported somewhere — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
 - **Hono** (`hono/dist/types/request.d.ts`): `c.req.query('k'): string | undefined` · `c.req.query(): Record<string,string>` · `c.req.queries('k'): string[] | undefined`. Prefer per-key `query('k')` (no TS4111).
 - **Lockfile**: on it already — `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter`, vitest (application-services), `@serenity-js/*`, `@cucumber/cucumber`, `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`. Anything else = lockfile churn.
@@ -63,8 +60,13 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 
 ## Biome (`biome.json`)
 
-Tabs, single quotes, lineWidth 230, organizeImports on. Errors that bite: `noExplicitAny`, `noNonNullAssertion` (`x!`), `useAwait`, `noEmptyBlockStatements`, `useConst`, unused vars/imports. TS4111 vs `useLiteralKeys`: keep `x['k']` + `// biome-ignore lint/complexity/useLiteralKeys: index signature` (as `acceptance-api/src/world.ts`). The final chain runs `biome check --write`.
+Tabs, single quotes, lineWidth 230, organizeImports on; the final chain runs `biome check --write`. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
+- `useAwait`: no `async` without `await` — return the promise or use `responseBody<T>()` (sync).
+- Readonly: `useReadonlyClassProperties` is not enabled; `readonly` optional.
+- `noNestedTernary` is not enabled; prefer `if`/lookup for 3+ branches anyway.
+
+TS4111 vs `useLiteralKeys`: keep `x['k']` + `// biome-ignore lint/complexity/useLiteralKeys: index signature` (as `acceptance-api/src/world.ts`).
 
 ## Iterate cheap
 
-`nvm use` first. `pnpm exec turbo run typecheck|test --filter=<pkg> --output-logs=errors-only`. `grep -rn` (rg only if installed) → read that range. Green → go straight to `run-validation`. Output terse; success silent, errors detailed.
+`pnpm exec turbo run typecheck|test --filter=<pkg> --output-logs=errors-only`; green → `run-validation`.
