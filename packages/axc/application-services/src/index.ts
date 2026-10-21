@@ -1,9 +1,11 @@
+import { createEnrollmentService, type EnrollmentService } from './enrollment-requests.ts';
+
+export type { EnrollmentRequest, EnrollmentStatus, StatusHistoryEntry } from './enrollment-requests.ts';
+export { EnrollmentError } from './enrollment-requests.ts';
+
 import { type CoursePage, type CourseQuery, searchCourses } from './courses.ts';
-import { createEnrollmentService } from './enrollments.ts';
 
 export type { Course, CoursePage, CourseQuery } from './courses.ts';
-export type { EnrollmentRequest, EnrollmentStatus } from './enrollment-request.ts';
-export { EnrollmentError } from './enrollment-request.ts';
 
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
@@ -23,8 +25,10 @@ export interface ApiContext {
 }
 
 export interface ApplicationServices {
-	courses: { search(query: CourseQuery): CoursePage };
-	enrollments: ReturnType<typeof createEnrollmentService>;
+	enrollmentRequests: EnrollmentService;
+	courses: {
+		search(query: CourseQuery): CoursePage;
+	};
 	health: {
 		getStatus(): HealthStatus;
 	};
@@ -45,11 +49,11 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
-	const enrollments = createEnrollmentService();
+	const enrollmentRequests = createEnrollmentService();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			courses: { search: searchCourses },
-			enrollments,
+			enrollmentRequests,
 			health: {
 				getStatus(): HealthStatus {
 					return {

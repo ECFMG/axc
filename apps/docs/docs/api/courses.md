@@ -84,4 +84,4 @@ pnpm run typecheck
 pnpm run test:arch
 ```
 
-The `@axc-verification/acceptance-api` tests exercise the actual Hono app in memory after workspace dependencies build; they need no listening port or Azure Functions host. The existing Cucumber health scenario separately exercises the Azure host through HTTP. The delivered validation notes record independent course checks over HTTP.
+The `@apps/api` tests exercise the actual Hono app in memory after workspace dependencies build; they need no listening port or Azure Functions host. Cucumber scenarios separately exercise the host through HTTP. See [implementation notes](../courses-implementation.md) for scope and limitations.

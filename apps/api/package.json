@@ -17,7 +17,8 @@
 		"format:check": "biome format .",
 		"clean": "rimraf dist deploy",
 		"prestart": "node --experimental-strip-types scripts/sync-local-settings.ts",
-		"start": "node --experimental-strip-types scripts/start-host.ts"
+		"start": "node --experimental-strip-types scripts/start-host.ts",
+		"test": "tsgo --noEmit --project tsconfig.test.json && node --experimental-strip-types --test src/courses.test.ts && node --test ../../packages/axc-verification/enrollment-tests/enrollment.test.mjs"
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",

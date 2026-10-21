@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { buildApplicationServicesFactory, type CoursePage } from '../../../axc/application-services/dist/index.js';
-import { createRestApp } from '../../../axc/rest/dist/index.js';
+import { buildApplicationServicesFactory, type CoursePage } from '@axc/application-services';
+import { createRestApp } from '@axc/rest';
 
 const app = createRestApp(buildApplicationServicesFactory({ environment: 'test' }));
 const request = (query = '') => app.request(`/api/courses${query ? `?${query}` : ''}`);
