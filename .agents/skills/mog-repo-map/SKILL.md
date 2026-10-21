@@ -6,6 +6,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 # mog-repo-map
 
 Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open `packages/cellix/**` sources you won't edit or anything AGENTS bans; never list cellixjs.
+Read in ONE parallel batch, only what you still need: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step/assert API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern).
 
 ## Layout
 
@@ -132,7 +133,7 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 - **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the final gate.
 - **Step API**: `@cucumber/cucumber` Given/When/Then · core `actorCalled`, `Question` · rest `Send.a(GetRequest.to(p))`, `PostRequest.to(p).with(body)`, `LastResponse.status()` · assertions `Ensure`, `equals`, `isTrue`, `isGreaterThan`, `property`, `containItemsWhereEachItem`, `containAtLeastOneItemThat`, `not`.
 - **Derived check**: an async `Question.about` is `Question<Promise<T>>`, so pass it through `resolved()` (else TS2345 `Expectation<boolean>` vs `Expectation<Promise<boolean>>`):
-  `const nonEmpty = Question.about('non-empty', (a) => a.answer(responseBody<T[]>()).then((xs) => xs.length > 0));` → `Ensure.that(resolved(nonEmpty), isTrue())`.
+  `const nonEmpty = Question.about('non-empty', (a) => a.answer(responseBody<T[]>()).then((xs) => xs.length > 0));` → `Ensure.that(resolved(nonEmpty), equals(true))`.
 - **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; the evidence table reuses ids.
 
 ## Biome (`biome.json`)
