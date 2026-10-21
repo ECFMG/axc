@@ -88,6 +88,7 @@ Procedure:
 
 1. Carve a **new clean** `mog-xai-1-a-out` from the current harness tip (no leftover feature).
 2. Open a **fresh Grok Build session** scoped only to this SCORE (no unrelated chat).
+   Launch it from the a-out worktree with `grok --trust` so `.grok/hooks` (stop gate, write guard, output trimmer) load; without it project hooks are silently skipped.
 3. Run the unmodified `task-set-a-prompt.md` (+ `task-set-a-requirements.md`) on that a-out
    with default skill `run-validation` only.
 4. When the SCORE attempt finishes (pass or fail), run **`/usage`** in that same Grok Build
