@@ -26,7 +26,7 @@ Traps:
 
 - No preamble, plans or narration between tool calls; don't restate files you wrote. Success silent; errors = what/where/next fix. Never paste diffs, files or green logs.
 - Shell: `nvm use` first (Node 24; Node 20 breaks pnpm 11). turbo `--output-logs=errors-only`; long output `| tail -n 40`.
-- Search `grep -rn` (rg only if installed) → read that line range; never cat whole files. No re-reading what you wrote. Batch edits into as few calls as possible. No sub-agents.
+- Search `grep -rn` (rg only if installed) → read that line range; never cat whole files. Batch edits; small wiring file (<80 lines) needing >1 change → rewrite it whole in one write, imports on top. Never re-read after editing (first check catches it). No sub-agents.
 - Arch + acceptance only in the final gate.
 
 ## Finish
