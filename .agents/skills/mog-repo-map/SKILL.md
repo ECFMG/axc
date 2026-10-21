@@ -46,17 +46,16 @@ export const list<Thing>s = (q: <Feature>Query): <Thing>[] => <thing>s.filter((t
 `application-services/src/index.ts` — imports + wiring only (no `.filter(` `.sort(` `.slice(` or `seed|fixture|sample|mock… = [{` here):
 ```ts
 import { list<Thing>s, type <Feature>Query, type <Thing> } from './<feature>.ts';
-export { <thing>Kinds, type <Feature>Query, type <Thing>Kind } from './<feature>.ts';
+export { <thing>Kinds, type <Feature>Query } from './<feature>.ts';
 // ApplicationServices: <feature>: { list(q: <Feature>Query): <Thing>[] };   forRequest object: <feature>: { list: list<Thing>s },
 ```
 `rest/src/<feature>.routes.ts` (flat file — no new folders under `packages/axc/**`; only `/health` stays inline in `rest/src/index.ts`):
 ```ts
-import { type ApplicationServicesFactory, type <Feature>Query, type <Thing>Kind, <thing>Kinds } from '@axc/application-services';
+import { type ApplicationServicesFactory, type <Feature>Query, is<Thing>Kind, <thing>Kinds } from '@axc/application-services';
 import type { Hono } from 'hono';
 
 interface Detail { field: string; message: string }
 const errorBody = (details: Detail[]) => ({ details }); // placeholder: use the task spec's error shape
-const isKind = (v: string): v is <Thing>Kind => (<thing>Kinds as readonly string[]).includes(v);
 const intParam = (raw: string | undefined, field: string, [min, max, fallback]: [number, number, number], details: Detail[]): number => {
 	if (raw === undefined) return fallback;
 	const n = /^\d+$/.test(raw) ? Number(raw) : Number.NaN;
@@ -70,15 +69,99 @@ export function register<Feature>Routes(app: Hono, factory: ApplicationServicesF
 		const details: Detail[] = [];
 		const limit = intParam(c.req.query('limit'), 'limit', [1, 100, 20], details);
 		const kind = c.req.query('kind');
-		if (kind !== undefined && !isKind(kind)) details.push({ field: 'kind', message: `must be one of ${<thing>Kinds.join(', ')}` });
+		if (kind !== undefined && !is<Thing>Kind(kind)) details.push({ field: 'kind', message: `must be one of ${<thing>Kinds.join(', ')}` });
 		if (details.length > 0) return c.json(errorBody(details), 400);
-		const query: <Feature>Query = kind !== undefined && isKind(kind) ? { limit, kind } : { limit };
+		const query: <Feature>Query = kind !== undefined && is<Thing>Kind(kind) ? { limit, kind } : { limit };
 		const services = await factory.forRequest(c.req.header('Authorization'));
 		return c.json(services.<feature>.list(query));
 	});
 }
 ```
 Mount: `rest/src/index.ts` imports `register<Feature>Routes` from `./<feature>.routes.ts` and calls it before `return app`; `apps/api/src/index.ts` adds `.registerAzureFunctionHttpHandler('<feature>', { route: 'api/<feature>', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)`.
+
+**Write command** (same flat folders). Pure domain rules + transitions → `application-services/src/<feature>.rules.ts` (no I/O, no clock) with `<feature>.rules.test.ts`. Cellix would put them in `@axc/domain`, but app-services doesn't depend on it and adding the dep churns the lockfile, so they stay here; REST reaches them via `@axc/application-services`.
+```ts
+import { type <Thing>Kind, <thing>Kinds } from './<feature>.ts';
+
+export const is<Thing>Kind = (v: unknown): v is <Thing>Kind => (<thing>Kinds as readonly unknown[]).includes(v);
+export const canChangeKind = (from: <Thing>Kind, to: <Thing>Kind): boolean => from !== to;
+```
+`application-services/src/<feature>.store.ts` — typed domain error + store with injectable id/clock (tests pass `{ newId, now }`):
+```ts
+import type { <Thing>, <Thing>Kind } from './<feature>.ts';
+import { canChangeKind } from './<feature>.rules.ts';
+
+export type <Feature>ErrorCode = 'not_found' | 'invalid_state';
+export class <Feature>Error extends Error {
+	readonly code: <Feature>ErrorCode;
+	constructor(code: <Feature>ErrorCode, message: string) {
+		super(message);
+		this.code = code;
+	}
+}
+let seq = 0;
+export const create<Thing>Store = ({ newId, now } = { newId: () => `<thing>-${++seq}`, now: () => new Date() }) => {
+	const items = new Map<string, <Thing> & { updatedAt: string }>();
+	const save = (t: <Thing>) => {
+		const saved = { ...t, updatedAt: now().toISOString() };
+		items.set(t.id, saved);
+		return saved;
+	};
+	return {
+		create: (kind: <Thing>Kind) => save({ id: newId(), kind }),
+		update(id: string, kind: <Thing>Kind) {
+			const t = items.get(id);
+			if (!t) throw new <Feature>Error('not_found', `<thing> ${id} not found`);
+			if (!canChangeKind(t.kind, kind)) throw new <Feature>Error('invalid_state', `cannot change ${t.kind} to ${kind}`);
+			return save({ ...t, kind });
+		},
+	};
+};
+export type <Thing>Store = ReturnType<typeof create<Thing>Store>;
+```
+`application-services/src/index.ts`: export `<Feature>Error`, `type <Feature>ErrorCode` (store) and `is<Thing>Kind` (rules); `ApplicationServices.<feature>` becomes `{ list(q: <Feature>Query): <Thing>[] } & <Thing>Store`; in `buildApplicationServicesFactory`, before `forRequest`, `const <feature>Store = create<Thing>Store();` (once per process, so state survives requests) and `forRequest` returns `<feature>: { list: list<Thing>s, ...<feature>Store }`.
+`rest/src/<feature>.commands.ts` — body parse (malformed / non-object → 400), path param, one status mapper:
+```ts
+import { type ApplicationServicesFactory, <Feature>Error, type <Feature>ErrorCode, is<Thing>Kind } from '@axc/application-services';
+import type { Context, Hono } from 'hono';
+
+const errorBody = (details: { field: string; message: string }[]) => ({ details }); // placeholder: task spec's shape
+const STATUS = { not_found: 404, invalid_state: 409 } as const satisfies Record<<Feature>ErrorCode, number>;
+const fail = (c: Context, e: unknown) => {
+	if (e instanceof <Feature>Error) return c.json(errorBody([{ field: 'id', message: e.message }]), STATUS[e.code]);
+	throw e;
+};
+const readObject = async (c: Context): Promise<Record<string, unknown> | undefined> => {
+	try {
+		const body: unknown = await c.req.json();
+		return typeof body === 'object' && body !== null && !Array.isArray(body) ? (body as Record<string, unknown>) : undefined;
+	} catch {
+		return undefined;
+	}
+};
+
+export function register<Feature>Commands(app: Hono, factory: ApplicationServicesFactory): void {
+	app.post('/api/<feature>', async (c) => {
+		const body = await readObject(c);
+		if (!body) return c.json(errorBody([{ field: 'body', message: 'must be a JSON object' }]), 400);
+		const { kind } = body;
+		if (!is<Thing>Kind(kind)) return c.json(errorBody([{ field: 'kind', message: 'invalid' }]), 400);
+		const services = await factory.forRequest(c.req.header('Authorization'));
+		return c.json(services.<feature>.create(kind), 201);
+	});
+	app.patch('/api/<feature>/:id', async (c) => {
+		const { kind } = (await readObject(c)) ?? {};
+		if (!is<Thing>Kind(kind)) return c.json(errorBody([{ field: 'kind', message: 'invalid' }]), 400);
+		const services = await factory.forRequest(c.req.header('Authorization'));
+		try {
+			return c.json(services.<feature>.update(c.req.param('id'), kind));
+		} catch (e) {
+			return fail(c, e);
+		}
+	});
+}
+```
+Mount it beside the routes (`register<Feature>Commands(app, applicationServicesFactory)`).
 
 `acceptance-api/src/features/<feature>.feature` + `src/step-definitions/<feature>.steps.ts` (steps are global: define each pattern once):
 ```gherkin
