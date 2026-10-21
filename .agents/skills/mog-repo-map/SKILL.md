@@ -61,6 +61,14 @@ packages/cellix/*                 vendored — read/reuse; edit only when portin
 
 Package unit: `pnpm exec turbo run test --filter=@axc/<pkg> --output-logs=errors-only`.
 
+## Facts (pre-answered — don't hunt)
+
+- **App-services convention** (`archunit-tests/src/application-services-conventions.test.ts` → `@cellix/archunit-tests`): checks only `application-services/src/contexts/**`. Non-index files: `(dataSources: DataSources) => async (cmd) => result`; `contexts/<ctx>/<entity>/index.ts` exports `interface *ApplicationService`; `query-*|get-*|find-*.ts` use `readonlyDataSource`; `create|update|delete.ts` use `withScopedTransaction`. Today health is inline in `src/index.ts` (no `contexts/`).
+- **knip** (`knip.json`): exports from non-entry files (anything but pkg `src/index.ts`) must be imported somewhere — `Unused exports` / `Unused exported types` fail verify. Don't `export` helper types you only use locally.
+- **Acceptance** (`acceptance-api/src/`): `world.ts` gives actors `CallAnApi.at(<host origin>)` → use relative paths `GetRequest.to('/api/courses?…')`. Steps: `actorCalled('API client')`, `Send.a(...)`, `LastResponse.status()/body<T>()`, `Ensure.that(resolved(...), equals(...))` — copy `step-definitions/healthcheck.steps.ts`. Host port: `acceptance-port.ts` (7071 main, +worktree offset).
+- **Hono query** (`hono/dist/types/request.d.ts`): `c.req.query('k'): string | undefined`; `c.req.query(): Record<string,string>`; repeated keys `c.req.queries('k'): string[] | undefined`. Prefer `c.req.query('k')` per key (dodges TS4111).
+- **TS4111 vs biome `useLiteralKeys`**: tsconfig base has `noPropertyAccessFromIndexSignature` (`cellix/config-typescript/tsconfig.base.json`) → index signatures need `x['k']`; silence biome with `// biome-ignore lint/complexity/useLiteralKeys: index signature` (as `acceptance-api/src/world.ts`). Don't disable either rule.
+
 ## Boundary traps (fail verify / SCORE)
 
 - **Lockfile:** `pnpm add` / install rewrites root `pnpm-lock.yaml` → boundary fail. Prefer workspace deps.
@@ -101,7 +109,8 @@ test:arch → test + acceptance → audit → snyk (minutes; acceptance dominate
 | unit one package | `pnpm exec turbo run test --filter=@axc/<pkg> --output-logs=errors-only` |
 | full gate once (arch + acceptance live here) | `pnpm run verify > /tmp/verify.log 2>&1 \|\| node scripts/verify-excerpt.mjs /tmp/verify.log` |
 
-Node: `.nvmrc` → 24.x (`engines.node >=24`).
+Node: `.nvmrc` → 24.x. Prefix shell commands with `nvm use >/dev/null;` (source `$NVM_DIR/nvm.sh` first if `nvm` is missing) (Node 20 breaks pnpm 11).
+Search: `grep -rn` (`rg -n` only if `command -v rg`).
 
 ## Already on the lockfile (no `pnpm add`)
 
@@ -111,12 +120,12 @@ Node: `.nvmrc` → 24.x (`engines.node >=24`).
 
 ## Skip dumping
 
-Do not tree-walk the repo or bulk-read harness config to “orient.” This skill is the map.
-Open only the files your change needs. Optional skills stay off unless required
-(`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `mog-critique`, `portless`, `turborepo`).
+This skill is the map — no tree walks, no bulk config reads. Never read `docs/eval-contract.md`
+(Eval Runner only), `dist/`, `deploy/`; never list cellixjs. Batch reads; first write by ~call 6.
+Opt-in only: `mog-critique` (fail-repair). Others parked in `docs/skills-archive/` — don't open.
 
 ## Agent-to-agent output
 
 Structured + terse for the next agent. Success → minimal/silent. Failure → what/where/next fix.
-Tools: turbo `--output-logs=errors-only` · `| tail` long output · grep → line-range read · no re-read after write · no sub-agents · arch/acceptance only at final gate.
+Tools: turbo `--output-logs=errors-only` · `| tail` long output · grep -rn → line-range read · no re-read after write · no sub-agents · arch/acceptance only at final gate.
 See AGENTS.md “Agent-to-agent output”.

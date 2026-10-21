@@ -1,122 +1,77 @@
 # AXC Agent Instructions (mog-xai-1)
 
-AXC follows CellixJS architecture. Authoritative Cellix reference:
-`/Volumes/files/src/cellixjs`.
-
-## Eval contract
-
-See [`docs/eval-contract.md`](docs/eval-contract.md) for TS-A scoring readiness (Eval Runner / a-out).
+CellixJS architecture. Reference: `/Volumes/files/src/cellixjs` (read targeted files only; never list/tree it).
 
 ## Territory (CRITICAL)
 
-- Work only on branch `mog-xai-1` in this worktree.
-- Local commits are OK. **Do not push. Do not open PRs** from `mog-xai-1`.
-- Eval Runner owns the `mog-xai-1-a-out` eval flow — do not invent or drive that branch.
-- Do **not** run `task-set-a-prompt.md` / Task Set A eval yourself.
+- Branch `mog-xai-1` only. Local commits OK. **No push, no PRs.**
+- `mog-xai-1-a-out` belongs to Eval Runner — don't drive it. Don't run `task-set-a-prompt.md` yourself.
 
-## Write Boundary (CRITICAL)
+## Write boundary (CRITICAL)
 
-Allowed write paths only:
+Write only: `apps/api` · `apps/docs` · `packages/axc/*` · `packages/axc-verification/*` ·
+`packages/cellix/**` (only to port a missing capability from CellixJS).
 
-- `apps/api`
-- `apps/docs`
-- `packages/axc/*`
-- `packages/axc-verification/*`
-- Port missing Cellix capability into `packages/cellix/**` from `/Volumes/files/src/cellixjs` when required
+Don't weaken `pnpm run verify`, husky, arch tests or other guardrails. Never `--no-verify`.
+Copilot CLI enforces this zero-token via `.github/hooks/write-boundary.{json,py}` (quoted heredoc bodies are stripped before matching).
 
-Do not modify other trees. Do not weaken `pnpm run verify`, husky, architecture tests, or other guardrails. Never use `--no-verify`.
+### Traps
 
-Zero-token enforcement (Copilot CLI): `.github/hooks/write-boundary.json` + `write-boundary.py`, wired from `enforce-agent-workflow.sh`. Bash deny matches after stripping quoted/escaped heredoc bodies (inert doc text does not burn turns); unquoted heredocs stay visible.
+- **Lockfile** (`pnpm-lock.yaml`, root) is outside the boundary: no `pnpm add` / `pnpm install <pkg>`. Needed dep → say so in the summary.
+- **Domain** (`packages/axc/domain/src/**`, tests too) must not import `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest`, `@axc/persistence`, `@axc/service-mongoose`, `@axc/application-services`. DB tests → `packages/axc-verification/**`.
+- **`packages/cellix/**`** is vendored: reuse (`api-core`, `domain-seedwork`, `mongoose-seedwork`, `serenity-framework`, `local-dev`, `config-*`, `archunit-tests`, …); don't build parallel copies.
 
-### Boundary traps
+## SCORE path (default)
 
-- **Lockfile is outside the boundary.** `pnpm-lock.yaml` lives at repo root. `pnpm add` / `pnpm install <pkg>` rewrites it and fails the boundary. Prefer workspace packages; if a dependency is unavoidable, say so in the summary instead of installing.
-- **`packages/axc/domain/**` must not import infrastructure.** `test:arch` scans every `.ts` under `domain/src` (tests included) and fails on `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest`, `@axc/persistence`, `@axc/service-mongoose`, `@axc/application-services`. Domain tests that need a DB belong in `packages/axc-verification/**`.
-- **`packages/cellix/**` is vendored.** Read and reuse; do not invent parallel copies. Edit only when porting a missing capability from CellixJS upstream.
+1. Load **`mog-repo-map`** (map + facts + traps), then **`run-validation`**. Nothing else.
+2. Never read `docs/eval-contract.md` (Eval Runner only), `dist/`, `deploy/`, or list cellixjs / big trees.
+3. Batch reads (several files per call). First write by ~call 6.
+4. Iterate package-scoped; one `pnpm run verify` at the end.
 
-### Reuse before you build
+Opt-in only: **`mog-critique`** (harness prep or verify/acceptance fail-repair; 3–10 rounds, stop when no new defects). Never on a clean SCORE. Other skills are parked in `docs/skills-archive/` — don't open.
 
-Prefer existing `packages/cellix/*` over new helpers:
+Sources of truth: task prompt/requirements → CellixJS → this repo's verify + layout.
 
-`api-core` · `api-services-spec` · `domain-seedwork` · `mongoose-seedwork` · `serenity-framework` · `server-mongodb-memory-mock-seedwork` · `event-bus-seedwork-node` · `local-dev` · `config-typescript` / `config-vitest` / `config-rolldown` · `archunit-tests`.
-
-Optional implementer skills: `minimal-build` (YAGNI, reuse-before-write, fewest files); `mog-critique` (adversarial self-critique on harness prep / fail-repair only) — both **off by default**; not on the SCORE load path.
-
-## Sources of Truth
-
-1. Task prompt / task-set requirements (when an eval agent runs them — not this harness setup).
-2. `/Volumes/files/src/cellixjs` for architecture and patterns.
-3. This repo’s `pnpm run verify` and existing package layout.
-
-## Default SCORE path (minimal context)
-
-Load **`mog-repo-map`** then **`run-validation`** only — no tree dumps to orient. Do **not** open optional skills (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `mog-critique`, `portless`, `turborepo`), Copilot `.github/agents/*`, or large Cellix trees unless the task clearly requires them.
-
-- Targeted reads only (files/symbols you will change).
-- One `pnpm run verify` at the end; package-scoped tests while iterating.
-
-## Adversarial critique (opt-in — `mog-critique`)
-
-Load **`mog-critique`** on **harness prep** or **acceptance/verify fail repair** only — structured self-critique 3–10 rounds; **stop early when no new defects**. **Not** on clean/default SCORE (no mandatory critique; token bomb). Errors verbose; success silent (see Agent-to-agent output).
-
-## Gate cost (iterate cheap)
-
-`pnpm run verify` is the enforcement boundary (minutes), not a search tool. While iterating:
+## Gate cost
 
 | need | command |
 | --- | --- |
-| lint/format one area | `pnpm exec biome check <path>` |
-| typecheck one package | `pnpm exec turbo run typecheck --filter=<pkg> --output-logs=errors-only` |
-| test one package | `pnpm exec turbo run test --filter=<pkg> --output-logs=errors-only` |
-| everything, before done | `pnpm run verify` (once) |
+| lint/format area | `pnpm exec biome check <path>` |
+| typecheck pkg | `pnpm exec turbo run typecheck --filter=<pkg> --output-logs=errors-only` |
+| test pkg | `pnpm exec turbo run test --filter=<pkg> --output-logs=errors-only` |
+| final gate (once) | `pnpm run verify > /tmp/verify.log 2>&1 \|\| node scripts/verify-excerpt.mjs /tmp/verify.log` |
 
-A gate reporting **SKIPPED** is not a pass — say so explicitly.
-
-## Finish with evidence
-
-End with a short table: one row per numbered requirement / acceptance criterion, each PASS/FAIL with the test or file that proves it. Assertion-only rows are not done. Then commands run (summarized) and any limitations.
+SKIPPED ≠ pass — say so.
 
 ## Agent-to-agent output (token budget)
 
-Write for the next AI agent, not a human reader. Chat prose is overhead; code/tests are the deliverable.
+Write for the next agent. Code/tests are the deliverable; chat is overhead.
 
-- Prefer compact, structured, agent-parseable output (tables, bullets, SHA/path/command) over narrative.
-- **Success = minimal or silent.** Do not narrate green gates, “done”, or play-by-play of what worked.
-- **Errors = spend tokens.** On failure: what failed, where (path/command/gate), and the next fix — enough to troubleshoot without re-exploring.
-- No preamble, no restating the task, no announcing upcoming tool calls.
-- Never dump diffs, full file contents, or long green logs into chat — summarize failures only.
-- One line of intent before a batch of tool calls, not one per call.
-- If a sentence would not change what the next agent does, cut it.
+- Compact + structured (tables, bullets, SHA/path/command). No preamble, no restating the task, no per-call narration.
+- **Success = minimal/silent.** **Errors = detail:** what failed, where (path/command/gate), next fix.
+- Never paste diffs, whole files or green logs.
+- Shell: prefix with `nvm use >/dev/null;` (source `$NVM_DIR/nvm.sh` first if `nvm` is missing) (Node 24, `.nvmrc`); Node 20 breaks pnpm 11.
+- turbo: always `--output-logs=errors-only`. Long output: `| tail -n 40`.
+- Search: `grep -rn` (or `rg -n` if installed — not on every box), then read only that line range.
+- Don't re-read a file you just wrote. No sub-agents.
+- `test:arch` + `test:acceptance` run only in the final gate.
 
-Token rules (tools):
+## Finish with evidence
 
-- turbo: always `--output-logs=errors-only`.
-- Long command output: `… 2>&1 | tail -n 40`; widen only if the error is cut.
-- Find with `rg -n` (or `grep -n`), then read only that line range — no whole-file reads to search.
-- Don't re-read a file you just wrote; the edit result is the source of truth.
-- No sub-agents / reviewer agents — work inline.
-- `test:arch` + `test:acceptance` run once, at the final gate (`pnpm run verify`) — not while iterating.
+Short table: one row per requirement/AC id → PASS/FAIL + proving test/file. Then commands run and limitations.
 
 ## Cost / usage (eval operators)
 
-After TS-A/TS-B SCORE, paste Grok Build `/usage` into the five fields in `evaluation-run-record.md` (paste map: [`docs/score-metering.md`](docs/score-metering.md); detail: [`docs/harness-cost-usage.md`](docs/harness-cost-usage.md)). **Forbid silent `n/a` when a meter exists. Do not invent numbers.** Aim under the nrn-xai baseline (~3.6M tokens / ~$0.86) when comparable. RTK/Headroom are optional workstation tools — not repo dependencies.
+After SCORE paste Grok Build `/usage` into the five fields of `evaluation-run-record.md` (map: `docs/score-metering.md`). No silent `n/a` when a meter exists; never invent numbers. Target under nrn-xai (~3.6M tokens / ~$0.86).
 
-## Dev Worktrees
+## Dev
 
-`turbo.json` already passes `WORKTREE_NAME`. Prefer:
+`pnpm run dev` (Azurite auto-starts) or `pnpm run dev:worktree` (`*.agentcourses.<worktree>.localhost`, worktree-offset ports).
 
-```bash
-pnpm run dev:worktree
-```
+## Later eval feature (not in harness setup)
 
-Hostnames become `*.agentcourses.<worktree-dir>.localhost` via existing `apps/*/scripts/dev.mjs`.
-
-## Later Eval Feature (do NOT implement in harness setup)
-
-Task Set A catalog search (`TS-A-CATALOG-SEARCH`): `GET /api/courses` with A1–A11 and A-AC1–12, ≥12 seeded courses, invalid params → `400 INVALID_QUERY_PARAMETER`, empty match → `200` with empty `items`. Implement only when an eval run explicitly requests it.
+TS-A `GET /api/courses` (A1–A11, A-AC1–12): ≥12 seeded courses, bad params → `400 INVALID_QUERY_PARAMETER`, no match → `200` + empty `items`. Only when an eval run asks.
 
 ## Completion
 
-1. Stage only intended changes inside the write boundary.
-2. Commit normally (husky / verify must pass). No `--no-verify`.
-3. Stop after local commit — no push, no PR.
+Stage only in-boundary changes → commit through husky (verify must pass) → stop. No push/PR.

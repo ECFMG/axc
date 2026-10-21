@@ -145,5 +145,5 @@ packages/cellix/*        # reusable Cellix framework
 
 ### Testing
 - Unit: colocated `*.spec.ts` / `*.test.ts` (Vitest)
-- Acceptance: `@axc-verification/acceptance-api` (Serenity/JS) — skill `serenity-tests`
+- Acceptance: `@axc-verification/acceptance-api` (Serenity/JS) — pattern in `mog-repo-map` Facts
 - Architecture: `pnpm run test:arch`

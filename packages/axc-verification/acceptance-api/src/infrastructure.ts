@@ -10,6 +10,7 @@ const apiDir = path.resolve(acceptanceDir, '../../../../apps/api');
 // Per-worktree port so kill-before-start never hits another worktree's host (main checkout stays 7071).
 const port = resolveAcceptancePort(acceptanceDir);
 // start-host.ts reads PORT; the spawned host inherits this env.
+// biome-ignore lint/complexity/useLiteralKeys: index signature (TS4111)
 process.env['PORT'] = String(port);
 
 export const apiServer = new ProcessTestServer({

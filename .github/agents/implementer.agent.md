@@ -85,8 +85,8 @@ Write `.agents-work/current/implementer.done` only AFTER builds/tests pass. Writ
 
 ## Required Reading
 
-- Skills (when applicable): `.agents/skills/run-validation/SKILL.md` (**mandatory** for validation), optional off-by-default: `plan-feature`, `review-diff`, `tdd`, `serenity-tests`
-- Also available: `portless`, `turborepo`
+- Skills (when applicable): `.agents/skills/run-validation/SKILL.md` (**mandatory** for validation), `.agents/skills/mog-repo-map/SKILL.md` (map), opt-in `mog-critique` (fail-repair)
+- Not loaded: archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`)
 - Domain seedwork instructions under `packages/cellix/domain-seedwork/.github/instructions/` when touching domain seedwork
 
 ## Implementation Checklist

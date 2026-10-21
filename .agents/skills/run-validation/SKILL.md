@@ -17,6 +17,8 @@ Validate AXC changes before marking work complete. Keep context minimal: targete
 
 ### Iterate with targeted checks
 
+Prefix every shell command with `nvm use >/dev/null;` (source `$NVM_DIR/nvm.sh` first if `nvm` is missing) (Node 24 per `.nvmrc`).
+
 Prefer package-scoped commands while fixing:
 
 ```bash

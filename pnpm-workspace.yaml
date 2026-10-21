@@ -49,6 +49,7 @@ auditConfig:
     ]
 
 overrides:
+  '@azure/functions': 'catalog:'
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0

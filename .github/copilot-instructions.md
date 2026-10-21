@@ -46,8 +46,8 @@ pnpm run verify           # full gate — respect husky pre-commit
 ## Skills
 
 Use `.agents/skills/` (symlinked from `.github/skills/` for Copilot discovery).
-**`run-validation`** is mandatory on the default validation path → `pnpm run verify`.
-`plan-feature` / `review-diff` / `tdd` / `serenity-tests` are optional (off-by-default).
+**`mog-repo-map`** then **`run-validation`** (mandatory) → `pnpm run verify`. `mog-critique` opt-in (fail-repair).
+Others archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`) — not loaded.
 
 ## Later Eval (do not implement here)
 

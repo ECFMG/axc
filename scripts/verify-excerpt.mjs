@@ -5,39 +5,52 @@ import { readFileSync } from 'node:fs';
 
 const MAX_LINES = 80;
 const MAX_WIDTH = 240;
+const MAX_LIST = 20;
 const file = process.argv[2];
 const raw = readFileSync(file ?? 0, 'utf8');
 
 // biome-ignore lint/suspicious/noControlCharactersInRegex: strip ANSI escapes
 const ansi = /\u001b\[[0-9;?]*[A-Za-z]/g;
-const lines = raw
-	.replace(ansi, '')
-	.split(/\r?\n/)
-	.map((l) => l.replace(/^(@?[\w./-]+):([\w:-]+): /, '[$1 $2] ').trimEnd());
+const rawLines = raw.replace(ansi, '').split(/\r?\n/);
+const taskPrefix = /^(@?[\w./-]+):([\w:-]+): /;
+const lines = rawLines.map((l) => l.replace(taskPrefix, '[$1 $2] ').trimEnd());
 
 const fail =
-	/(ELIFECYCLE|ERR_PNPM|husky - .*failed|\bFAIL\b|\bFailed:|failed with exit code|exit code [1-9]|AssertionError|\berror\b|Error:|error TS\d+|✖|✗|×|\b\d+ failed\b|Unhealthy|Unable to |not ok|policy failed|Cannot find|Unexpected|is not assignable|Unused (files|exports|dependencies))/i;
+	/(ELIFECYCLE|ERR_PNPM|husky - .*failed|\bFAIL\b|\bFailed:|failed with exit code|exit code [1-9]|AssertionError|\berror\b|Error:|error TS\d+|✖|✗|×|\b\d+ failed\b|Unhealthy|Unable to |not ok|policy failed|Cannot find|Unexpected|is not assignable|Unused [\w ]+|Shutting down forcibly)/i;
 const auditRow = /^│ (high|critical|Package|Vulnerable versions|Patched versions|More info)\b/;
+const listHead = /^Unused [\w ]+ \((\d+)\)/; // knip section: include its rows
 const noise = /(DeprecationWarning|--trace-deprecation|^\s*$|Spawning: |SERENITY COMMAND LINE|^\[?[^\]]*\]? ?-{5,}$|Progress: resolved|0 errors?\b|\b0 failed\b|no errors)/i;
-
 const cmdEcho = /^(\$ |> |\. \w)/; // echoed commands, not results
 
 const hits = new Set();
+let lastStep = '';
+let failedStep = '';
+const failedTasks = new Set();
+
 lines.forEach((line, i) => {
+	if (/^\$ /.test(line)) lastStep = line.slice(2);
+	const failedTask = line.match(/^\s*Failed:\s+(\S+)/) ?? line.match(/ERROR\s+(\S+#\S+): command/);
+	if (failedTask?.[1]) failedTasks.add(failedTask[1]);
 	if (noise.test(line) || cmdEcho.test(line)) return;
-	if (fail.test(line) || auditRow.test(line)) {
-		for (let j = Math.max(0, i - 1); j <= Math.min(lines.length - 1, i + 2); j++) {
-			if (!noise.test(lines[j])) hits.add(j);
-		}
+	if (!(fail.test(line) || auditRow.test(line))) return;
+	if (!failedStep) failedStep = lastStep;
+	const prefixed = rawLines[i]?.match(taskPrefix);
+	if (prefixed && /ELIFECYCLE|exit code [1-9]|Shutting down forcibly/i.test(line)) failedTasks.add(`${prefixed[1]}#${prefixed[2]}`);
+	const listLen = Number(line.match(listHead)?.[1] ?? 0);
+	const after = listLen > 0 ? Math.min(listLen, MAX_LIST) : 2;
+	for (let j = Math.max(0, i - 1); j <= Math.min(lines.length - 1, i + after); j++) {
+		if (!noise.test(lines[j] ?? '')) hits.add(j);
 	}
 });
 
 if (hits.size === 0) process.exit(0);
 
-const summary = lines.filter((l) => /^\s*Failed:\s+\S/.test(l) || /^\s*Tasks:\s+/.test(l));
-const body = [...hits].sort((a, b) => a - b).map((i) => lines[i]);
-const out = [...new Set([...summary, ...body])].map((l) => (l.length > MAX_WIDTH ? `${l.slice(0, MAX_WIDTH)}…` : l));
+const parts = [failedTasks.size ? `task(s) ${[...failedTasks].join(', ')}` : '', failedStep ? `step \`${failedStep}\`` : ''].filter(Boolean);
+const header = [`FAILED: ${parts.join(' | ') || 'see lines below'}`];
+if (file) header.push(`full log: ${file}`);
+const body = [...hits].sort((a, b) => a - b).map((i) => lines[i] ?? '');
+const out = [...new Set([...header, ...body])].map((l) => (l.length > MAX_WIDTH ? `${l.slice(0, MAX_WIDTH)}…` : l));
 const shown = out.slice(0, MAX_LINES - 1);
-if (out.length > shown.length) shown.push(`… +${out.length - shown.length} more lines (full log: ${file ?? 'stdin'})`);
+if (out.length > shown.length) shown.push(`… +${out.length - shown.length} more lines${file ? ` (full log: ${file})` : ''}`);
 console.log(shown.join('\n'));
 process.exit(1);

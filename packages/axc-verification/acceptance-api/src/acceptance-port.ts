@@ -17,7 +17,9 @@ function git(cwd: string, ...args: string[]): string | undefined {
  * basename of a linked git worktree (husky/verify don't set the env). Main checkout → undefined.
  */
 function resolveAcceptanceWorktreeName(cwd: string): string | undefined {
-	if (process.env['WORKTREE_NAME']) return process.env['WORKTREE_NAME'];
+	// biome-ignore lint/complexity/useLiteralKeys: index signature (TS4111)
+	const envName = process.env['WORKTREE_NAME'];
+	if (envName) return envName;
 	const gitDir = git(cwd, 'rev-parse', '--path-format=absolute', '--git-dir');
 	const commonDir = git(cwd, 'rev-parse', '--path-format=absolute', '--git-common-dir');
 	if (!gitDir || !commonDir || gitDir === commonDir) return undefined;
