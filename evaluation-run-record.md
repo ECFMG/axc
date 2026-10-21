@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
+| Team | xAI |
+| Developer / Operator | Julian Memis. Taken from `git config user.name` and the author of commit `63a5e71`. The Grok Build agent executed the implementation. The agent did not run `git commit` (session `gitCommitCount` is 0). |
 | Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Harness | Grok Build CLI. Session agent name `grok-build-plan`. Session id `01a15e9a-5ac7-7020-81a1-2cf4d9728c64`. Unsure whether this field should instead be the agent id `ag1.717b159ad7ce4016814633c3a579b873`. |
+| Model | `grok-4.7-build` (usage.json `primaryModelId`). Session summary and signals also record `grok-4.7`. Unsure whether those two ids are distinct products; both identify this run. Reasoning effort: high. |
+| License / Plan | Unknown. Unsure: `usage.json` and the session summary have no license or plan field. |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | B |
+| Run Type | Baseline. Inferred from branch `jsm-xai-0-b-out` (the `0` matching the Task A baseline naming) and from commit message `Test B Baseline`. The task prompt did not state the run type. |
+| Harness Engineering Used | None added for this run. Stock Grok Build defaults and the repository instructions were used. No skills, workflows, or extra agent rules were loaded (`agents_md_files` empty, `memory_v2_enabled` false). Sandbox profile: off. |
+| Config / Diff Notes | Implementation commit `63a5e71`: 31 files, +1999 / −13. In-memory catalog of 13 courses and an in-memory enrollment-request store, one store per application-services factory. `@axc/service-mongoose` was not wired. No third-party packages were added. Workspace links were added (`@axc/application-services` and `@axc/persistence` depend on `@axc/domain`; application-services also depends on `@axc/persistence`). `pnpm-lock.yaml` changed by about 10 lines and is outside the task write boundary; it was updated so those workspace dependencies install. API docs and MADRs are under `apps/docs/docs/api/` and `apps/docs/docs/decisions/`, which is inside `apps/docs/**`. The spec deliverable names `docs/api/courses.md` and `docs/api/enrollment-requests.md` were not created at the repo root. POST create returns 201. Enrollment list body is `{ "items": [] }` with no pagination. Emails are trimmed and compared case-insensitively. No authentication. No new Cucumber features; enrollment coverage is Vitest plus `node:test` HTTP tests, and the existing healthcheck acceptance scenario still passes. |
+| Branch / Commit | Branch `jsm-xai-0-b-out`. Implementation commit `63a5e710c4de38e14dd4f09115709699c9f305d8` (`63a5e71`, `Test B Baseline`, 2026-10-21 09:41:47 -0400, author Julian Memis). No upstream. This evaluation record is an uncommitted edit on top of that commit. Unsure whether `.husky/pre-commit` ran for `63a5e71`; the agent did not commit. |
+| Requirements Completed / Attempted | 17/17 functional requirements attempted and implemented (B1–B17), including preserved Task Set A course search. Two notes: API docs live under `apps/docs/docs/api/` rather than repo-root `docs/api/`, and `pnpm-lock.yaml` was modified outside the write boundary. |
+| Acceptance Criteria Passed / Total | 15/15 (B-AC1–B-AC15). Unsure as an official score: this is the implementer's reading of the tests and docs, not an independent review. B-AC15 is met by the docs content; the literal repo-root `docs/api/` paths were not used. |
+| Tests Passed / Failed | Final `pnpm test` (`turbo run test test:acceptance`): exit 0, 28 successful Turbo tasks, 0 failed, 25 cached, about 13.55s. Fresh in that run: application-services Vitest reported 6 files / 44 tests passed and no type errors; REST `node:test` 4 passed, 0 failed; acceptance healthcheck 1 scenario passed. Source recount: 22 `it` cases in application-services (2 health, 11 course search, 9 enrollment). 22 × 2 = 44, so the Vitest total matches runtime plus typecheck. Forced `test:arch` for `@axc-verification/archunit-tests`: 9 dependency-rule tests passed. No test execution failed. Three assertion mistakes (online-course id order, error-body field name, and a status update issued against a different service instance) were corrected before the first test run. These figures are from the implementation turn. This form-filling turn did not re-run the suite. |
+| Static Analysis / Security Findings | `pnpm run lint` (Biome): exit 0, 209 files, no fixes. Earlier `useLiteralKeys` infos were removed before that run. `pnpm run build`: exit 0. A plain build cache-hit `@apps/docs` because Turbo inputs omit markdown; a forced `@apps/docs` build then succeeded. Knip on domain, persistence, application-services, rest, and apps/api: first exit 1 for three unused exports, then exit 0 after those exports were removed. Vitest typecheck reported no type errors. `pnpm audit` and Snyk were not run. Unsure of current advisory status. |
+| Input Tokens | 6,199,658. Snapshot from `usage.json` at 2026-10-21T13:40:13Z, the end of the implementation turn. This form-filling turn is not included. |
+| Cached Tokens | 5,994,496 cached reads. Cache creation: 0. Same snapshot as Input Tokens. |
+| Output Tokens | 100,209. Reasoning tokens: 66,758. Unsure whether reasoning is already included in the 100,209. The stored total equals input plus output (6,199,658 + 100,209 = 6,299,867), so reasoning is not added a second time. |
+| Total Tokens or Credits Used | 6,299,867 tokens across 51 model calls. Unsure: no separate credit balance was recorded. Same snapshot as Input Tokens. |
+| Estimated Cost | $1.58. `usage.json` records 15,780,216,000 `costUsdTicks` for model `grok-4.7-build`. The Grok user guide defines that field as 10^10 ticks per USD, so 15,780,216,000 / 1e10 = $1.5780216. Same snapshot as Input Tokens. This form-filling turn is not included. |
+| Elapsed Time | About 24 minutes 36 seconds. Session signals `sessionDurationSeconds` is 1476. Session start 2026-10-21T13:15:36Z; usage snapshot closed 2026-10-21T13:40:13Z. Unsure of the intended end boundary: `summary.json` `last_active_at` is 2026-10-21T13:46:04Z (about 30 minutes 28 seconds), which includes post-turn bookkeeping. |
+| Number of Human Interventions / Redirects | 0 during the Task B implementation. The operator sent the task prompt and did not redirect the work (session signals at the end of that turn: `userMessageCount` 1, `cancellationCount` 0, `regenerationCount` 0). The later request to fill this form is a second user message. Unsure whether that follow-up should be counted; if it should, the number is 1. |
 | Reviewer Notes | (leave blank for now) |
 | Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Recommendation | Continue. Unsure: a reviewer could choose Remediate because the API docs are not at the literal `docs/api/` paths and because `pnpm-lock.yaml` is outside the write boundary. The implementation commit is on the branch, tests and lint passed, and no third-party dependencies were added. |
