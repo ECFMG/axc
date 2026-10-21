@@ -2,6 +2,7 @@
 // Spec = root or docs/ *.md whose name contains requirements|spec|srd. A spec is active once any of its
 // AC ids appears in a scenario (so unrelated specs in the repo don't fail the gate). No spec / no ids → silent.
 // Scenario ids come from its own @tags or its `Scenario:` title (feature-level tags don't count).
+// Non-scenario ACs (docs, process): a `# ac-meta: <ID>-AC<n> …` line in any .feature counts as covered but never activates a spec.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -31,11 +32,13 @@ function featureFiles(dir) {
 }
 
 const covered = new Set();
+const meta = new Set();
 for (const file of featureFiles(featuresDir)) {
 	let tags = [];
 	for (const line of readFileSync(file, 'utf8').split(/\r?\n/)) {
 		const t = line.trim();
-		if (t.startsWith('@')) tags.push(t);
+		if (/^#\s*ac-meta:/i.test(t)) for (const id of t.match(idPattern) ?? []) meta.add(id);
+		else if (t.startsWith('@')) tags.push(t);
 		else if (/^Scenario( Outline)?:/.test(t)) {
 			for (const id of `${tags.join(' ')} ${t}`.match(idPattern) ?? []) covered.add(id);
 			tags = [];
@@ -46,13 +49,14 @@ for (const file of featureFiles(featuresDir)) {
 const gaps = [];
 for (const spec of [...mdFiles(root), ...mdFiles(path.join(root, 'docs'))]) {
 	const ids = [...specIds(spec)];
-	if (!ids.some((id) => covered.has(id))) continue;
-	const missing = ids.filter((id) => !covered.has(id));
-	if (missing.length) gaps.push(`${path.relative(root, spec)}: ${missing.join(', ')}`);
+	const trigger = ids.find((id) => covered.has(id));
+	if (!trigger) continue;
+	const missing = ids.filter((id) => !covered.has(id) && !meta.has(id));
+	if (missing.length) gaps.push(`${path.relative(root, spec)} (activated by scenario ${trigger}): ${missing.join(', ')}`);
 }
 
 if (gaps.length) {
-	console.error('AC coverage failed: each AC id needs its own scenario (tag `@<ID>-AC<n>` or put the id in the Scenario title). Missing:');
+	console.error('AC coverage failed: each AC id needs its own scenario (tag `@<ID>-AC<n>` or put the id in the Scenario title), or a `# ac-meta: <ID>-AC<n>` line for a non-scenario AC. Missing:');
 	for (const g of gaps) console.error(`  ${g}`);
 	process.exit(1);
 }

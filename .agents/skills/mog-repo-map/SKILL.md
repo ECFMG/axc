@@ -135,7 +135,7 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 - **Step API**: `@cucumber/cucumber` Given/When/Then · core `actorCalled`, `Question` · rest `Send.a(GetRequest.to(p))`, `PostRequest.to(p).with(body)`, `LastResponse.status()` · assertions `Ensure`, `equals`, `isTrue`, `isGreaterThan`, `property`, `containItemsWhereEachItem`, `containAtLeastOneItemThat`, `not`.
 - **Derived check**: an async `Question.about` is `Question<Promise<T>>`, so pass it through `resolved()` (else TS2345 `Expectation<boolean>` vs `Expectation<Promise<boolean>>`):
   `const nonEmpty = Question.about('non-empty', (a) => a.answer(responseBody<T[]>()).then((xs) => xs.length > 0));` → `Ensure.that(resolved(nonEmpty), equals(true))`.
-- **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; the evidence table reuses ids.
+- **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; an AC no scenario can prove (docs, process) gets a `# ac-meta: <ID>-AC<n>` line in the .feature instead. The evidence table reuses ids.
 
 ## Biome (`biome.json`)
 
