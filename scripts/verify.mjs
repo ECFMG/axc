@@ -2,17 +2,22 @@ import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { auditFindings, readBaseline, snykFindings } from './lib/security-baseline.mjs';
 import { treeFingerprint, verifyCacheDir } from './lib/tree-fingerprint.mjs';
 
 // Runs the quality gate with compact output: one line per step, and only the tail of a failing
 // step's log. Full logs are written to node_modules/.cache/axc-verify/logs/<step>.log.
 // `--fast` runs the inner-loop subset (no build, knip, e18e, acceptance, audit, or Snyk).
+// audit/Snyk findings that were already present when the session started (see
+// scripts/security-baseline.mjs) are reported, not failed; CI has no baseline and stays strict.
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const fast = process.argv.includes('--fast');
 const turboFlags = ['--ui=stream', '--output-logs=errors-only'];
 const failureTailLines = 60;
 const ansiPattern = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*[A-Za-z]`, 'g');
+const logDir = path.join(verifyCacheDir(repoRoot), 'logs');
+const snykReport = path.join(logDir, 'snyk.json');
 
 const fullSteps = [
 	{ name: 'script-policy', cmd: ['node', 'scripts/check-script-policy.mjs'] },
@@ -23,8 +28,8 @@ const fullSteps = [
 	{ name: 'e18e', cmd: ['pnpm', 'run', 'e18e'] },
 	{ name: 'arch', cmd: ['pnpm', 'run', 'test:arch', ...turboFlags] },
 	{ name: 'test', cmd: ['pnpm', 'run', 'test', ...turboFlags] },
-	{ name: 'audit', cmd: ['pnpm', 'run', 'audit'], summary: /^│ (critical|high|moderate|low) |^│ (Package|Patched versions) |vulnerabilities found|^Severity:/ },
-	{ name: 'snyk', cmd: ['pnpm', 'run', 'snyk'], echo: /^(Snyk|Reason|This is NON-BLOCKING)/ },
+	{ name: 'audit', cmd: ['pnpm', 'run', 'audit'], summary: /^│ (critical|high|moderate|low) |^│ (Package|Patched versions) |vulnerabilities found|^Severity:/, findings: () => auditFindings(repoRoot), baselineKey: 'audit' },
+	{ name: 'snyk', cmd: ['node', 'scripts/snyk-verify.mjs', `--json-file-output=${snykReport}`], echo: /^(Snyk|Reason|This is NON-BLOCKING)/, findings: () => snykFindings(snykReport), baselineKey: 'snyk' },
 ];
 
 const fastSteps = [
@@ -34,8 +39,26 @@ const fastSteps = [
 	{ name: 'unit', cmd: ['pnpm', 'exec', 'turbo', 'run', 'test', ...turboFlags] },
 ];
 
-const logDir = path.join(verifyCacheDir(repoRoot), 'logs');
 mkdirSync(logDir, { recursive: true });
+
+/** For a failed audit/Snyk step: the findings not present in the session baseline, or undefined when there is no usable comparison. */
+async function newSecurityFindings(step) {
+	if (!step.findings || process.env.CI) {
+		return undefined;
+	}
+	const baseline = await readBaseline(repoRoot);
+	const known = baseline?.[step.baselineKey];
+	let current;
+	try {
+		current = step.findings();
+	} catch {
+		return undefined;
+	}
+	if (!known || !current) {
+		return undefined;
+	}
+	return { base: baseline.base, current, introduced: current.filter((id) => !known.includes(id)) };
+}
 
 function runStep(step) {
 	return new Promise((resolve) => {
@@ -76,7 +99,19 @@ for (const step of steps) {
 		}
 		continue;
 	}
+	const security = await newSecurityFindings(step);
+	if (security && security.introduced.length === 0) {
+		console.log(
+			`✓ ${step.name} (${result.seconds}s) — ${security.current.length} pre-existing finding(s) at session start (${security.base.slice(0, 7)}), none introduced by this change. Do not fix them (the fixes are root files); list them under Known limitations:`,
+		);
+		console.log(`  ${security.current.join(', ')}`);
+		continue;
+	}
 	console.log(`✗ ${step.name} (${result.seconds}s) — full log: ${path.relative(repoRoot, result.logFile)}`);
+	if (security) {
+		console.log(`  Introduced by this change (not present at session start): ${security.introduced.join(', ')}`);
+		console.log('  Fix by changing or removing the dependency you added; pre-existing findings are not your concern.');
+	}
 	const all = result.output.trimEnd().split('\n');
 	const lines = step.summary && !process.env.CI ? all.filter((l) => step.summary.test(l)).map((l) => l.replace(/\s*│\s*/g, ' ').trim()) : all;
 	const shown = process.env.CI ? lines : lines.slice(-failureTailLines);

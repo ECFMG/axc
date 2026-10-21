@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 // Shared helpers for the Claude Code hooks in .claude/hooks. The write boundary mirrors the
@@ -38,12 +38,39 @@ export const boundaryHint = `Allowed: ${allowedPrefixes.join(', ')}. Harness fil
 const configRules = /(^|\/)(tsconfig[^/]*\.json|biome\.jsonc?)$/;
 const secretFiles = /(^|\/)(\.env[^/]*|local\.settings\.json)$/;
 
-function isTracked(relPath) {
+export function isTracked(relPath) {
 	try {
 		return git(['ls-files', '--', relPath]) !== '';
 	} catch {
 		return false;
 	}
+}
+
+/** A file this run created: untracked, not gitignored (local .env files and build output are ignored), and not a secrets file. */
+export function isCreatedThisRun(relPath) {
+	if (isTracked(relPath) || secretFiles.test(relPath)) {
+		return false;
+	}
+	try {
+		execFileSync('git', ['check-ignore', '-q', '--', relPath], { cwd: repoRoot });
+		return false;
+	} catch {
+		return true;
+	}
+}
+
+/** An untracked config file identical to a tracked one of the same name (e.g. rest copying application-services' tsconfig.vitest.json) adds no rules. */
+function isVerbatimConfigCopy(relPath) {
+	const absolute = path.join(repoRoot, relPath);
+	if (isTracked(relPath) || !existsSync(absolute)) {
+		return false;
+	}
+	const content = readFileSync(absolute, 'utf8').trim();
+	const name = path.posix.basename(relPath);
+	return git(['ls-files', '--', name, `*/${name}`])
+		.split('\n')
+		.filter(Boolean)
+		.some((tracked) => readFileSync(path.join(repoRoot, tracked), 'utf8').trim() === content);
 }
 
 // Returns a repo-relative path, or undefined when the path is outside the repository.
@@ -70,10 +97,11 @@ export function writeViolation(relPath) {
 		}
 		return undefined;
 	}
-	if (configRules.test(relPath) && (isTracked(relPath) || existsSync(path.join(repoRoot, relPath)))) {
-		return `${relPath} holds TypeScript/Biome rules. Changing them is an automatic fail; change the code to satisfy the rules instead.`;
+	if (configRules.test(relPath) && (isTracked(relPath) || existsSync(path.join(repoRoot, relPath))) && !isVerbatimConfigCopy(relPath)) {
+		return `${relPath} holds TypeScript/Biome rules. Changing them is an automatic fail; change the code to satisfy the rules instead. (A new package may copy an existing package's tsconfig file byte for byte.)`;
 	}
-	if (relPath !== 'packages/axc/README.md' && !allowedPrefixes.some((prefix) => relPath.startsWith(prefix))) {
+	// `${relPath}/` also accepts the package directory itself (mkdir -p packages/axc/rest, cp x packages/axc/rest).
+	if (relPath !== 'packages/axc/README.md' && !allowedPrefixes.some((prefix) => `${relPath}/`.startsWith(prefix))) {
 		return `${relPath} is outside the allowed write boundary.`;
 	}
 	return undefined;
@@ -81,5 +109,38 @@ export function writeViolation(relPath) {
 
 export function readRunBase() {
 	const file = path.join(stateDir(), 'run-base');
+	return existsSync(file) ? readFileSync(file, 'utf8').trim() : undefined;
+}
+
+// Task sets: the prompt names a Task Set ID; its requirements file lists acceptance criteria as
+// `| A-AC3 | ... |` rows. Mirrors packages/axc-verification/archunit-tests/src/rules/requirements-traceability.ts.
+
+export function findTaskSet(taskSetId) {
+	for (const name of readdirSync(repoRoot).filter((file) => /^task-set-[\w-]+-requirements\.md$/.test(file))) {
+		const content = readFileSync(path.join(repoRoot, name), 'utf8');
+		if (/^\| ?Task Set ID ?\|([^|\n]*)\|/m.exec(content)?.[1]?.trim() === taskSetId) {
+			const criteria = [...content.matchAll(/^\| ?([A-Z]+-AC\d+) ?\|([^|\n]*)\|/gm)].map((match) => ({ id: match[1], text: match[2].trim() })).filter((criterion) => !/^Existing tests still pass/i.test(criterion.text));
+			return { taskSetId, file: name, criteria };
+		}
+	}
+	return undefined;
+}
+
+/** Acceptance-criteria IDs referenced by Cucumber tags or test names anywhere in the verification and app test files. */
+export function referencedCriteria() {
+	const files = git(['ls-files', '--cached', '--others', '--exclude-standard', '--', 'packages/axc', 'packages/axc-verification', 'apps/api'])
+		.split('\n')
+		.filter((file) => /\.(feature|test\.ts|steps\.ts)$/.test(file) && !file.endsWith('/axc-layer-rules.test.ts') && existsSync(path.join(repoRoot, file)));
+	const referenced = new Set();
+	for (const file of files) {
+		for (const match of readFileSync(path.join(repoRoot, file), 'utf8').matchAll(/(?<![\w-])@?([A-Z]+-AC\d+)\b/g)) {
+			referenced.add(match[1]);
+		}
+	}
+	return referenced;
+}
+
+export function readActiveTaskSet() {
+	const file = path.join(stateDir(), 'active-task-set');
 	return existsSync(file) ? readFileSync(file, 'utf8').trim() : undefined;
 }

@@ -1,0 +1,20 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"test:arch": {
+			"description": "Architecture fitness tests read the layer sources directly, so those sources are part of the cache key",
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"$TURBO_ROOT$/apps/api/src/**",
+				"$TURBO_ROOT$/apps/api/package.json",
+				"$TURBO_ROOT$/apps/docs/docs/**",
+				"$TURBO_ROOT$/packages/axc/*/src/**",
+				"$TURBO_ROOT$/packages/axc/*/package.json",
+				"$TURBO_ROOT$/packages/axc-verification/acceptance-api/src/**",
+				"$TURBO_ROOT$/packages/axc-verification/acceptance-api/package.json",
+				"$TURBO_ROOT$/task-set-*-requirements.md"
+			]
+		}
+	}
+}

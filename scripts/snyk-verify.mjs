@@ -13,5 +13,6 @@ if (version.status !== 0) {
 }
 
 console.log('Snyk: running snyk test --all-projects --policy-path=.snyk (local CLI, no monitor, no --remote-repo-url)');
-const test = spawnSync('snyk', ['test', '--all-projects', '--policy-path=.snyk'], { stdio: 'inherit' });
+// Extra arguments (verify passes --json-file-output for its baseline comparison) go to snyk test.
+const test = spawnSync('snyk', ['test', '--all-projects', '--policy-path=.snyk', ...process.argv.slice(2)], { stdio: 'inherit' });
 process.exit(test.status ?? 1);

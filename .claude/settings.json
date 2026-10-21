@@ -47,6 +47,11 @@
 				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.mjs\"", "timeout": 60 }]
 			}
 		],
+		"UserPromptSubmit": [
+			{
+				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/task-context.mjs\"", "timeout": 15 }]
+			}
+		],
 		"PreToolUse": [
 			{
 				"matcher": "Edit|Write|MultiEdit|NotebookEdit",
