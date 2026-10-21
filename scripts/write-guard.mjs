@@ -1,7 +1,7 @@
 // PreToolUse write-boundary guard (Grok Build; Claude/Copilot-shaped input also accepted). Dependency-free; fails open.
 // Rules live in .github/hooks/write-boundary.json (shared with the Copilot guard). Deny rules match per line,
 // so a newline can't hide a command; quoted heredoc bodies are inert text and are skipped.
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const WRITE_TOOLS = new Set(['search_replace', 'write', 'hashline_edit', 'edit', 'multiedit', 'create', 'create_file', 'write_file', 'apply_patch', 'strreplace', 'notebookedit', 'editnotebook', 'delete']);
@@ -43,6 +43,8 @@ export function check(input, rules, root) {
 		const rel = path.relative(root, path.resolve(root, args[key])).split(path.sep).join('/');
 		const denied = firstMatch(rules.path_deny ?? [], rel, 'i');
 		if (denied) return `BLOCKED (write-boundary): ${denied} Path: ${rel}`;
+		if ((rules.no_new_dirs ?? []).some((p) => rel.startsWith(p)) && !existsSync(path.dirname(path.join(root, rel))))
+			return `BLOCKED (write-boundary): no new folders under packages/axc — add a flat file in an existing src/ folder. Path: ${rel}`;
 		if (!inGlobs(rel, rules.allowed_write_globs ?? [])) return `BLOCKED (write-boundary): outside allowed write paths: ${rel}. Writable: ${rules.allowed_write_globs.join(', ')}`;
 	}
 	return undefined;

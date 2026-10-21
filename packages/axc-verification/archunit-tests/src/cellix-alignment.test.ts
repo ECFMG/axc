@@ -31,6 +31,6 @@ describe('Cellix alignment', () => {
 		const routePattern = /\bapp\.(?:get|post|put|patch|delete|options|all)\(\s*['"]([^'"]+)['"]/g;
 		const entryPointRoutes = [...source.matchAll(routePattern)].map((match) => match[1]).filter((route) => route !== '/health');
 
-		expect(entryPointRoutes, 'register non-health routes from packages/axc/rest/src/features modules').toStrictEqual([]);
+		expect(entryPointRoutes, 'register non-health routes in a flat packages/axc/rest/src/<feature>.routes.ts module, not in index.ts').toStrictEqual([]);
 	});
 });

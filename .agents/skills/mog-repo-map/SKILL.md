@@ -49,7 +49,7 @@ import { list<Thing>s, type <Feature>Query, type <Thing> } from './<feature>.ts'
 export { <thing>Kinds, type <Feature>Query, type <Thing>Kind } from './<feature>.ts';
 // ApplicationServices: <feature>: { list(q: <Feature>Query): <Thing>[] };   forRequest object: <feature>: { list: list<Thing>s },
 ```
-`rest/src/features/<feature>.ts` (only `/health` stays inline in `rest/src/index.ts`):
+`rest/src/<feature>.routes.ts` (flat file — no new folders under `packages/axc/**`; only `/health` stays inline in `rest/src/index.ts`):
 ```ts
 import { type ApplicationServicesFactory, type <Feature>Query, type <Thing>Kind, <thing>Kinds } from '@axc/application-services';
 import type { Hono } from 'hono';
@@ -77,7 +77,7 @@ export function register<Feature>Routes(app: Hono, factory: ApplicationServicesF
 	});
 }
 ```
-Mount: `rest/src/index.ts` imports `register<Feature>Routes` from `./features/<feature>.ts` and calls it before `return app`; `apps/api/src/index.ts` adds `.registerAzureFunctionHttpHandler('<feature>', { route: 'api/<feature>', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)`.
+Mount: `rest/src/index.ts` imports `register<Feature>Routes` from `./<feature>.routes.ts` and calls it before `return app`; `apps/api/src/index.ts` adds `.registerAzureFunctionHttpHandler('<feature>', { route: 'api/<feature>', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)`.
 
 `acceptance-api/src/features/<feature>.feature` + `src/step-definitions/<feature>.steps.ts` (steps are global: define each pattern once):
 ```gherkin

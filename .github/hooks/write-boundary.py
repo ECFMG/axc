@@ -220,6 +220,8 @@ def main() -> None:
         denied = check_path_deny(rel, path_deny)
         if denied:
             deny(f"BLOCKED (write-boundary): {denied} Path: {rel}")
+        if any(rel.startswith(p) for p in cfg.get("no_new_dirs") or []) and not (repo_root / rel).parent.is_dir():
+            deny(f"BLOCKED (write-boundary): no new folders under packages/axc — add a flat file in an existing src/ folder. Path: {rel}")
         if globs and not in_boundary(rel, globs):
             sample = ", ".join(globs[:6])
             deny(
