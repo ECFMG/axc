@@ -58,6 +58,17 @@ def main():
     # here would make the gate fire once and then pass a still-short feature;
     # the per-session MAX_BLOCKS counter below is what prevents an endless loop.
     root = os.environ.get("CLAUDE_PROJECT_DIR") or ev.get("cwd") or os.getcwd()
+    # Gate only sessions that did task work. A session with no modified or new
+    # files under packages/ or apps/ (config cleanup, questions, docs) has no
+    # coverage obligation; blocking it loops interactive users forever.
+    try:
+        import subprocess
+        st = subprocess.run(["git", "status", "--porcelain", "--", "packages", "apps"],
+                            cwd=root, capture_output=True, text=True, timeout=10)
+        if st.returncode == 0 and not st.stdout.strip():
+            return
+    except Exception:
+        pass
     crit, missing, n = scan(root)
     if not crit:
         return
@@ -72,13 +83,23 @@ def main():
     except Exception:
         st = {}
     sid = ev.get("session_id", "?")
-    blocks = int(st.get(sid, 0))
+    entry = st.get(sid, 0)
+    if isinstance(entry, int):  # legacy state shape
+        entry = {"blocks": entry, "notified": False}
+    blocks = int(entry.get("blocks", 0))
     if blocks >= MAX_BLOCKS:
-        print(json.dumps({"hookSpecificOutput": {"hookEventName": "Stop", "additionalContext":
-              f"Coverage gate: {n} acceptance scenario(s) for {len(crit)} criteria; limit of {MAX_BLOCKS} blocks reached, "
-              f"allowing stop. State the gap explicitly in your summary."}}))
+        if not entry.get("notified"):
+            entry["notified"] = True
+            st[sid] = entry
+            try:
+                json.dump(st, open(state, "w"))
+            except Exception:
+                pass
+            print(json.dumps({"hookSpecificOutput": {"hookEventName": "Stop", "additionalContext":
+                  f"Coverage gate: {n} acceptance scenario(s) for {len(crit)} criteria; limit of {MAX_BLOCKS} blocks reached, "
+                  f"allowing stop. State the gap explicitly in your summary. (This notice is sent once.)"}}))
         return
-    st[sid] = blocks + 1
+    st[sid] = {"blocks": blocks + 1, "notified": False}
     try:
         json.dump(st, open(state, "w"))
     except Exception:
