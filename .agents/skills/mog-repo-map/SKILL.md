@@ -80,6 +80,14 @@ Feature: `GET /api/courses` (A1–A11, A-AC1–12). Likely touch points:
 5. Docs page + `sidebars.ts` id
 6. Stay inside write boundary; finish with one `pnpm run verify`
 
+### Scenario ids (1 criterion → 1 tagged scenario)
+
+- Count rows in the task's `task-set-*-requirements.md` AC table; that is the scenario floor.
+- Name each scenario with its id first: `Scenario: A-AC7 invalid page → 400`.
+- One id per scenario; no merged ids, no untagged extras besides healthcheck.
+- Before the final gate: `grep -o '[AB]-AC[0-9]*' packages/axc-verification/acceptance-api/src/features/*.feature | sort -u` must list every id.
+- Evidence table rows reuse the same ids.
+
 Contract detail: `docs/eval-contract.md`. Harness must **not** run unmodified `task-set-a-prompt.md`.
 
 ## Cheap gates
