@@ -37,4 +37,4 @@ AXC adaptation: **local `git commit` allowed**; **`git push` / `gh pr` denied**.
 
 ## Territory
 
-Branch `mog-xai-1` only. Never push/PR. Never run Task Set A from this harness setup. See `AGENTS.md` and `docs/eval-contract.md`.
+Branch `mog-xai-1` only. Never push/PR. Never run Task Set A from this harness setup. See `AGENTS.md`.

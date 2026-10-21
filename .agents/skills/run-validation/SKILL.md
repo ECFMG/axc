@@ -25,6 +25,6 @@ Verify runs **once**, inside husky `pre-commit` (full `pnpm run verify`). Don't 
 
 - Success → exactly one line: `verify ok · acceptance N/N · <sha>`. Report it; stop.
 - Fail → commit blocked; ≤80-line excerpt + full log path. Fix, re-run the same command. Open the log by line range only if the excerpt isn't enough.
-- No separate AC grep, `git status` or log reads after success. Never read `.husky/`, `docs/score-metering.md`, `pnpm-lock.yaml`, `node_modules/` or agent memory; never write memory.
+- No separate AC grep, `git status` or log reads after success. Never read `.husky/`, eval/score docs, `pnpm-lock.yaml`, `node_modules/` or agent memory; never write memory.
 - Never `--no-verify`. SKIPPED gate ≠ pass.
 - Repeated failure → `docs/mog-critique.md` (by path; 3–10 rounds).

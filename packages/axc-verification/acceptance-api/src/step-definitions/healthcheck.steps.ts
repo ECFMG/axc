@@ -1,10 +1,8 @@
 import { Then, When } from '@cucumber/cucumber';
 import { Ensure, equals, matches } from '@serenity-js/assertions';
-import { type Answerable, actorCalled, Question } from '@serenity-js/core';
+import { actorCalled, Question } from '@serenity-js/core';
 import { GetRequest, LastResponse, Send } from '@serenity-js/rest';
-
-// QuestionAdapter is typed as Question<Promise<T>>. The actor resolves it to T.
-const resolved = <T>(answerable: Answerable<Promise<T>>): Answerable<T> => answerable as unknown as Answerable<T>;
+import { resolved, responseBody } from '../questions.ts';
 
 interface HealthStatus {
 	status: string;
@@ -16,11 +14,7 @@ interface HealthStatus {
 
 const actor = () => actorCalled('API client');
 
-const healthField = <K extends keyof HealthStatus>(field: K) =>
-	Question.about(`the health ${field}`, async (currentActor) => {
-		const body = await currentActor.answer(LastResponse.body<HealthStatus>());
-		return body[field];
-	});
+const healthField = <K extends keyof HealthStatus>(field: K) => Question.about(`the health ${field}`, (currentActor) => currentActor.answer(responseBody<HealthStatus>()).then((body) => body[field]));
 
 When('the client requests the healthcheck', () => actor().attemptsTo(Send.a(GetRequest.to('/health'))));
 
