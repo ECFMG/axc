@@ -1,0 +1,20 @@
+{
+  "task": "B",
+  "run": 5,
+  "publication_branch": "df-oai-5-b-out",
+  "usage": {
+    "input_tokens": 3067252,
+    "cached_input_tokens": 2976384,
+    "output_tokens": 20402,
+    "reasoning_output_tokens": 2478,
+    "total_tokens": 3087654
+  },
+  "estimated_cost_usd": "0.6833944",
+  "rubric_assessed_subtotal": 22,
+  "rubric_assessed_maximum": 25,
+  "overall_score": null,
+  "overall_maximum": 30,
+  "independent_review": false,
+  "usage_scope": "Original task, including final response; follow-ups excluded",
+  "source_scope": "Tested source archive and seed patch; inherited publication-branch application preserved"
+}

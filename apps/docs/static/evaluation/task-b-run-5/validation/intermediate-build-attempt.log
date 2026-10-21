@@ -1,0 +1,117 @@
+$ turbo run build
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running build in 21 packages
+   • Remote caching disabled
+
+@cellix/api-services-spec:build: cache hit, replaying logs 981e62472881deb5
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 16ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/config-vitest:build: cache hit, replaying logs 5db2521eb7d93065
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs 14eb9439cd4f0a9c
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 16ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/api-core:build: cache hit, replaying logs ba2a634a7a4ffbb1
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 25ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs b5aa24edcc7e39cb
+@cellix/config-rolldown:build: $ tsgo --build
+@axc/application-services:build: cache miss, executing 033d922bb6800df7
+@cellix/domain-seedwork:build: cache hit, replaying logs 407f779a7f869da0
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 22ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@cellix/archunit-tests:build: cache hit, replaying logs 1764be29c771599a
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 23ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/local-dev:build: cache hit, replaying logs 14c87dbc4a69c4eb
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 20ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs a257a1c3f21b6048
+@axc/domain:build: cache hit, replaying logs cda9e6788ca67bbc
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 13ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@axc/domain:build: $ pnpm run lint
+@axc/domain:build: $ biome lint
+@axc/domain:build: Checked 1 file in 5ms. No fixes applied.
+@axc/domain:build: $ tsgo --build
+@cellix/serenity-framework:build: cache hit, replaying logs 8aa707018ecfa881
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 30ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@axc/persistence:build: cache hit, replaying logs b56612f712c02a94
+@axc/persistence:build: $ pnpm run lint
+@axc/persistence:build: $ biome lint
+@axc/persistence:build: Checked 1 file in 4ms. No fixes applied.
+@axc/persistence:build: $ tsgo --build
+@apps/docs:build: cache hit, replaying logs 9a895ad109feeeb9
+@apps/docs:build: $ docusaurus build
+@apps/docs:build: [INFO] [en] Creating an optimized production build...
+@apps/docs:build: [webpackbar] ℹ Compiling Client
+@apps/docs:build: [webpackbar] ℹ Compiling Server
+@apps/docs:build: [webpackbar] ✔ Server: Compiled successfully in 3.20s
+@apps/docs:build: [webpackbar] ✔ Client: Compiled successfully in 6.08s
+@apps/docs:build: [SUCCESS] Generated static files in "build".
+@apps/docs:build: [INFO] Use `npm run serve` command to test your build locally.
+@apps/docs:build: ┌────────────────────────────────────────────────────────────┐
+@apps/docs:build: │            @docusaurus/core update check failed            │
+@apps/docs:build: │            Try running with sudo or get access             │
+@apps/docs:build: │            to the local update config store via            │
+@apps/docs:build: │ sudo chown -R $USER:$(id -gn $USER) /Users/dfortun/.config │
+@apps/docs:build: └────────────────────────────────────────────────────────────┘
+@cellix/mongoose-seedwork:build: cache hit, replaying logs baf6427cf0fb71f1
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 18ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@axc/service-mongoose:build: cache hit, replaying logs 3c328e3471476474
+@axc/service-mongoose:build: $ pnpm run lint
+@axc/service-mongoose:build: $ biome lint
+@axc/service-mongoose:build: Checked 1 file in 4ms. No fixes applied.
+@axc/service-mongoose:build: $ tsgo --build
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: Checked 5 files in 7ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@axc/application-services:build: src/enrollment-requests.ts(33,3): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+@axc/application-services:build: src/enrollment-requests.ts(34,3): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+@axc/application-services:build: src/enrollment-requests.ts(36,3): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+@axc/application-services:build: src/enrollment-requests.ts(82,31): error TS4111: Property 'courseId' comes from an index signature, so it must be accessed with ['courseId'].
+@axc/application-services:build: src/enrollment-requests.ts(83,36): error TS4111: Property 'learnerEmail' comes from an index signature, so it must be accessed with ['learnerEmail'].
+@axc/application-services:build: src/enrollment-requests.ts(84,36): error TS4111: Property 'justification' comes from an index signature, so it must be accessed with ['justification'].
+@axc/application-services:build: src/enrollment-requests.ts(109,14): error TS4111: Property 'status' comes from an index signature, so it must be accessed with ['status'].
+@axc/application-services:build: src/enrollment-requests.ts(109,66): error TS4111: Property 'status' comes from an index signature, so it must be accessed with ['status'].
+@axc/application-services:build: src/enrollment-requests.ts(110,14): error TS4111: Property 'courseId' comes from an index signature, so it must be accessed with ['courseId'].
+@axc/application-services:build: src/enrollment-requests.ts(110,68): error TS4111: Property 'courseId' comes from an index signature, so it must be accessed with ['courseId'].
+@axc/application-services:build: src/enrollment-requests.ts(111,14): error TS4111: Property 'learnerEmail' comes from an index signature, so it must be accessed with ['learnerEmail'].
+@axc/application-services:build: src/enrollment-requests.ts(111,77): error TS4111: Property 'learnerEmail' comes from an index signature, so it must be accessed with ['learnerEmail'].
+@axc/application-services:build: src/enrollment-requests.ts(120,29): error TS4111: Property 'status' comes from an index signature, so it must be accessed with ['status'].
+@axc/application-services:build: src/enrollment-requests.ts(121,32): error TS4111: Property 'changedBy' comes from an index signature, so it must be accessed with ['changedBy'].
+@axc/application-services:build: src/enrollment-requests.ts(122,24): error TS4111: Property 'reason' comes from an index signature, so it must be accessed with ['reason'].
+@axc/application-services:build: src/enrollment-requests.ts(122,53): error TS4111: Property 'reason' comes from an index signature, so it must be accessed with ['reason'].
+@axc/application-services:build: src/enrollment-requests.ts(122,88): error TS4111: Property 'reason' comes from an index signature, so it must be accessed with ['reason'].
+@axc/application-services:build: [ELIFECYCLE] Command failed with exit code 1.
+ ERROR  @axc/application-services#build: command (/Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/axc/packages/axc/application-services) /Users/dfortun/.local/share/mise/shims/pnpm run build exited (1)
+
+ Tasks:    15 successful, 16 total
+Cached:    15 cached, 16 total
+  Time:    1.013s 
+Failed:    @axc/application-services#build
+
+ ERROR  run failed: command  exited (1)
+[ELIFECYCLE] Command failed with exit code 1.

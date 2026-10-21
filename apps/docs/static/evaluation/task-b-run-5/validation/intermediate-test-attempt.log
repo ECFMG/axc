@@ -1,0 +1,109 @@
+$ turbo run test test:acceptance
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running test, test:acceptance in 21 packages
+   • Remote caching disabled
+
+@cellix/api-services-spec:build: cache hit, replaying logs 981e62472881deb5
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs 14eb9439cd4f0a9c
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 16ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 16ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/config-vitest:build: cache hit, replaying logs 5db2521eb7d93065
+@cellix/config-vitest:build: $ tsgo --build
+@axc/application-services:build: cache miss, executing df572d08d3d7e9e2
+@axc/application-services:test: cache miss, executing 4124afede6524d9d
+@cellix/domain-seedwork:build: cache hit, replaying logs 407f779a7f869da0
+@cellix/local-dev:test: cache miss, executing daa6bcd2251ea2da
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 22ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs b5aa24edcc7e39cb
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/api-core:build: cache hit, replaying logs ba2a634a7a4ffbb1
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 25ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/config-vitest:test: cache miss, executing 127867be72955b3a
+@cellix/serenity-framework:build: cache hit, replaying logs 8aa707018ecfa881
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 30ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@cellix/domain-seedwork:test: cache miss, executing f1adcefeda7ca3e7
+@cellix/config-rolldown:test: cache miss, executing f12cdfc9e0a290dc
+@cellix/api-core:test: cache miss, executing 10d7e37c9931a0e5
+@cellix/local-dev:build: cache hit, replaying logs 14c87dbc4a69c4eb
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 20ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/archunit-tests:test: cache miss, executing bae9e03a22b20b28
+@cellix/serenity-framework:test: cache miss, executing 83a8cf4bacec90dd
+@cellix/archunit-tests:build: cache hit, replaying logs 1764be29c771599a
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 23ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:test: cache miss, executing 5ac49649b77890d2
+@cellix/serenity-framework:test: $ vitest run --silent --reporter=dot
+@axc/application-services:build: $ pnpm run lint
+@cellix/config-vitest:test: $ vitest run --silent --reporter=dot
+@axc/application-services:test: $ vitest run --silent --reporter=dot
+@cellix/archunit-tests:test: $ vitest run
+@cellix/event-bus-seedwork-node:test: $ vitest run --silent --reporter=dot
+@cellix/config-rolldown:test: $ vitest run --silent --reporter=dot
+@cellix/api-core:test: $ vitest run --silent --reporter=dot
+@cellix/domain-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/local-dev:test: $ vitest run --silent --reporter=dot
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: Checked 5 files in 6ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@axc/application-services:build: src/enrollment-requests.ts(29,14): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+@axc/application-services:build: src/enrollment-requests.ts(29,55): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+@axc/application-services:build: src/enrollment-requests.ts(29,102): error TS1294: This syntax is not allowed when 'erasableSyntaxOnly' is enabled.
+@axc/application-services:build: src/enrollment-requests.ts(71,31): error TS4111: Property 'courseId' comes from an index signature, so it must be accessed with ['courseId'].
+@axc/application-services:build: src/enrollment-requests.ts(72,36): error TS4111: Property 'learnerEmail' comes from an index signature, so it must be accessed with ['learnerEmail'].
+@axc/application-services:build: src/enrollment-requests.ts(73,36): error TS4111: Property 'justification' comes from an index signature, so it must be accessed with ['justification'].
+@axc/application-services:build: src/enrollment-requests.ts(92,14): error TS4111: Property 'status' comes from an index signature, so it must be accessed with ['status'].
+@axc/application-services:build: src/enrollment-requests.ts(92,66): error TS4111: Property 'status' comes from an index signature, so it must be accessed with ['status'].
+@axc/application-services:build: src/enrollment-requests.ts(93,14): error TS4111: Property 'courseId' comes from an index signature, so it must be accessed with ['courseId'].
+@axc/application-services:build: src/enrollment-requests.ts(93,68): error TS4111: Property 'courseId' comes from an index signature, so it must be accessed with ['courseId'].
+@axc/application-services:build: src/enrollment-requests.ts(94,14): error TS4111: Property 'learnerEmail' comes from an index signature, so it must be accessed with ['learnerEmail'].
+@axc/application-services:build: src/enrollment-requests.ts(94,77): error TS4111: Property 'learnerEmail' comes from an index signature, so it must be accessed with ['learnerEmail'].
+@axc/application-services:build: src/enrollment-requests.ts(100,29): error TS4111: Property 'status' comes from an index signature, so it must be accessed with ['status'].
+@axc/application-services:build: src/enrollment-requests.ts(101,32): error TS4111: Property 'changedBy' comes from an index signature, so it must be accessed with ['changedBy'].
+@axc/application-services:build: src/enrollment-requests.ts(102,24): error TS4111: Property 'reason' comes from an index signature, so it must be accessed with ['reason'].
+@axc/application-services:build: src/enrollment-requests.ts(102,53): error TS4111: Property 'reason' comes from an index signature, so it must be accessed with ['reason'].
+@axc/application-services:build: src/enrollment-requests.ts(102,88): error TS4111: Property 'reason' comes from an index signature, so it must be accessed with ['reason'].
+@axc/application-services:build: [ELIFECYCLE] Command failed with exit code 1.
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs a257a1c3f21b6048
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 13ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@axc/application-services:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/serenity-framework:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/api-core:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/config-rolldown:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/config-vitest:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/archunit-tests:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/event-bus-seedwork-node:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/local-dev:test: [ELIFECYCLE] Test failed. See above for more details.
+@cellix/domain-seedwork:test: [ELIFECYCLE] Test failed. See above for more details.
+ ERROR  @axc/application-services#build: command (/Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/axc/packages/axc/application-services) /Users/dfortun/.local/share/mise/shims/pnpm run build exited (1)
+
+ Tasks:    10 successful, 20 total
+Cached:    10 cached, 20 total
+  Time:    1.304s 
+Failed:    @axc/application-services#build
+
+ ERROR  run failed: command  exited (1)
+[ELIFECYCLE] Test failed. See above for more details.

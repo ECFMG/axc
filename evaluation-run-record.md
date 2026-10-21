@@ -1,110 +1,117 @@
-# Evaluation Run Record
+# Evaluation Run Record — Task B, run 5
 
 | Field | Value |
 | --- | --- |
 | Team | OpenAI |
-| Developer / Operator | Dane Fortun (human operator); Codex implementation assistant |
-| Reviewer | Cavecrew investigator and reviewer (automated); final rubric is assistant self-assessment, not independent human approval |
-| Harness | Native Codex desktop; supplied OpenAI harness v7.12.02 inspected; unchanged independent course oracle used |
-| Model | gpt-6.1-sol; medium reasoning, per session metadata |
-| License / Plan | Not recorded for this evaluation |
+| Developer / Operator | Dane Fortun (operator); Codex implementation assistant |
+| Reviewer | Assistant self-assessment only; independent reviewer not assigned |
+| Harness | Native Codex Desktop; supplied OpenAI harness v7.12.02 inspected, not executed as a provider experiment |
+| Model | gpt-6.1-sol; medium reasoning, recorded in original turn_context |
+| License / Plan | Not used for accounting; subscription billing not measured |
 | Codebase | ECFMG/axc |
-| Task Set | B (course search included solely as the B1 prerequisite) |
-| Run Type | Implementation run; not a controlled model/harness comparison |
-| Harness Engineering Used | Ponytail, Caveman, Cavecrew investigator/reviewer, Code Simplification |
-| Config / Diff Notes | 15 original implementation files within task boundaries; no dependencies/authentication/production settings/Cellix changes. Root evaluation record and supporting evidence added under subsequent explicit publication request. |
-| Branch / Commit | df-oai-4-b-out; implementation baseline 9c890d75784ea7a18fe0c192cfacfdcdaa1ef111; implementation and evaluation evidence published together in the commit containing this record |
-| Requirements Completed / Attempted | B1–B17, including B1 course-search prerequisite |
-| Acceptance Criteria Passed / Total | B: 15/15 mapped; required course-search prerequisite validated; not independent rubric scoring |
-| Tests Passed / Failed | Full suite 25/25 tasks; feature tests 110/110; host enrollment 64/64; independent courses 29/29 in memory and 29/29 via HTTP; architecture 9/9; no final failures |
-| Static Analysis / Security Findings | Lint passed, 0 errors and 16 informational suggestions; typecheck/build/docs/architecture passed. No dedicated security scan performed. |
-| Input Tokens | 7,056,935 recorded aggregate |
-| Cached Tokens | 6,844,544; included in input |
-| Output Tokens | 39,811; includes 10,464 reasoning output tokens |
-| Total Tokens or Credits Used | 7,096,746; complete original Task B, including final response; follow-up excluded |
-| Estimated Cost | $1.5073464 (approximately $1.51); estimate using operator-supplied rate card, not actual billing |
-| Elapsed Time | 0:14:53.346000 (original task through task_complete) |
-| Number of Human Interventions / Redirects | 1 source-branch clarification during work |
-| Reviewer Notes | Resolved email-format validation and stale documentation findings. See linked review findings and validation evidence. |
-| Final Rubric Score | 23/25 across five assessed categories; overall /30 UNASSIGNED because a matched implementation comparison is missing; operator-designated reference baseline is documented below |
-| Recommendation | Continue for sample evaluation; conduct matched comparison before efficiency scoring or savings claims |
+| Task Set | B, with existing Task A seeded implementation preserved and validated |
+| Run Type | Seeded implementation; not a matched harness/model benchmark |
+| Harness Engineering Used | No harness modifications; one main agent; no subagents |
+| Config / Diff Notes | 12 changed/new implementation files within permitted paths; no added dependencies, authentication, Cellix or production changes. Publication evidence added under subsequent explicit user request. |
+| Branch / Commit | Publication branch: df-oai-5-b-out. Measured implementation seed: d6153e2f09645297fc17749a438e7728d9754fe0. Tested source is the linked source ZIP and patch, not the inherited application tree on this publication branch. |
+| Requirements Completed / Attempted | Task A A1–A11 preserved; Task B B1–B17 implemented |
+| Acceptance Criteria Passed / Total | A: 12/12; B: 15/15 mapped to tests and documentation inspection; not independent acceptance certification |
+| Tests Passed / Failed | 655 passed, 0 failed; 4/4 live API acceptance scenarios; 9/9 architecture checks. Full uncached run: 26/26 tasks, zero cached. |
+| Static Analysis / Security Findings | Lint: 205 files, pass. Typecheck: 21/21 tasks, pass. Build: 18/18 tasks, pass. Direct documentation build: pass. No dedicated security scan. |
+| Input Tokens | 3,067,252 |
+| Cached Tokens | 2,976,384; included in input |
+| Output Tokens | 20,402; includes 2,478 reasoning tokens |
+| Total Tokens or Credits Used | 3,087,654; complete exposed original main-turn counters, including final response |
+| Estimated Cost | $0.6833944 (approximately $0.68), API-equivalent estimate at supplied Standard rates; not actual billing |
+| Elapsed Time | 0:09:43.932000, original task_started through task_complete |
+| Number of Human Interventions / Redirects | 0 during original implementation turn; this publication follow-up excluded |
+| Reviewer Notes | No independent reviewer. Earlier compile failures and sandbox port restrictions were resolved; retained logs identify intermediate attempts. |
+| Final Rubric Score | Assistant-assessed subtotal **22/25**; overall **/30 unassigned** under supplied policy because efficiency evidence is missing |
+| Recommendation | Continue for sample review; obtain independent review and matched comparison before efficiency scoring or savings claims |
 
-Original Task B usage complete through **2026-10-21T13:08:07.997Z** (2026-10-21 09:08:07 EDT), including its final assistant response. This follow-up turn is excluded.
+## Publication and source provenance
 
-| Actor | Input | Cached input (included) | Output | Reasoning output (included) | Total |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Main | 5,345,268 | 5,216,768 | 35,185 | 10,109 | 5,380,453 |
-| Investigator + reviewer | 1,711,667 | 1,627,776 | 4,626 | 355 | 1,716,293 |
-| Aggregate | 7,056,935 | 6,844,544 | 39,811 | 10,464 | 7,096,746 |
+This record supersedes a different run's inherited record on the target branch. That record is retained as [previous branch record](apps/docs/static/evaluation/task-b-run-5/previous-branch-evaluation-run-record.md); its usage, reviewers, comparisons and outcomes are not attributed to this run.
 
-Projected estimate: 2,000,000 tokens. Assumptions: 25–40 calls, 45k–65k input per call, 10k–20k output overall. Estimate timing exception is disclosed in the completion report.
+The user requested publication of this run's information and completed deliverables. **This is an evidence publication: the branch's inherited application code is preserved.** Validation below applies to the [completed source ZIP](apps/docs/static/evaluation/task-b-run-5/axc-task-b-completed.zip), built from clean Task A seed `d6153e2f09645297fc17749a438e7728d9754fe0`, and the [Task B patch](apps/docs/static/evaluation/task-b-run-5/task-b.patch). The patch passed `git apply --check` against that seed; archive integrity passed. The original implementation was delivered without any commits as requested at that time.
 
-Original main and explicit subagent native-session counters are measured. Automatic tool-side approval-review model counters, if any, are unexposed and unmeasured. Both subagent final responses and the original main final response are included. Follow-up usage is excluded. `usage.json` contains source logs, boundaries, and per-actor counters.
+The supplied archive contained evaluation-harness Python code and Task A specifications, not the AXC application. The clean AXC checkout alongside the referenced Task B documents supplied the application source. See [implementation report](apps/docs/static/evaluation/task-b-run-5/implementation-report.json) for paths and archive hash.
 
-## Rubric assessment
+## Requirements satisfied
 
-This is a retrospective assistant self-assessment using the supplied six-category policy, not an independently awarded score. Dane Fortun is the human operator; no human review approval is inferred.
+Course search retains 12 varied fixtures, the required Course fields, case-insensitive keyword/tag search, combined modality/status/tag filters, pagination, all three sorts, and 400 validation errors.
+
+Enrollment adds POST creation, GET by ID, filtered GET collection, and PATCH status routes. Active-course lookup, email and 20–500-character justification checks, initial pending state, normalized-email duplicate protection, all four valid transitions, rejection reasons and immutable response snapshots are implemented. Creation and successful changes append status history; errors preserve state. Azure Functions wiring is exercised by a live enrollment workflow. API documentation covers request/response bodies and error codes.
+
+The sample map repository, model and transition rules follow the existing fixture/use-case placement in application-services. No new domain/persistence package dependencies or separate mapper package were introduced; mapping to JSON uses detached snapshots. Storage is process-local, resets on restart and provides no cross-worker duplicate coordination. Operator identity follows unauthenticated sample conventions. These are sample limitations, not claims of production readiness.
+
+## Validation
+
+| Command | Final result | Evidence |
+| --- | --- | --- |
+| `pnpm test` | PASS, 26/26 tasks; 655 tests and 4 live scenarios | [Full suite](apps/docs/static/evaluation/task-b-run-5/validation/tests.log) |
+| `pnpm exec turbo run test test:acceptance --force` | PASS, 26/26 tasks, zero cached; 550 Vitest + 105 Node tests | [Uncached full suite](apps/docs/static/evaluation/task-b-run-5/validation/tests-uncached.log) |
+| `pnpm --filter @apps/api test` | PASS, 46 course + 59 enrollment tests | [API tests](apps/docs/static/evaluation/task-b-run-5/validation/api-tests.log) |
+| `pnpm run lint` | PASS, 205 files | [Lint](apps/docs/static/evaluation/task-b-run-5/validation/lint.log) |
+| `pnpm run typecheck` | PASS, 21/21 tasks | [Typecheck](apps/docs/static/evaluation/task-b-run-5/validation/typecheck.log) |
+| `pnpm run test:arch` | PASS, 9 checks | [Architecture](apps/docs/static/evaluation/task-b-run-5/validation/architecture.log) |
+| `pnpm run build` | PASS, 18/18 tasks; cache behavior disclosed in log | [Build](apps/docs/static/evaluation/task-b-run-5/validation/build.log) |
+| `pnpm --filter @apps/docs build` | PASS, direct build bypasses pre-existing Turbo docs-input omission | [Docs build](apps/docs/static/evaluation/task-b-run-5/validation/docs-build.log) |
+
+The project uses pnpm; equivalent project commands were used instead of npm. Initial sandbox execution could not bind the existing local MongoDB/Azure test ports. The final local run with networking permitted passed. Intermediate compile failures, interrupted tests, and the sandbox failure are preserved separately from successful final results. No independent course oracle, frozen harness eight-gate protocol, audit/Snyk scan, or independent code review was performed.
+
+## Actual usage and measurement boundaries
+
+Original session: `01a15ee8-7a96-7042-8302-69006701b877`. Original task/turn: `01a15ee8-b6cd-74b2-995c-aa935f083eaf`.
+
+- Task start: `2026-10-21T14:41:11.893Z`.
+- Baseline capture: `2026-10-21T14:41:29.237140+00:00`. No pre-task token_count existed; zero starting counters are inferred because the fresh session's first cumulative counters equal its first-call counters.
+- Final recorded counters: `2026-10-21T14:50:55.753Z`.
+- Task complete: `2026-10-21T14:50:55.825Z`.
+- Scope: original inspection, planning, implementation, validation, reporting **and final assistant response**. This publication follow-up is excluded. No subagents were used.
+
+| Counter | Starting cumulative | Ending cumulative | Task usage |
+| --- | ---: | ---: | ---: |
+| Input | 0 | 3,067,252 | 3,067,252 |
+| Cached input (included above) | 0 | 2,976,384 | 2,976,384 |
+| Output | 0 | 20,402 | 20,402 |
+| Reasoning output (included above) | 0 | 2,478 | 2,478 |
+| Total | 0 | 3,087,654 | 3,087,654 |
+| Cache writes | 0 | 0 | 0 |
+
+Usage is ending cumulative minus starting cumulative, never a sum of cumulative snapshots. Input already includes cached input; output already includes reasoning output. Exposed original native counters are complete, and the final response has been recovered. Any automatic approval-review/tool-side model usage is unexposed and unmeasured; actual invoice/credit charges are unmeasured. Local source-log path and original boundaries are in [usage.json](apps/docs/static/evaluation/task-b-run-5/usage.json); [token events](apps/docs/static/evaluation/task-b-run-5/original-token-events.json) retain only measurement events, without conversation text.
+
+## Projection versus measurement
+
+The recorded projection was **250,000 tokens**, range **150,000–500,000**. Assumptions: one agent, usable local source, expanded course/enrollment changes and local validation. It was recorded early after initial specification/archive inspection, not before the first inspection; the task's usage scope includes that inspection. Actual usage was **3,087,654 tokens**, approximately **12.35×** the point forecast. The projection substantially underestimated repeated cumulative input. This is disclosed separately and earns no efficiency points.
+
+## Estimated cost
+
+Using the supplied Standard rate card, corroborated by the [official model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol) on October 21, 2026:
+
+| Component | Tokens | USD per million | Estimated USD |
+| --- | ---: | ---: | ---: |
+| Uncached input (`input − cached`) | 90,868 | 2.00 | 0.181736 |
+| Cached input | 2,976,384 | 0.10 | 0.2976384 |
+| Cache writes | 0 | 2.50 | 0 |
+| Output, reasoning included | 20,402 | 10.00 | 0.20402 |
+| **Total** | | | **0.6833944** |
+
+Largest recorded per-request input: **106,674 tokens**, so no request exceeded 272,000 input tokens. The long-context threshold applies per request, not to aggregate task input. No surcharge is applied. Standard tier is an assumption; service tier is not recorded in the native turn metadata. This is an API-equivalent estimate, not an account charge, subscription cost or invoice. Publication work, taxes, credits and unexposed tool billing are excluded. See [cost calculation](apps/docs/static/evaluation/task-b-run-5/cost-estimate.json) and [supplied rate card](apps/docs/static/evaluation/task-b-run-5/rate-card.png).
+
+## Final rubric assessment
+
+Retrospective **assistant self-assessment**, not independent human review. Categories follow the [supplied policy](apps/docs/static/evaluation/task-b-run-5/rubric-policy.json).
 
 | Category | Score | Rationale |
 | --- | --- | --- |
-| Functional correctness | 5/5 | Required Task B behaviors and errors pass in feature and host checks. |
-| Tests and validation | 4/5 | Required Task B gates pass; the archived eight-gate Task A controller protocol was not completed as a frozen protocol for this run. |
-| Architecture and codebase alignment | 5/5 | Composition preserved, logical modules separated, architecture checks pass, review findings resolved. |
-| Security and guardrail compliance | 5/5 | Original write boundaries respected; input and state rules exercised; protected sources unchanged. No dedicated security scan. |
-| Context/token/cost efficiency | Unscored /5 | No predeclared matched comparison; absolute tokens, forecast error, and estimated price do not establish savings. |
-| Developer workflow fit | 4/5 | Reproducible artifacts and complete original-task accounting; estimate timing and initial scope-label deviations disclosed. |
+| Functional correctness | 5/5 | A course behavior preserved; B creation, validation, duplicates, retrieval, filtering, all transition pairs, audit and error cases exercised. 59 enrollment tests and live host workflow pass. |
+| Tests and validation | 4/5 | 655 tests and 4 live scenarios pass uncached; lint/typecheck/build/docs and 9 architecture checks pass. The harness-specific frozen eight-gate protocol and independent course oracle were not executed for this run. |
+| Architecture and codebase alignment | 4/5 | Existing factory composition and fixture placement preserved, no dependencies; architecture checks pass. Model, map repository and transition rules are together in application-services; no fresh independent architecture review or separate domain/persistence mapper package. |
+| Security and guardrail compliance | 5/5 | Original 12-file change set stayed inside allowed paths; no authentication, Cellix, production, external integration or dependency changes. Input validation and detached response data tested. Dedicated security scan not performed; no assertion of vulnerability-free code. |
+| Context/token/cost efficiency | Unscored /5 | No predeclared matched comparison. Absolute usage, cache hit rate, forecast error and estimated price cannot establish savings. |
+| Developer workflow fit | 4/5 | Archive, applicable patch, API docs, final validation logs and complete native original-turn accounting provided. No independent reviewer evidence; baseline is inferred zero rather than pre-task recorded snapshot. |
 
-**Assessed subtotal: 23/25. Overall /30 score remains unassigned.** The supplied policy requires all six evidence-backed scores before assigning an overall total. This is an assessment evidence gap, not an implementation blocker.
+**Assessed subtotal: 22/25. Overall /30: unassigned.** The supplied policy requires six evidence-backed scores; the efficiency category lacks a predeclared matched comparison. Missing comparison evidence cannot be replaced with a forecast, cache hit rate, absolute price or invented savings score. No comparison to a prior run is asserted. Independent reviewer judgment is also pending. These are assessment gaps; there are no unresolved failures in this run's implementation validation.
 
-## Estimated cost using operator-supplied rates
-
-The attached rate card supplies $2.00 per million uncached input tokens, $0.10 per million cached input tokens, $2.50 per million cache-write tokens, and $10.00 per million output tokens. These are user-supplied assumptions, not verified official current pricing or recorded billing.
-
-- Uncached input: 212,391 tokens × $2.00/M = $0.424782.
-- Cached input: 6,844,544 tokens × $0.10/M = $0.6844544.
-- Output: 39,811 tokens × $10.00/M = $0.39811.
-- Cache writes: zero recorded tokens; $0.
-- **Estimated total: $1.5073464 (approximately $1.51).**
-
-Cached input is not charged again as uncached input; reasoning output is already included in output. Largest recorded per-call input was 144,568 tokens, below the supplied 272,000-token surcharge threshold. All cost and usage figures concern the original Task B turn and its two subagent turns. Clarification and publication follow-ups are excluded.
-
-## Published findings and evidence
-
-- [Completion report](apps/docs/static/evaluation/task-b/completion-report.md)
-- [Review findings and resolutions](apps/docs/static/evaluation/task-b/review-findings.md)
-- [Validation summary](apps/docs/static/evaluation/task-b/validation.json)
-- [Final full-suite log](apps/docs/static/evaluation/task-b/test.log)
-- [Enrollment Azure-host checks](apps/docs/static/evaluation/task-b/host-enrollment-tests.log)
-- [Recorded original-task usage](apps/docs/static/evaluation/task-b/usage.json)
-- [Cost calculation](apps/docs/static/evaluation/task-b/cost-estimate.json)
-- [Supplied rate card](apps/docs/static/evaluation/task-b/rate-card.png)
-- [Rubric policy](apps/docs/static/evaluation/task-b/rubric-policy.json)
-- [Rubric assessment](apps/docs/static/evaluation/task-b/rubric-assessment.json)
-- [Original implementation inventory and hashes](apps/docs/static/evaluation/task-b/deliverables.json)
-- [Implementation patch](apps/docs/static/evaluation/task-b/changes.patch)
-
-The evidence directory also retains baseline failures, lint/build/typecheck/architecture/docs logs, independent course-oracle results, patch verification, and original source ZIP. No raw Codex conversation/JSONL logs, secrets, environment files, dependencies, or generated deployment bundles are published. Source-log paths and turn IDs in usage.json identify local measurement provenance.
-
-## Operator-designated baseline comparison
-
-Dane Fortun identified [baseline evaluation record](https://github.com/ECFMG/axc/blob/df-oai-0-b-out/evaluation-run-record.md) as the baseline. Its record was read at commit `650d20441585391460a65b8c9ddbece43b6b8ace` and its source and usage snapshot are retained with this evaluation. This establishes a reference baseline; it does not make the runs a controlled matched experiment.
-
-| Measure | Baseline df-oai-0-b-out | This run df-oai-4-b-out |
-| --- | ---: | ---: |
-| Recorded input tokens | 2,436,264 | 7,056,935 |
-| Cached input, included | 2,370,176 | 6,844,544 |
-| Output tokens | 12,768 | 39,811 |
-| Reasoning output, included | 1,966 | 10,464 |
-| Total measured native tokens | 2,449,032 | 7,096,746 |
-| Estimated cost at supplied rates | $0.4968736 | $1.5073464 |
-| Explicit implementation subagent turns | 0 | 2 |
-| Starting source | Already implemented Task A and Task B | Neither feature implemented |
-| Work performed | Inspect, strengthen, validate | Implement required features, validate |
-
-Descriptively, this run recorded **2.90 times the tokens** and **3.03 times the estimated cost**, or **4,647,714 more tokens** and **$1.0104728 more estimated cost**. These figures show no absolute token/cost reduction. They do not isolate harness or model efficiency because starting source, work performed, actor counts, validation procedures, and cache conditions differ. No paired repetitions were performed.
-
-Both use gpt-6.1-sol with medium reasoning. Original final responses are included in both recorded native usage totals; follow-ups are excluded. This run includes both explicit subagent turns. Automatic approval-review model counters, if incurred, are not exposed and remain unmeasured for both runs; neither rate-based estimate is actual billing.
-
-The baseline reports a 26/30 assistant self-assessment, including 2/5 efficiency despite no matched comparison. This run retains the supplied policy's explicit missing-comparison rule rather than comparing unlike score denominators: **23/25 assessed; efficiency unscored; overall /30 unassigned**. A matched implementation experiment remains the assessment blocker, not an implementation blocker.
-
-Supporting evidence: [comparison data](apps/docs/static/evaluation/task-b/baseline-comparison.json), [baseline record snapshot](apps/docs/static/evaluation/task-b/baseline-evaluation-record.md), and [baseline usage snapshot](apps/docs/static/evaluation/task-b/baseline-usage.json).
+See [machine-readable rubric](apps/docs/static/evaluation/task-b-run-5/rubric-assessment.json). The recommendation is **Continue for sample review**, with matched comparison and independent review before efficiency conclusions.

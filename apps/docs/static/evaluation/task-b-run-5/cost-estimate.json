@@ -1,0 +1,36 @@
+{
+  "currency": "USD",
+  "estimate_only": true,
+  "actual_billing": null,
+  "scope": "Original implementation turn including its final assistant response; all follow-up publication work excluded. No subagents used.",
+  "model": "gpt-6.1-sol",
+  "assumed_service_tier": "Standard",
+  "tier_verification": "Service tier is not recorded in session turn_context; Standard assumed from operator rate card.",
+  "rates_per_million_tokens": {
+    "uncached_input": 2,
+    "cached_input": 0.1,
+    "cache_write": 2.5,
+    "output": 10
+  },
+  "uncached_input_tokens": 90868,
+  "cached_input_tokens": 2976384,
+  "cache_write_input_tokens": 0,
+  "output_tokens": 20402,
+  "component_costs_usd": {
+    "uncached_input": "0.181736",
+    "cached_input": "0.2976384",
+    "cache_write": "0",
+    "output": "0.20402"
+  },
+  "estimated_total_usd": "0.6833944",
+  "maximum_recorded_request_input": 106674,
+  "long_context_threshold": 272000,
+  "long_context_requests": 0,
+  "long_context_pricing": "Official model page: above 272K input, 2x input/cache and 1.5x output; no recorded request crosses threshold.",
+  "source": "Operator-supplied rate-card image, corroborated with https://developers.openai.com/api/docs/models/gpt-6.1-sol on 2026-10-21",
+  "exclusions": [
+    "This follow-up publication turn",
+    "Account subscription fees, taxes, credits and any unexposed tool-side model/billing usage"
+  ],
+  "formula": "(input - cached_input)*2/1e6 + cached_input*0.10/1e6 + cache_write*2.50/1e6 + output*10/1e6; reasoning output already included in output."
+}

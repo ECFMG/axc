@@ -1,0 +1,48 @@
+{
+  "task": "TS-B-COURSE-ENROLLMENT-WORKFLOW",
+  "task_a": "Preserved completed seed; all 12 acceptance criteria covered by original tests/docs and regression runs.",
+  "task_b": "All B1\u2013B17 implemented; B-AC1\u2013B-AC15 covered.",
+  "starting_source": "/Users/dfortun/Documents/Codex/2026-10-08/before-making-changes-inspect-the-current/work/axc-validation",
+  "starting_commit": "d6153e2f09645297fc17749a438e7728d9754fe0",
+  "seed_choice": "Existing clean Task A seed; no Task B implementation present.",
+  "archive_inspection": {
+    "path": "/Users/dfortun/Downloads/openai-harness-v7.12.02-updated.zip",
+    "sha256": "14a5f3c308670fc4d04ced33c514976b42dc3db1187fa4cb65b00ed3f50dbf90",
+    "contents": "Python evaluation harness, fixed Task A specification, acceptance verifier and historical release evidence; no AXC application source. Used adjacent referenced AXC checkout as source; did not run model/provider harness experiments."
+  },
+  "changed_files": [
+    "apps/api/package.json",
+    "apps/api/src/index.ts",
+    "apps/docs/sidebars.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/rest/src/index.ts",
+    "packages/axc/application-services/src/enrollment-requests.ts",
+    "packages/axc/rest/src/enrollment-routes.ts",
+    "packages/axc-verification/enrollment-tests/enrollment.test.mjs",
+    "packages/axc-verification/acceptance-api/src/features/enrollment.feature",
+    "packages/axc-verification/acceptance-api/src/step-definitions/enrollment.steps.ts",
+    "apps/docs/docs/api/courses.md",
+    "apps/docs/docs/api/enrollment-requests.md"
+  ],
+  "write_boundary_verified": true,
+  "new_dependencies": false,
+  "commits_created": false,
+  "validation": {
+    "pnpm_test": "PASS, 26/26 tasks; 655 tests plus 4 live acceptance scenarios; final uncached turbo equivalent also PASS, 0 cached tasks",
+    "pnpm_run_lint": "PASS; 205 files",
+    "pnpm_run_typecheck": "PASS; 21/21 tasks",
+    "pnpm_run_test_arch": "PASS; 9 checks",
+    "pnpm_run_build": "PASS; 18/18 tasks",
+    "direct_docs_build": "PASS; avoids pre-existing Turbo docs-input omission",
+    "api_tests": "PASS; 46 course tests and 59 enrollment tests",
+    "archive_integrity_and_patch_applicability": "PASS"
+  },
+  "limitations": [
+    "Sample repository and domain/use-case rules follow existing course placement in application-services; no separate domain or persistence package dependency introduced. JSON mapping uses detached response snapshots.",
+    "Requests are process-local, lost on restart and not shared across workers; duplicate protection is atomic only in the synchronous single-process sample.",
+    "Operator identifier follows sample conventions and is not authenticated.",
+    "Initial sandbox test run could not bind local ports; final unrestricted local run passed without modifying vendored packages.",
+    "No comparative harness/model savings or dollar-cost claim."
+  ],
+  "usage_status": "Original final response recovered; exposed native accounting complete, follow-up excluded."
+}

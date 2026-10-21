@@ -1,0 +1,98 @@
+{
+  "session_id": "01a15ee8-7a96-7042-8302-69006701b877",
+  "turn_id": "01a15ee8-b6cd-74b2-995c-aa935f083eaf",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/21/rollout-2026-10-21T10-40-56-01a15ee8-7a96-7042-8302-69006701b877.jsonl",
+  "scope": "All work in original task turn: inspection, planning, implementation, validation, reporting. Follow-up turns excluded. No subagents.",
+  "task_started_at": "2026-10-21T14:41:11.893Z",
+  "baseline_captured_at": "2026-10-21T14:41:29.237140+00:00",
+  "starting_cumulative_counters": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_output_tokens": 0,
+    "total_tokens": 0
+  },
+  "starting_counter_status": "No token_count before task_started; fresh session. Zero baseline inferred from first cumulative snapshot matching last_token_usage; not a pre-task recorded snapshot.",
+  "projected_estimate": {
+    "total_tokens": 250000,
+    "range": [
+      150000,
+      500000
+    ],
+    "assumptions": "One agent, local archive contains usable source/fixture; expanded course and enrollment implementation, tests, lint/build and reporting; cumulative input across model calls dominates. Estimate only, not measured usage."
+  },
+  "completeness": "complete",
+  "missing_usage": [],
+  "baseline_timestamp": "2026-10-21T14:41:11.893Z",
+  "baseline_method": "inferred from first cumulative minus first last_token_usage in fresh session; no pre-task token_count exists",
+  "ending_cumulative_counters": {
+    "input_tokens": 3067252,
+    "cached_input_tokens": 2976384,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 20402,
+    "reasoning_output_tokens": 2478,
+    "total_tokens": 3087654
+  },
+  "recorded_usage": {
+    "input_tokens": 3067252,
+    "cached_input_tokens": 2976384,
+    "output_tokens": 20402,
+    "reasoning_output_tokens": 2478,
+    "total_tokens": 3087654
+  },
+  "recorded_through": "2026-10-21T14:50:55.753Z",
+  "measurement_updated_at": "2026-10-21T14:55:00.674271+00:00",
+  "end_boundary": {
+    "task_complete_timestamp": "2026-10-21T14:50:55.825Z",
+    "final_response_seen": true,
+    "final_response_accounted": true,
+    "followup_turns_excluded": true
+  },
+  "subagents": {
+    "used": false,
+    "usage": []
+  },
+  "accounting_rules": {
+    "method": "ending cumulative counters minus starting cumulative counters; cumulative snapshots never summed",
+    "cached_input_included_in_input": true,
+    "reasoning_output_included_in_output": true
+  },
+  "estimated_cost": {
+    "currency": "USD",
+    "estimate_only": true,
+    "actual_billing": null,
+    "scope": "Original implementation turn including its final assistant response; all follow-up publication work excluded. No subagents used.",
+    "model": "gpt-6.1-sol",
+    "assumed_service_tier": "Standard",
+    "tier_verification": "Service tier is not recorded in session turn_context; Standard assumed from operator rate card.",
+    "rates_per_million_tokens": {
+      "uncached_input": 2,
+      "cached_input": 0.1,
+      "cache_write": 2.5,
+      "output": 10
+    },
+    "uncached_input_tokens": 90868,
+    "cached_input_tokens": 2976384,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 20402,
+    "component_costs_usd": {
+      "uncached_input": "0.181736",
+      "cached_input": "0.2976384",
+      "cache_write": "0",
+      "output": "0.20402"
+    },
+    "estimated_total_usd": "0.6833944",
+    "maximum_recorded_request_input": 106674,
+    "long_context_threshold": 272000,
+    "long_context_requests": 0,
+    "long_context_pricing": "Official model page: above 272K input, 2x input/cache and 1.5x output; no recorded request crosses threshold.",
+    "source": "Operator-supplied rate-card image, corroborated with https://developers.openai.com/api/docs/models/gpt-6.1-sol on 2026-10-21",
+    "exclusions": [
+      "This follow-up publication turn",
+      "Account subscription fees, taxes, credits and any unexposed tool-side model/billing usage"
+    ],
+    "formula": "(input - cached_input)*2/1e6 + cached_input*0.10/1e6 + cache_write*2.50/1e6 + output*10/1e6; reasoning output already included in output."
+  },
+  "cost_note": "API-equivalent estimate at operator-supplied Standard rates; not recorded billing. See estimated_cost assumptions and exclusions.",
+  "accounting_coverage": "Complete exposed native Codex counters for original main turn. No subagents. Automatic approval-review or tool-side model counters, if incurred, are unexposed and unmeasured."
+}
