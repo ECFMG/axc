@@ -23,7 +23,7 @@ packages/axc-verification/*       archunit-tests (rules only — don't add tests
 packages/cellix/*                 vendored, reuse
 ```
 
-Each package's public API = `src/index.ts`. Imports use `.ts` extensions (`./x.ts`).
+Each package's public API = `src/index.ts`: re-export from it every type/value another package imports (else TS2305/TS2459/TS2724). Imports use `.ts` extensions.
 
 ## Query validation (REST boundary)
 

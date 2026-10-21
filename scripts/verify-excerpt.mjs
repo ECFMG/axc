@@ -23,6 +23,10 @@ const noise =
 	/(DeprecationWarning|--trace-deprecation|^\s*$|Spawning: |SERENITY COMMAND LINE|^\[?[^\]]*\]? ?-{5,}$|Progress: resolved|Configuration hints|more similar hints|Remove (from ignore|redundant)|0 errors?\b|\b0 failed\b|no errors)/i;
 const cmdEcho = /^(\$ |> |\. \w)/; // echoed commands, not results
 
+// TS2305/TS2459/TS2724: a symbol imported from another module isn't exported by it.
+const missingExport = /error (TS2305|TS2459|TS2724): (?:Module )?'"?([^'"]+)"?' .*?'([^']+)'/;
+const missing = new Map();
+
 const hits = new Set();
 let lastStep = '';
 let failedStep = '';
@@ -32,6 +36,8 @@ lines.forEach((line, i) => {
 	if (/^\$ /.test(line)) lastStep = line.slice(2);
 	const failedTask = line.match(/^\s*Failed:\s+(\S+)/) ?? line.match(/ERROR\s+(\S+#\S+): command/);
 	if (failedTask?.[1]) failedTasks.add(failedTask[1]);
+	const m = line.match(missingExport);
+	if (m?.[2] && m[3]) missing.set(m[2], new Set([...(missing.get(m[2]) ?? []), m[3]]));
 	if (noise.test(line) || cmdEcho.test(line)) return;
 	if (!(fail.test(line) || auditRow.test(line))) return;
 	if (!failedStep) failedStep = lastStep;
@@ -49,6 +55,10 @@ if (hits.size === 0) process.exit(0);
 const parts = [failedTasks.size ? `task(s) ${[...failedTasks].join(', ')}` : '', failedStep ? `step \`${failedStep}\`` : ''].filter(Boolean);
 const header = [`FAILED: ${parts.join(' | ') || 'see lines below'}`];
 if (file) header.push(`full log: ${file}`);
+if (missing.size) {
+	const what = [...missing].map(([mod, names]) => `${[...names].join(', ')} from ${mod}`).join('; ');
+	header.push(`hint: re-export every cross-package type from <pkg>/src/index.ts (missing: ${what})`);
+}
 const body = [...hits].sort((a, b) => a - b).map((i) => lines[i] ?? '');
 const out = [...new Set([...header, ...body])].map((l) => (l.length > MAX_WIDTH ? `${l.slice(0, MAX_WIDTH)}…` : l));
 const shown = out.slice(0, MAX_LINES - 1);
