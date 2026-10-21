@@ -1,0 +1,44 @@
+{
+  "baseline_source": "https://github.com/ECFMG/axc/blob/df-oai-0-b-out/evaluation-run-record.md",
+  "baseline_record_commit": "650d20441585391460a65b8c9ddbece43b6b8ace",
+  "baseline_starting_commit": "cd44fba54579483058c1dbff52696a10b1745eff",
+  "current_branch": "df-oai-4-b-out",
+  "current_implementation_commit": "c8a46229631381fc609e609feb9cefa3bb7abfd0",
+  "current_starting_commit": "9c890d75784ea7a18fe0c192cfacfdcdaa1ef111",
+  "model_both": "gpt-6.1-sol; medium reasoning",
+  "baseline_scope": "Inspect, strengthen, and validate a starting checkout that already implemented Tasks A and B. No implementation subagents.",
+  "current_scope": "Implement Task B and required course search from a checkout without either feature. Includes investigator and reviewer turns.",
+  "baseline_usage": {
+    "input_tokens": 2436264,
+    "cached_input_tokens": 2370176,
+    "output_tokens": 12768,
+    "reasoning_output_tokens": 1966,
+    "total_tokens": 2449032,
+    "cache_write_input_tokens": 0
+  },
+  "current_usage": {
+    "input_tokens": 7056935,
+    "cached_input_tokens": 6844544,
+    "output_tokens": 39811,
+    "reasoning_output_tokens": 10464,
+    "total_tokens": 7096746
+  },
+  "token_difference_current_minus_baseline": 4647714,
+  "token_ratio_current_over_baseline": "2.897775937594935468380976647",
+  "baseline_estimated_cost_usd": "0.4968736",
+  "current_estimated_cost_usd": "1.5073464",
+  "estimated_cost_ratio_current_over_baseline": "3.033661679751147978077321878",
+  "estimated_cost_difference_usd": "1.0104728",
+  "rate_source": "Same user-supplied pricing assumptions; not actual billing.",
+  "matched_comparison": false,
+  "savings_claim_supported": false,
+  "mismatch_reasons": [
+    "Different starting source states: baseline already implemented features; current run did not.",
+    "Different work performed: strengthening/validation versus feature implementation.",
+    "Different actor usage: baseline has no implementation subagents; current includes two subagent turns.",
+    "Validation procedures and test coverage differ.",
+    "No frozen cache conditions, paired repetitions, or predeclared matched experiment."
+  ],
+  "auxiliary_usage_limit": "Automatic approval-review model token counters, if any, are not exposed in either native-session account and remain unmeasured.",
+  "rubric_implication": "Reference baseline identified. A matched efficiency comparison is still absent; efficiency remains null and overall /30 is unassigned under rubric-policy.json. Baseline 26/30 self-assessment uses a scored efficiency category without matched evidence and is not normalized to this policy."
+}

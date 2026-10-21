@@ -26,7 +26,7 @@
 | Elapsed Time | 0:14:53.346000 (original task through task_complete) |
 | Number of Human Interventions / Redirects | 1 source-branch clarification during work |
 | Reviewer Notes | Resolved email-format validation and stale documentation findings. See linked review findings and validation evidence. |
-| Final Rubric Score | 23/25 across five assessed categories; overall /30 UNASSIGNED because matched efficiency comparison is missing |
+| Final Rubric Score | 23/25 across five assessed categories; overall /30 UNASSIGNED because a matched implementation comparison is missing; operator-designated reference baseline is documented below |
 | Recommendation | Continue for sample evaluation; conduct matched comparison before efficiency scoring or savings claims |
 
 Original Task B usage complete through **2026-10-21T13:08:07.997Z** (2026-10-21 09:08:07 EDT), including its final assistant response. This follow-up turn is excluded.
@@ -39,7 +39,7 @@ Original Task B usage complete through **2026-10-21T13:08:07.997Z** (2026-10-21 
 
 Projected estimate: 2,000,000 tokens. Assumptions: 25–40 calls, 45k–65k input per call, 10k–20k output overall. Estimate timing exception is disclosed in the completion report.
 
-All requested original-task token counters are measured. Both subagent final responses and the original main final response are included. Follow-up usage is excluded. `usage.json` contains source logs, boundaries, and per-actor counters.
+Original main and explicit subagent native-session counters are measured. Automatic tool-side approval-review model counters, if any, are unexposed and unmeasured. Both subagent final responses and the original main final response are included. Follow-up usage is excluded. `usage.json` contains source logs, boundaries, and per-actor counters.
 
 ## Rubric assessment
 
@@ -84,3 +84,27 @@ Cached input is not charged again as uncached input; reasoning output is already
 - [Implementation patch](apps/docs/static/evaluation/task-b/changes.patch)
 
 The evidence directory also retains baseline failures, lint/build/typecheck/architecture/docs logs, independent course-oracle results, patch verification, and original source ZIP. No raw Codex conversation/JSONL logs, secrets, environment files, dependencies, or generated deployment bundles are published. Source-log paths and turn IDs in usage.json identify local measurement provenance.
+
+## Operator-designated baseline comparison
+
+Dane Fortun identified [baseline evaluation record](https://github.com/ECFMG/axc/blob/df-oai-0-b-out/evaluation-run-record.md) as the baseline. Its record was read at commit `650d20441585391460a65b8c9ddbece43b6b8ace` and its source and usage snapshot are retained with this evaluation. This establishes a reference baseline; it does not make the runs a controlled matched experiment.
+
+| Measure | Baseline df-oai-0-b-out | This run df-oai-4-b-out |
+| --- | ---: | ---: |
+| Recorded input tokens | 2,436,264 | 7,056,935 |
+| Cached input, included | 2,370,176 | 6,844,544 |
+| Output tokens | 12,768 | 39,811 |
+| Reasoning output, included | 1,966 | 10,464 |
+| Total measured native tokens | 2,449,032 | 7,096,746 |
+| Estimated cost at supplied rates | $0.4968736 | $1.5073464 |
+| Explicit implementation subagent turns | 0 | 2 |
+| Starting source | Already implemented Task A and Task B | Neither feature implemented |
+| Work performed | Inspect, strengthen, validate | Implement required features, validate |
+
+Descriptively, this run recorded **2.90 times the tokens** and **3.03 times the estimated cost**, or **4,647,714 more tokens** and **$1.0104728 more estimated cost**. These figures show no absolute token/cost reduction. They do not isolate harness or model efficiency because starting source, work performed, actor counts, validation procedures, and cache conditions differ. No paired repetitions were performed.
+
+Both use gpt-6.1-sol with medium reasoning. Original final responses are included in both recorded native usage totals; follow-ups are excluded. This run includes both explicit subagent turns. Automatic approval-review model counters, if incurred, are not exposed and remain unmeasured for both runs; neither rate-based estimate is actual billing.
+
+The baseline reports a 26/30 assistant self-assessment, including 2/5 efficiency despite no matched comparison. This run retains the supplied policy's explicit missing-comparison rule rather than comparing unlike score denominators: **23/25 assessed; efficiency unscored; overall /30 unassigned**. A matched implementation experiment remains the assessment blocker, not an implementation blocker.
+
+Supporting evidence: [comparison data](apps/docs/static/evaluation/task-b/baseline-comparison.json), [baseline record snapshot](apps/docs/static/evaluation/task-b/baseline-evaluation-record.md), and [baseline usage snapshot](apps/docs/static/evaluation/task-b/baseline-usage.json).

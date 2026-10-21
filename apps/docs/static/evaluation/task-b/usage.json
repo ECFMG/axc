@@ -163,5 +163,17 @@
     "total_tokens": 1716293
   },
   "final_response_accounted_for": true,
-  "status": "complete_original_task_including_final_response"
+  "status": "complete_original_task_including_final_response",
+  "completeness_scope": "Original main Codex turn plus both explicit implementation subagent turns, including final responses. Follow-ups excluded. Automatic approval-review model counters, if incurred, are not exposed and remain unmeasured.",
+  "auxiliary_usage": {
+    "status": "not_exposed_in_native_session_logs",
+    "unmeasured_if_incurred": [
+      "input_tokens",
+      "cached_input_tokens",
+      "output_tokens",
+      "reasoning_output_tokens",
+      "total_tokens"
+    ],
+    "note": "Native main and explicit subagent accounting is complete; automatic tool-side approval-review model usage, if incurred, is unavailable and not included in recorded totals or cost estimate."
+  }
 }

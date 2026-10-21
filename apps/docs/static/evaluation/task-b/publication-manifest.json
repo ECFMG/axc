@@ -12,11 +12,14 @@
     "architecture.log": "7584505d0d589f8d752005a573da60034dba22dd36d610648c55bb67be0321d9",
     "axc-task-b-source.zip": "fa3204fbefaff3e69ae79ded87f88b75ae1030144af66db705915bb83aaae875",
     "baseline-build.log": "1d3a80e8a2ebb9213480ca060278c29878a4d826255d84b74cccfd0b7e21b025",
+    "baseline-comparison.json": "5e7897fb64870681b59e8c6cd62bf219ec97bee0574c2ab8767e92e2420bc963",
+    "baseline-evaluation-record.md": "8d4bc21b28d6a65291a00291b1fb6b420db0e52c07018e9a068d5c305b7a7d27",
     "baseline-test.log": "d3f1cb580cf734d74fd12796ede6fa7f63239421a11782a26b28842c623b235b",
+    "baseline-usage.json": "a5b1680fbde56c8933d211986a6cd8871507051a493a269b5cda88edbdf08b7b",
     "build.log": "9486b0e124a77a52d6248650595f22cd4a4e8bb6e89e4b832df52e51fe651016",
     "changes.patch": "b2f1dbe50d834ac453aadb94c162309494f18b21085fe2e89125b676637476cb",
-    "completion-report.md": "cce6e1eb6acb083a4cfef2a2be8a8d01feeb565f2c31f320241795e5ff4ba3ed",
-    "cost-estimate.json": "139e5ea79eb284e560ba49840f57b3d167acf7b54f931eed90e3d3b0452bd25c",
+    "completion-report.md": "395332e225cf992fa165b31528484088063b39bfb2bf20db3ba382e4a7e5631c",
+    "cost-estimate.json": "a089eb5969d9d24ccf66193b9ddbdc22c66137d8da6d556904a8e585bd64511c",
     "course-oracle.log": "d71a1f5374bd36ea2b62f4cceb7c009f63464ab5242aded017ef9b2811ab82a4",
     "deliverables.json": "ee9fed952bdfa39a9dab417580c7f522bd6083c38426851b555fd403912da4ba",
     "dependency-install.log": "f6e328db25643790e8b35ff98ac93fa9e19d752851181deaac9ad5c2b66eb6a6",
@@ -36,11 +39,11 @@
     "rate-card.png": "a615d8fa12231d822a5cd99b170dcee7e1106b7a90d8b42426f919bc5f3db765",
     "recover-usage.py": "1cdf30bdb59dc34dc619fdedab4a52e5cd0a9cc1b2406c9d1ce9e98c81f8efe6",
     "review-findings.md": "3612dff3d7748aa66c18f539b3edac09df31d6481d8179fd54fb42198e3c27d7",
-    "rubric-assessment.json": "9be49250390491e41951e6d0e41d11bdb6e67c0b5541237a8f128613ae4ab3cf",
+    "rubric-assessment.json": "2f106c0c3e1f005df6a2784c942a73435c5556635df0b2b2ac8419fa52363098",
     "rubric-policy.json": "26dc24cfcecbbcd02e705c971cb78dfc1188e510819daefc3c31f388f0b0a403",
     "test.log": "ea4fb7bfbdc84758daaab86f56076b8c227bedb7df4cecdc880c4fda46ab9aba",
     "typecheck.log": "4f93253958a8437d6ce9cf492fc443685f428e3cb5ce04079b6360a1aa28ce4f",
-    "usage.json": "6ed82bcba81b0e04b110fa629b2e384a5f3876fa85f7cc8fd273918255a0605f",
+    "usage.json": "e1e459f0c011a93159dae9ae9f72562eb4efe57efe269eb9008014bb499c967b",
     "validation.json": "5d6d2bc6e971c8080a79da32f0f7851e660c4f93d030a4610591355bc2d8c4d9"
   },
   "publication_validation": {
@@ -49,5 +52,7 @@
     "local_report_links": "passed",
     "evidence_hashes": "passed",
     "credential_pattern_scan": "no matches"
-  }
+  },
+  "baseline_reference_commit": "650d20441585391460a65b8c9ddbece43b6b8ace",
+  "matched_comparison": false
 }

@@ -26,5 +26,6 @@
   },
   "estimated_total_usd": "1.5073464",
   "estimated_total_usd_rounded": "1.51",
-  "method": "Cumulative per-actor ending counters minus starting counters. Uncached input = input minus cached input; cached input priced once; reasoning not added again; zero cache writes confirmed from cumulative deltas. Per-call token_count last_token_usage inspected solely for threshold applicability."
+  "method": "Cumulative per-actor ending counters minus starting counters. Uncached input = input minus cached input; cached input priced once; reasoning not added again; zero cache writes confirmed from cumulative deltas. Per-call token_count last_token_usage inspected solely for threshold applicability.",
+  "auxiliary_usage_limit": "Automatic tool-side approval-review model usage, if any, is unexposed and excluded from this native-session-based estimate."
 }

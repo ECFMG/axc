@@ -59,9 +59,10 @@
       "maximum": 5,
       "evidence": [
         "usage.json",
-        "cost-estimate.json"
+        "cost-estimate.json",
+        "baseline-comparison.json"
       ],
-      "rationale": "Original actor accounting is complete, but no predeclared matched comparison exists. Supplied policy requires missing comparison to remain unscored; forecast error and cheap cached input do not prove efficiency or savings."
+      "rationale": "The designated baseline already implemented both features; this run implemented them from a different starting source. Absolute token/cost figures are higher for this run. No matched experiment isolates efficiency, so supplied missing-comparison rule still requires an unscored category."
     },
     {
       "name": "Developer workflow fit",
@@ -83,6 +84,7 @@
   "overall_maximum": 30,
   "status": "incomplete_assessment_missing_matched_efficiency_comparison",
   "overall_score_rule": "Sum six evidence-backed reviewer scores only when all are present. Otherwise report incomplete assessment, never a complete 28/30 or 30/30.",
-  "remaining_assessment_blocker": "No matched efficiency/cost comparison. Overall /30 score cannot be honestly assigned under the supplied policy.",
-  "implementation_blockers": []
+  "remaining_assessment_blocker": "Operator-designated reference baseline is now documented, but starting source and work differ. A matched implementation efficiency/cost comparison remains absent; overall /30 remains unassigned.",
+  "implementation_blockers": [],
+  "reference_baseline": "baseline-comparison.json"
 }

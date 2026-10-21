@@ -1,0 +1,68 @@
+{
+  "session_id": "01a15b09-5443-7430-aef9-062737695522",
+  "turn_id": "01a15b09-a402-7a12-b21a-ed3da75181d1",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/20/rollout-2026-10-20T16-38-20-01a15b09-5443-7430-aef9-062737695522.jsonl",
+  "task_started_at": "2026-10-20T20:38:40.907Z",
+  "scope": "Inspection, planning, implementation, validation, reporting and original final response; exclude follow-up turns.",
+  "start": {
+    "timestamp": "2026-10-20T20:38:36.352Z",
+    "cumulative": {
+      "input_tokens": 37824,
+      "cached_input_tokens": 23040,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 28,
+      "reasoning_output_tokens": 0,
+      "total_tokens": 37852
+    }
+  },
+  "projection": {
+    "total_tokens_range": [
+      800000,
+      1800000
+    ],
+    "assumptions": "Full feature implementation, regression checks, several validation passes; estimate only."
+  },
+  "complete": true,
+  "missing_usage": [],
+  "subagents": [],
+  "end": {
+    "timestamp": "2026-10-20T20:44:41.120Z",
+    "cumulative": {
+      "input_tokens": 2474088,
+      "cached_input_tokens": 2393216,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 12796,
+      "reasoning_output_tokens": 1966,
+      "total_tokens": 2486884
+    }
+  },
+  "measured_usage": {
+    "input_tokens": 2436264,
+    "cached_input_tokens": 2370176,
+    "output_tokens": 12768,
+    "reasoning_output_tokens": 1966,
+    "total_tokens": 2449032,
+    "cache_write_input_tokens": 0
+  },
+  "captured_at": "2026-10-20T20:46:13.767252+00:00",
+  "status": "complete",
+  "accounting_notes": [
+    "Cumulative ending total_token_usage minus cumulative pre-task total_token_usage; snapshots are not summed.",
+    "Cached input is included in input; reasoning output is included in output.",
+    "No subagents used.",
+    "Starting counters are the last token_count before the original task_started event. Prior chat turn excluded.",
+    "Follow-up task_started is a strict upper boundary; follow-up turn usage is excluded."
+  ],
+  "auxiliary_usage": {
+    "status": "not_exposed_in_primary_session_log",
+    "note": "No implementation subagents used. Tool-side automatic approval-review usage, if incurred, is outside the available primary cumulative counters and is unmeasured.",
+    "unmeasured_auxiliary_counters": [
+      "input_tokens",
+      "cached_input_tokens",
+      "output_tokens",
+      "reasoning_output_tokens",
+      "total_tokens"
+    ]
+  },
+  "completeness_scope": "Primary Codex session/model usage for the original implementation turn, including its final response. Follow-up excluded. Auxiliary tool-side model usage is not exposed."
+}

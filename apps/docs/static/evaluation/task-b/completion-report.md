@@ -79,3 +79,7 @@ Original Task B usage complete through **2026-10-21T13:08:07.997Z** (2026-10-21 
 ## Final rubric publication
 
 Human operator: Dane Fortun. Retrospective assistant self-assessment: 23/25 across five assessed categories. Efficiency remains unscored because the supplied policy requires a matched comparison; overall /30 remains unassigned. See rubric-assessment.json and the root evaluation record for evidence and rationale.
+
+## Operator-designated baseline
+
+The user-designated df-oai-0-b-out baseline records 2,449,032 native tokens and an estimated $0.4968736, versus this run’s 7,096,746 tokens and estimated $1.5073464. This is 2.90 times the tokens and 3.03 times the estimated cost. Its starting checkout already implemented Tasks A and B, whereas this run started without them. The comparison is descriptive and does not establish matched efficiency or savings. See baseline-comparison.json and the root evaluation record for preserved source snapshots and scope differences.
