@@ -16,7 +16,7 @@ apps/docs/docs/*.md + sidebars.ts Docusaurus; new page id must be in sidebars.ts
 packages/axc/domain               entities/VOs, no infra imports
 packages/axc/persistence          repo contracts (+ in-memory)
 packages/axc/service-mongoose     mongoose/mongodb only
-packages/axc/application-services ApplicationServices + buildApplicationServicesFactory (src/index.ts); only pkg with vitest
+packages/axc/application-services ApplicationServices + factory (src/index.ts; health inline); only pkg with vitest
 packages/axc/rest                 Hono createRestApp + restHandlerCreator (src/index.ts)
 packages/axc-verification/*       archunit-tests (rules only — don't add tests) · acceptance-api (Serenity/Cucumber)
 packages/cellix/*                 vendored, reuse
@@ -24,25 +24,99 @@ packages/cellix/*                 vendored, reuse
 
 Each package's public API = `src/index.ts`. Imports use `.ts` extensions (`./x.ts`).
 
-## Request flow (today: healthcheck only)
+## Query validation (REST boundary)
 
-1. `apps/api/src/index.ts` — infra → context → `buildApplicationServicesFactory` → `registerAzureFunctionHttpHandler('health', { route: 'health', … }, restHandlerCreator)`.
-2. `packages/axc/rest/src/index.ts` — `createRestApp(factory)`: handler → `await factory.forRequest(Authorization?)` → service call. Query via `c.req.query('k')`; respond `c.json(body, status)`. The full query string reaches Hono intact.
-3. `packages/axc/application-services/src/index.ts` — add the capability to `ApplicationServices` + the `forRequest` object.
+- Collect every problem into `details: [{ field, message }]`, then return one 400 (code/shape per task).
+- Integers: digits only → `Number.isSafeInteger` → range (huge values are 400, never `Infinity`).
+- `?x=` (empty) is present and invalid, not absent.
+- Enum values: the feature's exported `as const` array (flat domain constant; app-services has no `@axc/domain` dep); REST imports it, never retypes.
 
-## Where new code goes (passes test:arch as-is)
+## Feature skeleton (passes test:arch as-is; fill `<feature>` `<Feature>` `<Thing>` `<thing>` `<ID>`)
 
-- Read-only feature logic/data: `application-services/src/<feature>.ts` (filter/sort/slice, seed arrays OK here). `src/index.ts` only imports + wires it. **Not** `src/contexts/` (that path triggers DataSources conventions you don't need).
-- HTTP route: `rest/src/features/<feature>.ts` exporting e.g. `register<Feature>Routes(app, factory)`; `rest/src/index.ts` calls it. Only `/health` may be defined inline in `rest/src/index.ts`.
-- Banned in `application-services/src/index.ts` only: `.filter(` `.sort(` `.slice(`, `fixture|seed|sample|mock… = [{` literals.
-- Layering: no cycles; domain ↛ persistence/service-mongoose/application-services/rest; application-services and rest ↛ service-mongoose; no `mongoose` import in application-services.
+`application-services/src/<feature>.ts` — logic + data (filter/sort/slice/seed OK here; **not** `src/contexts/`):
+```ts
+export const <thing>Kinds = ['a', 'b'] as const;
+export type <Thing>Kind = (typeof <thing>Kinds)[number];
+export interface <Thing> { id: string; kind: <Thing>Kind }
+export interface <Feature>Query { kind?: <Thing>Kind; limit: number }
+const <thing>s: readonly <Thing>[] = [{ id: 't1', kind: 'a' }, { id: 't2', kind: 'b' }];
+export const list<Thing>s = (q: <Feature>Query): <Thing>[] => <thing>s.filter((t) => q.kind === undefined || t.kind === q.kind).slice(0, q.limit);
+```
+`application-services/src/index.ts` — imports + wiring only (no `.filter(` `.sort(` `.slice(` or `seed|fixture|sample|mock… = [{` here):
+```ts
+import { list<Thing>s, type <Feature>Query, type <Thing> } from './<feature>.ts';
+export { <thing>Kinds, type <Feature>Query, type <Thing>Kind } from './<feature>.ts';
+// ApplicationServices: <feature>: { list(q: <Feature>Query): <Thing>[] };   forRequest object: <feature>: { list: list<Thing>s },
+```
+`rest/src/features/<feature>.ts` (only `/health` stays inline in `rest/src/index.ts`):
+```ts
+import { type ApplicationServicesFactory, type <Feature>Query, type <Thing>Kind, <thing>Kinds } from '@axc/application-services';
+import type { Hono } from 'hono';
+
+interface Detail { field: string; message: string }
+const isKind = (v: string): v is <Thing>Kind => (<thing>Kinds as readonly string[]).includes(v);
+const intParam = (raw: string | undefined, field: string, [min, max, fallback]: [number, number, number], details: Detail[]): number => {
+	if (raw === undefined) return fallback;
+	const n = /^\d+$/.test(raw) ? Number(raw) : Number.NaN;
+	if (Number.isSafeInteger(n) && n >= min && n <= max) return n;
+	details.push({ field, message: `must be an integer ${min}-${max}` });
+	return fallback;
+};
+
+export function register<Feature>Routes(app: Hono, factory: ApplicationServicesFactory): void {
+	app.get('/api/<feature>', async (c) => {
+		const details: Detail[] = [];
+		const limit = intParam(c.req.query('limit'), 'limit', [1, 100, 20], details);
+		const kind = c.req.query('kind');
+		if (kind !== undefined && !isKind(kind)) details.push({ field: 'kind', message: `must be one of ${<thing>Kinds.join(', ')}` });
+		if (details.length > 0) return c.json({ error: '<ERROR_CODE>', details }, 400);
+		const query: <Feature>Query = kind !== undefined && isKind(kind) ? { limit, kind } : { limit };
+		const services = await factory.forRequest(c.req.header('Authorization'));
+		return c.json(services.<feature>.list(query));
+	});
+}
+```
+Mount: `rest/src/index.ts` imports `register<Feature>Routes` from `./features/<feature>.ts` and calls it before `return app`; `apps/api/src/index.ts` adds `.registerAzureFunctionHttpHandler('<feature>', { route: 'api/<feature>', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)`.
+
+`acceptance-api/src/features/<feature>.feature` + `src/step-definitions/<feature>.steps.ts` (steps are global: define each pattern once):
+```gherkin
+Feature: <Feature>
+
+  @<ID>-AC1
+  Scenario: <ID>-AC1 filters by kind
+    When the client requests "/api/<feature>?kind=a"
+    Then the response status is 200
+    And every <thing> has kind "a"
+
+  @<ID>-AC2
+  Scenario: <ID>-AC2 reports every invalid param at once
+    When the client requests "/api/<feature>?limit=x&kind="
+    Then the response status is 400
+    And the error lists 2 details
+```
+```ts
+import { Then, When } from '@cucumber/cucumber';
+import { containItemsWhereEachItem, Ensure, equals, isGreaterThan, property } from '@serenity-js/assertions';
+import { actorCalled } from '@serenity-js/core';
+import { GetRequest, LastResponse, Send } from '@serenity-js/rest';
+import { resolved, responseBody } from '../questions.ts';
+
+const actor = () => actorCalled('API client');
+
+When('the client requests {string}', (path: string) => actor().attemptsTo(Send.a(GetRequest.to(path))));
+Then('the response status is {int}', (status: number) => actor().attemptsTo(Ensure.that(resolved(LastResponse.status()), equals(status))));
+Then('every <thing> has kind {string}', (kind: string) =>
+	actor().attemptsTo(Ensure.that(responseBody<{ kind: string }[]>(), property('length', isGreaterThan(0))), Ensure.that(responseBody<{ kind: string }[]>(), containItemsWhereEachItem(property('kind', equals(kind))))),
+);
+Then('the error lists {int} details', (n: number) => actor().attemptsTo(Ensure.that(responseBody<{ details: unknown[] }>(), property('details', property('length', equals(n))))));
+```
+
+Layering: no cycles; domain ↛ persistence/service-mongoose/application-services/rest; application-services and rest ↛ service-mongoose; no `mongoose` import in application-services.
 
 ## Facts (pre-answered — don't hunt)
 
-- Health is inline in `application-services/src/index.ts`; there is no `contexts/`.
 - **Docs**: `apps/docs/docs/<feature>.md` — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
 - **knip** (`knip.json`): exports from non-entry files must be imported somewhere — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
-- **Hono** (`hono/dist/types/request.d.ts`): `c.req.query('k'): string | undefined` · `c.req.query(): Record<string,string>` · `c.req.queries('k'): string[] | undefined`. Prefer per-key `query('k')` (no TS4111).
 - **Lockfile**: on it already — `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter`, vitest (application-services), `@serenity-js/*`, `@cucumber/cucumber`, `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`. Anything else = lockfile churn.
 
 ## TypeScript (`packages/cellix/config-typescript/tsconfig.base.json`)
@@ -53,9 +127,9 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 
 ## Tests
 
-- **Assert properties**: every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
+- **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
 - **Unit**: vitest only in `application-services` (`vitest.config.ts` = `mergeConfig(nodeConfig)` from `@cellix/config-vitest`; `test: vitest run --silent --reporter=dot`). `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
-- **Acceptance** (`packages/axc-verification/acceptance-api`): `cucumber.yaml` loads `src/features/**/*.feature` + `src/step-definitions/**/*.steps.ts`. `world.ts` gives actors `CallAnApi.at(<host origin>)` → relative paths `GetRequest.to('/api/<route>?k=v')`. Steps: `actorCalled('API client')`, `Send.a(...)`, `Ensure.that(responseBody<T>(), equals(v))` / `actor.answer(responseBody<T>())` and `resolved(q)` from `src/questions.ts` — copy `step-definitions/healthcheck.steps.ts`. Host port from `acceptance-port.ts`; runs only in the final gate.
+- **Acceptance**: skeleton above; `cucumber.yaml` loads `src/features/**` + `src/step-definitions/**/*.steps.ts`; relative paths hit the host (port from `acceptance-port.ts`); runs only in the final gate.
 - **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; the evidence table reuses ids.
 
 ## Biome (`biome.json`)
