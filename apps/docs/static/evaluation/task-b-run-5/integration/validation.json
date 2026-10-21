@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "validated_implementation_commit": "cee180cb8a45deff21d2d2e405486e8ca7d15a6b",
+  "publication_parent": "f737e7c36e8576ddf3c65471250c4a672c702c93",
+  "validated_at": "2026-10-21T15:16:07.388776+00:00",
+  "scope": "Integrated application source and branch locked dependencies. Final report/evidence commit changes only root evaluation record and static evidence.",
+  "install": {
+    "command": "pnpm install --frozen-lockfile --offline --ignore-scripts",
+    "result": "pass",
+    "pnpm": "11.11.0",
+    "lockfile_modified": false
+  },
+  "tests": {
+    "command": "pnpm exec turbo run test test:acceptance --force",
+    "result": "pass",
+    "tasks_passed": 26,
+    "tasks_cached": 0,
+    "vitest_passed": 550,
+    "node_passed": 105,
+    "total_passed": 655,
+    "live_api_scenarios_passed": 4
+  },
+  "architecture": {
+    "result": "pass",
+    "checks_passed": 9
+  },
+  "lint": {
+    "result": "pass",
+    "files_checked": 223
+  },
+  "typecheck": {
+    "result": "pass",
+    "tasks_passed": 21
+  },
+  "build": {
+    "result": "pass",
+    "tasks_passed": 18
+  },
+  "docs_direct_build": {
+    "result": "pass"
+  },
+  "initial_failure": "Imported implementation notes referenced an absent historical courses-validation.md. Replaced stale historical session statements with current evaluation provenance; full build and direct docs build then passed.",
+  "protected_changes": {
+    "root_dependencies": false,
+    "root_lockfile": false,
+    "authentication": false,
+    "security_scripts": false,
+    "cellix_vendor": false
+  },
+  "delivery_source_alignment": "Delivered feature code copied verbatim; implementation notes corrected for integrated publication. Superseded enrollment modules and test wiring removed.",
+  "not_run": [
+    "Dedicated security scanner",
+    "Independent human review"
+  ],
+  "usage_note": "Original task usage/cost remains frozen. Publication, comparisons and this integration follow-up are excluded; no original-usage total is presented as a complete cost of all follow-up work."
+}

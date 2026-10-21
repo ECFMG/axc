@@ -1,0 +1,56 @@
+{
+  "assessment_type": "Final retrospective assistant self-assessment of integrated source; not independent human approval",
+  "policy_source": "Supplied v7.12.02 RUBRIC_POLICY.json",
+  "categories": [
+    {
+      "name": "Functional correctness",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "A course behavior preserved; B creation, validation, duplicates, retrieval, filtering, all transition pairs, audit and error cases exercised. 59 enrollment tests and live host workflow pass."
+    },
+    {
+      "name": "Tests and validation",
+      "score": 4,
+      "maximum": 5,
+      "rationale": "Integrated source passes 655 uncached tests, 4 live API scenarios, 9 architecture checks, lint/typecheck/build/docs and frozen install. No independent course oracle or frozen controller eight-gate protocol was executed in this run."
+    },
+    {
+      "name": "Architecture and codebase alignment",
+      "score": 4,
+      "maximum": 5,
+      "rationale": "Existing factory composition and fixture placement preserved, no dependencies; architecture checks pass. Model, map repository and transition rules are together in application-services; no fresh independent architecture review or separate domain/persistence mapper package."
+    },
+    {
+      "name": "Security and guardrail compliance",
+      "score": 5,
+      "maximum": 5,
+      "rationale": "Original 12-file change set stayed inside allowed paths; no authentication, Cellix, production, external integration or dependency changes. Input validation and detached response data tested. Dedicated security scan not performed; no assertion of vulnerability-free code."
+    },
+    {
+      "name": "Context/token/cost efficiency",
+      "score": 3,
+      "maximum": 5,
+      "rationale": "Original Task B run recorded 3,087,654 tokens and estimated USD 0.6833944 versus 5,317,215 and USD 1.2530748 in df-oai-4-b-out: 41.93% fewer tokens and 45.46% lower cost. Same declared Task A seed, model/reasoning and supplied harness version. Reviewer usage, validation and workflow differed; no isolated causal savings claim or matched-experiment certification."
+    },
+    {
+      "name": "Developer workflow fit",
+      "score": 4,
+      "maximum": 5,
+      "rationale": "Actual publication branch source is now integrated and validated against its frozen dependencies; code, record and source manifest identify one implementation commit. Full native original-turn usage is complete. Independent review remains absent."
+    }
+  ],
+  "assessed_subtotal": 25,
+  "assessed_maximum": 30,
+  "overall_score": 25,
+  "overall_maximum": 30,
+  "status": "Final retrospective self-assessment: 25/30 (83.33%); integrated implementation validation passed",
+  "missing_evidence": [
+    "Independent human reviewer judgment",
+    "Predeclared controlled comparison for causal efficiency conclusions"
+  ],
+  "recommendation": "Candidate for independent sample review; no production-readiness or causal efficiency claim.",
+  "framework": "Retrospective six-category assessment requested in follow-up; distinct from strict predeclared matched-experiment policy",
+  "validated_implementation_commit": "cee180cb8a45deff21d2d2e405486e8ca7d15a6b",
+  "strict_policy_overall_score": null,
+  "strict_policy_note": "The archived predeclared-experiment policy still lacks matched-experiment evidence. This retrospective score uses a disclosed broader observational efficiency basis, rather than claiming compliance with that policy."
+}

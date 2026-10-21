@@ -1,0 +1,18 @@
+{
+  "docs-build.log": "b2fd08e10c4ed0b311b950605d31c98292a2a539388ab00d52770383e9c123e0",
+  "final-rubric.json": "fe133ad9db01dd63918dba1f20d1997d48d7163948d069db1d3c1076157c9a8b",
+  "lint.log": "66c01a28c161ec21f6902bb1f0948dc3be04b4c44b5a4bc61790c361fbad8770",
+  "architecture.log": "d3d45726edafec673b55cc8bad05ff7b3aed92bb01ec8673787817efa5687c54",
+  "record-before-integration.md": "a6f43d731f06abdd027c5d62c172a0f77f8ce5abdf2feba37526a2c73c604ac3",
+  "typecheck.log": "41bfd10976926d2a2d9ede72dafab8d09168c704bc7a0230cfef99e47a96e7ee",
+  "integration-inventory.json": "ca84b46a3ef70a9535731cd15e6be50b55519e8729c632442e6806fbabddba41",
+  "build-final.log": "131f3a169928a501af8d46e180b66fbbf8cf93b0d197f14fae6c4e370049d76f",
+  "validated-source-tree.txt": "ce550d126b252d54ee1e34b9c55edb03bf73b1ecd684e02fb6c85004d881e749",
+  "reference-record.md": "a30381c86078a110037b28730bd0fe31c83ad33ec94c670b5241881178a09db5",
+  "validation.json": "d0a823d05a67dc3eca467a24a835b452c89a23f5814cbf0652b1d4f9ceac4ed5",
+  "tests.log": "1c20dbfc2d6ac0e9bb237eb2b5eb4d4f2475632f5bafb14a99f1ba1661d60624",
+  "retrospective-comparison.json": "9d69f79f582b7076c31a3d42c38e98a6ee43b5e27746cb30e4ebd8b2c7c2cbc5",
+  "install.log": "9103be90307f7f09e8a3e3f32f472728b54993f0d2d663d68977ee2582d9dbab",
+  "publication-summary.json": "2bb48ffb10b92c086ff7886be36da6edd57d5f78119ea405d04cfec432a53b23",
+  "build.log": "64dc8bf13c1a7cd7f6ef8bca2d09354288c3bf0081fe175fdad78991301a83ba"
+}

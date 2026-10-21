@@ -1,0 +1,24 @@
+{
+  "reference_branch": "df-oai-4-b-out",
+  "reference_read_commit": "2d52e02dea636d56da2b9ffc746bf1a0725a5446",
+  "reference_record_branch_label_error": "Reference record names df-oai-5-b-out despite being read on df-oai-4-b-out. Values identified by fetched commit and record snapshot, not embedded label.",
+  "common_declared_original_seed": "d6153e2f09645297fc17749a438e7728d9754fe0",
+  "reference_tokens": 5317215,
+  "this_original_task_tokens": 3087654,
+  "fewer_tokens_percent": 41.93099207009685,
+  "reference_estimated_cost_usd": "1.2530748",
+  "this_original_estimated_cost_usd": "0.6833944",
+  "lower_cost_percent": 45.46260127488,
+  "same_reported_settings": [
+    "gpt-6.1-sol",
+    "medium reasoning",
+    "supplied v7.12.02 harness inspected, not provider-dispatched"
+  ],
+  "differences": [
+    "Reference includes reviewer agent; current original task uses no subagents",
+    "Validation coverage and architecture differ",
+    "Cache/experimental conditions not frozen; retrospective comparison",
+    "Original source-seed measurements exclude integration follow-up in both cost figures"
+  ],
+  "interpretation": "Descriptive comparison supports qualified retrospective assessment; does not isolate a causal harness/model effect."
+}

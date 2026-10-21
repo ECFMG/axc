@@ -1,4 +1,4 @@
-# Evaluation Run Record — Task B, run 5
+# Evaluation Run Record — Task B, run 5 (integrated publication)
 
 | Field | Value |
 | --- | --- |
@@ -13,7 +13,7 @@
 | Run Type | Seeded implementation; not a matched harness/model benchmark |
 | Harness Engineering Used | No harness modifications; one main agent; no subagents |
 | Config / Diff Notes | 12 changed/new implementation files within permitted paths; no added dependencies, authentication, Cellix or production changes. Publication evidence added under subsequent explicit user request. |
-| Branch / Commit | Publication branch: df-oai-5-b-out. Measured implementation seed: d6153e2f09645297fc17749a438e7728d9754fe0. Tested source is the linked source ZIP and patch, not the inherited application tree on this publication branch. |
+| Branch / Commit | df-oai-5-b-out; integrated and validated implementation [`cee180c`](https://github.com/ECFMG/axc/commit/cee180cb8a45deff21d2d2e405486e8ca7d15a6b). Original measured seed: d6153e2f09645297fc17749a438e7728d9754fe0. |
 | Requirements Completed / Attempted | Task A A1–A11 preserved; Task B B1–B17 implemented |
 | Acceptance Criteria Passed / Total | A: 12/12; B: 15/15 mapped to tests and documentation inspection; not independent acceptance certification |
 | Tests Passed / Failed | 655 passed, 0 failed; 4/4 live API acceptance scenarios; 9/9 architecture checks. Full uncached run: 26/26 tasks, zero cached. |
@@ -26,14 +26,32 @@
 | Elapsed Time | 0:09:43.932000, original task_started through task_complete |
 | Number of Human Interventions / Redirects | 0 during original implementation turn; this publication follow-up excluded |
 | Reviewer Notes | No independent reviewer. Earlier compile failures and sandbox port restrictions were resolved; retained logs identify intermediate attempts. |
-| Final Rubric Score | Assistant-assessed subtotal **22/25**; overall **/30 unassigned** under supplied policy because efficiency evidence is missing |
-| Recommendation | Continue for sample review; obtain independent review and matched comparison before efficiency scoring or savings claims |
+| Final Rubric Score | **25/30 (83.3%)**, final retrospective assistant self-assessment of integrated source; independent review pending. Strict archived-policy score remains unassigned; methods distinguished below. |
+| Recommendation | Candidate for independent sample review. Integrated branch validation passes; no production-readiness or causal savings claim. |
 
 ## Publication and source provenance
 
 This record supersedes a different run's inherited record on the target branch. That record is retained as [previous branch record](apps/docs/static/evaluation/task-b-run-5/previous-branch-evaluation-run-record.md); its usage, reviewers, comparisons and outcomes are not attributed to this run.
 
-The user requested publication of this run's information and completed deliverables. **This is an evidence publication: the branch's inherited application code is preserved.** Validation below applies to the [completed source ZIP](apps/docs/static/evaluation/task-b-run-5/axc-task-b-completed.zip), built from clean Task A seed `d6153e2f09645297fc17749a438e7728d9754fe0`, and the [Task B patch](apps/docs/static/evaluation/task-b-run-5/task-b.patch). The patch passed `git apply --check` against that seed; archive integrity passed. The original implementation was delivered without any commits as requested at that time.
+The initial publication preserved the inherited application tree while delivering this run's code in a ZIP and patch. The user then explicitly requested integration. That mismatch is now corrected: **the branch contains this run's course and enrollment implementation**, and superseded enrollment modules/test wiring have been removed. Newer root dependency/security changes and unrelated features are preserved.
+
+The integrated application source at [`cee180c`](https://github.com/ECFMG/axc/commit/cee180cb8a45deff21d2d2e405486e8ca7d15a6b) passed a fresh frozen-lockfile install and complete validation on the publication branch's dependencies. See [integration validation](apps/docs/static/evaluation/task-b-run-5/integration/validation.json), [source tree](apps/docs/static/evaluation/task-b-run-5/integration/validated-source-tree.txt), and [integration inventory](apps/docs/static/evaluation/task-b-run-5/integration/integration-inventory.json). The report/evidence follow-up commit does not change that validated application source.
+
+The [original completed source ZIP](apps/docs/static/evaluation/task-b-run-5/axc-task-b-completed.zip) and [original Task B patch](apps/docs/static/evaluation/task-b-run-5/task-b.patch) remain historical artifacts measured on seed `d6153e2`. Original validation and original usage below are retained; integration validation is recorded separately. The pre-integration record is retained [here](apps/docs/static/evaluation/task-b-run-5/integration/record-before-integration.md).
+
+## Integrated branch validation
+
+| Check | Result |
+| --- | --- |
+| Fresh `pnpm install --frozen-lockfile --offline --ignore-scripts` | PASS; pnpm 11.11.0; lockfile unchanged |
+| Full uncached `turbo run test test:acceptance --force` | PASS; 26 tasks, zero cached; 655 tests and 4 live API scenarios |
+| Lint | PASS; 223 files |
+| Typecheck | PASS; 21 tasks |
+| Architecture | PASS; 9 application checks |
+| Workspace build | PASS; 18 tasks |
+| Direct docs build | PASS |
+
+[Integration logs](apps/docs/static/evaluation/task-b-run-5/integration/tests.log) retain the live course, enrollment and health scenarios. The initial docs build found a link to an absent historical validation document; the implementation notes were corrected, and final builds passed. No new dependencies, root lockfile changes, Cellix changes, authentication changes or security-script changes were needed. No dedicated security scan or independent human review is claimed.
 
 The supplied archive contained evaluation-harness Python code and Task A specifications, not the AXC application. The clean AXC checkout alongside the referenced Task B documents supplied the application source. See [implementation report](apps/docs/static/evaluation/task-b-run-5/implementation-report.json) for paths and archive hash.
 
@@ -45,7 +63,7 @@ Enrollment adds POST creation, GET by ID, filtered GET collection, and PATCH sta
 
 The sample map repository, model and transition rules follow the existing fixture/use-case placement in application-services. No new domain/persistence package dependencies or separate mapper package were introduced; mapping to JSON uses detached snapshots. Storage is process-local, resets on restart and provides no cross-worker duplicate coordination. Operator identity follows unauthenticated sample conventions. These are sample limitations, not claims of production readiness.
 
-## Validation
+## Original task validation
 
 | Command | Final result | Evidence |
 | --- | --- | --- |
@@ -101,17 +119,27 @@ Largest recorded per-request input: **106,674 tokens**, so no request exceeded 2
 
 ## Final rubric assessment
 
-Retrospective **assistant self-assessment**, not independent human review. Categories follow the [supplied policy](apps/docs/static/evaluation/task-b-run-5/rubric-policy.json).
+**25/30 (83.3%) — retrospective assistant self-assessment of the integrated implementation.** This uses the six category names with a retrospective observational efficiency assessment, as requested during follow-up. It is not independent human approval and does not claim completion of the archived policy's predeclared matched-experiment requirements.
 
 | Category | Score | Rationale |
 | --- | --- | --- |
 | Functional correctness | 5/5 | A course behavior preserved; B creation, validation, duplicates, retrieval, filtering, all transition pairs, audit and error cases exercised. 59 enrollment tests and live host workflow pass. |
-| Tests and validation | 4/5 | 655 tests and 4 live scenarios pass uncached; lint/typecheck/build/docs and 9 architecture checks pass. The harness-specific frozen eight-gate protocol and independent course oracle were not executed for this run. |
+| Tests and validation | 4/5 | Integrated source passes 655 uncached tests, 4 live API scenarios, 9 architecture checks, lint/typecheck/build/docs and frozen install. No independent course oracle or frozen controller eight-gate protocol was executed in this run. |
 | Architecture and codebase alignment | 4/5 | Existing factory composition and fixture placement preserved, no dependencies; architecture checks pass. Model, map repository and transition rules are together in application-services; no fresh independent architecture review or separate domain/persistence mapper package. |
 | Security and guardrail compliance | 5/5 | Original 12-file change set stayed inside allowed paths; no authentication, Cellix, production, external integration or dependency changes. Input validation and detached response data tested. Dedicated security scan not performed; no assertion of vulnerability-free code. |
-| Context/token/cost efficiency | Unscored /5 | No predeclared matched comparison. Absolute usage, cache hit rate, forecast error and estimated price cannot establish savings. |
-| Developer workflow fit | 4/5 | Archive, applicable patch, API docs, final validation logs and complete native original-turn accounting provided. No independent reviewer evidence; baseline is inferred zero rather than pre-task recorded snapshot. |
+| Context/token/cost efficiency | 3/5 | Original Task B run recorded 3,087,654 tokens and estimated USD 0.6833944 versus 5,317,215 and USD 1.2530748 in df-oai-4-b-out: 41.93% fewer tokens and 45.46% lower cost. Same declared Task A seed, model/reasoning and supplied harness version. Reviewer usage, validation and workflow differed; no isolated causal savings claim or matched-experiment certification. |
+| Developer workflow fit | 4/5 | Actual publication branch source is now integrated and validated against its frozen dependencies; code, record and source manifest identify one implementation commit. Full native original-turn usage is complete. Independent review remains absent. |
 
-**Assessed subtotal: 22/25. Overall /30: unassigned.** The supplied policy requires six evidence-backed scores; the efficiency category lacks a predeclared matched comparison. Missing comparison evidence cannot be replaced with a forecast, cache hit rate, absolute price or invented savings score. No comparison to a prior run is asserted. Independent reviewer judgment is also pending. These are assessment gaps; there are no unresolved failures in this run's implementation validation.
+### Efficiency evidence and limits
 
-See [machine-readable rubric](apps/docs/static/evaluation/task-b-run-5/rubric-assessment.json). The recommendation is **Continue for sample review**, with matched comparison and independent review before efficiency conclusions.
+The record on `df-oai-4-b-out` reports 5,317,215 native tokens and USD 1.2530748 estimated cost, including its reviewer. This original Task B run records 3,087,654 tokens and USD 0.6833944. Both identify seed `d6153e2`, gpt-6.1-sol, medium reasoning, and the supplied v7.12.02 harness. This run used **41.93% fewer recorded tokens and 45.46% lower estimated cost**. The reference record contains a stale branch-name label; the [snapshot](apps/docs/static/evaluation/task-b-run-5/integration/reference-record.md) and [comparison data](apps/docs/static/evaluation/task-b-run-5/integration/retrospective-comparison.json) identify the actual fetched reference commit.
+
+This is available retrospective comparison evidence. Reviewer usage, validation, workflow and cache conditions differed, so the observed reduction does not isolate a causal harness/model efficiency effect. Both cost figures exclude later publication/integration follow-ups. Task A on df-oai-5-a-out is a different task and is not substituted for this Task B comparator.
+
+The **3/5 efficiency score** reflects the qualified observed reduction and the experiment limitations. The original archived [policy](apps/docs/static/evaluation/task-b-run-5/rubric-policy.json) requires a predeclared matched experiment for its high efficiency ratings and leaves missing-comparison cases unscored. Its original [22/25 subtotal](apps/docs/static/evaluation/task-b-run-5/rubric-assessment.json) remains historical; its strict overall /30 score remains unassigned. The final **25/30 retrospective score** uses an explicitly different assessment basis and is not represented as strict-policy certification.
+
+See the [final machine-readable rubric](apps/docs/static/evaluation/task-b-run-5/integration/final-rubric.json). Independent reviewer judgment and production-readiness evaluation remain outside this assessment.
+
+## Usage scope after integration
+
+The recorded **3,087,654 tokens and USD 0.6833944 estimate** cover only the original implementation task, including its final assistant response. They do **not** include the later publication, comparison discussions, source integration, revalidation or this correction's reporting. Those follow-up turns are not added to or substituted for the original measurement. This record does not claim a complete token/cost total for the entire conversation or all delivery remediation.

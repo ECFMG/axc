@@ -1,0 +1,37 @@
+{
+  "copied_verbatim_from_tested_source": [
+    "apps/api/src/index.ts",
+    "apps/api/src/courses.test.ts",
+    "apps/api/tsconfig.test.json",
+    "packages/axc/application-services/src/courses.ts",
+    "packages/axc/application-services/src/courses.test.ts",
+    "packages/axc/application-services/src/index.ts",
+    "packages/axc/application-services/src/enrollment-requests.ts",
+    "packages/axc/rest/src/course-query.ts",
+    "packages/axc/rest/src/index.ts",
+    "packages/axc/rest/src/enrollment-routes.ts",
+    "packages/axc-verification/enrollment-tests/enrollment.test.mjs",
+    "packages/axc-verification/acceptance-api/src/features/courses.feature",
+    "packages/axc-verification/acceptance-api/src/step-definitions/courses.steps.ts",
+    "packages/axc-verification/acceptance-api/src/features/enrollment.feature",
+    "packages/axc-verification/acceptance-api/src/step-definitions/enrollment.steps.ts",
+    "apps/docs/docs/courses.md",
+    "apps/docs/docs/courses-implementation.md",
+    "apps/docs/docs/api/courses.md",
+    "apps/docs/docs/api/enrollment-requests.md",
+    "apps/docs/sidebars.ts"
+  ],
+  "removed_superseded_files": [
+    "packages/axc/application-services/src/enrollment-request.ts",
+    "packages/axc/application-services/src/enrollment-store.ts",
+    "packages/axc/application-services/src/enrollments.ts",
+    "packages/axc-verification/acceptance-api/src/courses.test.ts",
+    "packages/axc-verification/acceptance-api/src/enrollment-requests.test.mjs",
+    "packages/axc-verification/acceptance-api/src/host-workflow-check.mjs"
+  ],
+  "merged_manifests": [
+    "apps/api/package.json",
+    "packages/axc-verification/acceptance-api/package.json"
+  ],
+  "publication_parent": "f737e7c36e8576ddf3c65471250c4a672c702c93"
+}

@@ -1,0 +1,434 @@
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running test, test:acceptance in 21 packages
+   • Remote caching disabled
+
+@cellix/config-vitest:build: cache bypass, force executing 16751fd1e86b47e7
+@cellix/api-services-spec:build: cache bypass, force executing 0dec061adacab68d
+@cellix/server-mongodb-memory-mock-seedwork:build: cache bypass, force executing 3dda6e806ec10b46
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/api-services-spec:build: $ pnpm run lint
+@axc/application-services:test: cache bypass, force executing b530f7a33ed45dd8
+@axc/application-services:build: cache bypass, force executing c75a3392d334817c
+@cellix/local-dev:build: cache bypass, force executing f90770db186973ff
+@cellix/local-dev:test: cache bypass, force executing 1c3a666f9254f46a
+@cellix/config-rolldown:build: cache bypass, force executing 52289f606db48d2c
+@cellix/config-vitest:test: cache bypass, force executing b6d8aa1c3534a32d
+@cellix/archunit-tests:build: cache bypass, force executing 511d9834841378c4
+@cellix/domain-seedwork:build: cache bypass, force executing 60db24aa0c851271
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 8ms. No fixes applied.
+@cellix/archunit-tests:build: $ biome lint
+@axc/application-services:test: $ vitest run --silent --reporter=dot
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/api-services-spec:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 21ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/config-rolldown:test: cache bypass, force executing d77ac499c80063f3
+@cellix/api-services-spec:build: Checked 1 file in 7ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@axc/application-services:build: $ pnpm run lint
+@cellix/domain-seedwork:test: cache bypass, force executing 764a26cccdf27f55
+@cellix/config-vitest:test: $ vitest run --silent --reporter=dot
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/local-dev:test: $ vitest run --silent --reporter=dot
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/archunit-tests:test: cache bypass, force executing 553758866fd5daf7
+@cellix/serenity-framework:test: cache bypass, force executing ec049ec31545bee1
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/config-rolldown:test: $ vitest run --silent --reporter=dot
+@axc/application-services:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 21ms. No fixes applied.
+@cellix/domain-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/serenity-framework:test: $ vitest run --silent --reporter=dot
+@cellix/domain-seedwork:build: $ tsgo --build
+@cellix/config-vitest:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-vitest:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/config-vitest
+@cellix/config-vitest:test: 
+@cellix/archunit-tests:test: $ vitest run
+@cellix/local-dev:build: $ biome lint
+@axc/application-services:build: Checked 5 files in 10ms. No fixes applied.
+@cellix/serenity-framework:build: cache bypass, force executing 287cee8dc9ae14e5
+@cellix/local-dev:build: Checked 25 files in 17ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@cellix/local-dev:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/local-dev:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/local-dev
+@cellix/local-dev:test: 
+@cellix/api-core:build: cache bypass, force executing 4820fbafdea8def0
+@axc/application-services:test: Testing types with tsc and vue-tsc is an experimental feature.
+@axc/application-services:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@axc/application-services:test: 
+@axc/application-services:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/axc/application-services
+@axc/application-services:test: 
+@cellix/api-core:test: cache bypass, force executing 4955aaa6e2e5ead6
+@cellix/config-vitest:test: ··
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  Test Files  2 passed (2)
+@cellix/config-vitest:test:       Tests  2 passed (2)
+@cellix/config-vitest:test: Type Errors  no errors
+@cellix/config-vitest:test:    Start at  11:13:45
+@cellix/config-vitest:test:    Duration  455ms (transform 49ms, setup 0ms, import 93ms, tests 3ms, environment 0ms, typecheck 206ms)
+@cellix/config-vitest:test: 
+@cellix/event-bus-seedwork-node:test: cache bypass, force executing 7b86b897a237c8af
+@cellix/api-core:test: $ vitest run --silent --reporter=dot
+@cellix/api-core:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/local-dev:test: ······································
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  Test Files  2 passed (2)
+@cellix/local-dev:test:       Tests  38 passed (38)
+@cellix/local-dev:test: Type Errors  no errors
+@cellix/local-dev:test:    Start at  11:13:45
+@cellix/local-dev:test:    Duration  592ms (transform 210ms, setup 0ms, import 256ms, tests 16ms, environment 0ms, typecheck 184ms)
+@cellix/local-dev:test: 
+@cellix/event-bus-seedwork-node:build: cache bypass, force executing 9162d0d760c31d0b
+@cellix/config-rolldown:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-rolldown:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/config-rolldown
+@cellix/config-rolldown:test: 
+@axc/application-services:test: ··········
+@axc/application-services:test: 
+@axc/application-services:test:  Test Files  4 passed (4)
+@axc/application-services:test:       Tests  10 passed (10)
+@axc/application-services:test: Type Errors  no errors
+@axc/application-services:test:    Start at  11:13:46
+@axc/application-services:test:    Duration  523ms (transform 74ms, setup 0ms, import 121ms, tests 14ms, environment 0ms, typecheck 242ms)
+@axc/application-services:test: 
+@axc/rest:build: cache bypass, force executing f0068dbc1cac6e6e
+@cellix/domain-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/domain-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/domain-seedwork
+@cellix/domain-seedwork:test: 
+@cellix/event-bus-seedwork-node:test: $ vitest run --silent --reporter=dot
+@cellix/serenity-framework:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/serenity-framework:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/serenity-framework:test: 
+@cellix/serenity-framework:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/serenity-framework
+@cellix/serenity-framework:test: 
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/archunit-tests
+@cellix/archunit-tests:test: 
+@cellix/api-core:build: $ biome lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 14ms. No fixes applied.
+@cellix/config-rolldown:test: ········
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  Test Files  2 passed (2)
+@cellix/config-rolldown:test:       Tests  8 passed (8)
+@cellix/config-rolldown:test: Type Errors  no errors
+@cellix/config-rolldown:test:    Start at  11:13:46
+@cellix/config-rolldown:test:    Duration  559ms (transform 70ms, setup 0ms, import 94ms, tests 60ms, environment 0ms, typecheck 269ms)
+@cellix/config-rolldown:test: 
+@cellix/api-core:build: $ tsgo --build
+@cellix/serenity-framework:build: Checked 49 files in 27ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@axc/rest:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/api-core:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/api-core:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/api-core:test: 
+@cellix/api-core:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/api-core
+@cellix/api-core:test: 
+@cellix/archunit-tests:test:  ✓ src/typescript-config-conventions.test.ts (1 test) 47ms
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@axc/rest:build: $ biome lint
+@cellix/event-bus-seedwork-node:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/event-bus-seedwork-node:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@axc/rest:build: Checked 3 files in 17ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 34ms. No fixes applied.
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/event-bus-seedwork-node
+@cellix/event-bus-seedwork-node:test: 
+@axc/rest:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@cellix/domain-seedwork:test: ······························································································
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  Test Files  16 passed (16)
+@cellix/domain-seedwork:test:       Tests  94 passed (94)
+@cellix/domain-seedwork:test: Type Errors  no errors
+@cellix/domain-seedwork:test:    Start at  11:13:46
+@cellix/domain-seedwork:test:    Duration  1.75s (transform 4.05s, setup 0ms, import 9.34s, tests 36ms, environment 0ms, typecheck 255ms)
+@cellix/domain-seedwork:test: 
+@apps/api:test: cache bypass, force executing 694e68154a699e39
+@apps/api:build: cache bypass, force executing 8b7dbb91ce294625
+@cellix/api-core:test: ····································································
+@cellix/api-core:test: 
+@cellix/api-core:test:  Test Files  2 passed (2)
+@cellix/api-core:test:       Tests  68 passed (68)
+@cellix/api-core:test: Type Errors  no errors
+@cellix/api-core:test:    Start at  11:13:47
+@cellix/api-core:test:    Duration  641ms (transform 120ms, setup 0ms, import 160ms, tests 46ms, environment 0ms, typecheck 221ms)
+@cellix/api-core:test: 
+@cellix/mongoose-seedwork:build: cache bypass, force executing a77c268bb71dcb40
+@cellix/mongoose-seedwork:test: cache bypass, force executing 69f4d42091496d7d
+@cellix/mongoose-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@apps/api:test: $ tsgo --noEmit --project tsconfig.test.json && node --experimental-strip-types --test src/courses.test.ts && node --test ../../packages/axc-verification/enrollment-tests/enrollment.test.mjs
+@apps/api:build: $ pnpm run lint
+@cellix/archunit-tests:test:  ✓ src/naming-conventions.cellix.test.ts (5 tests) 1025ms
+@cellix/archunit-tests:test:        ✓ service packages should follow naming pattern: service-{type}-{specificType} with optional -base/-mock  1021ms
+@cellix/archunit-tests:test:  ✓ src/cellix.test.ts (4 tests) 947ms
+@cellix/archunit-tests:test:        ✓ packages should not have circular dependencies  940ms
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  Test Files  3 passed (3)
+@cellix/archunit-tests:test:       Tests  10 passed (10)
+@cellix/archunit-tests:test:    Start at  11:13:46
+@cellix/archunit-tests:test:    Duration  1.99s (transform 336ms, setup 0ms, import 2.14s, tests 2.02s, environment 0ms)
+@cellix/archunit-tests:test: 
+@cellix/mongoose-seedwork:build: $ biome lint
+@apps/api:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 18ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@apps/api:build: Checked 3 files in 14ms. No fixes applied.
+@apps/api:build: $ tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs
+@cellix/mongoose-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/mongoose-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/event-bus-seedwork-node:test: ·····························································································
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:test:  Test Files  6 passed (6)
+@cellix/event-bus-seedwork-node:test:       Tests  93 passed (93)
+@cellix/event-bus-seedwork-node:test: Type Errors  no errors
+@cellix/event-bus-seedwork-node:test:    Start at  11:13:48
+@cellix/event-bus-seedwork-node:test:    Duration  926ms (transform 809ms, setup 0ms, import 1.52s, tests 87ms, environment 0ms, typecheck 201ms)
+@cellix/event-bus-seedwork-node:test: 
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/cellix/mongoose-seedwork
+@cellix/mongoose-seedwork:test: 
+@apps/api:test: ▶ GET /api/courses
+@apps/api:test:   ✔ returns defaults and every required model field (14.566083ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: gArDeNiNg (0.353542ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: CoMpOsTiNg (0.271333ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: wCaG (0.232083ms)
+@apps/api:test:   ✔ searches title, summary or tags case-insensitively: SeCuRiTy (0.261125ms)
+@apps/api:test:   ✔ filters modality=online (0.238208ms)
+@apps/api:test:   ✔ filters modality=in-person (0.18325ms)
+@apps/api:test:   ✔ filters modality=hybrid (0.171ms)
+@apps/api:test:   ✔ filters status=active (0.24ms)
+@apps/api:test:   ✔ filters status=draft (0.296125ms)
+@apps/api:test:   ✔ filters status=retired (0.149083ms)
+@apps/api:test:   ✔ matches a whole tag case-insensitively (0.226167ms)
+@apps/api:test:   ✔ combines keyword, modality, status and tag with AND (0.300625ms)
+@apps/api:test:   ✔ paginates without gaps or duplicates and reports totals before pagination (0.588584ms)
+@apps/api:test:   ✔ sorts ascending by title (0.1545ms)
+@apps/api:test:   ✔ sorts ascending by createdAt (0.160167ms)
+@apps/api:test:   ✔ sorts ascending by updatedAt (0.115833ms)
+@apps/api:test:   ✔ returns valid empty metadata for no matches and whitespace-only keyword (0.197834ms)
+@apps/api:test:   ✔ rejects invalid query: modality=remote (0.122459ms)
+@apps/api:test:   ✔ rejects invalid query: modality=Online (0.076542ms)
+@apps/api:test:   ✔ rejects invalid query: modality= (0.074458ms)
+@apps/api:test:   ✔ rejects invalid query: status=deleted (0.076667ms)
+@apps/api:test:   ✔ rejects invalid query: status= (0.071167ms)
+@apps/api:test:   ✔ rejects invalid query: sort=id (0.059792ms)
+@apps/api:test:   ✔ rejects invalid query: sort= (0.0585ms)
+@apps/api:test:   ✔ rejects invalid query: page=0 (0.077292ms)
+@apps/api:test:   ✔ rejects invalid query: page=-1 (1.728958ms)
+@apps/api:test:   ✔ rejects invalid query: page=1.5 (0.133125ms)
+@apps/api:test:   ✔ rejects invalid query: page=1e2 (0.085333ms)
+@apps/api:test:   ✔ rejects invalid query: page=NaN (0.068417ms)
+@apps/api:test:   ✔ rejects invalid query: page=9007199254740992 (0.0615ms)
+@apps/api:test:   ✔ rejects invalid query: page= (0.056625ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=0 (0.053166ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=51 (0.067958ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=-1 (0.054125ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=2.5 (0.051625ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=Infinity (0.066125ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize= (0.050208ms)
+@apps/api:test:   ✔ rejects invalid query: pageSize=%205 (0.054333ms)
+@apps/api:test:   ✔ rejects invalid query: page=1&page=2 (0.056333ms)
+@apps/api:test:   ✔ rejects invalid query: q=a&q=b (0.060958ms)
+@apps/api:test:   ✔ rejects invalid query: tag=ai&tag=data (0.059542ms)
+@apps/api:test:   ✔ returns the exact specified envelope and validates before filtering (0.131625ms)
+@apps/api:test:   ✔ aggregates validation issues (0.092208ms)
+@apps/api:test:   ✔ preserves the existing health endpoint (1.469083ms)
+@apps/api:test:   ✔ passes the existing authorization header through the factory (0.451041ms)
+@apps/api:test: ✔ GET /api/courses (25.362375ms)
+@apps/api:test: ℹ tests 46
+@apps/api:test: ℹ suites 1
+@apps/api:test: ℹ pass 46
+@apps/api:test: ℹ fail 0
+@apps/api:test: ℹ cancelled 0
+@apps/api:test: ℹ skipped 0
+@apps/api:test: ℹ todo 0
+@apps/api:test: ℹ duration_ms 143.058459
+@apps/api:test: ✔ creates pending, maps required fields, retrieves history and persists across requests (19.780917ms)
+@apps/api:test: ✔ course validation: missing (0.638542ms)
+@apps/api:test: ✔ course validation: course-004 (0.430708ms)
+@apps/api:test: ✔ course validation: course-006 (0.409875ms)
+@apps/api:test: ✔ rejects learnerEmail=bad (0.422583ms)
+@apps/api:test: ✔ rejects learnerEmail=a@@b.org (0.302792ms)
+@apps/api:test: ✔ rejects learnerEmail=a b@example.org (0.303333ms)
+@apps/api:test: ✔ rejects learnerEmail=42 (0.271292ms)
+@apps/api:test: ✔ rejects courseId= (0.304625ms)
+@apps/api:test: ✔ rejects justification=xxxxxxxxxxxxxxxxxxx (0.3085ms)
+@apps/api:test: ✔ rejects justification=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (0.293ms)
+@apps/api:test: ✔ rejects justification=null (0.209875ms)
+@apps/api:test: ✔ rejects justification=                          (1.296917ms)
+@apps/api:test: ✔ accepts justification boundary 20 (0.330959ms)
+@apps/api:test: ✔ accepts justification boundary 500 (0.231583ms)
+@apps/api:test: ✔ rejects non-object/missing body null (0.191417ms)
+@apps/api:test: ✔ rejects non-object/missing body [] (0.158583ms)
+@apps/api:test: ✔ rejects non-object/missing body "hello" (0.152042ms)
+@apps/api:test: ✔ rejects non-object/missing body 42 (0.129333ms)
+@apps/api:test: ✔ rejects non-object/missing body {} (0.140584ms)
+@apps/api:test: ✔ malformed JSON is 400 (0.214666ms)
+@apps/api:test: ✔ blocks duplicate pending, including case/whitespace email variants (0.441541ms)
+@apps/api:test: ✔ blocks duplicate approved, including case/whitespace email variants (0.695125ms)
+@apps/api:test: ✔ simultaneous duplicate submissions create exactly one request (1.13275ms)
+@apps/api:test: ✔ allows reapplication after rejected (0.423041ms)
+@apps/api:test: ✔ allows reapplication after cancelled (0.370209ms)
+@apps/api:test: ✔ distinct course and learner pairs are allowed; all filters combine (0.788666ms)
+@apps/api:test: ✔ invalid list filter status=nope (0.810584ms)
+@apps/api:test: ✔ invalid list filter status= (0.131792ms)
+@apps/api:test: ✔ invalid list filter learnerEmail=bad (0.137083ms)
+@apps/api:test: ✔ invalid list filter courseId= (0.125791ms)
+@apps/api:test: ✔ invalid list filter status=pending&status=approved (0.138667ms)
+@apps/api:test: ✔ invalid list filter unknown=x (0.118541ms)
+@apps/api:test: ✔ pending -> approved appends exact audit event (0.348542ms)
+@apps/api:test: ✔ pending -> rejected appends exact audit event (0.254333ms)
+@apps/api:test: ✔ pending -> cancelled appends exact audit event (0.259708ms)
+@apps/api:test: ✔ approved -> cancelled appends third event (0.320833ms)
+@apps/api:test: ✔ invalid pending -> pending returns 409 and preserves history (0.28075ms)
+@apps/api:test: ✔ invalid approved -> pending returns 409 and preserves history (0.323ms)
+@apps/api:test: ✔ invalid approved -> approved returns 409 and preserves history (0.321333ms)
+@apps/api:test: ✔ invalid approved -> rejected returns 409 and preserves history (0.313625ms)
+@apps/api:test: ✔ invalid rejected -> pending returns 409 and preserves history (0.295375ms)
+@apps/api:test: ✔ invalid rejected -> approved returns 409 and preserves history (0.344667ms)
+@apps/api:test: ✔ invalid rejected -> rejected returns 409 and preserves history (0.325041ms)
+@apps/api:test: ✔ invalid rejected -> cancelled returns 409 and preserves history (0.379541ms)
+@apps/api:test: ✔ invalid cancelled -> pending returns 409 and preserves history (0.784ms)
+@apps/api:test: ✔ invalid cancelled -> approved returns 409 and preserves history (0.300542ms)
+@apps/api:test: ✔ invalid cancelled -> rejected returns 409 and preserves history (0.751959ms)
+@apps/api:test: ✔ invalid cancelled -> cancelled returns 409 and preserves history (0.401042ms)
+@apps/api:test: ✔ invalid update {"status":"rejected"} (0.31275ms)
+@apps/api:test: ✔ invalid update {"status":"rejected","reason":" "} (0.251ms)
+@apps/api:test: ✔ invalid update {"status":"rejected","reason":42} (0.232167ms)
+@apps/api:test: ✔ invalid update {"status":"invalid"} (0.237667ms)
+@apps/api:test: ✔ invalid update {"status":"approved","changedBy":""} (0.267334ms)
+@apps/api:test: ✔ invalid update {"status":"approved","changedBy":42} (0.241417ms)
+@apps/api:test: ✔ missing request for get and patch (0.2495ms)
+@apps/api:test: ✔ returned objects cannot mutate repository/audit state; factory instances isolated (0.0975ms)
+@apps/api:test: ✔ unexpected factory failure uses consistent 500 without leaking internal details (0.203416ms)
+@apps/api:test: ✔ authorization passthrough on all enrollment routes (0.404625ms)
+@apps/api:test: ℹ tests 59
+@apps/api:test: ℹ suites 0
+@apps/api:test: ℹ pass 59
+@apps/api:test: ℹ fail 0
+@apps/api:test: ℹ cancelled 0
+@apps/api:test: ℹ skipped 0
+@apps/api:test: ℹ todo 0
+@apps/api:test: ℹ duration_ms 115.440666
+@apps/api:build: <DIR>/index.js.map  asset │ size: 512.39 kB
+@apps/api:build: <DIR>/index.js      chunk │ size: 296.32 kB
+@apps/api:build: 
+@apps/api:build: ✔ rolldown v1.0.0-beta.55 Finished in 19.77 ms
+@apps/api:build: $ cellix-prepare-func-deploy
+@apps/api:build: Azure Functions package: /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/apps/api/agentCourses-api.zip
+@cellix/serenity-framework:test: ······························································
+@cellix/serenity-framework:test: 
+@cellix/serenity-framework:test:  Test Files  22 passed (22)
+@cellix/serenity-framework:test:       Tests  62 passed (62)
+@cellix/serenity-framework:test: Type Errors  no errors
+@cellix/serenity-framework:test:    Start at  11:13:46
+@cellix/serenity-framework:test:    Duration  3.16s (transform 2.32s, setup 0ms, import 8.30s, tests 1.48s, environment 1ms, typecheck 348ms)
+@cellix/serenity-framework:test: 
+@axc-verification/acceptance-api:test:acceptance: cache bypass, force executing f3b9b4cf28455052
+@axc-verification/acceptance-api:test:acceptance: $ rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features
+@cellix/mongoose-seedwork:test: ·····································································································································································
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  Test Files  14 passed (14)
+@cellix/mongoose-seedwork:test:       Tests  165 passed (165)
+@cellix/mongoose-seedwork:test: Type Errors  no errors
+@cellix/mongoose-seedwork:test:    Start at  11:13:49
+@cellix/mongoose-seedwork:test:    Duration  2.90s (transform 1.74s, setup 0ms, import 3.84s, tests 1.97s, environment 0ms, typecheck 410ms)
+@cellix/mongoose-seedwork:test: 
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/axc-verification/acceptance-api/src/features/courses.feature:4
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Course catalog search: Combined search returns an active online AI security course
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client searches courses with "q=security&modality=online&status=active&tag=ai&pageSize=5"
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/api/courses?q=security&modality=online&status=active&tag=ai&pageSize=5' (129ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the course search responds with status 200
+@axc-verification/acceptance-api:test:acceptance:   And the course results contain only "course-001" with page size 5
+@axc-verification/acceptance-api:test:acceptance:   After
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✓ Execution successful (8s 761ms)
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/axc-verification/acceptance-api/src/features/courses.feature:9
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Course catalog search: Invalid page size returns the documented error
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client searches courses with "pageSize=51"
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/api/courses?pageSize=51' (7ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the course search responds with status 400
+@axc-verification/acceptance-api:test:acceptance:   And the course search reports an invalid page size
+@axc-verification/acceptance-api:test:acceptance:   After
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✓ Execution successful (35ms)
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/axc-verification/acceptance-api/src/features/enrollment.feature:2
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Enrollment request workflow: A learner requests an active course and a reviewer cancels approval
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client completes the enrollment workflow through the running API
+@axc-verification/acceptance-api:test:acceptance:   Then the enrollment workflow has three audit entries
+@axc-verification/acceptance-api:test:acceptance:   After
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✓ Execution successful (45ms)
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/packages/axc-verification/acceptance-api/src/features/healthcheck.feature:3
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Healthcheck: GET /health reports the API is healthy
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client requests the healthcheck
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/health' (6ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the healthcheck responds with status 200
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the status of the last response does equal 200 (0ms)
+@axc-verification/acceptance-api:test:acceptance:   And the healthcheck body matches the agentCourses contract
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health status does equal "ok" (0ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health service does equal "agentCourses-api" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health projectCode does equal "axc" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health environment does equal "test" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health timestamp does match /^\d{4}-\d{2}-\d{2}T/ (1ms)
+@axc-verification/acceptance-api:test:acceptance:   After
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✓ Execution successful (112ms)
+@axc-verification/acceptance-api:test:acceptance: ================================================================================
+@axc-verification/acceptance-api:test:acceptance: Execution Summary
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Course catalog search:       2 successful, 2 total (8s 796ms)
+@axc-verification/acceptance-api:test:acceptance: Enrollment request workflow: 1 successful, 1 total (45ms)
+@axc-verification/acceptance-api:test:acceptance: Healthcheck:                 1 successful, 1 total (112ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Total time: 8s 953ms
+@axc-verification/acceptance-api:test:acceptance: Real time: 8s 991ms
+@axc-verification/acceptance-api:test:acceptance: Scenarios:  4
+@axc-verification/acceptance-api:test:acceptance: ================================================================================
+@axc-verification/acceptance-api:test:acceptance: (node:85718) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+@axc-verification/acceptance-api:test:acceptance: (Use `node --trace-deprecation ...` to show where the warning was created)
+@axc-verification/acceptance-api:test:acceptance: Spawning: /usr/bin/java -DLOG_LEVEL=warn -Dlogback.configurationFile=/Users/dfortun/Documents/Codex/2026-10-21/read-both-task-a-documents-and-4/work/publish-axc/node_modules/.pnpm/@serenity-js+serenity-bdd@3.46.0/node_modules/@serenity-js/serenity-bdd/resources/logback.config.xml -Dserenity.compress.filenames=true -Dserenity.features.directory=src/features -jar node_modules/@serenity-js/serenity-bdd/cache/serenity-cli-5.3.11.jar --source target/site/serenity --destination target/site/serenity --features src/features --project acceptance-api
+@axc-verification/acceptance-api:test:acceptance: -------------------------------
+@axc-verification/acceptance-api:test:acceptance: SERENITY COMMAND LINE INTERFACE
+@axc-verification/acceptance-api:test:acceptance: -------------------------------
+@axc-verification/acceptance-api:test:acceptance: Loading test outcomes from target/site/serenity
+@axc-verification/acceptance-api:test:acceptance: Writing aggregated report to target/site/serenity
+@axc-verification/acceptance-api:test:acceptance: 
+
+ Tasks:    26 successful, 26 total
+Cached:    0 cached, 26 total
+  Time:    19.145s 
+
