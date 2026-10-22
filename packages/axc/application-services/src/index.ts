@@ -1,3 +1,19 @@
+import type { DataSourcesFactory } from '@axc/persistence';
+import { Catalog, type CatalogContextApplicationService } from './contexts/catalog/index.ts';
+import { Enrollment, type EnrollmentContextApplicationService } from './contexts/enrollment/index.ts';
+
+export type { CourseModality, CoursePage, CourseQueryCommand, CourseSortField, CourseStatus, CourseView } from './contexts/catalog/index.ts';
+export type {
+	EnrollmentRequestCreateCommand,
+	EnrollmentRequestError,
+	EnrollmentRequestPage,
+	EnrollmentRequestQueryCommand,
+	EnrollmentRequestResult,
+	EnrollmentRequestStatus,
+	EnrollmentRequestStatusUpdateCommand,
+	EnrollmentRequestView,
+} from './contexts/enrollment/index.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -13,12 +29,15 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	dataSourcesFactory: DataSourcesFactory;
 }
 
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	Catalog: CatalogContextApplicationService;
+	Enrollment: EnrollmentContextApplicationService;
 }
 
 export interface ApplicationServicesFactory {
@@ -36,8 +55,9 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
-	const forRequest = (): Promise<ApplicationServices> =>
-		Promise.resolve({
+	const forRequest = (): Promise<ApplicationServices> => {
+		const dataSources = context.dataSourcesFactory.withSystemPassport();
+		return Promise.resolve({
 			health: {
 				getStatus(): HealthStatus {
 					return {
@@ -49,7 +69,10 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			Catalog: Catalog(dataSources),
+			Enrollment: Enrollment(dataSources),
 		});
+	};
 
 	return { forRequest };
 }

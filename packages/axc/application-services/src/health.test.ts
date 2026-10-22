@@ -1,5 +1,9 @@
+import type { DataSources, DataSourcesFactory } from '@axc/persistence';
 import { describe, expect, it } from 'vitest';
 import { buildApplicationServicesFactory, resolveEnvironment } from './index.ts';
+
+const unusedDataSources = {} as DataSources;
+const dataSourcesFactory: DataSourcesFactory = { withPassport: () => unusedDataSources, withSystemPassport: () => unusedDataSources };
 
 describe('healthcheck', () => {
 	it('maps runtime environments', () => {
@@ -10,7 +14,7 @@ describe('healthcheck', () => {
 	});
 
 	it('returns the agentCourses health contract', async () => {
-		const services = await buildApplicationServicesFactory({ environment: 'test' }).forRequest();
+		const services = await buildApplicationServicesFactory({ environment: 'test', dataSourcesFactory }).forRequest();
 		const status = services.health.getStatus();
 
 		expect(status.status).toBe('ok');
