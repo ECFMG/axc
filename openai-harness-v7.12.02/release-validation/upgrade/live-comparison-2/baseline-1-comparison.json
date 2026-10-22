@@ -1,0 +1,227 @@
+{
+  "variant": "baseline",
+  "repetition": 1,
+  "conditions": {},
+  "quality_passed": false,
+  "ledger": {
+    "complete": false,
+    "calls": [
+      {
+        "reservation_id": "7db0f42f908a49d199d76b4c5f37bf93",
+        "actor": "primary",
+        "purpose": "generation",
+        "input_bound": 62429,
+        "max_output_tokens": 4000,
+        "reservation_tokens": 66429,
+        "sequence": 1,
+        "metadata": {
+          "cache_reset": {
+            "verified_unloaded": true,
+            "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+            "latency_ms": 3.52
+          }
+        },
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+        "status": "completed",
+        "source": "provider",
+        "input_tokens": 19046,
+        "output_tokens": 369,
+        "total_tokens": 19415,
+        "cached_tokens": 0,
+        "reasoning_output_tokens": null,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "latency_ms": 3.52
+        },
+        "latency_ms": 82012.62250000001,
+        "settlement": {
+          "usage": {
+            "input_tokens": 19046,
+            "output_tokens": 369,
+            "total_tokens": 19415,
+            "cached_tokens": 0,
+            "reasoning_output_tokens": null,
+            "source": "provider"
+          },
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "status": "completed",
+          "latency_ms": 82012.62250000001
+        },
+        "reservation_exceeded": false
+      },
+      {
+        "reservation_id": "49c985e56e9c4cdd9de3d13546ae157e",
+        "actor": "primary",
+        "purpose": "repair_or_retrieval",
+        "input_bound": 64131,
+        "max_output_tokens": 4000,
+        "reservation_tokens": 68131,
+        "sequence": 2,
+        "metadata": {
+          "cache_reset": {
+            "verified_unloaded": true,
+            "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+            "latency_ms": 157.24
+          }
+        },
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+        "status": "completed",
+        "source": "provider",
+        "input_tokens": 19590,
+        "output_tokens": 1960,
+        "total_tokens": 21550,
+        "cached_tokens": 0,
+        "reasoning_output_tokens": null,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "latency_ms": 157.24
+        },
+        "latency_ms": 132113.664125,
+        "settlement": {
+          "usage": {
+            "input_tokens": 19590,
+            "output_tokens": 1960,
+            "total_tokens": 21550,
+            "cached_tokens": 0,
+            "reasoning_output_tokens": null,
+            "source": "provider"
+          },
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "status": "completed",
+          "latency_ms": 132113.664125
+        },
+        "reservation_exceeded": false
+      },
+      {
+        "reservation_id": "0eceb9d1e5144c8f937681eb1e8191b1",
+        "actor": "primary",
+        "purpose": "repair_or_retrieval",
+        "input_bound": 67953,
+        "max_output_tokens": 4000,
+        "reservation_tokens": 71953,
+        "sequence": 3,
+        "metadata": {
+          "cache_reset": {
+            "verified_unloaded": true,
+            "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+            "latency_ms": 196.67
+          }
+        },
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+        "status": "completed",
+        "source": "provider",
+        "input_tokens": 21207,
+        "output_tokens": 42,
+        "total_tokens": 21249,
+        "cached_tokens": 0,
+        "reasoning_output_tokens": null,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "latency_ms": 196.67
+        },
+        "latency_ms": 66694.00691700002,
+        "settlement": {
+          "usage": {
+            "input_tokens": 21207,
+            "output_tokens": 42,
+            "total_tokens": 21249,
+            "cached_tokens": 0,
+            "reasoning_output_tokens": null,
+            "source": "provider"
+          },
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "status": "completed",
+          "latency_ms": 66694.00691700002
+        },
+        "reservation_exceeded": false
+      },
+      {
+        "reservation_id": "a23fddb4964d474cb60ed693cb8b1d8f",
+        "actor": "primary",
+        "purpose": "repair_or_retrieval",
+        "input_bound": 68115,
+        "max_output_tokens": 4000,
+        "reservation_tokens": 72115,
+        "sequence": 4,
+        "metadata": {
+          "cache_reset": {
+            "verified_unloaded": true,
+            "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+            "latency_ms": 136.11
+          }
+        },
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+        "status": "completed",
+        "source": "provider",
+        "input_tokens": 21243,
+        "output_tokens": 1190,
+        "total_tokens": 22433,
+        "cached_tokens": 0,
+        "reasoning_output_tokens": null,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "latency_ms": 136.11
+        },
+        "latency_ms": 100706.24262500001,
+        "settlement": {
+          "usage": {
+            "input_tokens": 21243,
+            "output_tokens": 1190,
+            "total_tokens": 22433,
+            "cached_tokens": 0,
+            "reasoning_output_tokens": null,
+            "source": "provider"
+          },
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "status": "completed",
+          "latency_ms": 100706.24262500001
+        },
+        "reservation_exceeded": false
+      },
+      {
+        "reservation_id": "970a5842b3d840f193568efd739abb56",
+        "actor": "primary",
+        "purpose": "repair_or_retrieval",
+        "input_bound": 73315,
+        "max_output_tokens": 4000,
+        "reservation_tokens": 77315,
+        "sequence": 5,
+        "metadata": {
+          "cache_reset": {
+            "verified_unloaded": true,
+            "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+            "latency_ms": 174.73
+          }
+        },
+        "model": "gemma4:26b",
+        "status": "failed",
+        "source": "unknown",
+        "input_tokens": null,
+        "output_tokens": null,
+        "total_tokens": null,
+        "cached_tokens": null,
+        "reasoning_output_tokens": null,
+        "cache_reset": {
+          "verified_unloaded": true,
+          "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.6",
+          "latency_ms": 174.73
+        },
+        "latency_ms": 5909.247958999969,
+        "settlement": {
+          "usage": null,
+          "model": "gemma4:26b",
+          "status": "failed",
+          "latency_ms": 5909.247958999969
+        },
+        "reservation_exceeded": false
+      }
+    ]
+  },
+  "error": "Interrupted pre-final smoke; not final-release proof.",
+  "unsettled_reservations": [],
+  "run_directory": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1"
+}

@@ -1,0 +1,34 @@
+{
+  "repo": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "branch": "harness/controlled-baseline-1",
+  "destination_branch": "harness/controlled-baseline-1",
+  "checks": [
+    {
+      "argv": [
+        "pnpm",
+        "run",
+        "build",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 14.008084
+    },
+    {
+      "argv": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 18.339240416000003
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "final_validation_required": true,
+  "model_invoked": false,
+  "remediation": "Fix baseline runtime/build/test prerequisites outside the measured trial, preserve these logs, then prepare fresh evidence. Never repair application code to hide an environment failure."
+}

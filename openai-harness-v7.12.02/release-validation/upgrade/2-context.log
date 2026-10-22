@@ -1,0 +1,22 @@
+test_paged_log_is_recoverable_past_legacy_cutoff (test_context_features.ContextTests) ... ok
+test_read_and_truncation_preserve_unresolved_failures (test_context_features.ContextTests) ... {"call":1,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+{"call":2,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+{"call":3,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+{"call":4,"passed_local_checks":false,"tokens":50,"variant":"relevant_context"}
+ok
+test_readable_source_and_passing_logs_omitted (test_context_features.ContextTests) ... ok
+test_retrieval_is_step_specific_and_explicit_reads_survive (test_context_features.ContextTests) ... ok
+test_unknown_target_keeps_inventory_retrievable_without_loading_every_file (test_context_features.ContextTests) ... ok
+test_ambiguous_package_relative_diagnostic_is_not_guessed (test_plan_features.PlanTests) ... ok
+test_command_arguments_do_not_select_a_false_diagnostic (test_plan_features.PlanTests) ... ok
+test_contracts_include_public_exports_and_manifest (test_plan_features.PlanTests) ... ok
+test_native_schema_restricts_writes_to_controller_target (test_plan_features.PlanTests) ... ok
+test_written_files_are_not_labeled_verified (test_plan_features.PlanTests) ... ok
+test_additive_source_and_exported_destructuring_pass (test_plan_features.SyntaxContractTests) ... ok
+test_export_loss_and_syntax_error_are_rejected (test_plan_features.SyntaxContractTests) ... ok
+test_self_import_rejected (test_plan_features.SyntaxContractTests) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.736s
+
+OK

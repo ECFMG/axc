@@ -1,0 +1,33 @@
+Scope: all 22 workspace projects
+✓ Lockfile passes supply-chain policies (verified 8d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1596
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1596, reused 1587, downloaded 0, added 142
+Progress: resolved 1596, reused 1587, downloaded 0, added 462
+Progress: resolved 1596, reused 1587, downloaded 0, added 932
+Progress: resolved 1596, reused 1587, downloaded 0, added 1249
+Progress: resolved 1596, reused 1587, downloaded 0, added 1446
+Progress: resolved 1596, reused 1587, downloaded 0, added 1596, done
+
+optionalDependencies:
++ @rolldown/binding-darwin-arm64 1.2.9
+
+devDependencies:
++ @amiceli/vitest-cucumber 6.5.0
++ @biomejs/biome 2.4.10
++ @types/node 24.10.1
++ @types/react 19.2.7
++ @types/react-dom 19.2.3
++ @typescript/native-preview 7.0.0-dev.20260428.1
++ husky 9.1.7
++ knip 5.88.1
++ lint-staged 16.4.0
++ portless 0.11.1
++ ts-scope-trimmer-plugin 1.0.5
++ turbo 2.9.18
++ typescript 6.0.3
++ vitest 4.1.11
+
+Done in 6.9s using pnpm v11.9.0

@@ -1,0 +1,105 @@
+$ turbo run build --env-mode=loose
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running build in 21 packages
+   • Remote caching disabled, using shared worktree cache
+
+@cellix/api-services-spec:build: cache hit, replaying logs c45c605256ad5f9e
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 9ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs a13cf53c0192c3c1
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 11ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/config-vitest:build: cache hit, replaying logs 51cb58d9d5d991b5
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs a9acb227c9d0ad20
+@cellix/config-rolldown:build: $ tsgo --build
+@axc/application-services:build: cache hit, replaying logs 7d5320fc5ceceada
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: Checked 2 files in 10ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@cellix/api-core:build: cache hit, replaying logs f86d653698420813
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 15ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@axc/rest:build: cache hit, replaying logs 49a3bd7054d47904
+@axc/rest:build: $ pnpm run lint
+@axc/rest:build: $ biome lint
+@axc/rest:build: Checked 1 file in 7ms. No fixes applied.
+@axc/rest:build: $ tsgo --build
+@cellix/domain-seedwork:build: cache hit, replaying logs ac9a5a36778426ab
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 15ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@axc/persistence:build: cache hit, replaying logs 376f7e43c4abc655
+@axc/domain:build: cache hit, replaying logs 332d5655ba6fdc1e
+@axc/persistence:build: $ pnpm run lint
+@axc/persistence:build: $ biome lint
+@axc/persistence:build: Checked 1 file in 5ms. No fixes applied.
+@axc/persistence:build: $ tsgo --build
+@axc/domain:build: $ pnpm run lint
+@axc/domain:build: $ biome lint
+@axc/domain:build: Checked 1 file in 5ms. No fixes applied.
+@axc/domain:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs a6804a89433f958d
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 15ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@cellix/local-dev:build: cache hit, replaying logs ff7cb06cb242bea7
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 16ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@apps/docs:build: cache hit, replaying logs 29d0a30127fe2fe8
+@cellix/mongoose-seedwork:build: cache hit, replaying logs f4b889cace0147c6
+@apps/docs:build: $ docusaurus build
+@apps/docs:build: [INFO] [en] Creating an optimized production build...
+@apps/docs:build: [webpackbar] ℹ Compiling Client
+@apps/docs:build: [webpackbar] ℹ Compiling Server
+@apps/docs:build: [webpackbar] ✔ Server: Compiled successfully in 3.13s
+@apps/docs:build: [webpackbar] ✔ Client: Compiled successfully in 5.87s
+@apps/docs:build: [SUCCESS] Generated static files in "build".
+@apps/docs:build: [INFO] Use `npm run serve` command to test your build locally.
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 16ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@apps/api:build: cache hit, replaying logs d13e9f0c1fbf28d4
+@apps/api:build: $ pnpm run lint
+@apps/api:build: $ biome lint
+@apps/api:build: Checked 2 files in 7ms. No fixes applied.
+@apps/api:build: $ tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs
+@apps/api:build: <DIR>/index.js.map  asset │ size: 487.20 kB
+@apps/api:build: <DIR>/index.js      chunk │ size: 282.17 kB
+@apps/api:build: 
+@apps/api:build: ✔ rolldown v1.0.0-beta.55 Finished in 19.27 ms
+@apps/api:build: $ cellix-prepare-func-deploy
+@apps/api:build: Azure Functions package: /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/axc/apps/api/agentCourses-api.zip
+@cellix/serenity-framework:build: cache hit, replaying logs 4bf49c48690b4c82
+@axc/service-mongoose:build: cache hit, replaying logs 92b78ee1bdcef3d3
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 28ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@axc/service-mongoose:build: $ pnpm run lint
+@axc/service-mongoose:build: $ biome lint
+@axc/service-mongoose:build: Checked 1 file in 4ms. No fixes applied.
+@axc/service-mongoose:build: $ tsgo --build
+@cellix/archunit-tests:build: cache hit, replaying logs 38a41880fadf9617
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 30ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+
+ Tasks:    18 successful, 18 total
+Cached:    18 cached, 18 total
+  Time:    95ms >>> FULL TURBO
+

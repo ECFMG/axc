@@ -1,0 +1,7 @@
+test_missing_final_report_retains_durable_paid_calls_and_pending_usage (test_benchmark_failures.PaidFailureTests) ... ok
+test_install_failure_is_an_immutable_failed_trial_before_any_generation (test_benchmark_failures.PreparationFailureTests) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.015s
+
+OK

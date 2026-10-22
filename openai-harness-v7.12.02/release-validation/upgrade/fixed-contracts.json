@@ -1,0 +1,17 @@
+{
+  "unchanged_task_fields": [
+    "settings",
+    "checks",
+    "allowed_paths",
+    "protected_paths",
+    "implementation_steps",
+    "verification_files"
+  ],
+  "unchanged_files": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5",
+    "task_a_gates.py": "64c173e953880adc4237030b9dc6a37ea79a052c4e30dd5f55a3f2a62e9f8a71"
+  },
+  "passed": true
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "stage": "1-readiness",
+    "files": [
+      "workflow_setup.py",
+      "test_preflight_readiness.py"
+    ],
+    "tests": [
+      "test_preflight_readiness"
+    ],
+    "started_at": "2026-10-20T17:44:32.572534+00:00",
+    "exit_code": 0
+  },
+  {
+    "stage": "2-context",
+    "files": [
+      "coding_context.py",
+      "coding_plan.py"
+    ],
+    "tests": [
+      "test_context_features",
+      "test_plan_features"
+    ],
+    "started_at": "2026-10-20T17:44:36.874026+00:00",
+    "exit_code": 0
+  },
+  {
+    "stage": "3-budget",
+    "files": [
+      "run_budget.py",
+      "test_run_budget.py"
+    ],
+    "tests": [
+      "test_run_budget"
+    ],
+    "started_at": "2026-10-20T17:45:07.687772+00:00",
+    "exit_code": 0
+  },
+  {
+    "stage": "4-actions",
+    "files": [
+      "coding_actions.py",
+      "coding_agent.py",
+      "coding_task.py",
+      "controlled_workflow.py",
+      "test_low_cost_controls.py",
+      "test_native_efficiency.py"
+    ],
+    "tests": [
+      "test_coding_agent",
+      "test_adapter_contract"
+    ],
+    "started_at": "2026-10-20T17:45:16.460738+00:00",
+    "exit_code": 0
+  },
+  {
+    "stage": "5-review",
+    "files": [
+      "coding_workflow.py",
+      "run_task_a.py",
+      "efficiency_metrics.py",
+      "evidence_report.py",
+      "test_controlled_workflow.py",
+      "test_efficiency_metrics.py"
+    ],
+    "tests": [
+      "test_controlled_workflow",
+      "test_efficiency_metrics"
+    ],
+    "started_at": "2026-10-20T17:45:37.176699+00:00",
+    "exit_code": 0
+  },
+  {
+    "stage": "7-comparison",
+    "files": [
+      "coding_benchmark.py",
+      "coding_comparison.py",
+      "test_coding_comparison.py",
+      "test_controlled_benchmark.py",
+      "test_roundtrip_efficiency.py",
+      "RUBRIC_POLICY.json"
+    ],
+    "tests": [
+      "test_coding_comparison",
+      "test_controlled_benchmark",
+      "test_roundtrip_efficiency"
+    ],
+    "started_at": "2026-10-20T17:46:44.699460+00:00",
+    "exit_code": 0
+  },
+  {
+    "stage": "2-context-shared-pages",
+    "tests": [
+      "test_shared_context"
+    ],
+    "exit_code": 0,
+    "log": "2-context-shared.log"
+  },
+  {
+    "stage": "3-protected-review-reserve",
+    "tests": [
+      "test_reviewer_reserve"
+    ],
+    "exit_code": 0,
+    "log": "review-reserve-final.log"
+  },
+  {
+    "stage": "4-source-sensitive-no-progress",
+    "tests": [
+      "test_no_progress"
+    ],
+    "exit_code": 0,
+    "log": "4-no-progress-final.log"
+  },
+  {
+    "stage": "6-single-ledger-reporting",
+    "tests": [
+      "test_report_consistency",
+      "test_reporting_finalization"
+    ],
+    "exit_code": 0,
+    "log": "6-reporting.log"
+  },
+  {
+    "stage": "7-failed-paid-call-retention",
+    "tests": [
+      "test_benchmark_failures"
+    ],
+    "exit_code": 0,
+    "log": "review-paid-failure-repair.log"
+  },
+  {
+    "stage": "7-estimated-cost-and-root-report",
+    "tests": [
+      "test_comparison_cost"
+    ],
+    "exit_code": 0,
+    "log": "7-comparison-cost.log"
+  }
+]

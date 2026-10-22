@@ -1,0 +1,11 @@
+test_each_missing_failing_or_timed_out_prerequisite_blocks_readiness (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_exact_pnpm_pin_mismatch_blocks_readiness_even_when_command_succeeds (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_failed_preflight_blocks_adapter_execution_before_any_command (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_missing_dependency_link_and_localhost_denial_are_actionable_failures (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_only_exact_pnpm_pins_require_version_equality (test_preflight_readiness.PreflightReadinessTests) ... ok
+test_ready_probes_are_bounded_offline_read_only_and_final_gates_remain_required (test_preflight_readiness.PreflightReadinessTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.096s
+
+OK

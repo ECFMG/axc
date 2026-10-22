@@ -1,0 +1,6 @@
+test_cost_is_separate_from_tokens_and_unknown_latency_stays_null (test_comparison_cost.CostTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+OK

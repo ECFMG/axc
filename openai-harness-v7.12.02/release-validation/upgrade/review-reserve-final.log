@@ -1,0 +1,8 @@
+test_oversized_primary_denial_preserves_review_pool (test_reviewer_reserve.ReserveTests) ... ok
+test_primary_cannot_spend_review_capacity (test_reviewer_reserve.ReserveTests) ... ok
+test_reviewer_can_use_reserved_capacity (test_reviewer_reserve.ReserveTests) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.017s
+
+OK

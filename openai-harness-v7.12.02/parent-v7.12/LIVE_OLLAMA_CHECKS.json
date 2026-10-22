@@ -1,0 +1,113 @@
+{
+  "reports": [
+    {
+      "version": "v7.12",
+      "action": "write",
+      "kind": "live_adapter_contract_only",
+      "task_a_trial": false,
+      "cache_policy": "existing server state; no forced unload",
+      "preflight": {
+        "tokens": 563,
+        "source": "estimated_rendered_bytes",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "note": "Rendered UTF-8 bytes plus 64; conservative estimate, not an exact tokenizer; no generation"
+      },
+      "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+      "usage": {
+        "input_tokens": 103,
+        "output_tokens": 29,
+        "total_tokens": 132,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider"
+      },
+      "status": "completed",
+      "response_text": "{\"content\":\"ready\",\"edits\":[],\"path\":\"apps/api/smoke.txt\",\"read_files\":[],\"validate\":false}",
+      "passed": true,
+      "controller_decoded": true,
+      "elapsed_seconds": 0.6300193749999998
+    },
+    {
+      "version": "v7.12",
+      "action": "edit",
+      "kind": "live_adapter_contract_only",
+      "task_a_trial": false,
+      "cache_policy": "existing server state; no forced unload",
+      "preflight": {
+        "tokens": 588,
+        "source": "estimated_rendered_bytes",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "note": "Rendered UTF-8 bytes plus 64; conservative estimate, not an exact tokenizer; no generation"
+      },
+      "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+      "usage": {
+        "input_tokens": 109,
+        "output_tokens": 35,
+        "total_tokens": 144,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider"
+      },
+      "status": "completed",
+      "response_text": "{\"content\":\"\",\"edits\":[{\"new\":\"after\",\"old\":\"before\"}],\"path\":\"apps/api/smoke.txt\",\"read_files\":[],\"validate\":false}",
+      "passed": true,
+      "controller_decoded": true,
+      "elapsed_seconds": 0.7922611660000003
+    },
+    {
+      "version": "v7.12",
+      "action": "read",
+      "kind": "live_adapter_contract_only",
+      "task_a_trial": false,
+      "cache_policy": "existing server state; no forced unload",
+      "preflight": {
+        "tokens": 560,
+        "source": "estimated_rendered_bytes",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "note": "Rendered UTF-8 bytes plus 64; conservative estimate, not an exact tokenizer; no generation"
+      },
+      "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+      "usage": {
+        "input_tokens": 100,
+        "output_tokens": 26,
+        "total_tokens": 126,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider"
+      },
+      "status": "completed",
+      "response_text": "{\"content\":\"\",\"edits\":[],\"path\":\"\",\"read_files\":[\"apps/api/smoke.txt\"],\"validate\":false}",
+      "passed": true,
+      "controller_decoded": true,
+      "elapsed_seconds": 0.7187689580000001
+    },
+    {
+      "version": "v7.12",
+      "action": "validate",
+      "kind": "live_adapter_contract_only",
+      "task_a_trial": false,
+      "cache_policy": "existing server state; no forced unload",
+      "preflight": {
+        "tokens": 539,
+        "source": "estimated_rendered_bytes",
+        "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+        "note": "Rendered UTF-8 bytes plus 64; conservative estimate, not an exact tokenizer; no generation"
+      },
+      "model": "gemma4:26b@08ae7ec1744bd7f451c4a530afb39d2673ad9d07a8369b8a33a3613b41212a68/ollama-0.40.0",
+      "usage": {
+        "input_tokens": 93,
+        "output_tokens": 19,
+        "total_tokens": 112,
+        "cached_tokens": 0,
+        "reasoning_tokens": null,
+        "source": "provider"
+      },
+      "status": "completed",
+      "response_text": "{\"content\":\"\",\"edits\":[],\"path\":\"\",\"read_files\":[],\"validate\":true}",
+      "passed": true,
+      "controller_decoded": true,
+      "elapsed_seconds": 0.636417292
+    }
+  ],
+  "all_passed": true
+}

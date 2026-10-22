@@ -1,0 +1,76 @@
+packages/axc/application-services/src/course-fixtures.ts:1:23 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━
+
+  ! Several of these imports are unused.
+  
+  > 1 │ import type { Course, CourseModality, CourseStatus } from './course-types.js';
+      │                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    2 │ 
+    3 │ export const COURSE_FIXTURES: Course[] = [
+  
+  i Unused imports might be the result of an incomplete refactoring.
+  
+  i Unsafe fix: Remove the unused imports.
+  
+    1 │ import·type·{·Course,·CourseModality,·CourseStatus·}·from·'./course-types.js';
+      │                       -----------------------------                           
+
+packages/axc/application-services/src/course-search.ts:1:15 lint/correctness/noUnusedImports  FIXABLE  ━━━━━━━━━━
+
+  ! Several of these imports are unused.
+  
+  > 1 │ import type { COURSE_FIXTURES, Course, CourseErrorDetail, CourseErrorEnvelope, CourseSearchQuery, CourseSearchResponse } from './course-types.js';
+      │               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    2 │ 
+    3 │ /**
+  
+  i Unused imports might be the result of an incomplete refactoring.
+  
+  i Unsafe fix: Remove the unused imports.
+  
+    1 │ import·type·{·COURSE_FIXTURES,·Course,·CourseErrorDetail,·CourseErrorEnvelope,·CourseSearchQuery,·CourseSearchResponse·}·from·'./course-types.js';
+      │               -------------------------                   ---------------------                                                                   
+
+packages/axc/application-services/src/course-search.ts:14:2 lint/suspicious/useAwait ━━━━━━━━━━━━━━━
+
+  × This async function lacks an await expression.
+  
+    12 │ 	 * @throws {CourseErrorEnvelope} If query parameters are invalid.
+    13 │ 	 */
+  > 14 │ 	async search(query: CourseSearchQuery): Promise<CourseSearchResponse> {
+       │ 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 15 │ 		const errors: CourseErrorDetail[] = [];
+        ...
+  > 87 │ 		};
+  > 88 │ 	}
+       │ 	^
+    89 │ }
+    90 │ 
+  
+  i Remove this async modifier, or add an await expression in the function.
+  
+    12 │ 	 * @throws {CourseErrorEnvelope} If query parameters are invalid.
+    13 │ 	 */
+  > 14 │ 	async search(query: CourseSearchQuery): Promise<CourseSearchResponse> {
+       │ 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  > 15 │ 		const errors: CourseErrorDetail[] = [];
+        ...
+  > 87 │ 		};
+  > 88 │ 	}
+       │ 	^
+    89 │ }
+    90 │ 
+  
+  i Async functions without await expressions may not need to be declared async.
+  
+
+Skipped 5 suggested fixes.
+If you wish to apply the suggested (unsafe) fixes, use the command biome check --write --unsafe
+
+Checked 3 files in 24ms. Fixed 1 file.
+Found 1 error.
+Found 2 warnings.
+check ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while applying fixes.
+  
+

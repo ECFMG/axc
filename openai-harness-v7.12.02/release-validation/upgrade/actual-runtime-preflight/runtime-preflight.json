@@ -1,0 +1,34 @@
+{
+  "repo": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-runtime-base",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "branch": "harness-upgrade-runtime",
+  "destination_branch": "harness-upgrade-runtime",
+  "checks": [
+    {
+      "argv": [
+        "pnpm",
+        "run",
+        "build",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 0.554835167
+    },
+    {
+      "argv": [
+        "pnpm",
+        "test",
+        "--env-mode=loose"
+      ],
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 14.489237084
+    }
+  ],
+  "source_unchanged": true,
+  "passed": true,
+  "final_validation_required": true,
+  "model_invoked": false,
+  "remediation": "Fix baseline runtime/build/test prerequisites outside the measured trial, preserve these logs, then prepare fresh evidence. Never repair application code to hide an environment failure."
+}

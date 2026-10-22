@@ -1,0 +1,54 @@
+{
+  "variants": [
+    {
+      "name": "baseline",
+      "instructions": "You are a helpful operations assistant. Read the context carefully and find the owner of the service mentioned in the question. The context can contain unrelated details. Return only the exact owner name, with no introduction, explanation, punctuation, or formatting. If the owner is not in the context, return UNKNOWN. Never invent an owner.",
+      "context_key": "full",
+      "max_output_tokens": 256
+    },
+    {
+      "name": "compact",
+      "instructions": "Return the service's exact owner name from context, or UNKNOWN if absent. No other text.",
+      "context_key": "focused",
+      "max_output_tokens": 256
+    },
+    {
+      "name": "overtrimmed",
+      "instructions": "Return the owner name from context, or UNKNOWN if absent. No other text.",
+      "context_key": "empty",
+      "max_output_tokens": 256
+    }
+  ],
+  "cases": [
+    {
+      "id": "billing",
+      "input": "Who owns Billing?",
+      "contexts": {
+        "full": "Service directory, revised September 2026. This directory lists internal services and their responsible teams. Entries are reviewed quarterly.\nService: Billing\nOwner: Revenue Systems\nDeployment window: Tuesday 14:00 UTC. Dashboard refresh: every five minutes. Historical note: the service launched in 2021. For access requests use the internal help desk.",
+        "focused": "Service: Billing\nOwner: Revenue Systems",
+        "empty": "Service: Billing"
+      },
+      "expected": "Revenue Systems"
+    },
+    {
+      "id": "search",
+      "input": "Who owns Search?",
+      "contexts": {
+        "full": "Platform handbook. The following service is available in all production regions. Availability metrics are maintained separately from this directory.\nService: Search\nOwner: Discovery Team\nIndexing runs continuously. The original prototype was built in 2020. Maintenance announcements are posted in the status page. Contact the listed owner for changes.",
+        "focused": "Service: Search\nOwner: Discovery Team",
+        "empty": "Service: Search"
+      },
+      "expected": "Discovery Team"
+    },
+    {
+      "id": "unknown",
+      "input": "Who owns Archive?",
+      "contexts": {
+        "full": "Internal services directory. This entry is awaiting review after a recent reorganization. Do not use historical contacts as current owners.\nService: Archive\nAn owner has not been assigned. The service stores old audit exports. Access is read-only while migration is in progress. The directory will be updated when the organizational review finishes.",
+        "focused": "Service: Archive\nAn owner has not been assigned.",
+        "empty": "Service: Archive"
+      },
+      "expected": "UNKNOWN"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "reachable": true,
+  "models": [
+    "gemma4:26b"
+  ]
+}

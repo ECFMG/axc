@@ -1,0 +1,12 @@
+test_checkout_missing_parent_and_symlinks_are_rejected (test_report_consistency.ReportConsistencyTests) ... ok
+test_failed_review_blocks_completion_and_rubric_assignment (test_report_consistency.ReportConsistencyTests) ... ok
+test_manifest_changes_and_output_changes_block_stale_exports (test_report_consistency.ReportConsistencyTests) ... ok
+test_rerender_is_idempotent_and_export_is_byte_identical (test_report_consistency.ReportConsistencyTests) ... ok
+test_export_cli_copies_report_to_explicit_external_destination (test_reporting_finalization.ReportingFinalizationTests) ... ok
+test_first_and_final_render_failure_reopen_actor_and_remove_receipts (test_reporting_finalization.ReportingFinalizationTests) ... ok
+test_reports_render_before_close_and_all_usage_views_agree (test_reporting_finalization.ReportingFinalizationTests) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.179s
+
+OK

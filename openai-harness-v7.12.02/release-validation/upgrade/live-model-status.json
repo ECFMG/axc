@@ -1,0 +1,11 @@
+{
+  "reachable": true,
+  "loaded_models": [
+    {
+      "name": "gemma4:26b",
+      "size": 1420705135,
+      "size_vram": 1420705135,
+      "context_length": 98304
+    }
+  ]
+}

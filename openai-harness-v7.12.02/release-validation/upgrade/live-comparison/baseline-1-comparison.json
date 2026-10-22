@@ -1,0 +1,15 @@
+{
+  "variant": "baseline",
+  "repetition": 1,
+  "conditions": {},
+  "quality_passed": false,
+  "ledger": {
+    "complete": true,
+    "calls": []
+  },
+  "model_invoked": false,
+  "status": "preparation_failed",
+  "error": "Offline dependency restoration failed before model work; inspect baseline-1-install.log",
+  "run_directory": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison/baseline-1",
+  "repository": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials/baseline-1"
+}

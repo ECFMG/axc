@@ -1,0 +1,59 @@
+{
+  "mode": "controller_enforced",
+  "context_limits_applied": true,
+  "repair_checks_executed": false,
+  "fresh_review_executed": false,
+  "shared_budget_enforced": true,
+  "events": [
+    {
+      "control": "shared_budget_enforced",
+      "limit_tokens": 300000,
+      "max_calls": 20
+    },
+    {
+      "control": "context_limits_applied",
+      "request": "request-01.json",
+      "input_bound": 62429,
+      "context_limit": 98304,
+      "variant": "baseline",
+      "source_characters": 41391,
+      "source_character_limit": null
+    },
+    {
+      "control": "context_limits_applied",
+      "request": "request-02.json",
+      "input_bound": 64131,
+      "context_limit": 98304,
+      "variant": "baseline",
+      "source_characters": 42336,
+      "source_character_limit": null
+    },
+    {
+      "control": "context_limits_applied",
+      "request": "request-03.json",
+      "input_bound": 67953,
+      "context_limit": 98304,
+      "variant": "baseline",
+      "source_characters": 45952,
+      "source_character_limit": null
+    },
+    {
+      "control": "context_limits_applied",
+      "request": "request-04.json",
+      "input_bound": 68115,
+      "context_limit": 98304,
+      "variant": "baseline",
+      "source_characters": 45952,
+      "source_character_limit": null
+    },
+    {
+      "control": "context_limits_applied",
+      "request": "request-05.json",
+      "input_bound": 73315,
+      "context_limit": 98304,
+      "variant": "baseline",
+      "source_characters": 48486,
+      "source_character_limit": null
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+test_explicit_pages_share_cap_and_offsets_remain_retrievable (test_shared_context.SharedContextTests) ... ERROR
+test_many_large_requested_pages_cannot_bypass_cap (test_shared_context.SharedContextTests) ... ERROR
+
+======================================================================
+ERROR: test_explicit_pages_share_cap_and_offsets_remain_retrievable (test_shared_context.SharedContextTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/test_shared_context.py", line 16, in test_explicit_pages_share_cap_and_offsets_remain_retrievable
+    snapshot, extra = source_payload(repo, names, names, 12000, supplied)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_context.py", line 154, in source_payload
+    retrieved[name] = source_page(repo, '@source/%s:%s:%d' % (path, offset, limit), inventory)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_context.py", line 89, in source_page
+    text = safe_path(Path(repo), name).read_text(encoding='utf-8')
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_agent.py", line 80, in safe_path
+    raise ValueError('Symlink or escaping path is forbidden')
+ValueError: Symlink or escaping path is forbidden
+
+======================================================================
+ERROR: test_many_large_requested_pages_cannot_bypass_cap (test_shared_context.SharedContextTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/test_shared_context.py", line 30, in test_many_large_requested_pages_cannot_bypass_cap
+    snapshot, extra = source_payload(repo, {'source.ts'}, {'source.ts'}, 12000, requested)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_context.py", line 154, in source_payload
+    retrieved[name] = source_page(repo, '@source/%s:%s:%d' % (path, offset, limit), inventory)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_context.py", line 89, in source_page
+    text = safe_path(Path(repo), name).read_text(encoding='utf-8')
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_agent.py", line 80, in safe_path
+    raise ValueError('Symlink or escaping path is forbidden')
+ValueError: Symlink or escaping path is forbidden
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.062s
+
+FAILED (errors=2)

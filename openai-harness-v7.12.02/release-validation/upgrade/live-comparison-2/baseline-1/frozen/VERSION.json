@@ -1,0 +1,34 @@
+{
+  "version": "v7.12.02",
+  "harness_base": "v7",
+  "comparison_reference": "controlled broad/relevant context experiment; no_harness remains a separate external protocol",
+  "cumulative_iterations": [
+    "v7.10",
+    "v7.11",
+    "v7.12",
+    "v7.12.01",
+    "v7.12.02"
+  ],
+  "new_changes": [
+    "Runtime baseline build/test preflight before model dispatch.",
+    "Shared automatic and explicit source-page excerpt budget with exact raw-offset retrieval.",
+    "Persistent all-actor token/call budget with protected reviewer capacity.",
+    "Source-sensitive duplicate-action stop and no-op write detection.",
+    "Fresh executed reviewer with structured findings and source fingerprints.",
+    "Consistent final-ledger reporting, safe root-record export, and failed-write rollback.",
+    "Predeclared paired comparison with failure retention, separate cost/latency metrics and root experiment report."
+  ],
+  "fixed_inputs": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "live_task_a_savings_verified": false,
+  "live_adapter_checks_passed": false,
+  "ollama_compatibility_version": "0.40.0",
+  "parent_version": "v7.12.02-original",
+  "parent_source_archive_sha256": "b6c6c0ae822e16caf0c68d427deaffd8afdbecaa5762447b9c493ddcd80e65bf",
+  "inherited_parent_live_adapter_checks_passed": false,
+  "revision": "quality-controlled-upgrade-r1",
+  "live_token_or_cost_savings_verified": false
+}

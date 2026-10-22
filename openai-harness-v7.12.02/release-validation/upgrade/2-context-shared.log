@@ -1,0 +1,7 @@
+test_explicit_pages_share_cap_and_offsets_remain_retrievable (test_shared_context.SharedContextTests) ... ok
+test_many_large_requested_pages_cannot_bypass_cap (test_shared_context.SharedContextTests) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.069s
+
+OK

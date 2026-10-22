@@ -1,0 +1,22 @@
+test_context_reservation_stops_before_generation (test_coding_agent.CodingAgentBudgets) ... ok
+test_exact_prompt_and_spec_survive_every_repair_request (test_coding_agent.CodingAgentBudgets) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_failed_attempts_count_and_call_limit_is_enforced (test_coding_agent.CodingAgentBudgets) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_total_budget_reserves_the_complete_next_response (test_coding_agent.CodingAgentBudgets) ... ok
+test_dependencies_preserved_but_test_script_allowed (test_coding_agent.CodingAgentGuards) ... ok
+test_protected_paths_and_new_packages_rejected (test_coding_agent.CodingAgentGuards) ... ok
+test_safe_file_is_written (test_coding_agent.CodingAgentGuards) ... ok
+test_symlink_write_rejected (test_coding_agent.CodingAgentGuards) ... ok
+test_whole_batch_rejects_before_any_write (test_coding_agent.CodingAgentGuards) ... ok
+test_bad_input_counts_never_start_generation (test_adapter_contract.AdapterContractChecks) ... ok
+test_corrupt_usage_and_response_shapes_fail_closed (test_adapter_contract.AdapterContractChecks) ... ok
+test_invalid_error_usage_reserves_budget_and_stops_retry (test_adapter_contract.AdapterContractChecks) ... ok
+test_valid_usage_survives_invalid_response_content (test_adapter_contract.AdapterContractChecks) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.032s
+
+OK

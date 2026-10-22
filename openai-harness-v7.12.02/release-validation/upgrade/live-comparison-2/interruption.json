@@ -1,0 +1,6 @@
+{
+  "timestamp": "2026-10-20T18:05:12.904061+00:00",
+  "reason": "Extended smoke experiment stopped after final release review changed code; frozen snapshot predates final reviewer-reserve repair.",
+  "processes_interrupted": 4,
+  "accounting": "Known measured calls retained. Interrupted requests without returned provider counters remain unmeasured. No savings or complete live comparison claimed."
+}

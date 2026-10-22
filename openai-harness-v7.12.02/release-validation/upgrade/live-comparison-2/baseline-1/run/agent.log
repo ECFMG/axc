@@ -1,0 +1,37 @@
+fatal: path 'packages/axc/application-services/src/course-types.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":1,"passed_local_checks":false,"tokens":19415,"variant":"baseline"}
+fatal: path 'packages/axc/application-services/src/course-fixtures.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":2,"passed_local_checks":false,"tokens":21550,"variant":"baseline"}
+{"call":3,"passed_local_checks":false,"tokens":21249,"variant":"baseline"}
+fatal: path 'packages/axc/application-services/src/course-search.ts' does not exist in 'fe47c38d32376c5e8bcd1d67838160064fd5de99'
+{"call":4,"passed_local_checks":false,"tokens":22433,"variant":"baseline"}
+Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/coding_agent.py", line 397, in <module>
+    result = run(args.run, args.variant)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/coding_agent.py", line 265, in run
+    response = budget.dispatch(adapter, request, 'primary', 'generation' if index == 0 else 'repair_or_retrieval', input_bound=preflight['tokens'], metadata={'cache_reset': reset})
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/run_budget.py", line 295, in dispatch
+    response = adapter.generate(request)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/ollama_adapter.py", line 170, in generate
+    body = self.http('/api/chat', payload)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/ollama_adapter.py", line 46, in http
+    with opener.open(request, timeout=self.timeout_seconds) as response:
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 517, in open
+    response = self._open(req, data)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 534, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 494, in _call_chain
+    result = func(*args)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1375, in http_open
+    return self.do_open(http.client.HTTPConnection, req)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/urllib/request.py", line 1350, in do_open
+    r = h.getresponse()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 1349, in getresponse
+    response.begin()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 316, in begin
+    version, status, reason = self._read_status()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/http/client.py", line 277, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+KeyboardInterrupt

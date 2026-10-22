@@ -1,0 +1,19 @@
+test_bad_preflight_never_generates_or_reserves (test_run_budget.SharedBudgetTests) ... ok
+test_duplicate_settlement_is_idempotent_but_conflicts_rejected (test_run_budget.SharedBudgetTests) ... ok
+test_global_call_limit_includes_pending_and_all_actors (test_run_budget.SharedBudgetTests) ... ok
+test_initialization_requires_fixed_positive_limits (test_run_budget.SharedBudgetTests) ... ok
+test_known_failed_usage_and_rejected_retry_are_retained_once (test_run_budget.SharedBudgetTests) ... ok
+test_malformed_response_keeps_valid_usage_and_settles_exactly_once (test_run_budget.SharedBudgetTests) ... ok
+test_no_response_with_unknown_or_estimated_usage_returns_free (test_run_budget.SharedBudgetTests) ... ok
+test_output_or_input_overrun_is_retained_and_stops_future_dispatch (test_run_budget.SharedBudgetTests) ... ok
+test_pending_actors_and_truncated_final_response_cannot_complete (test_run_budget.SharedBudgetTests) ... ok
+test_processes_cannot_oversubscribe_shared_token_ceiling (test_run_budget.SharedBudgetTests) ... ok
+test_provider_optional_detail_aliases_are_retained_without_inventing_zero (test_run_budget.SharedBudgetTests) ... ok
+test_shared_actors_and_deterministic_reporting_close (test_run_budget.SharedBudgetTests) ... ok
+test_token_denial_marks_incomplete_before_generation (test_run_budget.SharedBudgetTests) ... ok
+test_unknown_failure_holds_reservation_and_blocks_retry (test_run_budget.SharedBudgetTests) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.249s
+
+OK

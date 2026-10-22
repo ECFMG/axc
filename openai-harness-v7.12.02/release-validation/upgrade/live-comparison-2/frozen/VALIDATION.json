@@ -1,0 +1,38 @@
+{
+  "version": "v7.12.02",
+  "passed": true,
+  "command": "HARNESS_TEST_TYPESCRIPT=/absolute/path/to/typescript/lib/typescript.js python3 -B -m unittest discover -v",
+  "tests": 201,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "duration_seconds": 11.915,
+  "test_log": "TEST_RESULTS.log",
+  "fixed_contracts_unchanged": {
+    "settings": true,
+    "checks": true,
+    "allowed_paths": true,
+    "protected_paths": true,
+    "verification_files": true,
+    "implementation_steps": true
+  },
+  "fixed_input_sha256": {
+    "task-set-a-prompt.md": "3b81b8aa26abd4a54c659bd9fb973debb1c705ad19b1fd876191769be5e752a4",
+    "task-set-a-requirements.md": "f9d887ca3eda786be8ccfb5655da4f3815c0e6cc41bcf084a9d029ade7741943",
+    "course_acceptance.mjs": "4fc0adfd57a2e086ebcbf89bd51989c051a9624c4f22b16ca11f8ffe07ae70d5"
+  },
+  "original_task_accounting_regression": "release-validation/original-task-accounting.json",
+  "controlled_batch_proof": "test_roundtrip_efficiency.Batching.test_controller_finishes_four_files_in_two_guarded_write_calls: four fixture files written in two guarded model-response calls; final validation mocked, not Task A proof",
+  "real_cli_proof": "test_roundtrip_efficiency.Workflow.test_real_finish_and_recovery_cli_generate_all_evidence_without_model_or_revalidation: real Git and frozen subprocess runner, one fixture final gate; recovery does not rerun it",
+  "native_host_proof": "Explicit external_host mode, no adapter invocation; no-harness control cannot use host packets; stale validation cannot be presented as current",
+  "live_task_a_model_run": false,
+  "live_token_or_cost_savings_verified": false,
+  "limitations": [
+    "No live Ollama/provider model generation or matched quality/token comparison performed.",
+    "Codex desktop system context, tool catalog and conversation history remain under host control.",
+    "Review packets prepare a handoff; no external reviewer is invoked and no review success is inferred.",
+    "Character limits bound file excerpts; they are not actual token counters.",
+    "Pricing calculator retains conservative restrictions for unsupported cache-write/long-context tiers."
+  ],
+  "resumed_session_identity_regression": "Thread UUID retained when a rollout filename includes a context-window suffix"
+}

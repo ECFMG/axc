@@ -1,0 +1,46 @@
+{
+  "source_archive": "openai-harness-v7.12.02-updated.zip",
+  "source_archive_sha256": "14a5f3c308670fc4d04ced33c514976b42dc3db1187fa4cb65b00ed3f50dbf90",
+  "extracted_directory": "openai-harness-v7.12.02",
+  "extracted_files": 609,
+  "archive_bytes_preserved": true,
+  "native_entrypoint": "AGENTS.md",
+  "repository_skill": ".agents/skills/axc-harness/SKILL.md",
+  "scope": "Harness integration only; no application implementation, dependencies or production configuration changed.",
+  "status": "validated",
+  "file_integrity": {
+    "zip_entries_compared_byte_for_byte": 609,
+    "sha256_manifest_entries_verified": 608,
+    "mismatches": []
+  },
+  "checks": {
+    "harness_regression_tests": {
+      "command": "HARNESS_TEST_TYPESCRIPT=<existing TypeScript path> python3 -B -m unittest discover -v",
+      "passed": 299,
+      "failed": 0
+    },
+    "official_skill_validator": "passed; PyYAML installed in external scratch directory only, no repository/app dependency changes",
+    "run_task_a_cli_help": "passed",
+    "native_loading_smoke": {
+      "status": "passed",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium",
+      "root_AGENTS_injected_into_input": true,
+      "skill_read_in_transcript": true,
+      "referenced_README_and_CODING_TASKS_read": true,
+      "task_B_spec_read": true,
+      "session_id": "01a16553-c069-7790-a718-78ba78d14bc9",
+      "turn_id": "01a16553-c4ae-7632-8dbd-3ad3e555c57c",
+      "scope": "One read-only readiness task, no feature implementation, no application builds/tests and no additional model/provider calls by the probe agent. Not a measured Task B feature run.",
+      "expected_readiness_finding": "Probe correctly noted uncommitted installation work; clean measured runs must start after commit. Runtime/application readiness was not claimed verified.",
+      "comparison": "No before/after performance or savings conclusion; this smoke establishes loading only."
+    }
+  },
+  "new_files": [
+    "AGENTS.md",
+    ".agents/skills/axc-harness/SKILL.md",
+    "HARNESS.md",
+    "harness-integration/"
+  ],
+  "application_or_existing_skills_modified": false
+}

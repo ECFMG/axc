@@ -1,0 +1,385 @@
+{
+  "id": "TS-A-CATALOG-SEARCH",
+  "spec": "task-set-a-requirements.md",
+  "allowed_paths": [
+    "apps/api/",
+    "packages/axc/rest/",
+    "packages/axc/application-services/",
+    "packages/axc/domain/",
+    "packages/axc/persistence/",
+    "packages/axc/service-mongoose/",
+    "packages/axc-verification/",
+    "apps/docs/"
+  ],
+  "protected_paths": [
+    "apps/api/host.json",
+    "apps/api/src/service-config/",
+    "apps/api/scripts/sync-local-settings.ts",
+    "apps/api/scripts/start-host.ts",
+    "apps/api/rolldown.config.ts"
+  ],
+  "checks": [
+    [
+      "pnpm",
+      "test",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "lint"
+    ],
+    [
+      "pnpm",
+      "run",
+      "build",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "typecheck",
+      "--env-mode=loose"
+    ],
+    [
+      "pnpm",
+      "run",
+      "test:arch",
+      "--env-mode=loose"
+    ],
+    [
+      "node",
+      "{verification_dir}/course_acceptance.mjs"
+    ],
+    [
+      "node",
+      "{verification_dir}/course_acceptance.mjs",
+      "--host"
+    ],
+    [
+      "python3",
+      "{verification_dir}/task_a_gates.py",
+      "--repo",
+      ".",
+      "--base",
+      "{base_commit}",
+      "--out",
+      "{validation_dir}/submitted"
+    ]
+  ],
+  "settings": {
+    "model": "gemma4:26b",
+    "temperature": 0,
+    "context_tokens": 98304,
+    "max_output_tokens": 4000,
+    "max_calls": 20,
+    "token_budget": 300000,
+    "timeout_seconds": 900,
+    "cache": "verified model unload before every generation",
+    "mode": "local only; hosted cost unmeasured"
+  },
+  "check_timeout": 900,
+  "prompt_file": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/task-set-a-prompt.md",
+  "verification_files": [
+    "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/course_acceptance.mjs",
+    "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/task_a_gates.py",
+    "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/node_test_reporter.mjs"
+  ],
+  "agent_command": [
+    "/Library/Developer/CommandLineTools/usr/bin/python3",
+    "-B",
+    "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/outputs/harness-v7.12.02-updated/live-comparison-2/baseline-1/frozen/coding_agent.py",
+    "--variant",
+    "baseline"
+  ],
+  "agent_timeout": 5400,
+  "version": "v7.12.02",
+  "implementation_steps": [
+    {
+      "path": "packages/axc/application-services/src/course-types.ts",
+      "instruction": "Define the complete required Course model and typed query, success and error contracts."
+    },
+    {
+      "path": "packages/axc/application-services/src/course-fixtures.ts",
+      "instruction": "Create at least twelve varied local course fixtures with mixed modality/status/tags and valid dates."
+    },
+    {
+      "path": "packages/axc/application-services/src/course-search.ts",
+      "instruction": "Implement stateless fixture search, combined filters, raw-input validation, sorting and pagination against the exact specification."
+    },
+    {
+      "path": "packages/axc/application-services/src/index.ts",
+      "instruction": "Extend the existing ApplicationServices interface and factory; preserve all original health exports and behavior and expose course APIs through the public package root."
+    },
+    {
+      "path": "packages/axc/rest/src/index.ts",
+      "instruction": "Add the Hono GET /api/courses route, exact response envelope and HTTP 400 handling; preserve health and authorization-header forwarding."
+    },
+    {
+      "path": "apps/api/src/index.ts",
+      "instruction": "Register the courses GET Azure HTTP function using the existing composition root and adapter; preserve health registration and startup."
+    },
+    {
+      "path": "packages/axc/application-services/src/course-search.test.ts",
+      "instruction": "Add executable Vitest tests in this registered package for required Task A behaviors, including two filter combinations, invalid inputs and no matches; follow strict TS narrowing."
+    },
+    {
+      "path": "apps/api/test/courses.test.mjs",
+      "instruction": "Add executable Node HTTP integration tests using the real local app/host and public package exports; plain JavaScript only; cover success and invalid requests."
+    },
+    {
+      "path": "apps/api/package.json",
+      "instruction": "Add test:courses as node --test test/courses.test.mjs while preserving original scripts, dependencies, exports and other manifest fields."
+    },
+    {
+      "path": "apps/docs/docs/courses.md",
+      "instruction": "Document endpoint path, all query parameters/defaults, and success/error responses."
+    }
+  ],
+  "repair_targets": {
+    "independent_api": "packages/axc/application-services/src/course-search.ts",
+    "submitted_tests": "packages/axc/application-services/src/course-search.test.ts"
+  },
+  "repository_contracts": true,
+  "always_context": [
+    "packages/axc/README.md"
+  ],
+  "context_groups": {
+    "packages/axc/application-services/src/course-types.ts": [],
+    "packages/axc/application-services/src/course-fixtures.ts": [
+      "packages/axc/application-services/src/course-types.ts"
+    ],
+    "packages/axc/application-services/src/course-search.ts": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/course-fixtures.ts"
+    ],
+    "packages/axc/application-services/src/index.ts": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/course-search.ts",
+      "packages/axc/application-services/src/health.test.ts"
+    ],
+    "packages/axc/rest/src/index.ts": [
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/application-services/src/course-types.ts"
+    ],
+    "apps/api/src/index.ts": [
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/rest/src/index.ts"
+    ],
+    "packages/axc/application-services/src/course-search.test.ts": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/application-services/src/course-fixtures.ts",
+      "packages/axc/application-services/src/course-search.ts"
+    ],
+    "apps/api/test/courses.test.mjs": [
+      "apps/api/src/index.ts",
+      "packages/axc/rest/src/index.ts",
+      "packages/axc/application-services/src/index.ts",
+      "apps/api/package.json",
+      "apps/api/scripts/start-host.ts"
+    ],
+    "apps/api/package.json": [
+      "apps/api/test/courses.test.mjs"
+    ],
+    "apps/docs/docs/courses.md": [
+      "packages/axc/application-services/src/course-types.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/docs/docs/healthcheck.md"
+    ]
+  },
+  "defer_validation_until_planned_files": true,
+  "action_batch_size": 2,
+  "focused_local_validation": true,
+  "source_context_characters": 12000,
+  "runtime_preflight_required": true,
+  "max_identical_action_errors": 3,
+  "max_repeated_actions": 3,
+  "controlled_workflow": {
+    "required": true,
+    "review_required": true,
+    "reporting": "deterministic",
+    "scope": "all primary/reviewer/reporting calls including failures, retries and final responses",
+    "review_reserve_tokens": 60000,
+    "review_reserve_calls": 1
+  },
+  "execution_environment": {
+    "repo": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1",
+    "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+    "branch": "harness/controlled-baseline-1",
+    "destination_branch": "harness/controlled-baseline-1",
+    "checks": [
+      {
+        "name": "node",
+        "argv": [
+          "node",
+          "--version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "v24.19.0",
+        "log": "node.log",
+        "remediation": "Make Node.js 24 or newer available before retrying.",
+        "seconds": 0.025430750000000002
+      },
+      {
+        "name": "pnpm",
+        "argv": [
+          "pnpm",
+          "--version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "11.9.0",
+        "log": "pnpm.log",
+        "remediation": "Activate pnpm 11.9.0 declared in package.json before retrying.",
+        "seconds": 0.31589358300000003,
+        "expected_version": "11.9.0",
+        "actual_version": "11.9.0"
+      },
+      {
+        "name": "func",
+        "argv": [
+          "func",
+          "--version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "4.15.1",
+        "log": "func.log",
+        "remediation": "Make Azure Functions Core Tools (func) available before retrying.",
+        "seconds": 0.130280042
+      },
+      {
+        "name": "java",
+        "argv": [
+          "java",
+          "-version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+        "log": "java.log",
+        "remediation": "Make the required Java runtime available before retrying.",
+        "seconds": 0.032642875000000016
+      },
+      {
+        "name": "typescript",
+        "argv": [
+          "node",
+          "-e",
+          "console.log(require('typescript').version)"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "6.0.3",
+        "log": "typescript.log",
+        "remediation": "Ensure the repository's installed TypeScript package is resolvable by Node. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+        "seconds": 0.169922458
+      },
+      {
+        "name": "turbo",
+        "argv": [
+          "pnpm",
+          "exec",
+          "turbo",
+          "--version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "2.9.18",
+        "log": "turbo.log",
+        "remediation": "Ensure the repository's Turbo build tool can execute through pnpm. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+        "seconds": 1.0665935830000002
+      },
+      {
+        "name": "biome",
+        "argv": [
+          "pnpm",
+          "exec",
+          "biome",
+          "--version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "Version: 2.4.10",
+        "log": "biome.log",
+        "remediation": "Ensure the repository's Biome formatter can execute through pnpm. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+        "seconds": 1.2098332090000001
+      },
+      {
+        "name": "tsgo",
+        "argv": [
+          "pnpm",
+          "exec",
+          "tsgo",
+          "--version"
+        ],
+        "exit_code": 0,
+        "passed": true,
+        "summary": "Version 7.0.0-dev.20260428.1",
+        "log": "tsgo.log",
+        "remediation": "Ensure the repository's tsgo type checker can execute through pnpm. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+        "seconds": 0.8699032090000001
+      },
+      {
+        "name": "installed_dependency_links",
+        "passed": true,
+        "missing": [],
+        "remediation": "Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+        "note": "Direct-link readiness only; lockfile/install coherence is not verified. Frozen lockfile restoration and final build/tests remain required."
+      },
+      {
+        "name": "localhost",
+        "passed": true,
+        "remediation": "Run in an isolated environment permitted to bind localhost; do not skip HTTP checks."
+      }
+    ],
+    "passed": true,
+    "final_validation_required": true,
+    "remediation": "Restore locked dependencies with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; install missing runtimes separately. No install, network access or permissions change is performed by this probe.",
+    "runtime_preflight": {
+      "repo": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1",
+      "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+      "branch": "harness/controlled-baseline-1",
+      "destination_branch": "harness/controlled-baseline-1",
+      "checks": [
+        {
+          "argv": [
+            "pnpm",
+            "run",
+            "build",
+            "--env-mode=loose"
+          ],
+          "exit_code": 0,
+          "timeout": false,
+          "seconds": 14.008084
+        },
+        {
+          "argv": [
+            "pnpm",
+            "test",
+            "--env-mode=loose"
+          ],
+          "exit_code": 0,
+          "timeout": false,
+          "seconds": 18.339240416000003
+        }
+      ],
+      "source_unchanged": true,
+      "passed": true,
+      "final_validation_required": true,
+      "model_invoked": false,
+      "remediation": "Fix baseline runtime/build/test prerequisites outside the measured trial, preserve these logs, then prepare fresh evidence. Never repair application code to hide an environment failure."
+    }
+  },
+  "projection": {
+    "total_tokens": null,
+    "expected_calls": null,
+    "input_tokens_per_call": null,
+    "output_tokens_per_call": null,
+    "assumptions": null,
+    "kind": "estimate, not recorded usage",
+    "formula": "expected_calls * (input_tokens_per_call + output_tokens_per_call)",
+    "recorded_at": "2026-10-20T17:57:33.701002+00:00"
+  }
+}

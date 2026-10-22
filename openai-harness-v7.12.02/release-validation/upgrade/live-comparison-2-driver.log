@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/run_harness_comparison.py", line 7, in <module>
+    result=benchmark(root/'work/harness-runtime-base','fe47c38d32376c5e8bcd1d67838160064fd5de99',root/'work/harness-upgrade-trials-2',root/'outputs/harness-v7.12.02-updated/live-comparison-2',Path('/Users/dfortun/Library/pnpm/store'),repetitions=2)
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/coding_benchmark.py", line 97, in benchmark
+    subprocess.run([sys.executable, '-B', str(frozen / 'run_task_a.py'), 'finish', '--execute', '--evidence', str(evidence)], stdout=log, stderr=subprocess.STDOUT)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 507, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1126, in communicate
+    self.wait()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1189, in wait
+    return self._wait(timeout=timeout)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1917, in _wait
+    (pid, sts) = self._try_wait(0)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 1875, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+KeyboardInterrupt

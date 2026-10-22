@@ -1,0 +1,18 @@
+Harness v7.12.02 controlled upgrade — completed
+
+Revision: quality-controlled-upgrade-r1. Original v7.12.02 is preserved in parent metadata. Reused inspected controller implementations from the later local low-cost revision and repaired additional defects found during fresh review. No new application dependencies, commits or pushes.
+
+Updates implemented in seven increments:
+1. Actual clean-baseline runtime preflight: tool versions, pinned package manager, installed links, localhost, baseline build and full tests. Failure blocks model dispatch and preserves logs.
+2. Shared source-excerpt budget: 12,000 characters across automatic sources and explicit source-page retrieval; exact raw offsets and full task/specification preserved.
+3. Durable all-actor budget: primary, reviewer and deterministic reporting; 60,000 tokens and one call protected for review within existing total limits. Unknown attempts block dispatch. Rejected primary requests preserve reviewer capacity.
+4. Repetition controls: identical invalid actions and repeated unchanged reads/validation stop after three; unchanged writes do not advance the plan. Existing guarded two-file batching and focused repair checks retained.
+5. Actual fresh reviewer: controller dispatch, complete packet, structured findings and source hashes. Missing, stale, incomplete or rejected review cannot qualify.
+6. Consistent reporting: root/nested usage share final ledger; reporting closes only after successful rendering; failures reopen accounting and invalidate partial completion receipts. Explicit export-report copies the same finalized report to an external publication location.
+7. Controlled experiments: paired alternating repetitions, frozen conditions, all eight quality gates, preparation/paid-call failure retention, separate cost/latency/wall-time metrics, and generated root experiment evaluation record. Unknown totals remain null while known paid-token subtotals stay visible.
+
+Verification: original baseline 201 tests passed. Upgraded release: 299 tests passed, zero failures/errors/skips. Real clean AXC baseline build and full tests passed, including MongoDB and Azure HTTP startup. Source remained clean. Fixed task/specification, generation settings, allowed/protected paths, implementation plan, verifiers and all eight final commands are preserved. Fresh review findings were repaired and checked.
+
+Live evidence: first experiment preparation failed due a missing offline tarball and is preserved. A second pre-final smoke invoked the local model, retaining 84,647 measured tokens from four responses; one interrupted request has unmeasured counters. It was stopped because its frozen code predates the final review repair. No complete matched live comparison, measured savings, or 30/30 score is claimed. A fresh final-release experiment remains necessary for those claims. This does not prevent use of the updated, regression-tested harness.
+
+Use: read README.md inside the ZIP. Main commands are prepare, finish --execute, recover, export-report and coding_benchmark.py. Actual experiment reports and errors are under release-validation/upgrade/. New native-harness-development usage is separate in the sibling usage.json and excludes the earlier Task A task. Final assistant-response usage is pending until its counters exist.

@@ -1,0 +1,39 @@
+{
+  "variant": "baseline",
+  "calls": 4,
+  "passed_local_checks": false,
+  "feedback": {
+    "commands": [
+      {
+        "argv": [
+          "pnpm",
+          "exec",
+          "biome",
+          "check",
+          "--write",
+          "packages/axc/application-services/src/course-fixtures.ts",
+          "packages/axc/application-services/src/course-search.ts",
+          "packages/axc/application-services/src/course-types.ts"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "seconds": 0.5038012089999597,
+        "stage": "format",
+        "log": "repair-04/00.log",
+        "output": "packages/axc/application-services/src/course-fixtures.ts:1:23 lint/correctness/noUnusedImports  FIXABLE  \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n  ! Several of these imports are unused.\n  \n  > 1 \u2502 import type { Course, CourseModality, CourseStatus } from './course-types.js';\n      \u2502                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    2 \u2502 \n    3 \u2502 export const COURSE_FIXTURES: Course[] = [\n  \n  i Unused imports might be the result of an incomplete refactoring.\n  \n  i Unsafe fix: Remove the unused imports.\n  \n    1 \u2502 import\u00b7type\u00b7{\u00b7Course,\u00b7CourseModality,\u00b7CourseStatus\u00b7}\u00b7from\u00b7'./course-types.js';\n      \u2502                       -----------------------------                           \n\npackages/axc/application-services/src/course-search.ts:1:15 lint/correctness/noUnusedImports  FIXABLE  \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n  ! Several of these imports are unused.\n  \n  > 1 \u2502 import type { COURSE_FIXTURES, Course, CourseErrorDetail, CourseErrorEnvelope, CourseSearchQuery, CourseSearchResponse } from './course-types.js';\n      \u2502               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    2 \u2502 \n    3 \u2502 /**\n  \n  i Unused imports might be the result of an incomplete refactoring.\n  \n  i Unsafe fix: Remove the unused imports.\n  \n    1 \u2502 import\u00b7type\u00b7{\u00b7COURSE_FIXTURES,\u00b7Course,\u00b7CourseErrorDetail,\u00b7CourseErrorEnvelope,\u00b7CourseSearchQuery,\u00b7CourseSearchResponse\u00b7}\u00b7from\u00b7'./course-types.js';\n      \u2502               -------------------------                   ---------------------                                                                   \n\npackages/axc/application-services/src/course-search.ts:14:2 lint/suspicious/useAwait \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n  \u00d7 This async function lacks an await expression.\n  \n    12 \u2502 \t * @throws {CourseErrorEnvelope} If query parameters are invalid.\n    13 \u2502 \t */\n  > 14 \u2502 \tasync search(query: CourseSearchQuery): Promise<CourseSearchResponse> {\n       \u2502 \t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  > 15 \u2502 \t\tconst errors: CourseErrorDetail[] = [];\n        ...\n  > 87 \u2502 \t\t};\n  > 88 \u2502 \t}\n       \u2502 \t^\n    89 \u2502 }\n    90 \u2502 \n  \n  i Remove this async modifier, or add an await expression in the function.\n  \n    12 \u2502 \t * @throws {CourseErrorEnvelope} If query parameters are invalid.\n    13 \u2502 \t */\n  > 14 \u2502 \tasync search(query: CourseSearchQuery): Promise<CourseSearchResponse> {\n       \u2502 \t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  > 15 \u2502 \t\tconst errors: CourseErrorDetail[] = [];\n        ...\n  > 87 \u2502 \t\t};\n  > 88 \u2502 \t}\n       \u2502 \t^\n    89 \u2502 }\n    90 \u2502 \n  \n  i Async functions without await expressions may not need to be declared async.\n  \n\nSkipped 5 suggested fixes.\nIf you wish to apply the suggested (unsafe) fixes, use the command biome check --write --unsafe\n\nChecked 3 files in 24ms. Fixed 1 file.\nFound 1 error.\nFound 2 warnings.\ncheck \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n  \u00d7 Some errors were emitted while applying fixes.\n  \n\n"
+      }
+    ],
+    "deferred_until_written": [
+      "packages/axc/application-services/src/index.ts",
+      "packages/axc/rest/src/index.ts",
+      "apps/api/src/index.ts",
+      "packages/axc/application-services/src/course-search.test.ts",
+      "apps/api/test/courses.test.mjs",
+      "apps/api/package.json",
+      "apps/docs/docs/courses.md"
+    ],
+    "tests_added": false,
+    "documentation_added": false,
+    "passed": false
+  }
+}

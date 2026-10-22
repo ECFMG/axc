@@ -1,0 +1,12 @@
+usage: run_task_a.py [-h]
+                     {prepare,execute,check,preflight,record-codex-usage,report,export-report,package,finish,recover,review-packet,host-context,repair,review,efficiency}
+                     ...
+
+Prepare, execute and score fresh Task A trials; no-harness execution is
+external.
+
+positional arguments:
+  {prepare,execute,check,preflight,record-codex-usage,report,export-report,package,finish,recover,review-packet,host-context,repair,review,efficiency}
+
+optional arguments:
+  -h, --help            show this help message and exit

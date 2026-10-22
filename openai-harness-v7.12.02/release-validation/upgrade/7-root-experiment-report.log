@@ -1,0 +1,6 @@
+test_install_failure_is_an_immutable_failed_trial_before_any_generation (test_benchmark_failures.PreparationFailureTests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+OK

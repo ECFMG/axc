@@ -1,0 +1,266 @@
+$ turbo run test test:acceptance --env-mode=loose
+• turbo 2.9.18
+
+   • Packages in scope: @apps/api, @apps/docs, @axc-verification/acceptance-api, @axc-verification/archunit-tests, @axc/application-services, @axc/domain, @axc/persistence, @axc/rest, @axc/service-mongoose, @cellix/api-core, @cellix/api-services-spec, @cellix/archunit-tests, @cellix/config-rolldown, @cellix/config-typescript, @cellix/config-vitest, @cellix/domain-seedwork, @cellix/event-bus-seedwork-node, @cellix/local-dev, @cellix/mongoose-seedwork, @cellix/serenity-framework, @cellix/server-mongodb-memory-mock-seedwork
+   • Running test, test:acceptance in 21 packages
+   • Remote caching disabled
+
+@cellix/config-vitest:build: cache hit, replaying logs 51cb58d9d5d991b5
+@cellix/config-vitest:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: cache hit, replaying logs a13cf53c0192c3c1
+@cellix/api-services-spec:build: cache hit, replaying logs c45c605256ad5f9e
+@cellix/server-mongodb-memory-mock-seedwork:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ pnpm run lint
+@cellix/api-services-spec:build: $ biome lint
+@cellix/api-services-spec:build: Checked 1 file in 8ms. No fixes applied.
+@cellix/api-services-spec:build: $ tsgo --build
+@cellix/server-mongodb-memory-mock-seedwork:build: $ biome lint
+@cellix/server-mongodb-memory-mock-seedwork:build: Checked 1 file in 7ms. No fixes applied.
+@cellix/server-mongodb-memory-mock-seedwork:build: $ tsgo --build
+@cellix/local-dev:test: cache miss, executing b647048694623074
+@axc/application-services:build: cache hit, replaying logs 7d5320fc5ceceada
+@axc/application-services:build: $ pnpm run lint
+@axc/application-services:build: $ biome lint
+@axc/application-services:build: Checked 2 files in 13ms. No fixes applied.
+@axc/application-services:build: $ tsgo --build
+@cellix/domain-seedwork:test: cache miss, executing afa95f50e6fb7b97
+@cellix/archunit-tests:test: cache miss, executing 963e80fa62dd12bc
+@cellix/local-dev:build: cache hit, replaying logs ff7cb06cb242bea7
+@axc/application-services:test: cache miss, executing 627e4ac893f5a1f4
+@cellix/local-dev:build: $ pnpm run lint
+@cellix/local-dev:build: $ biome lint
+@cellix/local-dev:build: Checked 25 files in 23ms. No fixes applied.
+@cellix/local-dev:build: $ tsgo --build
+@cellix/config-rolldown:build: cache hit, replaying logs a9acb227c9d0ad20
+@cellix/config-rolldown:test: cache miss, executing 1d60a15287cf667a
+@cellix/config-rolldown:build: $ tsgo --build
+@cellix/config-vitest:test: cache miss, executing 5cf075e3ae32626a
+@cellix/domain-seedwork:build: cache hit, replaying logs ac9a5a36778426ab
+@cellix/domain-seedwork:build: $ pnpm run lint
+@cellix/domain-seedwork:build: $ biome lint
+@cellix/domain-seedwork:build: Checked 23 files in 18ms. No fixes applied.
+@cellix/domain-seedwork:build: $ tsgo --build
+@cellix/api-core:test: cache miss, executing c9de1820fc5dab71
+@cellix/archunit-tests:build: cache hit, replaying logs 38a41880fadf9617
+@cellix/api-core:build: cache hit, replaying logs f86d653698420813
+@cellix/archunit-tests:build: $ biome lint
+@cellix/archunit-tests:build: Checked 44 files in 25ms. No fixes applied.
+@cellix/archunit-tests:build: $ tsgo --build
+@cellix/api-core:build: $ pnpm run lint
+@cellix/api-core:build: $ biome lint
+@cellix/api-core:build: Checked 5 files in 17ms. No fixes applied.
+@cellix/api-core:build: $ tsgo --build
+@cellix/serenity-framework:test: cache miss, executing b6ce5827872e9ba0
+@cellix/serenity-framework:build: cache hit, replaying logs 4bf49c48690b4c82
+@axc/rest:build: cache hit, replaying logs 49a3bd7054d47904
+@cellix/serenity-framework:build: $ pnpm run lint
+@cellix/serenity-framework:build: $ biome lint
+@cellix/serenity-framework:build: Checked 49 files in 27ms. No fixes applied.
+@cellix/serenity-framework:build: $ tsgo --build
+@axc/rest:build: $ pnpm run lint
+@axc/rest:build: $ biome lint
+@axc/rest:build: Checked 1 file in 9ms. No fixes applied.
+@axc/rest:build: $ tsgo --build
+@cellix/event-bus-seedwork-node:test: cache miss, executing 93ea50d0b5d25d20
+@cellix/event-bus-seedwork-node:build: cache hit, replaying logs a6804a89433f958d
+@cellix/event-bus-seedwork-node:build: $ pnpm run lint
+@cellix/event-bus-seedwork-node:build: $ biome lint
+@cellix/event-bus-seedwork-node:build: Checked 8 files in 15ms. No fixes applied.
+@cellix/event-bus-seedwork-node:build: $ tsgo --build
+@apps/api:build: cache hit, replaying logs d13e9f0c1fbf28d4
+@apps/api:build: $ pnpm run lint
+@apps/api:build: $ biome lint
+@apps/api:build: Checked 2 files in 8ms. No fixes applied.
+@apps/api:build: $ tsgo --build && tsgo --noEmit --project tsconfig.rolldown.json && rolldown -c rolldown.config.ts && pnpm run prepare:deploy && node scripts/zip-deploy.mjs
+@apps/api:build: <DIR>/index.js.map  asset │ size: 487.20 kB
+@apps/api:build: <DIR>/index.js      chunk │ size: 282.17 kB
+@apps/api:build: 
+@apps/api:build: ✔ rolldown v1.0.0-beta.55 Finished in 20.63 ms
+@apps/api:build: $ cellix-prepare-func-deploy
+@apps/api:build: Azure Functions package: /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/apps/api/agentCourses-api.zip
+@cellix/mongoose-seedwork:build: cache hit, replaying logs f4b889cace0147c6
+@cellix/mongoose-seedwork:build: $ pnpm run lint
+@cellix/mongoose-seedwork:build: $ biome lint
+@cellix/mongoose-seedwork:build: Checked 16 files in 18ms. No fixes applied.
+@cellix/mongoose-seedwork:build: $ tsgo --build
+@cellix/mongoose-seedwork:test: cache miss, executing 399c60d2f5e53b7f
+@axc/application-services:test: $ vitest run --silent --reporter=dot
+@cellix/mongoose-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/config-rolldown:test: $ vitest run --silent --reporter=dot
+@cellix/local-dev:test: $ vitest run --silent --reporter=dot
+@cellix/domain-seedwork:test: $ vitest run --silent --reporter=dot
+@cellix/event-bus-seedwork-node:test: $ vitest run --silent --reporter=dot
+@cellix/serenity-framework:test: $ vitest run --silent --reporter=dot
+@cellix/api-core:test: $ vitest run --silent --reporter=dot
+@cellix/archunit-tests:test: $ vitest run
+@cellix/config-vitest:test: $ vitest run --silent --reporter=dot
+@cellix/config-vitest:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-vitest:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/config-vitest
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test: ··
+@cellix/config-vitest:test: 
+@cellix/config-vitest:test:  Test Files  2 passed (2)
+@cellix/config-vitest:test:       Tests  2 passed (2)
+@cellix/config-vitest:test: Type Errors  no errors
+@cellix/config-vitest:test:    Start at  13:57:50
+@cellix/config-vitest:test:    Duration  516ms (transform 29ms, setup 0ms, import 44ms, tests 2ms, environment 0ms, typecheck 281ms)
+@cellix/config-vitest:test: 
+@axc-verification/acceptance-api:test:acceptance: cache bypass, force executing 433da01c2ed3ce32
+@cellix/mongoose-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/mongoose-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-rolldown:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/config-rolldown:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/api-core:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/api-core:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/domain-seedwork:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/domain-seedwork:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/local-dev:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/local-dev:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/serenity-framework:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/serenity-framework:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@axc/application-services:test: Testing types with tsc and vue-tsc is an experimental feature.
+@axc/application-services:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/event-bus-seedwork-node:test: Testing types with tsc and vue-tsc is an experimental feature.
+@cellix/event-bus-seedwork-node:test: Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/config-rolldown
+@cellix/config-rolldown:test: 
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/archunit-tests
+@cellix/archunit-tests:test: 
+@cellix/api-core:test: 
+@cellix/api-core:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/api-core
+@cellix/api-core:test: 
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/local-dev
+@cellix/local-dev:test: 
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/mongoose-seedwork
+@cellix/mongoose-seedwork:test: 
+@cellix/serenity-framework:test: 
+@cellix/serenity-framework:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/serenity-framework
+@cellix/serenity-framework:test: 
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/domain-seedwork
+@cellix/domain-seedwork:test: 
+@axc/application-services:test: 
+@axc/application-services:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/axc/application-services
+@axc/application-services:test: 
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:test:  RUN  v4.1.11 /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/cellix/event-bus-seedwork-node
+@cellix/event-bus-seedwork-node:test: 
+@axc/application-services:test: ····
+@axc/application-services:test: 
+@axc/application-services:test:  Test Files  2 passed (2)
+@axc/application-services:test:       Tests  4 passed (4)
+@axc/application-services:test: Type Errors  no errors
+@axc/application-services:test:    Start at  13:57:51
+@axc/application-services:test:    Duration  1.20s (transform 37ms, setup 0ms, import 47ms, tests 4ms, environment 0ms, typecheck 399ms)
+@axc/application-services:test: 
+@cellix/api-core:test: ····································································
+@cellix/api-core:test: 
+@cellix/api-core:test:  Test Files  2 passed (2)
+@cellix/api-core:test:       Tests  68 passed (68)
+@cellix/api-core:test: Type Errors  no errors
+@cellix/api-core:test:    Start at  13:57:51
+@cellix/api-core:test:    Duration  1.42s (transform 305ms, setup 0ms, import 410ms, tests 38ms, environment 0ms, typecheck 437ms)
+@cellix/api-core:test: 
+@cellix/config-rolldown:test: ········
+@cellix/config-rolldown:test: 
+@cellix/config-rolldown:test:  Test Files  2 passed (2)
+@cellix/config-rolldown:test:       Tests  8 passed (8)
+@cellix/config-rolldown:test: Type Errors  no errors
+@cellix/config-rolldown:test:    Start at  13:57:51
+@cellix/config-rolldown:test:    Duration  1.63s (transform 69ms, setup 0ms, import 130ms, tests 234ms, environment 0ms, typecheck 672ms)
+@cellix/config-rolldown:test: 
+@cellix/local-dev:test: ······································
+@cellix/local-dev:test: 
+@cellix/local-dev:test:  Test Files  2 passed (2)
+@cellix/local-dev:test:       Tests  38 passed (38)
+@cellix/local-dev:test: Type Errors  no errors
+@cellix/local-dev:test:    Start at  13:57:51
+@cellix/local-dev:test:    Duration  1.64s (transform 520ms, setup 0ms, import 668ms, tests 28ms, environment 0ms, typecheck 213ms)
+@cellix/local-dev:test: 
+@axc-verification/acceptance-api:test:acceptance: $ rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features
+@cellix/domain-seedwork:test: ······························································································
+@cellix/domain-seedwork:test: 
+@cellix/domain-seedwork:test:  Test Files  16 passed (16)
+@cellix/domain-seedwork:test:       Tests  94 passed (94)
+@cellix/domain-seedwork:test: Type Errors  no errors
+@cellix/domain-seedwork:test:    Start at  13:57:51
+@cellix/domain-seedwork:test:    Duration  2.86s (transform 4.33s, setup 0ms, import 13.33s, tests 80ms, environment 4ms, typecheck 296ms)
+@cellix/domain-seedwork:test: 
+@cellix/event-bus-seedwork-node:test: ·····························································································
+@cellix/event-bus-seedwork-node:test: 
+@cellix/event-bus-seedwork-node:test:  Test Files  6 passed (6)
+@cellix/event-bus-seedwork-node:test:       Tests  93 passed (93)
+@cellix/event-bus-seedwork-node:test: Type Errors  no errors
+@cellix/event-bus-seedwork-node:test:    Start at  13:57:51
+@cellix/event-bus-seedwork-node:test:    Duration  2.89s (transform 1.65s, setup 0ms, import 5.29s, tests 110ms, environment 0ms, typecheck 361ms)
+@cellix/event-bus-seedwork-node:test: 
+@cellix/archunit-tests:test: 
+@cellix/archunit-tests:test:  Test Files  3 passed (3)
+@cellix/archunit-tests:test:       Tests  10 passed (10)
+@cellix/archunit-tests:test:    Start at  13:57:51
+@cellix/archunit-tests:test:    Duration  3.10s (transform 270ms, setup 0ms, import 3.67s, tests 2.52s, environment 1ms)
+@cellix/archunit-tests:test: 
+@cellix/serenity-framework:test: ······························································
+@cellix/serenity-framework:test: 
+@cellix/serenity-framework:test:  Test Files  22 passed (22)
+@cellix/serenity-framework:test:       Tests  62 passed (62)
+@cellix/serenity-framework:test: Type Errors  no errors
+@cellix/serenity-framework:test:    Start at  13:57:51
+@cellix/serenity-framework:test:    Duration  4.12s (transform 1.98s, setup 0ms, import 11.97s, tests 1.72s, environment 32ms, typecheck 375ms)
+@cellix/serenity-framework:test: 
+@cellix/mongoose-seedwork:test: ·····································································································································································
+@cellix/mongoose-seedwork:test: 
+@cellix/mongoose-seedwork:test:  Test Files  14 passed (14)
+@cellix/mongoose-seedwork:test:       Tests  165 passed (165)
+@cellix/mongoose-seedwork:test: Type Errors  no errors
+@cellix/mongoose-seedwork:test:    Start at  13:57:51
+@cellix/mongoose-seedwork:test:    Duration  5.34s (transform 6.52s, setup 0ms, import 14.96s, tests 2.41s, environment 0ms, typecheck 603ms)
+@cellix/mongoose-seedwork:test: 
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/packages/axc-verification/acceptance-api/src/features/healthcheck.feature:3
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Healthcheck: GET /health reports the API is healthy
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client requests the healthcheck
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/health' (163ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the healthcheck responds with status 200
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the status of the last response does equal 200 (1ms)
+@axc-verification/acceptance-api:test:acceptance:   And the healthcheck body matches the agentCourses contract
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health status does equal "ok" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health service does equal "agentCourses-api" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health projectCode does equal "axc" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health environment does equal "test" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health timestamp does match /^\d{4}-\d{2}-\d{2}T/ (1ms)
+@axc-verification/acceptance-api:test:acceptance:   After
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✓ Execution successful (8s 819ms)
+@axc-verification/acceptance-api:test:acceptance: ================================================================================
+@axc-verification/acceptance-api:test:acceptance: Execution Summary
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Healthcheck: 1 successful, 1 total (8s 819ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Total time: 8s 819ms
+@axc-verification/acceptance-api:test:acceptance: Real time: 8s 853ms
+@axc-verification/acceptance-api:test:acceptance: Scenarios:  1
+@axc-verification/acceptance-api:test:acceptance: ================================================================================
+@axc-verification/acceptance-api:test:acceptance: Spawning: /Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home/bin/java -DLOG_LEVEL=warn -Dlogback.configurationFile=/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade-trials-2/baseline-1/node_modules/.pnpm/@serenity-js+serenity-bdd@3.46.0/node_modules/@serenity-js/serenity-bdd/resources/logback.config.xml -Dserenity.compress.filenames=true -Dserenity.features.directory=src/features -jar node_modules/@serenity-js/serenity-bdd/cache/serenity-cli-5.3.11.jar --source target/site/serenity --destination target/site/serenity --features src/features --project acceptance-api
+@axc-verification/acceptance-api:test:acceptance: (node:32420) [DEP0174] DeprecationWarning: Calling promisify on a function that returns a Promise is likely a mistake.
+@axc-verification/acceptance-api:test:acceptance: (Use `node --trace-deprecation ...` to show where the warning was created)
+@axc-verification/acceptance-api:test:acceptance: -------------------------------
+@axc-verification/acceptance-api:test:acceptance: SERENITY COMMAND LINE INTERFACE
+@axc-verification/acceptance-api:test:acceptance: -------------------------------
+@axc-verification/acceptance-api:test:acceptance: Loading test outcomes from target/site/serenity
+@axc-verification/acceptance-api:test:acceptance: Writing aggregated report to target/site/serenity
+@axc-verification/acceptance-api:test:acceptance: 
+
+ Tasks:    25 successful, 25 total
+Cached:    14 cached, 25 total
+  Time:    17.872s 
+

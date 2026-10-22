@@ -1,0 +1,24 @@
+test_accounting_refresh_imports_review_without_running_gates_or_models (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_changed_source_invalidates_a_successful_review_even_after_new_passing_final_gates (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_executed_primary_review_and_deterministic_report_share_one_complete_budget (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_external_host_counters_and_validation_never_establish_controller_controls (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_fresh_review_has_complete_task_and_current_diff_but_no_parent_history (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_review_findings_missing_evidence_and_bad_responses_block_quality_but_keep_cost (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_reviewer_reservation_exhaustion_retains_primary_cost_and_runs_all_final_gates (test_controlled_workflow.ControlledWorkflowIntegration) ... ok
+test_duplicate_snapshots_and_followup_are_excluded_end_to_end (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_empty_provider_ledger_does_not_replace_unknown_counters_with_zero (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_known_provider_calls_preserve_real_zero_ratios (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_known_single_session_and_input_are_unchanged (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_missing_categories_remain_null_and_known_ratios_still_report (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_missing_request_accounting_does_not_promote_a_recorded_count (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_missing_request_snapshot_keeps_original_totals_without_call_estimates (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_multiple_agents_use_aggregate_counters_and_preserve_each_session (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_pending_original_final_usage_remains_incomplete_despite_followup (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_provider_ledgers_preserve_complete_call_counts_with_unknown_token_categories (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_totals_and_call_counts_are_not_inferred_from_other_counters_or_requests (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+test_zero_usage_and_zero_calls_preserve_zero_with_undefined_ratios (test_efficiency_metrics.EfficiencyMetricsTests) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 15.518s
+
+OK

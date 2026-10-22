@@ -1,0 +1,136 @@
+{
+  "repo": "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-runtime-base",
+  "base_commit": "fe47c38d32376c5e8bcd1d67838160064fd5de99",
+  "branch": "harness-upgrade-runtime",
+  "destination_branch": "harness-upgrade-runtime",
+  "checks": [
+    {
+      "name": "node",
+      "argv": [
+        "node",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "v24.19.0",
+      "log": "node.log",
+      "remediation": "Make Node.js 24 or newer available before retrying.",
+      "seconds": 0.024965749999999995
+    },
+    {
+      "name": "pnpm",
+      "argv": [
+        "pnpm",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "11.9.0",
+      "log": "pnpm.log",
+      "remediation": "Activate pnpm 11.9.0 declared in package.json before retrying.",
+      "seconds": 0.315264292,
+      "expected_version": "11.9.0",
+      "actual_version": "11.9.0"
+    },
+    {
+      "name": "func",
+      "argv": [
+        "func",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "4.15.1",
+      "log": "func.log",
+      "remediation": "Make Azure Functions Core Tools (func) available before retrying.",
+      "seconds": 0.146847958
+    },
+    {
+      "name": "java",
+      "argv": [
+        "java",
+        "-version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "openjdk version \"25.0.4.1\" 2026-08-18 LTS\nOpenJDK Runtime Environment Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.4.1+1 (build 25.0.4.1+1-LTS, mixed mode, sharing)",
+      "log": "java.log",
+      "remediation": "Make the required Java runtime available before retrying.",
+      "seconds": 0.036204709
+    },
+    {
+      "name": "typescript",
+      "argv": [
+        "node",
+        "-e",
+        "console.log(require('typescript').version)"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "6.0.3",
+      "log": "typescript.log",
+      "remediation": "Ensure the repository's installed TypeScript package is resolvable by Node. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+      "seconds": 0.17256829199999996
+    },
+    {
+      "name": "turbo",
+      "argv": [
+        "pnpm",
+        "exec",
+        "turbo",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "2.9.18",
+      "log": "turbo.log",
+      "remediation": "Ensure the repository's Turbo build tool can execute through pnpm. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+      "seconds": 1.08892725
+    },
+    {
+      "name": "biome",
+      "argv": [
+        "pnpm",
+        "exec",
+        "biome",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "Version: 2.4.10",
+      "log": "biome.log",
+      "remediation": "Ensure the repository's Biome formatter can execute through pnpm. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+      "seconds": 1.2189607500000001
+    },
+    {
+      "name": "tsgo",
+      "argv": [
+        "pnpm",
+        "exec",
+        "tsgo",
+        "--version"
+      ],
+      "exit_code": 0,
+      "passed": true,
+      "summary": "Version 7.0.0-dev.20260428.1",
+      "log": "tsgo.log",
+      "remediation": "Ensure the repository's tsgo type checker can execute through pnpm. Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+      "seconds": 0.8947125
+    },
+    {
+      "name": "installed_dependency_links",
+      "passed": true,
+      "missing": [],
+      "remediation": "Restore the repository's locked dependencies separately with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; rerun preflight afterward.",
+      "note": "Direct-link readiness only; lockfile/install coherence is not verified. Frozen lockfile restoration and final build/tests remain required."
+    },
+    {
+      "name": "localhost",
+      "passed": true,
+      "remediation": "Run in an isolated environment permitted to bind localhost; do not skip HTTP checks."
+    }
+  ],
+  "passed": true,
+  "final_validation_required": true,
+  "remediation": "Restore locked dependencies with pnpm install --offline --frozen-lockfile --ignore-scripts when appropriate; install missing runtimes separately. No install, network access or permissions change is performed by this probe."
+}

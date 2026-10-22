@@ -1,0 +1,17 @@
+test_context_reservation_stops_before_generation (test_no_progress.AgentProgressTests) ... ok
+test_exact_prompt_and_spec_survive_every_repair_request (test_no_progress.AgentProgressTests) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_failed_attempts_count_and_call_limit_is_enforced (test_no_progress.AgentProgressTests) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_noop_loop_stops_before_generation_limit_and_retains_usage (test_no_progress.AgentProgressTests) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_total_budget_reserves_the_complete_next_response (test_no_progress.AgentProgressTests) ... ok
+test_unchanged_evidence_blocks_repeats_even_with_other_reads_between (test_no_progress.ProgressTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.026s
+
+OK

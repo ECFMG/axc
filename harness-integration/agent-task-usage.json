@@ -1,0 +1,36 @@
+{
+  "scope": "Read-only agent-loading smoke task only, including its final response. Separate from original Task B implementation and all parent integration work.",
+  "session_id": "01a16553-c069-7790-a718-78ba78d14bc9",
+  "turn_id": "01a16553-c4ae-7632-8dbd-3ad3e555c57c",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/22/rollout-2026-10-22T16-35-50-01a16553-c069-7790-a718-78ba78d14bc9.jsonl",
+  "starting_cumulative_counters": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_output_tokens": 0,
+    "total_tokens": 0
+  },
+  "baseline_method": "Fresh session; first total_token_usage equals first last_token_usage. Zero baseline inferred, no pre-task recorded token_count.",
+  "ending_cumulative_counters": {
+    "input_tokens": 171340,
+    "cached_input_tokens": 127232,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1630,
+    "reasoning_output_tokens": 58,
+    "total_tokens": 172970
+  },
+  "recorded_usage": {
+    "input_tokens": 171340,
+    "cached_input_tokens": 127232,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1630,
+    "reasoning_output_tokens": 58,
+    "total_tokens": 172970
+  },
+  "recorded_through": "2026-10-22T20:36:39.103Z",
+  "task_complete": "2026-10-22T20:36:39.107Z",
+  "completeness": "complete for exposed native smoke-task counters including final response",
+  "additional_model_or_subagent_calls_by_smoke_agent": false,
+  "unmeasured": "Parent integration turn usage and any unexposed automatic tool-side model/billing counters. No total cost or efficiency claim."
+}

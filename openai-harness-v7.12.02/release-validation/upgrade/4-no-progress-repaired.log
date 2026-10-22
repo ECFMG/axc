@@ -1,0 +1,33 @@
+test_context_reservation_stops_before_generation (test_no_progress.AgentProgressTests) ... ok
+test_exact_prompt_and_spec_survive_every_repair_request (test_no_progress.AgentProgressTests) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_failed_attempts_count_and_call_limit_is_enforced (test_no_progress.AgentProgressTests) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+ok
+test_noop_loop_stops_before_generation_limit_and_retains_usage (test_no_progress.AgentProgressTests) ... {"call":1,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":2,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":3,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":4,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":5,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":6,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":7,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":8,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":9,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+{"call":10,"passed_local_checks":false,"tokens":14,"variant":"baseline"}
+FAIL
+test_total_budget_reserves_the_complete_next_response (test_no_progress.AgentProgressTests) ... ok
+test_unchanged_evidence_blocks_repeats_even_with_other_reads_between (test_no_progress.ProgressTests) ... ok
+
+======================================================================
+FAIL: test_noop_loop_stops_before_generation_limit_and_retains_usage (test_no_progress.AgentProgressTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/dfortun/Documents/Codex/2026-10-20/read-both-task-a-documents-and-2/work/harness-upgrade/openai-harness-v7.12.02/test_no_progress.py", line 24, in test_noop_loop_stops_before_generation_limit_and_retains_usage
+    self.assertEqual(self.adapter.generate.call_count, 3)
+AssertionError: 10 != 3
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.037s
+
+FAILED (failures=1)
