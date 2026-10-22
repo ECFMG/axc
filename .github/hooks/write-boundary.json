@@ -13,6 +13,9 @@
 		["\\.(min\\.js|min\\.css|pb\\.go|generated\\.ts|g\\.dart)$", "Generated file. Edit the source."],
 		["(^|/)(\\.github/workflows/|azure-pipelines\\.ya?ml$)", "CI / pipeline config — outside SCORE write boundary."]
 	],
+	"_comment_shell_writes": "Shell writes to protected paths (path_deny, or an existing repo file outside allowed_write_globs): targets of > >> tee sed/perl -i cp mv install ln rsync dd of= truncate, plus interpreter code (python/node/perl/ruby/...: -c/-e/heredoc/stdin) that both names such a path in a quoted literal and calls a write API below.",
+	"shell_interpreters": "^(python[0-9.]*|node|nodejs|bun|deno|perl|ruby|php|tsx|ts-node)$",
+	"shell_write_apis": "\\bopen\\s*\\([^)]*,\\s*(mode\\s*=\\s*)?['\"][rbt]*[wax+][rwxabt+]*['\"]|\\bopen\\s*\\(?\\s*(my\\s+)?[\\w$]+\\s*,\\s*['\"]\\s*\\+?[>|]|\\.write_(text|bytes)\\s*\\(|\\bshutil\\.(copy\\w*|move)\\s*\\(|\\bos\\.(rename|replace|remove|unlink|truncate)\\s*\\(|\\b(writeFile|appendFile|createWriteStream|copyFile|rename|unlink|truncate|rmSync|cpSync)(Sync)?\\s*\\(|\\bFile\\.(write|delete|rename)\\b|\\bfile_put_contents\\b|\\bBun\\.write\\b|\\bDeno\\.(writeTextFile|writeFile)\\b",
 	"bash_deny": [
 		[
 			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(npm|pnpm|yarn)\\s+(add|install)\\s+(?:-{1,2}[A-Za-z][\\w-]*\\s+)*[A-Za-z@._/][^\\s;&|]*",
