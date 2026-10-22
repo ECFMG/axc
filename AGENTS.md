@@ -27,6 +27,8 @@ Enforced by `pnpm run test:arch`: domain imports no other @axc package; applicat
 
 Application services get data through ApiContext, built in `apps/api/src/index.ts` `.setContext(...)`, the same way health gets `environment`. Persistence exports the implementation; apps/api creates it and puts it in the context. Unit tests pass an in-memory instance the same way.
 
+When you add a field to `ApiContext`, do not edit unrelated tests to satisfy it. Tests get context from one shared builder: if none exists, create `packages/axc/application-services/src/test-support/context.ts` exporting a function that returns a complete `ApiContext` with in-memory stubs and accepts a partial override, and route existing tests, including `health.test.ts`, through it. A new field is then one edit in the builder, not one per test.
+
 ## Validation
 
 - While working: `pnpm run typecheck`; `pnpm run test:arch`; `pnpm exec turbo run test --filter=@axc/application-services`. Do not use `pnpm --filter` for tests; it skips required builds.
