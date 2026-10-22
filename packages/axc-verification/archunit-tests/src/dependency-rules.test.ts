@@ -53,6 +53,22 @@ describe('application-services persistence import boundary', () => {
 	});
 });
 
+const testSupportFix = 'test-support is test-only; pass ApiContext explicitly, do not default or export the test builder';
+
+describe('application-services test-support boundary', () => {
+	it('keeps test-support out of production sources and the package entry', async () => {
+		const servicesSrc = path.resolve(packageDir, '../../axc/application-services/src');
+		const entryViolation = testSupportReference(await readFile(path.join(servicesSrc, 'index.ts'), 'utf8'));
+		expect(entryViolation, `src/index.ts: ${entryViolation} - ${testSupportFix}`).toBeUndefined();
+		const files = (await listTypeScriptFiles(servicesSrc)).filter((file) => !file.endsWith('.test.ts') && !file.split(path.sep).includes('test-support'));
+		expect(files.length).toBeGreaterThan(0);
+		for (const file of files) {
+			const violation = testSupportReference(await readFile(file, 'utf8'));
+			expect(violation, `${path.relative(servicesSrc, file)}: ${violation} - ${testSupportFix}`).toBeUndefined();
+		}
+	});
+});
+
 async function listTypeScriptFiles(directory: string): Promise<string[]> {
 	const entries = await readdir(directory, { withFileTypes: true });
 	const files = await Promise.all(
@@ -87,4 +103,11 @@ function persistenceValueImport(source: string): string | undefined {
 		return dynamicImport[0];
 	}
 	return undefined;
+}
+
+function testSupportReference(source: string): string | undefined {
+	const withoutComments = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+	const pattern = /(?:\b(?:import|export)\b[^;]*?\bfrom\s*|\bimport\s*\(?\s*)['"][^'"]*test-support[^'"]*['"]/;
+	const match = pattern.exec(withoutComments);
+	return match ? match[0].trim() : undefined;
 }
