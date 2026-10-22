@@ -22,7 +22,7 @@ catalog:
   '@serenity-js/cucumber': 3.46.0
   '@serenity-js/rest': 3.46.0
   '@serenity-js/serenity-bdd': 3.46.0
-  '@storybook/addon-vitest': ^10.4.2
+  '@storybook/addon-vitest': 10.6.3
   '@types/node': 24.10.1
   '@typescript/native-preview': 7.0.0-dev.20260428.1
   '@vitest/browser-playwright': 4.1.12
@@ -69,6 +69,8 @@ overrides:
   vitest: 4.1.12
   '@vitest/browser-playwright': 4.1.12
   '@vitest/mocker': 4.1.12
+  storybook: 10.6.3 # GHSA-f2ph-cmg5-wxc8 (critical, <10.6.2)
+  '@storybook/addon-vitest': 10.6.3
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
