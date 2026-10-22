@@ -18,7 +18,8 @@
 		"format:check": "biome format .",
 		"prebuild": "pnpm run lint",
 		"build": "tsgo --build",
-		"typecheck": "tsgo --noEmit",
+		"typecheck": "tsgo --noEmit && tsgo --noEmit --project tsconfig.tests.json",
+		"test": "node --experimental-strip-types --test src/api-routes.test.ts",
 		"watch": "tsgo --watch",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},

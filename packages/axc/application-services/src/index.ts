@@ -1,3 +1,7 @@
+import { createCourseCatalog, createEnrollmentRequestStore } from '@axc/persistence';
+import { type CourseSearchService, createCourseSearch } from './course-search.ts';
+import { createEnrollmentRequests, type EnrollmentRequestService } from './enrollment-requests.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -19,6 +23,8 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: CourseSearchService;
+	enrollmentRequests: EnrollmentRequestService;
 }
 
 export interface ApplicationServicesFactory {
@@ -36,6 +42,11 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const catalog = createCourseCatalog();
+	const requests = createEnrollmentRequestStore();
+	const courses = createCourseSearch(catalog);
+	const enrollmentRequests = createEnrollmentRequests({ catalog, requests });
+
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -49,7 +60,14 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses,
+			enrollmentRequests,
 		});
 
 	return { forRequest };
 }
+
+export type { CourseSearchInput, CourseSearchResult } from './course-search.ts';
+export type { EnrollmentListInput, EnrollmentRequestList } from './enrollment-requests.ts';
+export type { ApplicationErrorCode, ErrorDetail } from './errors.ts';
+export { ApplicationError } from './errors.ts';
