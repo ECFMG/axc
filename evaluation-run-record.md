@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
+| Team | Cursor |
+| Developer / Operator | Frank Yang |
 | Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Harness | Cursor |
+| Model | Grok 4.7(high) |
+| License / Plan | Cursor Teams Premium |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | B |
+| Run Type | Harness Engineering Iteration 2 (Task B track, cycle B2) |
+| Harness Engineering Used | fy-cur-2-b (d299b0f): the cycle-4 harness (condensed AGENTS.md, AGENTS.verify.md, archunit rule that application-services may import only types from @axc/persistence), the cycle-8 AGENTS.md shared test-context builder paragraph, plus one new archunit test in packages/axc-verification/archunit-tests/src/dependency-rules.test.ts: it fails test:arch if any non-test application-services source, including src/index.ts, imports or re-exports from test-support/ ("test-support is test-only; pass ApiContext explicitly, do not default or export the test builder"). |
+| Config / Diff Notes | Hypothesis: B1's builder leak was agent drift; a structural rule keeps the builder test-only. Unchanged prompt, no steering. 37 files, +1933/-18. Boundary: all code inside the SRD write set; pnpm-lock.yaml (+13) is workspace:* links only (@axc/domain, @axc/persistence), no external deps or version changes; tsconfig edits are project references only; no auth, env, secrets, deploy, AGENTS.md, knip, biome, or .snyk changes. Arch rule files byte-identical to d299b0f (dependency-rules.test.ts blob 1497bf4 unchanged; cellix archunit untouched). One minor flag: packages/axc/README.md (one table row reworded to mention course search and enrollment), outside the listed write set, docs-only. Architecture: ApiContext carries catalog (one CourseCatalog for courses and enrollment requests) and clock; apps/api .setContext builds createMemoryCatalog(); per-route Azure handlers; buildApplicationServicesFactory(context: ApiContext) with no default, unchanged from the harness base; index.ts has no test-support reference; no production source imports test-support (only courses.test.ts, enrollment-requests.test.ts, health.test.ts); application-services imports @axc/persistence as types only in source (value import of createMemoryCatalog in its own tests only). Builder: test-support/context.ts exports createTestApiContext(override?) (complete ApiContext, empty catalog stub, fixed clock) and createTestServices(override?); health.test.ts routes through it (+11/-2: import swap, one call replaced by createTestServices, plus one new test of the builder itself) and is the only pre-existing test touched. The new rule never fired in the agent's logs (first logged test:arch passed 11/11), so whether the rule or run variance kept the builder test-only cannot be separated from one run. |
+| Branch / Commit | fy-cur-2-b-out @ 7e9fef7 (Task B run output, committed by operator as "run: fy-cur-2-b task"), harness fy-cur-2-b @ d299b0f |
+| Requirements Completed / Attempted | 17/17 (B1-B17). GET /api/courses (q, modality, status, tag, page, pageSize, sort; invalid 400), POST /api/enrollment-requests, GET /api/enrollment-requests (status, courseId, learnerEmail filters), GET /api/enrollment-requests/{id}, PATCH /api/enrollment-requests/{id}/status. All business rules confirmed live over HTTP: pending on create, active-course only (draft and retired 409 COURSE_NOT_ACTIVE, unknown 404), email and justification validation 400, duplicate pending/approved 409 (re-request allowed after cancel), allowed transitions only (others 409), rejection reason required (missing or blank 400), statusHistory on create and every change. Docs and ADR present; existing tests pass. Create returns 200, not 201; the requirements say only "Successful response" with no status code, and the docs document 200 consistently, so this is a REST-convention deviation, not a spec miss (prior runs returned 201). |
+| Acceptance Criteria Passed / Total | 15/15 (B-AC1-B-AC15). probe-b.zsh as written: 28/31; probe-b-dynamic.zsh (draft and retired ids looked up from /api/courses: course-004, course-005, same as the probe's fixed ids): 28/31. The three failures (B1 create, B9e re-request after cancel, B10 create second) all returned 200 with "status":"pending" where the probe expects 201; every other check passed, so with 200 accepted for create the result is 31/31. B-AC13 from verify log. B-AC14: 16 new acceptance scenarios (courses 5 incl. sort; enrollment 11 incl. malformed JSON) plus 21 new vitest cases; cancel paths are unit-only. B-AC15: docs/api/courses.md, docs/api/enrollment-requests.md, ADR, sidebar linked, docs build passed. |
+| Tests Passed / Failed | All pass (grader-run verify). Counted from source: acceptance 17 scenarios (courses 5, enrollment-requests 11, healthcheck 1), cucumber 17/0; application-services vitest cases: courses 10, enrollment-requests 10, health 3 = 23 (turbo reports 46 for the package); unit 586/0 across all packages; arch 21/0 (axc 11 incl. the new test-support rule, cellix 10). No new tests in rest, domain, or persistence. The agent's claimed counts (5/11/1 scenarios, 23 cases, 11 arch) match the source. |
+| Static Analysis / Security Findings | Grader-run pnpm run verify passed script-policy, Biome, typecheck, build, knip, e18e, test:arch, unit, and acceptance tests; stopped at pnpm audit (19: 1 low, 11 moderate, 5 high (1 ignored), 2 critical). Flagged packages all at the same version in main's pnpm-lock.yaml: @storybook/addon-vitest@10.6.0, storybook@10.6.0, follow-redirects@1.16.0, vite@8.3.0, launch-editor@2.14.1. Snyk from the agent's own run (.agents-work/snyk.log): hono@4.13.10, fast-uri@3.1.8, follow-redirects@1.16.0, launch-editor@2.14.1, picomatch@2.3.2, picomatch@4.0.7, qs@6.16.0, @vitest/mocker@4.1.11, vite@8.3.0, all in main's lockfile; then hit the frank-yangg monthly limit of 200 private tests. No new third-party deps, no upgrades. |
+| Input Tokens | Not captured separately |
+| Cached Tokens | Not captured separately |
+| Output Tokens | Not captured separately |
+| Total Tokens or Credits Used | ~11,100,000 (one chat, operator-reported total) |
+| Estimated Cost | Included in Cursor Teams Premium. Within the Task B range so far (baseline 5.8M, cycle-4 harness 11.6M, B1 12.64M); single run, and Task A showed cost is run-to-run noise (cycle-4 harness: 5.7M / 2.66M / 1.8M on identical runs), so not attributed to the harness change. |
+| Elapsed Time | 38m 21s |
+| Number of Human Interventions / Redirects | 0 |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 91/100. Functional 5 (20; 17/17, all rules live; create returns 200, which the spec allows), Tests 5 (15; 16 new acceptance scenarios incl. sort and malformed JSON plus 21 new vitest cases, all required areas; rest and persistence have no unit tests), Architecture 5 (15; ApiContext injection, factory (context: ApiContext) unchanged, no test-support in production or index.ts, type-only persistence imports, per-route handlers), Security 5 (15; all findings pre-existing, no deps, auth, env, or secrets changes; one docs-only README edit outside the write set), Harness Eng 4 (8; builder used and kept test-only, arch rules unweakened, but the new rule never fired so its effect is not isolated), Cost 3 (6; 11.1M, within noise), Workflow 4 (8; 0 interventions, 38m21s, ran verify and Snyk itself, left output for the operator to commit), Vendor 4 (4). |
+| Recommendation | Continue. Prediction met (Architecture 5, 91, factory signature unchanged, health.test.ts through the builder, arch rules unweakened). Keep d299b0f as the Task B harness base. Next cycle targets the remaining boundary flag (docs edit outside the SRD write set) rather than tokens. |
