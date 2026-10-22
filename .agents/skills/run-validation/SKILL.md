@@ -7,7 +7,7 @@ description: The one AXC gate command — checks, then commit (husky verify). Ru
 
 ## Gate — ONE command after writing (checks, then commit → husky verify)
 
-Foreground, long shell timeout (≥15 min); no diff / `git status` / re-read first; don't background or poll.
+Run it in the FOREGROUND; set the shell timeout/wait to ≥10 min (gate ≈1–2 min): no background, no polling. No diff / `git status` / re-read first.
 
 ```bash
 { . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; { pnpm exec biome lint apps/api apps/docs packages/axc packages/axc-verification; l=$?; pnpm exec turbo run typecheck test --filter='[HEAD]' --output-logs=errors-only && [ $l = 0 ] && pnpm run knip && node scripts/check-ac-coverage.mjs && pnpm exec biome check --write apps/api apps/docs packages/axc packages/axc-verification; } >/tmp/check.log 2>&1 || { node scripts/check-summary.mjs /tmp/check.log; false; } && git add -A apps/api apps/docs packages/axc packages/axc-verification && git commit -qm "<feature summary>"
