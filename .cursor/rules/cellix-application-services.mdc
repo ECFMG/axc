@@ -1,0 +1,25 @@
+---
+description: Application service factories, mutations, and queries
+globs: packages/axc/application-services/**/*.ts
+alwaysApply: false
+---
+
+# Application services
+
+One action file exports one const. The const name is the camelCase of the kebab-case filename: `query-by-id.ts` exports `queryById`.
+
+```ts
+export interface CourseCreateCommand { name: string }
+
+export const create = (dataSources: DataSources) => async (command: CourseCreateCommand) => {
+  return dataSources.domainDataSource.Course.Course.CourseUnitOfWork.withScopedTransaction(async (repo) => {
+    return repo.save(await repo.getNewInstance(command.name));
+  });
+};
+```
+
+- The context `index.ts` exports `interface <Name>ApplicationService` and `export const <Name> = (dataSources: DataSources, ...ports) => ({ ... })`
+- Mutations (`create`, `update`, `delete`) call `withScopedTransaction`
+- Queries (`query`, `get`, `find`) use `readonlyDataSource`
+- Import domain and persistence ports. Do not import mongoose, mongoose models, GraphQL, or REST
+- Package `src/index.ts` only hosts `ApplicationServices` and `buildApplicationServicesFactory`. New behavior goes under `contexts/`

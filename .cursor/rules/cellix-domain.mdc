@@ -1,0 +1,17 @@
+---
+description: Domain file roles, aggregates, value objects, and repository interfaces
+globs: packages/axc/domain/**/*.ts
+alwaysApply: false
+---
+
+# Domain
+
+Match Cellix domain files. Copy the nearest aggregate rather than inventing a layout.
+
+- `*.aggregate.ts` extends `AggregateRoot` from `@cellix/domain-seedwork/aggregate-root`, declares `<Name>Props` and `<Name>EntityReference`, and has `static getNewInstance`. `getNewInstance` calls `private markAsNew()`, which sets `this.isNew = true`
+- String setters assign `new ValueObjects.<Type>(value).valueOf()`. Booleans, dates, ids, and `schemaVersion` stay raw
+- Nested objects are a `ValueObject` or `DomainEntity` with their own props and reference interfaces. No inline `{ street: string }` props
+- `*.value-objects.ts` classes extend `VOString`, `VOArray`, or `VOOptional` from `@lucaspaganini/value-objects`. Closed sets are `export const Types = { ... } as const`
+- `*.repository.ts` exports `interface <Name>Repository extends Repository<T>` and no class
+- `*.uow.ts` exports an interface extending `UnitOfWork` and `InitializedUnitOfWork`
+- Do not import mongoose, persistence, application services, GraphQL, REST, or Azure

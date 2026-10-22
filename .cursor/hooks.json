@@ -1,0 +1,37 @@
+{
+	"version": 1,
+	"hooks": {
+		"preToolUse": [
+			{
+				"command": ".cursor/hooks/cellix-write-allow.mjs",
+				"matcher": "Write|StrReplace|Delete|EditNotebook|ApplyPatch",
+				"failClosed": true
+			}
+		],
+		"beforeShellExecution": [
+			{
+				"command": ".cursor/hooks/cellix-write-allow.mjs",
+				"failClosed": true
+			}
+		],
+		"afterShellExecution": [
+			{
+				"command": ".cursor/hooks/cellix-evidence.mjs"
+			}
+		],
+		"stop": [
+			{
+				"command": ".cursor/hooks/cellix-evidence.mjs",
+				"failClosed": true,
+				"loop_limit": 1
+			}
+		],
+		"subagentStop": [
+			{
+				"command": ".cursor/hooks/cellix-evidence.mjs",
+				"failClosed": true,
+				"loop_limit": 1
+			}
+		]
+	}
+}

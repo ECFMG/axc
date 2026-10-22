@@ -16,9 +16,9 @@ export async function checkRepositoryConventions(config: DomainConventionsConfig
 		.withName('*.repository.ts')
 		.should()
 		.adhereTo((file) => {
-			const extendsRepository = /extends\s+DomainSeedwork\.Repository</.test(file.content);
+			const extendsRepository = /extends\s+(?:DomainSeedwork\.)?Repository</.test(file.content);
 			if (!extendsRepository) {
-				allViolations.push(`[${file.path}] Repository interface does not extend DomainSeedwork.Repository<T>`);
+				allViolations.push(`[${file.path}] Repository interface does not extend Repository<T> from @cellix/domain-seedwork`);
 				return false;
 			}
 			return true;
@@ -133,7 +133,7 @@ export async function checkAggregateRootConventions(config: DomainConventionsCon
 				return true;
 			}
 
-			const extendsAggregateRoot = /extends\s+DomainSeedwork\.AggregateRoot</.test(file.content);
+			const extendsAggregateRoot = /extends\s+(?:DomainSeedwork\.)?AggregateRoot</.test(file.content);
 
 			if (extendsAggregateRoot && !file.path.includes('.aggregate.ts')) {
 				allViolations.push(`[${file.path}] Aggregate root file must use .aggregate.ts extension`);
@@ -148,9 +148,9 @@ export async function checkAggregateRootConventions(config: DomainConventionsCon
 		.withName('*.aggregate.ts')
 		.should()
 		.adhereTo((file) => {
-			const extendsAggregateRoot = /extends\s+DomainSeedwork\.AggregateRoot</.test(file.content);
+			const extendsAggregateRoot = /extends\s+(?:DomainSeedwork\.)?AggregateRoot</.test(file.content);
 			if (!extendsAggregateRoot) {
-				allViolations.push(`[${file.path}] Aggregate root class does not extend DomainSeedwork.AggregateRoot`);
+				allViolations.push(`[${file.path}] Aggregate root class does not extend AggregateRoot from @cellix/domain-seedwork`);
 				return false;
 			}
 			return true;
