@@ -40,6 +40,19 @@ describe('domain import boundary', () => {
 	});
 });
 
+describe('application-services persistence import boundary', () => {
+	it('imports only types from @axc/persistence', async () => {
+		const servicesSrc = path.resolve(packageDir, '../../axc/application-services/src');
+		const files = (await listTypeScriptFiles(servicesSrc)).filter((file) => !file.endsWith('.test.ts'));
+		expect(files.length).toBeGreaterThan(0);
+		for (const file of files) {
+			const text = await readFile(file, 'utf8');
+			const violation = persistenceValueImport(text);
+			expect(violation, `${path.basename(file)} imports @axc/persistence as a value`).toBeUndefined();
+		}
+	});
+});
+
 async function listTypeScriptFiles(directory: string): Promise<string[]> {
 	const entries = await readdir(directory, { withFileTypes: true });
 	const files = await Promise.all(
@@ -52,4 +65,26 @@ async function listTypeScriptFiles(directory: string): Promise<string[]> {
 		}),
 	);
 	return files.flat();
+}
+
+function persistenceValueImport(source: string): string | undefined {
+	const withoutComments = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+	const fromPattern = /(?:^|[;\n])\s*(import|export)\s+([^;]*?)\s+from\s+['"]@axc\/persistence['"]/g;
+	for (const match of withoutComments.matchAll(fromPattern)) {
+		const kind = match[1] ?? '';
+		const rest = match[2]?.trim() ?? '';
+		if (rest.startsWith('type ') || rest.startsWith('type{')) {
+			continue;
+		}
+		return `${kind} ${rest} from '@axc/persistence'`;
+	}
+	const sideEffect = /(?:^|[;\n])\s*import\s+['"]@axc\/persistence['"]/.exec(withoutComments);
+	if (sideEffect) {
+		return "import '@axc/persistence'";
+	}
+	const dynamicImport = /\bimport\s*\(\s*['"]@axc\/persistence['"]\s*\)/.exec(withoutComments);
+	if (dynamicImport) {
+		return dynamicImport[0];
+	}
+	return undefined;
 }
