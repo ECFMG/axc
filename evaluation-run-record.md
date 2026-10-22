@@ -60,5 +60,5 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Elapsed Time | ≈ 20 min 05 s (12:55:40 to 13:15:45 UTC, 2026-10-22), first prompt to final summary |
 | Number of Human Interventions / Redirects | 0 (one task prompt, no corrections) |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | 4.35 / 5 (87%) |
+| Final Rubric Score | 4.4 / 5 (weighted; Operational and Vendor Readiness not scored, so normalized over the remaining 95%). Functional Correctness 5 · Test and Validation Performance 5 · Architecture and Codebase Alignment 4 · Security and Guardrail Compliance 4 · Harness Engineering Effectiveness 4 · Context, Token, and Cost Efficiency 4 · Developer Workflow Fit 4 · Operational and Vendor Readiness — (pending plan/vendor review) |
 | Recommendation | (leave blank for now) |
