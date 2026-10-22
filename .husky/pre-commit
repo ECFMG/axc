@@ -17,3 +17,5 @@ if ! pnpm run verify >"$VERIFY_LOG" 2>&1; then
 	exit 1
 fi
 node scripts/verify-summary.mjs "$VERIFY_LOG" >"$SUMMARY" 2>/dev/null || echo "verify ok" >"$SUMMARY"
+# Completion marker for the agent stop gate: a commit without it in the log means verify never finished.
+cat "$SUMMARY" >>"$VERIFY_LOG"

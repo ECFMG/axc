@@ -1,7 +1,7 @@
 // Agent Stop gate (Grok Build / Codex / Claude hook JSON). Dependency-free; fails open.
 //   start: record HEAD + tree fingerprint once per session (SessionStart; UserPromptSubmit fallback).
-//   stop:  allow if nothing changed (pure Q&A) or the work is committed with a clean tree;
-//          otherwise block with the failed-verify excerpt or a one-line reason.
+//   stop:  allow if nothing changed (pure Q&A) or the work is committed with a clean tree and a finished verify
+//          (husky appends `verify ok …` to the verify log); otherwise block with the failed-verify excerpt or a one-line reason.
 //          Never blocks when stopHookActive is set, twice for the same tree state, or more than 3 times per session.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -26,8 +26,17 @@ function snapshot() {
 	return { head: git('rev-parse', 'HEAD').trim(), dirty: status.trim() !== '', fingerprint };
 }
 
+const verifyLog = (root) => path.join(process.env.TMPDIR ?? tmpdir(), `axc-verify-${path.basename(root)}.log`);
+
+/** True when the verify log was written since `since` and ends with husky's `verify ok` summary line. */
+function verifyFinished(root, since) {
+	const log = verifyLog(root);
+	if (!existsSync(log) || statSync(log).mtimeMs < since) return false;
+	return /^verify ok\b/.test(readFileSync(log, 'utf8').trimEnd().split('\n').at(-1) ?? '');
+}
+
 function verifyExcerpt(root, since) {
-	const log = path.join(process.env.TMPDIR ?? tmpdir(), `axc-verify-${path.basename(root)}.log`);
+	const log = verifyLog(root);
 	if (!existsSync(log) || statSync(log).mtimeMs < since || !/ELIFECYCLE|verify FAILED/.test(readFileSync(log, 'utf8'))) return '';
 	try {
 		execFileSync(process.execPath, [path.join(import.meta.dirname, 'verify-excerpt.mjs'), log], { encoding: 'utf8' });
@@ -37,11 +46,12 @@ function verifyExcerpt(root, since) {
 	}
 }
 
-export function decide(start, now, { stopHookActive = false, excerpt = '' } = {}) {
+export function decide(start, now, { stopHookActive = false, excerpt = '', verified = true } = {}) {
 	if (stopHookActive || start.blocks >= MAX_BLOCKS || start.lastBlocked === `${now.head}:${now.fingerprint}`) return null;
 	if (now.head === start.head && now.fingerprint === start.fingerprint) return null;
 	if (now.head === start.head) return excerpt || 'Edits are not committed: run the first check, then the commit chain (husky verify is the gate).';
 	if (now.dirty && now.fingerprint !== start.fingerprint) return 'Committed, but the tree is dirty: commit or revert the leftover changes.';
+	if (!verified) return excerpt || 'Committed, but no `verify ok` summary in the verify log: husky verify did not run or finish. Re-run the commit chain (never --no-verify).';
 	return null;
 }
 
@@ -60,7 +70,7 @@ function main() {
 	if (mode !== 'stop' || !existsSync(file)) return;
 	const start = JSON.parse(readFileSync(file, 'utf8'));
 	const now = snapshot();
-	const reason = decide(start, now, { stopHookActive: Boolean(input.stopHookActive ?? input.stop_hook_active), excerpt: verifyExcerpt(root, start.at) });
+	const reason = decide(start, now, { stopHookActive: Boolean(input.stopHookActive ?? input.stop_hook_active), excerpt: verifyExcerpt(root, start.at), verified: now.head === start.head || verifyFinished(root, start.at) });
 	if (!reason) return;
 	writeFileSync(file, JSON.stringify({ ...start, blocks: start.blocks + 1, lastBlocked: `${now.head}:${now.fingerprint}` }));
 	process.stdout.write(JSON.stringify({ decision: 'block', reason }));

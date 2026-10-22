@@ -17,15 +17,18 @@ const blocked = (input) => {
 	const out = hook('stop', input);
 	return out ? JSON.parse(out).decision === 'block' : false;
 };
-const commit = (msg) => {
+const verifyLog = (text) => writeFileSync(path.join(repo, `axc-verify-${path.basename(repo)}.log`), text);
+const commit = (msg, log = '$ pnpm run verify\nSnyk: ok\nverify ok · acceptance 1/1\n') => {
 	sh('add', '-A');
 	sh('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', msg);
+	if (log !== null) verifyLog(log);
 };
 
 beforeEach(() => {
 	repo = mkdtempSync(path.join(tmpdir(), 'stop-gate-'));
 	sh('init', '-q');
 	writeFileSync(path.join(repo, 'a.md'), 'a\n');
+	writeFileSync(path.join(repo, '.gitignore'), '*.log\n'); // TMPDIR = repo: the verify log is not work
 	commit('init');
 	hook('start');
 });
@@ -63,6 +66,14 @@ test('same state never blocks twice; cap 3 per session; start is idempotent', ()
 });
 test('failed verify since start → block reason is the excerpt', () => {
 	writeFileSync(path.join(repo, 'a.md'), 'b\n');
-	writeFileSync(path.join(repo, `axc-verify-${path.basename(repo)}.log`), '$ biome check .\nx.ts:1:1 lint/suspicious/noExplicitAny\n  × Unexpected any.\n[ELIFECYCLE] Command failed with exit code 1.\n');
+	verifyLog('$ biome check .\nx.ts:1:1 lint/suspicious/noExplicitAny\n  × Unexpected any.\n[ELIFECYCLE] Command failed with exit code 1.\n');
 	assert.match(JSON.parse(hook('stop')).reason, /noExplicitAny/);
+});
+test('new commit without a finished verify (no summary line) → block', () => {
+	writeFileSync(path.join(repo, 'a.md'), 'b\n');
+	commit('skipped verify', null);
+	assert.match(JSON.parse(hook('stop')).reason, /no `verify ok` summary/);
+	writeFileSync(path.join(repo, 'a.md'), 'c\n');
+	commit('verify cut short', '$ pnpm run verify\n$ pnpm run build\n');
+	assert.match(JSON.parse(hook('stop')).reason, /did not run or finish/);
 });
