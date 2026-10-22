@@ -1,5 +1,10 @@
+import type { CourseCatalog } from '@axc/domain';
+import { type CourseSearchInput, type CourseSearchResult, searchCourses } from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
+
+export type { CourseSearchInput, CourseSearchResult } from './courses.ts';
 
 export type HealthEnvironment = 'local' | 'test' | 'production';
 
@@ -13,11 +18,15 @@ export interface HealthStatus {
 
 export interface ApiContext {
 	environment: HealthEnvironment;
+	courseCatalog: CourseCatalog;
 }
 
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		search(input: CourseSearchInput): Promise<CourseSearchResult>;
 	};
 }
 
@@ -47,6 +56,11 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						environment: context.environment,
 						timestamp: new Date().toISOString(),
 					};
+				},
+			},
+			courses: {
+				search(input: CourseSearchInput): Promise<CourseSearchResult> {
+					return searchCourses(context.courseCatalog, input);
 				},
 			},
 		});
