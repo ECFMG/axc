@@ -85,3 +85,5 @@ Omitted from the edges above because most packages use them: @cellix/config-type
 
 ## Notes added during the task
 
+- Course search is `GET /api/courses`; enrollment requests are under `/api/enrollment-requests`. Rules live in `packages/axc/domain`, process memory in `packages/axc/persistence`, use cases in `packages/axc/application-services`, and Hono routes in `packages/axc/rest`.
+
