@@ -21,8 +21,12 @@
 	},
 	"dependencies": {
 		"@axc/application-services": "workspace:*",
+		"@axc/data-sources-mongoose-models": "workspace:*",
+		"@axc/persistence": "workspace:*",
 		"@axc/rest": "workspace:*",
-		"@cellix/api-core": "workspace:*"
+		"@axc/service-mongoose": "workspace:*",
+		"@cellix/api-core": "workspace:*",
+		"mongoose": "catalog:"
 	},
 	"devDependencies": {
 		"@cellix/config-rolldown": "workspace:*",
