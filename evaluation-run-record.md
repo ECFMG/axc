@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
-| Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Team | OpenAI |
+| Developer / Operator | Henry Casper (cage match: running Dhaval's frozen harness) |
+| Reviewer | Henry Casper, with Copilot CLI assisting. After the run the operator re-ran `pnpm install --frozen-lockfile && pnpm run verify`, sent live HTTP probes to the API host covering every B-AC error code and transition, ran a 6-way concurrent duplicate POST, checked the write boundary, and read the Codex rollout log for timing and token counts. |
+| Harness | OpenAI Codex CLI v0.163.0 |
+| Model | GPT-6.1-Sol (medium reasoning), as pinned in `.codex/config.toml` |
+| License / Plan | ChatGPT Business (Pro Lite seat) |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
-| Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Task Set | B (Task Set A requirements re-implemented on the same branch) |
+| Run Type | Cage match: cross-evaluation of Dhaval's frozen harness |
+| Harness Engineering Used | `djh-oai-4` @ `80081e1` (frozen, unmodified) plus a local vulnerability-fix commit `9336a2f`. That commit adds Dhaval's override set (storybook/@storybook/addon-vitest 10.6.2, vite 8.3.3, launch-editor 2.14.2, follow-redirects 1.16.1), plus the vitest 4.1.12, body-parser, fast-uri and webpack-dev-server overrides and a time-boxed `.snyk` ignore for the unpatched picomatch advisory, so that Snyk inside `verify` passes. No harness files were changed. Harness components: AGENTS.md, which leaves full CI to the Stop hook and has the agent not commit; disabled turborepo/portless skills; a PostToolUse dependency-sync hook; a Stop hook `verify-gate.mjs stop` (frozen install + `pnpm run verify`). |
+| Config / Diff Notes | Node 24.21.0, pnpm 11.11.0, Codex CLI v0.163.0, default approval policy. New Codex session at 13:49:55 EDT with `task-set-b-prompt.md` pasted verbatim. 2 user messages, 20 tool calls, 0 approval prompts. Codex read the disabled turborepo `SKILL.md` once. Stop hook passed on the first attempt (one log, `.passed` at 18:03:02Z). The agent did not commit, per its harness instructions; the operator committed its working tree as `ad16199`, and the pre-commit hook re-ran verify, which passed. Output: 61 files changed (+1,464/−18). The lockfile changes are workspace links and catalog vitest entries only, with no new third-party packages. `packages/cellix` is untouched. All paths are inside the write boundary. |
+| Branch / Commit | `hac-djh-oai-4-b-out` @ `ad16199` (agent output committed by the operator) |
+| Requirements Completed / Attempted | 17 / 17 for Task B (B1–B17) plus 11 / 11 for Task A, per the agent's traceability table (`apps/docs/docs/traceability.md`) and the operator's probes |
+| Acceptance Criteria Passed / Total | 15 / 15 (B-AC1–B-AC15) and 12 / 12 (A-AC1–A-AC12) |
+| Tests Passed / Failed | All pass / 0 failed (operator `pnpm run verify`, exit 0). `@axc` tests: domain 27, persistence 4, application-services 10, rest 87 (128 total). Archunit: axc 9, cellix 10. Acceptance: 13 real-host scenarios passed (`course-enrollment.feature` + healthcheck). Docs build passes. Live probes: all course-query 400s return `INVALID_QUERY_PARAMETER`; 404 `COURSE_NOT_FOUND` / `ENROLLMENT_REQUEST_NOT_FOUND`; 409 `COURSE_NOT_ACTIVE` (draft and retired), `DUPLICATE_ACTIVE_REQUEST` (pending and approved, case-insensitive email), `INVALID_STATUS_TRANSITION`; 400 `INVALID_REQUEST` for email, justification length 5 and 501, non-JSON body, missing reason and bad status. A new request is allowed after cancellation. `statusHistory` grows 1→2→3. 6 concurrent duplicate POSTs → one 201 and five 409s. |
+| Static Analysis / Security Findings | No new findings. Biome, typecheck, build, knip and e18e are clean. `pnpm audit --audit-level=high` passes. Snyk: 24 projects, no vulnerable paths (monthly-quota notice printed). No new third-party dependencies. Validation is in `rest/src/features/validation.ts`, transitions and the rejection-reason rule are enforced in the aggregate, and duplicates are blocked by a serialized UoW queue. Error bodies carry no internals. |
+| Input Tokens | 950,162 (58,258 uncached) |
+| Cached Tokens | 891,904 |
+| Output Tokens | 26,319 (3,623 reasoning) |
+| Total Tokens or Credits Used | 976,481 tokens, from `scripts/codex-session-usage.mjs` (hac-oai-16) on `rollout-2026-10-22T13-49-21-01a164bb-*.jsonl`. The agent reported usage as unavailable. |
+| Estimated Cost | ~$0.47 at GPT-6.1-Sol list prices ($2.00 / $0.10 / $10.00 per 1M): $0.12 uncached input + $0.09 cached input + $0.26 output |
+| Elapsed Time | 13m 07s (2026-10-22 13:49:55–14:03:02 EDT; Codex reported 'Worked for 13m 6s'), including the Stop hook gate |
+| Number of Human Interventions / Redirects | 0 interventions, 0 redirects, 0 agent questions, 0 approval prompts. One operator action after the run: committing the output, because the harness does not commit. |
+| Reviewer Notes | (a) Storage is an in-memory catalog: twelve fixed courses, a serialized queue and deep-copy transactions, justified in ADR `decisions/0001-in-memory-catalog.md`. The base API has no database, and task-set-b-requirements.md line 58 forbids introducing one in that case, so this is compliant. Data resets on restart. (b) Structure follows the Cellix layers (domain / application-services / persistence / rest) and archunit passes, but it is compact rather than ocom-idiomatic: one aggregate file, REST features as flat `features/*.ts`, no repository/UoW split by context. (c) Tests are thin outside REST (persistence 4, application-services 10) and there are 13 acceptance scenarios, but the transition matrix, duplicate and concurrent cases are covered. (d) The agent leaves the commit to the operator. (e) Codex read a skill the harness disabled, which cost little. (f) Very efficient: under 1M tokens, 20 tool calls, 13 minutes, Stop gate green on the first try. |
+| Final Rubric Score | **89 / 100** (SRD Appendix 1, same strictness as hac-oai-16-b-out = 88). Functional Correctness 5/5 (20): every B/A requirement and AC confirmed by live probes. Test and Validation 4/5 (12): full verify green; matrix, duplicate and concurrency tests; deduction for thin persistence and application-services tests and 13 acceptance scenarios. Architecture 4/5 (12): Cellix layering and archunit pass, compliant in-memory ADR; deduction for the non-ocom-idiomatic compact structure. Security and Guardrails 5/5 (15): no new deps or advisories, Snyk green, aggregate-enforced rules, write boundary respected. Harness Engineering 4/5 (8): Stop gate green first time with 0 approvals; deductions for the disabled skill being read and no commit-on-green. Context/Token/Cost 5/5 (10): ~$0.47 and 0.98M tokens. Developer Workflow Fit 4/5 (8): 13 minutes, 0 interventions, clear traceability table; deduction because the operator must commit. Operational/Vendor Readiness 4/5 (4). |
+| Recommendation | Adopt the cost discipline (lean AGENTS.md, Stop hook as the single full gate, few tool calls). Add commit-on-green, and prune or block the disabled skills from the agent's reads. |
