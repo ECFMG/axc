@@ -6,7 +6,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 # mog-repo-map
 
 Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open `packages/cellix/**` sources you won't edit or anything AGENTS bans; never list cellixjs.
-Read in ONE parallel batch, only what you still need: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step/assert API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern).
+Orientation = ONE turn: every read as parallel calls in a single response, then write (no second exploration round). Read only what you still need: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step/assert API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern).
 
 ## Layout
 
