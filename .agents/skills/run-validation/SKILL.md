@@ -10,10 +10,10 @@ description: The one AXC gate command — checks, then commit (husky verify). Ru
 Foreground, long shell timeout (≥15 min); no diff / `git status` / re-read first; don't background or poll.
 
 ```bash
-{ . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; { pnpm exec biome lint apps/api apps/docs packages/axc packages/axc-verification; l=$?; pnpm exec turbo run typecheck test --filter='[HEAD]' --output-logs=errors-only && [ $l = 0 ] && pnpm run knip && node scripts/check-ac-coverage.mjs && pnpm exec biome check --write apps/api apps/docs packages/axc packages/axc-verification; } >/tmp/check.log 2>&1 || { tail -n 30 /tmp/check.log; false; } && git add -A apps/api apps/docs packages/axc packages/axc-verification && git commit -qm "<feature summary>"
+{ . "${NVM_DIR:-$HOME/.nvm}/nvm.sh" && nvm use; } >/dev/null 2>&1; { pnpm exec biome lint apps/api apps/docs packages/axc packages/axc-verification; l=$?; pnpm exec turbo run typecheck test --filter='[HEAD]' --output-logs=errors-only && [ $l = 0 ] && pnpm run knip && node scripts/check-ac-coverage.mjs && pnpm exec biome check --write apps/api apps/docs packages/axc packages/axc-verification; } >/tmp/check.log 2>&1 || { node scripts/check-summary.mjs /tmp/check.log; false; } && git add -A apps/api apps/docs packages/axc packages/axc-verification && git commit -qm "<feature summary>"
 ```
 
-Check failure → 30-line tail, nothing committed. Read-only `biome lint` (useAwait, unused imports…) reports with typecheck/test in one pass; `--write` formats last, so a failed check leaves your files as written. `[HEAD]` = packages changed vs HEAD (incl. new files). No `test:arch` / acceptance / verify outside husky.
+Check failure → one line per problem (file + biome rule / TS code / test name / knip / AC), nothing committed. Read-only `biome lint` (useAwait, unused imports…) reports with typecheck/test in one pass; `--write` formats last, so a failed check leaves your files as written. `[HEAD]` = packages changed vs HEAD (incl. new files). No `test:arch` / acceptance / verify outside husky.
 
 Verify runs **once**, inside husky `pre-commit` (full `pnpm run verify`). Don't run `pnpm run verify` yourself.
 
