@@ -121,7 +121,7 @@ Layering: no cycles; domain ↛ persistence/service-mongoose/application-service
 
 - **Routes** (proven): one `registerAzureFunctionHttpHandler` per route template, listing every method it serves; names unique — `('<feature>', { route: 'api/<feature>', methods: ['GET', 'POST'], … })`, `('<feature>-item', { route: 'api/<feature>/{id}', methods: ['PATCH'], … })`. Azure templates use `{id}`, Hono `:id` (`c.req.param('id')`); Hono sees the full path.
 - **Docs**: the path/file the task names (else `apps/docs/docs/<feature>.md`) — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
-- **knip** (`knip.json`): exports from non-entry files must be imported somewhere — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
+- **knip** (`knip.json`): exports from non-entry files must be imported somewhere (a re-export from the package's `src/index.ts` counts) — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
 - **Lockfile**: on it already — `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter`, vitest (application-services), `@serenity-js/*`, `@cucumber/cucumber`, `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`. Anything else = lockfile churn.
 
 ## TypeScript (`packages/cellix/config-typescript/tsconfig.base.json`)
@@ -129,11 +129,12 @@ Layering: no cycles; domain ↛ persistence/service-mongoose/application-service
 strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to `x?:`) · `noUncheckedIndexedAccess` (`arr[i]` is `T|undefined`) ·
 `noPropertyAccessFromIndexSignature` (TS4111: `rec['k']`) · `noUnusedLocals/Parameters` · `verbatimModuleSyntax` (`import type`) ·
 `erasableSyntaxOnly` (no enums/namespaces/param properties) · NodeNext + `.ts` import extensions.
+Exported REST helpers need an explicit return type (`: Response`), else TS2883.
 
 ## Tests
 
 - **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
-- **Unit**: vitest only in `application-services` (`vitest.config.ts` = `mergeConfig(nodeConfig)` from `@cellix/config-vitest`; `test: vitest run --silent --reporter=dot`). `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
+- **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
 - **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the final gate.
 - **Step wiring** (`acceptance-api/cucumber.yaml`): features from `src/features/**/*.feature`; steps via `require` = `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` (loaded through `tsx/cjs`). A new step file must be `src/step-definitions/<feature>.steps.ts` — any other name/folder is never loaded (undefined steps).
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.
