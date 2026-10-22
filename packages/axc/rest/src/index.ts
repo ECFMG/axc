@@ -5,11 +5,20 @@ import { Hono } from 'hono';
 
 export function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {
 	const app = new Hono();
+	const servicesFor = (authorization: string | undefined) => (authorization === undefined ? applicationServicesFactory.forRequest() : applicationServicesFactory.forRequest(authorization));
 
 	app.get('/health', async (c) => {
-		const authorization = c.req.header('Authorization');
-		const applicationServices = authorization === undefined ? await applicationServicesFactory.forRequest() : await applicationServicesFactory.forRequest(authorization);
+		const applicationServices = await servicesFor(c.req.header('Authorization'));
 		return c.json(applicationServices.health.getStatus());
+	});
+
+	app.get('/api/courses', async (c) => {
+		const applicationServices = await servicesFor(c.req.header('Authorization'));
+		const result = applicationServices.courses.search(c.req.query());
+		if (!result.ok) {
+			return c.json({ error: result.error }, 400);
+		}
+		return c.json(result.body);
 	});
 
 	return app;
