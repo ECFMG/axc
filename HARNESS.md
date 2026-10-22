@@ -33,3 +33,11 @@ Source archive SHA-256: `14a5f3c308670fc4d04ced33c514976b42dc3db1187fa4cb65b00ed
 ## Loading and verification evidence
 
 A fresh native Codex readiness task automatically received root AGENTS.md and read the repository skill and referenced coding guidance. The transcript confirms these reads; this is loading evidence, not a claim of feature completion or savings. All 299 harness regression tests and official skill validation passed. See [installation verification](harness-integration/README.md), [native transcript](harness-integration/agent-task-transcript.jsonl), and [machine-readable results](harness-integration/validation.json).
+
+## Cellix alignment correction
+
+The native entrypoint now requires `.agents/skills/cellix-architecture/SKILL.md`, with an upstream-verified reference map and review checklist. Domain lifecycle rules and concrete storage cannot be collapsed into application services merely to reduce file count. Agents must inspect actual reference source, map responsibilities before writing, and review architecture separately from functional tests.
+
+The original extracted files remain unchanged for provenance. Their historical Task A configuration includes a fixture-oriented application-service implementation plan and is not approved as the default controller for Cellix-aligned feature work. Native Task A/B runs use the repository skills; no new controlled Cellix preset is claimed. If task write boundaries prevent required directories or lockfile updates, surface the conflict before implementation.
+
+The [Cellix correction evidence](harness-integration/architecture-correction/README.md) includes the configuration diff, verified source anchors and a fresh read-only probe that rejects the prior simplified application-service implementation. The screenshot’s separate local working tree was unavailable; no application refactor or new Task B result is claimed.

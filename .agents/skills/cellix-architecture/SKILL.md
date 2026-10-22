@@ -1,0 +1,82 @@
+---
+name: cellix-architecture
+description: Align AgentCourses implementation and review work with the local Cellix reference architecture. Use when changing or reviewing domain, application-service, persistence, REST/API composition, or architecture-test code in apps/api, packages/axc, or packages/axc-verification.
+---
+
+# Cellix Architecture Alignment
+
+Use Cellix as an executable design reference, not merely as background documentation. Preserve the requested behavior while matching the applicable Cellix package boundaries and implementation patterns.
+
+## Source Priority
+
+Use an accessible Cellix checkout identified by the user or `CELLIX_REFERENCE_ROOT`, and record its commit. If none is available, consult <https://github.com/CellixJs/cellixjs> at an explicit revision. The verified navigation baseline is in [the source reference](references/source-reference.json). Existing AXC code is an example only when it demonstrably implements the same Cellix pattern; the health service and earlier fixture-only exercises are not architecture authority for a stateful workflow.
+
+Do not modify the fixed task prompt to encode a solution. Do not copy an entire Cellix feature when only a smaller pattern is relevant.
+
+## Workflow
+
+### 1. Establish Constraints
+
+- Read the applicable task requirements and allowed write boundary.
+- Inspect the current AgentCourses packages and architecture tests.
+- Identify existing behavior that must remain compatible.
+- Check required workspace dependency edges before editing manifests, and keep declarations and the root lockfile synchronized. Do not introduce new external dependencies without task justification. If the fixed write boundary forbids a needed lockfile or directory change, surface that conflict and obtain a boundary exception rather than using undeclared imports or flattening layers. Preserve staged/user changes, including security and package-manager files.
+
+### 2. Find the Nearest Cellix Vertical Slice
+
+Search the local Cellix repository with `rg` and `rg --files`. Select a vertical slice by domain behavior and ownership, not by whichever package or filename is easiest to copy. Use an aggregate slice for a persisted business object with its own identity and lifecycle even if the current API only reads it. Use `packages/ocom/domain/src/domain/contexts/case/service-ticket/v1` as the primary mutation-workflow anchor when a concept is created, persists state transitions, records audit or history, owns nested lifecycle, or enforces transactional invariants. Use a read-model slice to implement queries, not to infer that the underlying domain object lacks future commands.
+
+Read [the architecture map](references/architecture-map.md) to locate common reference patterns. Inspect the actual referenced source files and their sibling and parent `index.ts`, interface, repository, and test files before making design decisions because the source repository remains authoritative. For a stateful workflow, read the entire `persistence/src/datasources/domain/case/service-ticket-v1` slice, including adapter/converter, repository, unit of work, composition, and each focused test. Record the applicable reference tree and the planned destination tree, including suffixes, exports, and behavior; package-level similarity alone is insufficient.
+
+### 3. Build an Alignment Map
+
+Before editing, record this compact map in working notes:
+
+| Responsibility | Project destination | Cellix reference | Decision or justified deviation |
+| --- | --- | --- | --- |
+| Concept classification by identity and lifecycle: aggregate, child entity, value object, or derived projection |  |  |  |
+| API and application composition |  |  |  |
+| Aggregate root, props, entity reference, and invariants |  |  |  |
+| Value objects and child entities |  |  |  |
+| Mutation repository and unit of work |  |  |  |
+| Storage record, domain-props adapter, and converter |  |  |  |
+| Repository creation, rehydration, and save conversion |  |  |  |
+| Unit-of-work converter/repository wiring and persistence composition |  |  |  |
+| Application operation |  |  |  |
+| Read repository contract and implementation |  |  |  |
+| Domain data source or repository implementation |  |  |  |
+| Entity, context, data-source, and package exports |  |  |  |
+| Application-facing types and errors |  |  |  |
+| Transport |  |  |  |
+| Tests by owning layer and composed public path |  |  |  |
+| Contract documentation, when required |  |  |  |
+
+Choose a context name before filling the map, then carry it through domain, application services, persistence, data-source namespaces, and public API types. Classify each concept before choosing its files. A persisted business object with independent identity and lifecycle is an aggregate by default, including when its current API only exposes queries. Reserve derived projection for a view with no independent domain identity or lifecycle, and record evidence for that classification. An aggregate needs a static `getNewInstance` factory that establishes valid initial state, props, entity reference, applicable value objects, exports, and focused tests; defer mutation-side contracts and adapters only when commands are outside the current task, recording the deferred responsibilities. Keep reconstruction of stored objects distinct from creation through this factory. A command concept with creation plus state transitions, audit or history, nested lifecycle, or transactional invariants uses the full applicable aggregate pattern. List every applicable reference file, test companion, or behavior intentionally omitted, so missing pieces are deliberate rather than accidental. Complexity, implementation speed, and a passing transport test do not justify omission.
+
+### 4. Implement by Layer
+
+- **Composition:** Wire services, data-sources factories, and handlers in `apps/api`; pass the factory through `ApiContext` to the application-services host. Keep feature logic elsewhere. The host must not construct a concrete persistence adapter itself.
+- **Domain:** Put every named business concept, its props, entity reference, invariants, applicable value objects, and exports under `packages/axc/domain/src/domain/contexts/<context>/<entity>/`, even when all exposed operations are queries. Model an independently identified, persisted business object with Cellix `AggregateRoot` and `*.aggregate.ts` by default; use `DomainEntity` for a child entity or another behaviorally justified case, never solely because there is no write endpoint. For commands, match the selected Cellix `*.repository.ts`, `*.uow.ts`, child-entity, visa or passport, event, `index.ts`, and focused-test responsibilities that apply. Use `@cellix/domain-seedwork` aggregate, entity, repository, and unit-of-work abstractions instead of project-local reductions. Do not expose a mutable record plus free mutation functions as the domain model.
+- **Application services:** Organize context and entity APIs below `src/contexts/<context>/<entity>`. Put each public operation in its own file, where its application-owned command or query input is declared beside a curried factory such as `(dataSources: DataSources) => async (query) => result`. Keep entity `index.ts` to a named service interface and operation composition. Follow Cellix context composition: import an entity API with an alias and its explicit service type (for example, `Course as CourseApi, type CourseApplicationService`), then expose a named context service interface. `DataSources` may be imported from persistence for injection; persistence query, page, filter, and repository types must not define public application-service contracts. Domain entity references may be returned when the selected Cellix slice does so.
+- **Queries:** Read through `readonlyDataSource` rather than owning records in the application service.
+- **Mutations:** Use the domain data source and scoped transaction pattern when persistence is involved. Load and mutate the aggregate through its domain repository inside the unit of work; application services orchestrate and do not reproduce aggregate transition rules.
+- **Persistence:** Put read-side repository interfaces and implementations under `packages/axc/persistence/src/datasources/readonly/<context>/<entity>/<entity>.read-repository.ts`, with applicable entity, context, and data-source `index.ts` composition and `*.data.ts` when a separate data source is needed. Keep fixtures behind that boundary. For command aggregates, mirror the selected Cellix domain data-source adapter, converter, repository, unit-of-work, composition, and semantic tests under the corresponding domain data-source path. `*.domain-adapter.ts` must adapt a stored record to the domain props contract and provide or pair with a converter that constructs the aggregate from stored state and an adapter for new aggregate creation. The mutation repository must use this boundary for `getNewInstance`, retrieval, and save; the unit of work must wire the converter and repository, and the entity `index.ts` must expose the initialized unit of work. An in-memory store is a storage technology substitution, not an adapter/converter substitution. Do not place a `*ReadRepository` interface in domain; Cellix's domain `*.repository.ts` files serve a different, mutation-side role. Do not collapse applicable composition levels into the root factory merely because the resulting object has the correct shape.
+- **REST:** Keep validation and HTTP error mapping at the transport boundary. Application failures carry stable codes and details without HTTP status numbers; REST maps those codes to response statuses. Register feature routes from modules below `src/features`; do not grow the package entry point into a feature implementation. Production transport code must not import persistence contracts. Prefer application-service public contracts or transport-local request types over domain imports unless the chosen Cellix reference establishes a direct domain dependency.
+- **Tests:** Put aggregate transition and invariant tests beside the aggregate, and value-object boundary tests beside the value objects. Test application orchestration and persistence semantics separately, then prove public behavior through the composed HTTP acceptance path. Assert specified error status and code together. Verify material state and audit fields directly. For command persistence, add focused adapter/converter, repository, unit-of-work, and composition tests: cover stored-to-domain and domain-to-stored round trips, nested history or child data, repository factory creation, retrieval and save, and transaction behavior. When an in-memory or other custom adapter replaces the reference implementation, also test the applicable observable semantics, such as commit, rollback, isolation, serialization, and defensive copying.
+- **Documentation:** When required, account for every affected endpoint or public operation, including inputs, successful outputs, status or result, and specified errors. Derive this checklist from the task rather than adding a generic documentation burden to every change.
+
+### 5. Review Against Cellix
+
+Read and complete [the alignment review](references/review-template.md). Compare the planned, reference, and implemented trees as well as filename suffixes, folder depth, interfaces, seedwork inheritance, aggregate and value-object semantics, exports, persistence adapters, feature behavior, tests, context names, and dependency direction. Treat unexplained structural or semantic differences and missing applicable pieces from the chosen Cellix references as defects. Do not treat a passing functional test suite as proof of architectural alignment.
+
+### 6. Verify
+
+Run focused tests while implementing, then run the repository completion gate from `AGENTS.md`. Architecture-test failures must be fixed in application code; do not weaken the guardrail to make a feature pass.
+
+Reuse the alignment map and completed review during final verification. Run shared build-dependent completion commands sequentially and avoid repeating unchanged successful checks; follow [the harness workflow](../axc-harness/SKILL.md) for scope and security checks. Follow the task's explicit reporting requirements.
+
+## Guard against the reported failure
+
+A file-count limit or a small fixed catalog is not a reason to put aggregate invariants, status history mutation, concrete storage maps or repository construction into application services. For Task B, enrollment creation, status transitions, duplicate-active checks and audit history require an explicit domain/persistence/application mapping. A `catalog.ts` or `enrollment.ts` in the application-service root may orchestrate operations, but cannot substitute for those owning layers.
+
+Do not accept a passing endpoint suite as architectural proof. Before completion, compare the implemented tree and semantics with the planned reference map. Missing applicable aggregate, value-object, adapter/converter, repository, unit-of-work, composition, export or focused-test responsibilities are unresolved findings. An approved behavior-based deviation may be documented; speed, fewer files and preserving a fixture example do not justify it. Do not add real authentication, MongoDB infrastructure or unrelated Cellix features when the sample task excludes them.

@@ -1,0 +1,35 @@
+{
+  "scope": "Read-only Cellix architecture review probe including final response. Separate from original implementation, prior loading probe and parent harness correction.",
+  "session_id": "01a16569-2178-7a63-9170-74fd7f7b26bb",
+  "turn_id": "01a16569-2665-7111-9e30-eaab592dcd09",
+  "source_log": "/Users/dfortun/.codex/sessions/2026/10/22/rollout-2026-10-22T16-59-11-01a16569-2178-7a63-9170-74fd7f7b26bb.jsonl",
+  "starting_cumulative_counters": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 0,
+    "reasoning_output_tokens": 0,
+    "total_tokens": 0
+  },
+  "baseline_method": "Fresh-session zero baseline inferred from first total/last counters; no pre-task snapshot recorded.",
+  "ending_cumulative_counters": {
+    "input_tokens": 1020011,
+    "cached_input_tokens": 915200,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 4749,
+    "reasoning_output_tokens": 271,
+    "total_tokens": 1024760
+  },
+  "recorded_usage": {
+    "input_tokens": 1020011,
+    "cached_input_tokens": 915200,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 4749,
+    "reasoning_output_tokens": 271,
+    "total_tokens": 1024760
+  },
+  "recorded_through": "2026-10-22T21:01:08.105Z",
+  "task_complete": "2026-10-22T21:01:08.108Z",
+  "completeness": "complete for exposed native probe counters, including final response",
+  "unknown_usage": "Parent correction and any unexposed tool-side model/billing counters; no total correction-cost claim."
+}

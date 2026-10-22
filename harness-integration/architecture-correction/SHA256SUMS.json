@@ -1,0 +1,9 @@
+{
+  "README.md": "fe2606b83d3f482789f2aaa490ac5f6b1c52fdad8825e91599175448a3c30a12",
+  "probe-findings.md": "c1682351a01c130f70555bafd906a5009852dcc9135a481c70f43fa0b3c9bc27",
+  "validation.json": "a1c109fdc9820383921db80f373b938bff5385706136061f9ac108ac3c60e64f",
+  "configuration.patch": "def673ee1a62db6653ca8fcf048404368173debd945169017909535f02ca1e2f",
+  "probe-usage.json": "d4ceffc54e71df515cd5c452b0a92bbb0fca22f6bf4e235dccc4105111836e82",
+  "agent-loaded-instructions.txt": "6c8c01f774f31d8aefb1611fe5520435bad1800e1942ed731f246e48c716b81e",
+  "agent-review-transcript.jsonl": "31bb54aeb7743b4cb6e3fd7b14ef77feb3769757c9bf2ede3d16ee1037d50c38"
+}

@@ -1,0 +1,69 @@
+{
+  "status": "harness_guidance_corrected_and_behaviorally_checked",
+  "branch": "df-oai-1-b",
+  "starting_commit": "5afa1f04fb9add74c643166060f7ef560feefec3",
+  "cause": [
+    "Prior root guidance did not mandate source-level Cellix mapping or review",
+    "Historical bundled Task A preset directs models/fixture storage into application services; it must not override current Cellix architecture"
+  ],
+  "changes": [
+    "Mandatory Cellix skill at root and in native harness workflow",
+    "Portable source reference with actual verified revision",
+    "Reference responsibility/destination map before implementation",
+    "Domain lifecycle ownership, persistence conversion and transactional boundaries, injected data sources and REST/application separation",
+    "Post-implementation alignment review plus relevant repository verification",
+    "Explicit boundary-conflict handling instead of flattening or undeclared imports",
+    "Historical fixture preset is isolated from the active Cellix native profile"
+  ],
+  "verification": {
+    "skill_validators": {
+      "axc-harness": "passed",
+      "cellix-architecture": "passed"
+    },
+    "source_reference": {
+      "repository": "https://github.com/CellixJs/cellixjs",
+      "commit": "0dda578701214d524dd961849c9ae3e39f882834",
+      "verified_navigation_anchors": 43,
+      "missing_anchors": 0
+    },
+    "read_only_probe": {
+      "status": "passed",
+      "acceptance_verdict": "proposed simplified implementation rejected",
+      "root_guidance_injected": true,
+      "both_skills_read": true,
+      "actual_upstream_source_read": true,
+      "findings": [
+        "Domain behavior and mutable records in application services",
+        "Concrete persistence Map and missing adapter/converter/repository/UOW",
+        "Storage constructed inside application factory instead of injected by API composition",
+        "HTTP status and raw request policy in application layer",
+        "Missing context/entity operation contracts",
+        "Missing owning-layer tests"
+      ],
+      "no_files_modified_by_probe": true
+    },
+    "application_tests": "Not rerun: application source unchanged",
+    "archived_harness_regressions": "Original extracted source unchanged; prior 299-test pass remains historical installation evidence, not a new result for this guidance change"
+  },
+  "specimen": {
+    "description": "Existing prior simplified implementation available in this chat workspace, used only as a review specimen; not the screenshot\u2019s inaccessible local 15-file working tree.",
+    "source_hashes": {
+      "packages/axc/application-services/src/enrollment-requests.ts": "93ba0fc32d8b37b06a2bdfa35f39ff36306831c62b20e5c50338d2f0e3006f34",
+      "packages/axc/rest/src/enrollment-routes.ts": "488cc1bfc45277b6b9895fe7e1aa461f8b04f4a9926aa0c85a0df33e20b3ed5e"
+    }
+  },
+  "application_implementation_modified": false,
+  "fixed_task_prompts_modified": false,
+  "vendored_cellix_modified": false,
+  "archived_harness_modified": false,
+  "screenshot_local_source_status": "Remote branch contains no Task B implementation. The /Volumes/files/src/axc worktree shown in the screenshot is unavailable here; its staged/untracked source was not overwritten or claimed repaired.",
+  "boundary_findings": [
+    "Task B no-new-directories wording conflicts with required nested Cellix structure; resolve explicitly for future runs",
+    "Needed manifest/lockfile workspace links require scope authorization when fixed boundaries exclude root lockfile"
+  ],
+  "limits": [
+    "This checks instruction loading and one rejection behavior; it does not prove a new Task B implementation is correct",
+    "No measured efficiency improvement or new feature score is claimed",
+    "A controlled Cellix-specific provider preset is not implemented; native skill workflow is active"
+  ]
+}

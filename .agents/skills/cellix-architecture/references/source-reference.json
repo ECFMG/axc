@@ -1,0 +1,23 @@
+{
+  "repository": "https://github.com/CellixJs/cellixjs",
+  "verified_commit": "0dda578701214d524dd961849c9ae3e39f882834",
+  "verified_date": "2026-10-22",
+  "skill_guidance_adapted_from": {
+    "repository": "https://github.com/ECFMG/axc",
+    "branch": "dn-oai-8",
+    "commit": "8972088857fc29ce33f279b8708adf2064e8847c",
+    "paths": [
+      ".agents/skills/cellix-architecture/SKILL.md",
+      ".agents/skills/cellix-architecture/references/architecture-map.md",
+      ".agents/skills/cellix-architecture/references/review-template.md"
+    ]
+  },
+  "adaptations": [
+    "Portable source discovery rather than a machine-specific /Volumes path",
+    "Local axc-harness workflow link instead of an absent harness-run-workflow document",
+    "Task write-boundary and no-external-infrastructure constraints retained",
+    "Correct feature companion paths against verified upstream source",
+    "Explicit rejection of fixture-only application-service architecture for stateful workflows"
+  ],
+  "note": "Navigation/reference only; no Cellix code is vendored or modified. For each run record the actual reference checkout revision."
+}

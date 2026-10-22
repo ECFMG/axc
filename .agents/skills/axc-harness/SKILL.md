@@ -11,8 +11,8 @@ Resolve paths from the repository root. Read `openai-harness-v7.12.02/README.md`
 
 - Read the task prompt and requirements named by the user completely. For the bundled AXC tasks these are `task-set-a-prompt.md` / `task-set-a-requirements.md` or `task-set-b-prompt.md` / `task-set-b-requirements.md` at the repository root. Their allowed/protected write boundaries govern feature work; user instructions take precedence.
 - The shipped `coding-task-set-a.json`, `run_task_a.py` and independent course verifier are **Task A-specific**. Their presence does not establish a Task B controller or enrollment acceptance suite. For Task B, implement the supplied Task B specification natively and record its own tests and boundaries. Creating a controlled Task B preset is separate work; do not silently rename or reuse the Task A preset.
-- For a requested native Codex Task A evaluation, use `run_task_a.py prepare --external`, `host-context`, and `finish` as documented in the extracted README and CLI help. Native execution is externally recorded/advisory; installing these files does not enforce the controller's provider-call budget on native Codex.
-- For an explicitly requested controlled adapter run, use the documented controller, its provider ledger and review workflow. Do not start a provider/model experiment merely because the harness is installed.
+- The bundled Task A preset explicitly plans model, fixture storage and search in application services. That frozen historical plan conflicts with the current Cellix architecture profile: do not invoke it as the default controller for a Cellix feature evaluation. Native Task A/B work uses the fixed task requirements plus these repository skills. A separately approved Cellix controller profile and verifiers would be needed for controller-enforced execution; none is claimed by this integration.
+- For an explicitly requested historical controlled adapter experiment, use its documented controller, provider ledger and review workflow, and disclose the fixture-oriented architecture profile. Do not start a provider/model experiment merely because the harness is installed.
 
 ## Before a measured implementation
 
@@ -22,9 +22,11 @@ When usage measurement is requested, identify the original session and turn, cap
 
 ## Implementation and verification
 
+Before implementation or architecture review, read [the Cellix architecture skill](../cellix-architecture/SKILL.md). It is mandatory for the affected API/AXC/verification layers, including small catalogs and in-memory workflows. Its reference map and post-implementation review are completion evidence. The health-service pattern and fixture-only examples do not justify omitting domain or persistence responsibilities.
+
 Follow existing `apps/api` composition, `packages/axc/rest` routes and application-service/domain/persistence package contracts. Keep vendor code and unrelated configuration unchanged. Prefer bounded source reads; retain a retrieval path when excerpts omit relevant material. Resolve failures with focused checks; do not repeat unchanged reads or validation without a new question or code change.
 
-Use relevant repository commands: `pnpm test`, `pnpm run lint`, `pnpm run build`, `pnpm run typecheck`, and `pnpm run test:arch`. The existing Turbo build inputs omit docs, so run `pnpm --filter @apps/docs build` directly after documentation changes. Readiness-only or documentation-only tasks do not require feature implementation or the entire application suite. Controller runs additionally use the frozen checks in their selected configuration. A review packet is not evidence that a review happened; report its actual status.
+For feature completion run focused tests and the repository `pnpm run verify` gate, rather than treating a subset of passing checks as architectural acceptance. Its stages include lint/format policy, typecheck, build, Knip, dependency analysis, architecture, tests and security checks. The existing Turbo build inputs omit docs, so run `pnpm --filter @apps/docs build` directly after documentation changes. Readiness-only or documentation-only tasks do not require feature implementation or the entire application suite. Controller runs additionally use the frozen checks in their selected configuration. A review packet is not evidence that a review happened; report its actual status.
 
 ## Usage, assessment and handoff
 
