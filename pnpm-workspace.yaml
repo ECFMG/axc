@@ -44,13 +44,17 @@ catalog:
 
 auditConfig:
   ignoreGhsas: [
-    'GHSA-vfj7-8cjw-p6xm' # braces 3.0.4 is unpublished; latest is 3.0.3 as of 2026-10-21. Recheck by 2026-11-21.
+    'GHSA-vfj7-8cjw-p6xm' # No fixed braces release exists as of 2026-10-22. The vulnerable parser is only used by development tooling. Recheck by 2026-11-22.
   ]
 
 overrides:
+  '@graphql-tools/utils': 12.0.2
+  'body-parser@1.20.8': 1.20.9
+  'body-parser@2.3.0': 2.4.0
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
+  deepmerge: 4.1.2
   hono: 4.13.11
   fast-uri: 3.1.9
   follow-redirects: 1.16.1
@@ -64,6 +68,7 @@ overrides:
   tinypool: 2.1.2
   vite: 8.3.3
   vitest: 4.1.12
+  webpack-dev-server: 5.2.7
   '@vitest/browser-playwright': 4.1.12
   '@vitest/mocker': 4.1.12
   '@storybook/addon-vitest': 10.6.2
@@ -71,6 +76,7 @@ overrides:
   smol-toml: 1.9.1
   'sockjs>uuid': 11.1.1
   qs: 6.16.1
+  uri-js: npm:fast-uri@3.1.9
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
@@ -84,3 +90,4 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - hono@4.13.11
   - shell-quote@1.11.0
+  - body-parser@1.20.9 || 2.4.0

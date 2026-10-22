@@ -4,42 +4,22 @@ version: v1.25.1
 ignore:
   SNYK-JS-BRACES-19963945:
     - '*':
-        reason: No upgrade or patch available
-        expires: 2026-10-28T22:36:43.527Z
+        reason: No fixed braces release exists as of 2026-10-22; recheck before expiry
+        expires: 2026-11-22T22:36:43.527Z
         created: 2026-09-28T22:36:43.528Z
-  SNYK-JS-DEEPMERGE-19964053:
-    - '*':
-        reason: No upgrade or patch available
-        expires: 2026-10-28T22:36:44.923Z
-        created: 2026-09-28T22:36:44.928Z
   SNYK-JS-HTTPCACHESEMANTICS-19964064:
     - '*':
-        reason: No upgrade or patch available
-        expires: 2026-10-28T22:36:46.295Z
+        reason: No fixed http-cache-semantics release exists as of 2026-10-22; recheck before expiry
+        expires: 2026-11-22T22:36:46.295Z
         created: 2026-09-28T22:36:46.299Z
   SNYK-JS-HTTPCACHESEMANTICS-19964068:
     - '*':
-        reason: No upgrade or patch available
-        expires: 2026-10-28T22:36:47.625Z
+        reason: No fixed http-cache-semantics release exists as of 2026-10-22; recheck before expiry
+        expires: 2026-11-22T22:36:47.625Z
         created: 2026-09-28T22:36:47.628Z
-  SNYK-JS-URIJS-19963961:
-    - '*':
-        reason: No upgrade or patch available
-        expires: 2026-10-28T22:36:48.966Z
-        created: 2026-09-28T22:36:48.969Z
-  SNYK-JS-URIJS-19963963:
-    - '*':
-        reason: No upgrade or patch available
-        expires: 2026-10-28T22:36:50.274Z
-        created: 2026-09-28T22:36:50.278Z
-  SNYK-JS-URIJS-20341609:
-    - '*':
-        reason: No upgrade or patch available
-        expires: 2027-01-31T22:36:51.123Z
-        created: 2026-10-12T22:36:51.126Z
   SNYK-JS-PICOMATCH-21248802:
     - '*':
-        reason: No fixed picomatch release exists as of 2026-10-21; recheck before expiry
-        expires: 2026-11-21T21:51:29.000Z
+        reason: No fixed picomatch release exists as of 2026-10-22; recheck before expiry
+        expires: 2026-11-22T21:51:29.000Z
         created: 2026-10-21T21:51:29.000Z
 patch: {}
