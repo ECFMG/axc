@@ -3,29 +3,29 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
+| Team | Cursor |
+| Developer / Operator | Frank Yang |
 | Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Harness | Cursor |
+| Model | Grok 4.7(high) |
+| License / Plan | Cursor Teams Premium |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | B |
+| Run Type | Baseline |
+| Harness Engineering Used | None (no AGENTS.md); generic repo .agents/ skills folder only |
+| Config / Diff Notes | Purpose: establish the no-harness Task B baseline (TS-B-COURSE-ENROLLMENT-WORKFLOW) on the same lineage as the Task A work (fy-cur-0-b = fe47c38, the fy-cur-0 base). Unchanged prompt ("Look into @task-set-b-prompt.md and follow the instructions listed in there."), no mid-run steering. Course search was not present, so the agent built catalog search and the enrollment workflow together (26 files, +1848/-25). Boundary clean: all code and docs inside the SRD write set; pnpm-lock.yaml (+/-44 lines) is workspace:* links (@axc/domain, @axc/persistence) plus a supports-color re-resolution of existing packages, no new external deps and no version changes; tsconfig edits are project references only; docusaurus.config.ts is in apps/docs; no auth/env/secrets/deploy changes. Architecture drift (no harness to steer it): no ApiContext injection (.setContext still returns only { environment }); the course catalog and enrollment store are built inside buildApplicationServicesFactory (signature unchanged); application-services value-imports createCourseCatalog and createEnrollmentRequestStore from @axc/persistence (baseline test:arch has no type-only rule, so it passed; the cycle-4 harness rule would fail it, inferred). A catch-all Azure handler 'api' (route api/{*segments}, GET/POST/PATCH) was added instead of per-route registrations. health.test.ts not edited. Tests: zero course or enrollment acceptance scenarios (only the existing healthcheck scenario); new route tests use node:test (node --experimental-strip-types --test) rather than the repo's vitest convention. The agent never ran pnpm run verify and left its output uncommitted (committed afterwards by the operator as 1d3cdec). |
+| Branch / Commit | fy-cur-0-b-out @ 1d3cdec (Task B run output), base fe47c38 (fy-cur-0-b, no harness) |
+| Requirements Completed / Attempted | 17/17 (B1-B17). Routes: GET /api/courses (q, modality, status, tag, page, pageSize, sort; invalid params 400), POST /api/enrollment-requests, GET /api/enrollment-requests, GET /api/enrollment-requests/:id, PATCH /api/enrollment-requests/:id/status. Business rules, all confirmed LIVE over HTTP (probe-b.zsh): new requests start pending (201); only active courses (draft and retired -> 409 COURSE_NOT_ACTIVE; unknown -> 404 COURSE_NOT_FOUND); invalid email and short justification -> 400 INVALID_REQUEST; no second pending/approved request for the same learner+course (409 DUPLICATE_ACTIVE_REQUEST, still blocked while approved, re-request allowed after cancel); transitions pending -> approved/rejected/cancelled and approved -> cancelled only, anything else 409 INVALID_STATUS_TRANSITION (approved -> approved, rejected -> approved); rejection requires a reason (missing or blank -> 400); statusHistory appended on create and every change. B15 met by unit and route tests (no acceptance scenarios); B16 docs present; B17 existing tests pass. |
+| Acceptance Criteria Passed / Total | 15/15 (B-AC1-B-AC15). probe-b.zsh: 31 pass, 0 fail. LIVE over HTTP: B-AC1 (C1-C7: default page, q, modality+status, pagination, sort, invalid pageSize 400, no match), B-AC2, B-AC3, B-AC4 (draft and retired), B-AC5, B-AC6 (pending and approved), B-AC7, B-AC9, B-AC10, B-AC11 (missing and blank reason), B-AC12. B-AC8: status filter and invalid status filter 400 confirmed live; combined status+courseId+learnerEmail filtering covered by the unit test "filters by status, courseId, and learnerEmail" (not separately probed). From verify log: B-AC13 (all pre-existing suites pass). Source plus verify log: B-AC14 met by unit/route tests only (application-services catalog.test.ts 14 vitest cases; rest api-routes.test.ts 7 node:test cases; together cover creation, validation, duplicates, retrieval, filtering, transitions, audit history, errors); no acceptance (BDD) scenarios were added, which the criterion does not require but the repo convention and the harnessed run (19 scenarios) do. B-AC15: docs/api/enrollment-requests.md (create, retrieve, list, update status, allowed transitions, error table, example) and docs/api/courses.md (request, response, errors, fixtures, example); ADR 0001; sidebar linked, docs build passed. |
+| Tests Passed / Failed | All pass (grader-run verify). application-services 32/0 (4 files, includes the 14 new catalog.test.ts cases); rest 7/0 (node:test); arch 19/0 (10 cellix + 9 axc); all other package suites pass; acceptance 1 scenario/0 (healthcheck only; zero course or enrollment scenarios). |
+| Static Analysis / Security Findings | Grader-run pnpm run verify (the agent never ran it) passed script-policy, Biome, typecheck, build, knip, e18e, test:arch, unit, and acceptance tests; stopped at pnpm audit (24: 1 low, 12 moderate, 7 high, 4 critical). Every flagged package is at the same version as in fe47c38's pnpm-lock.yaml (tinypool@1.1.1, @storybook/addon-vitest@10.6.0, storybook@10.6.0, http-cache-semantics@4.2.0, braces@3.0.3, source-map-js@1.2.1, follow-redirects@1.16.0, vite@8.3.0, launch-editor@2.14.1), so all findings are pre-existing. Snyk not run. No new third-party deps, no packages upgraded. |
+| Input Tokens | Not captured this session |
+| Cached Tokens | Not captured this session |
+| Output Tokens | Not captured this session |
+| Total Tokens or Credits Used | ~5,800,000 |
+| Estimated Cost | Included in Cursor Teams Premium. Single run, no variance baseline; Task A showed cost is run-to-run noise (cycle-4 harness: 5.7M / 2.66M / 1.8M on identical runs), so the 5.8M vs 11.6M (harnessed fy-cur-4-b-out) gap is not attributable to the harness. The harnessed run also did more work (19 acceptance scenarios vs 1). |
+| Elapsed Time | 20m 17s |
+| Number of Human Interventions / Redirects | 0 |
 | Reviewer Notes | (leave blank for now) |
-| Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Final Rubric Score | 71/100. Functional 5 (20; all behavior verified live, 31/31), Tests 3 (9; unit and route tests cover the required areas, but zero acceptance scenarios and route tests use node:test instead of vitest), Architecture 3 (9; stores built in buildApplicationServicesFactory instead of ApiContext injection, value import from @axc/persistence, catch-all api/{*segments} handler), Security 5 (15; all audit findings pre-existing, boundary clean), Harness Eng 1 (2; no harness, baseline), Cost 3 (6; 5.8M, one run, unbenchmarkable), Workflow 3 (6; 0 interventions, 20m17s, but never ran full verify and left output uncommitted), Vendor 4 (4). |
+| Recommendation | Continue - this establishes the Task B no-harness baseline. The next run, fy-cur-1-b, layers on the cycle-4 harness plus the cycle-8 shared test-context builder guidance (054c0b4). |
