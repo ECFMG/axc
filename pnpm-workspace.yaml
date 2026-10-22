@@ -25,8 +25,8 @@ catalog:
   '@storybook/addon-vitest': ^10.4.2
   '@types/node': 24.10.1
   '@typescript/native-preview': 7.0.0-dev.20260428.1
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/coverage-istanbul': 4.1.11
+  '@vitest/browser-playwright': 4.1.12
+  '@vitest/coverage-istanbul': 4.1.12
   archunit: ^2.1.63
   graphql: ^16.10.0
   hono: 4.13.11
@@ -40,7 +40,7 @@ catalog:
   rimraf: 6.0.1
   tsx: ^4.21.0
   typescript: 6.0.3
-  vitest: 4.1.11
+  vitest: 4.1.12
 
 auditConfig:
   ignoreGhsas:
@@ -60,9 +60,18 @@ overrides:
   sirv: 3.0.2
   source-map-js: 1.2.2
   tinypool: 2.1.2
-  vitest: 4.1.11
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/mocker': 4.1.11
+  vitest: 4.1.12
+  '@vitest/browser-playwright': 4.1.12
+  '@vitest/mocker': 4.1.12
+  '@storybook/addon-vitest': 10.6.2
+  follow-redirects: 1.16.1
+  launch-editor: 2.14.2
+  storybook: 10.6.2
+  vite: 8.3.3
+  'body-parser@1': 1.20.9
+  'body-parser@2': 2.4.0
+  fast-uri: 3.1.9
+  webpack-dev-server: 5.2.7
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
@@ -77,3 +86,4 @@ minimumReleaseAgeExclude:
   - hono@4.13.11
   - qs@6.16.1
   - shell-quote@1.11.0
+  - body-parser@1.20.9 || 2.4.0
