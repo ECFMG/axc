@@ -32,7 +32,10 @@
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+push\\s+\\S+\\s+(main|master|prod|production)(\\s|$)", "Direct push to a protected branch. Open a PR from another branch if needed."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+reset\\s+--hard", "Discards uncommitted work irreversibly."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)mkdir\\b[^|;&]*packages/axc/", "No new folders under packages/axc — add a flat file in an existing src/ folder."],
-		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+(?:-C\\s+\\S+\\s+)?(?:config\\s+(?!--get|-l\\b|--list)|init\\b)", "Writes git config/repo setup shared by every worktree. Do this yourself."],
+		[
+			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+(?:-C\\s+\\S+\\s+)?(?:config\\s+(?!(?:(?:--(?:global|system|local|worktree|show-origin|show-scope|null|name-only|includes|no-includes|type=\\S+|bool|int|path)|-z|(?:-f|--file|--blob)(?:=|\\s+)\\S+)\\s+)*(?:--get(?:-all|-regexp|-urlmatch|-color(?:bool)?)?\\s|(?:-l|--list)\\b|(?:get|list)\\b|\\w[\\w.-]*\\s*(?:$|[|;&)]|\\d?>)))|config\\s*$|init\\b)",
+			"Writes git config/repo setup shared by every worktree (reads: git config <key> / --get / --list). Do this yourself."
+		],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+clean\\s+-[a-zA-Z]*[fd]", "Deletes untracked files irreversibly."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+checkout\\s+\\.\\s*$", "Discards all unstaged changes."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(curl|wget)\\b[^|]*\\|\\s*(sudo\\s+)?(ba)?sh", "Piping a download straight into a shell."],

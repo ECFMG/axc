@@ -14,7 +14,6 @@ test('shell: deny rules match on every line', () => {
 	assert.match(sh('pnpm add left-pad'), /dependency/);
 	assert.match(sh('echo ok\ngit reset --hard'), /irreversibly/);
 	assert.match(sh('ls\n  git -C ../x config core.bare true'), /git config/);
-	assert.equal(sh('git config --get core.bare'), undefined);
 	assert.match(sh('mkdir -p packages/axc/rest/src/features'), /no new folders/i);
 	assert.equal(sh('mkdir -p /tmp/x'), undefined);
 	assert.equal(sh('pnpm install --frozen-lockfile && git status'), undefined);
@@ -89,5 +88,40 @@ test('shell: writes to protected paths are denied, reads allowed (both guards)',
 	for (const c of allowed) {
 		assert.equal(sh(c), undefined, `node should allow: ${c}`);
 		if (pyOk) assert.equal(py(c), undefined, `python should allow: ${c}`);
+	}
+});
+test('shell: git config reads allowed; writes and git init denied (both guards)', () => {
+	const reads = [
+		'git config core.bare',
+		'git config --get core.bare',
+		'git -C ../x config --get-all remote.origin.url',
+		'git config --global --get user.name',
+		'git config --list --show-origin',
+		'git config -l',
+		'git config get core.bare',
+		'git config core.bare 2>/dev/null && echo ok',
+		'echo "$(git config user.name)"',
+	];
+	const writes = [
+		'git config core.bare true',
+		'git config --global user.name x',
+		'git config --system core.editor vi',
+		'git -C ../x config core.bare false',
+		'git config --unset core.bare',
+		'git config --add a.b c',
+		'git config set core.bare true',
+		'git config -e',
+		'ls; git config user.email a@b',
+		'git init',
+		'git init -q /tmp/x',
+	];
+	const pyOk = py('ls') !== null;
+	for (const c of reads) {
+		assert.equal(sh(c), undefined, `node should allow: ${c}`);
+		if (pyOk) assert.equal(py(c), undefined, `python should allow: ${c}`);
+	}
+	for (const c of writes) {
+		assert.match(sh(c) ?? '', /git config/, `node should deny: ${c}`);
+		if (pyOk) assert.match(py(c) ?? '', /git config/, `python should deny: ${c}`);
 	}
 });
