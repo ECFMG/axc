@@ -4,8 +4,9 @@
 //   stop:  nothing changed since start → allow (pure Q&A). Changes → `pnpm install --frozen-lockfile`, then
 //          `git add` the write dirs + `git commit` with husky ON: its pre-commit runs the one full `pnpm run verify`.
 //          Green (verify log ends with `verify ok`, tree clean) → silent allow. Red → block with a terse
-//          one-line-per-problem report; nothing committed. Never blocks twice for the same tree state (so a
-//          stopHookActive retry that changed nothing is allowed) or more than 3 times per session.
+//          one-line-per-problem report; nothing committed. The fingerprint covers untracked file contents. A plain
+//          re-stop on the same tree state is allowed; a stopHookActive retry after a block always re-verifies.
+//          At most 3 blocks per session; then allow with a one-line note.
 //   run:   the same for tools without a Stop hook: report + exit 1 on failure, one `verify ok` line on success.
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -16,7 +17,7 @@ import { report } from './check-summary.mjs';
 
 const MAX_BLOCKS = 3;
 const NVM = 'export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" >/dev/null 2>&1 && nvm use >/dev/null 2>&1; ';
-const run = (cmd, args, env = process.env) => spawnSync(cmd, args, { encoding: 'utf8', env, maxBuffer: 64 << 20 });
+const run = (cmd, args, env = process.env, input = undefined) => spawnSync(cmd, args, { encoding: 'utf8', env, input, maxBuffer: 64 << 20 });
 const git = (...args) => {
 	const r = run('git', args);
 	if (r.status !== 0) throw new Error(`git ${args[0]} failed`);
@@ -31,9 +32,14 @@ function readInput() {
 	}
 }
 
-function snapshot() {
+/** HEAD + tree fingerprint (status, tracked diff, untracked file contents). Read-only: hash-object without -w. */
+export function snapshot() {
 	const status = git('status', '--porcelain', '-uall');
-	const fingerprint = createHash('sha1').update(status).update(git('diff', 'HEAD')).digest('hex');
+	const untracked = git('ls-files', '-o', '--exclude-standard', '-z')
+		.split('\0')
+		.filter((f) => f && !f.endsWith('/') && !f.includes('\n')); // nested repos / odd names: status still covers the name
+	const blobs = untracked.length ? (run('git', ['hash-object', '--stdin-paths'], process.env, untracked.join('\n')).stdout ?? '') : '';
+	const fingerprint = createHash('sha1').update(status).update(git('diff', 'HEAD')).update(blobs).digest('hex');
 	return { head: git('rev-parse', 'HEAD').trim(), dirty: status.trim() !== '', fingerprint };
 }
 
@@ -47,9 +53,14 @@ function verifyFinished(root, since) {
 	return fresh(log, since) && /^verify ok\b/.test(readFileSync(log, 'utf8').trimEnd().split('\n').at(-1) ?? '');
 }
 
-/** What to do at Stop: 'allow' | 'commit' | { block: reason }. Pure, for tests. */
-export function plan(start, now, { verified = true } = {}) {
-	if (start.blocks >= MAX_BLOCKS || start.lastBlocked === `${now.head}:${now.fingerprint}`) return 'allow';
+const CAP_NOTE = `Stop allowed — block cap (${MAX_BLOCKS}) reached; last failure left uncommitted.`;
+
+/** What to do at Stop: 'allow' | 'commit' | { block } | { note } (allow with a one-line note). Pure, for tests. */
+export function plan(start, now, { verified = true, active = false } = {}) {
+	const retry = active && start.last === 'block'; // the agent is answering our block: re-verify whatever the fingerprint says
+	if (start.blocks >= MAX_BLOCKS) return retry ? { note: CAP_NOTE } : 'allow';
+	if (retry && now.dirty) return 'commit';
+	if (start.lastBlocked === `${now.head}:${now.fingerprint}`) return 'allow';
 	if (now.head === start.head && now.fingerprint === start.fingerprint) return 'allow';
 	if (now.dirty) return 'commit';
 	return verified ? 'allow' : { block: 'Committed, but no `verify ok` summary in the verify log: verify did not run or finish. Leave committing to the Stop hook.' };
@@ -156,11 +167,19 @@ function main() {
 	}
 	if (mode !== 'stop' || !existsSync(file)) return;
 	const start = JSON.parse(readFileSync(file, 'utf8'));
-	const step = plan(start, snapshot(), { verified: verifyFinished(root, start.at) });
+	const active = Boolean(input.stopHookActive ?? input.stop_hook_active);
+	const step = plan(start, snapshot(), { verified: verifyFinished(root, start.at), active });
+	if (typeof step === 'object' && step.note) {
+		process.stdout.write(JSON.stringify({ systemMessage: step.note }));
+		return;
+	}
 	const reason = step === 'commit' ? autoCommit(root) : typeof step === 'object' ? step.block : null;
-	if (!reason) return;
+	if (!reason) {
+		if (start.last === 'block') writeFileSync(file, JSON.stringify({ ...start, last: 'allow' }));
+		return;
+	}
 	const now = snapshot();
-	writeFileSync(file, JSON.stringify({ ...start, blocks: start.blocks + 1, lastBlocked: `${now.head}:${now.fingerprint}` }));
+	writeFileSync(file, JSON.stringify({ ...start, blocks: start.blocks + 1, last: 'block', lastBlocked: `${now.head}:${now.fingerprint}` }));
 	process.stdout.write(JSON.stringify({ decision: 'block', reason }));
 }
 

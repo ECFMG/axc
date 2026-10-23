@@ -16,10 +16,12 @@ let repo;
 const cleanEnv = (extra = {}) => ({ ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_') && k !== 'HUSKY')), GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1', TMPDIR: repo, ...extra });
 const sh = (...args) => execFileSync('git', args, { cwd: repo, env: cleanEnv(), encoding: 'utf8' });
 const hook = (mode, input = {}, env = {}) => spawnSync(process.execPath, [gate, mode], { cwd: repo, env: cleanEnv(env), input: JSON.stringify({ sessionId: 's1', ...input }), encoding: 'utf8' });
-const stop = (input, env) => {
+const stopOut = (input, env) => {
 	const out = hook('stop', input, env).stdout;
-	return out ? JSON.parse(out).reason : null;
+	return out ? JSON.parse(out) : null;
 };
+const stop = (input, env) => stopOut(input, env)?.reason ?? null;
+const state = () => JSON.parse(readFileSync(path.join(repo, '.git/stop-gate/s1.json'), 'utf8'));
 const head = () => sh('rev-parse', 'HEAD').trim();
 const write = (f, v) => writeFileSync(path.join(repo, f), v);
 
@@ -66,8 +68,9 @@ test('edits + red verify → block with the terse scenario report, nothing commi
 	assert.equal(head(), before);
 	assert.equal(sh('diff', '--cached', '--name-only'), '');
 	assert.equal(readFileSync(path.join(repo, 'a.md'), 'utf8'), 'b\n');
-	// stopHookActive retry without changes → allow (never block twice for the same tree state)
-	assert.equal(stop({ stopHookActive: true }, { FAKE_VERIFY_FAIL: failLog }), null);
+	// a stopHookActive retry after the block re-verifies (still red → block); a plain re-stop on that state → allow
+	assert.match(stop({ stopHookActive: true }, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/);
+	assert.equal(stop({}, { FAKE_VERIFY_FAIL: failLog }), null);
 	// fixed (tree changed) → commits
 	write('a.md', 'c\n');
 	assert.equal(stop({ stop_hook_active: true }), null);
@@ -123,4 +126,44 @@ test('auto-commit env: husky on and SNYK_SKIP=1 (Snyk stays off the Stop path); 
 	assert.deepEqual(base, { HUSKY: '0', PATH: '/bin' });
 	const src = readFileSync(gate, 'utf8');
 	assert.match(src, /const env = commitEnv\(\);[\s\S]*git commit -q[^\n]*\], env\);/, 'the git commit spawn must use commitEnv()');
+});
+
+test('untracked file: editing only its contents changes the fingerprint, so the next stop re-verifies and commits it', () => {
+	const before = head();
+	write('new.md', 'broken\n');
+	assert.match(stop({}, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/);
+	assert.equal(sh('ls-files', '-o', '--exclude-standard').trim(), 'new.md'); // reset left it untracked
+	const blocked = state().lastBlocked;
+	write('new.md', 'still broken\n'); // same name/status, new contents
+	assert.match(stop({}, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/, 'same-status untracked edit must not be allowed unverified');
+	assert.notEqual(state().lastBlocked, blocked, 'fingerprint must cover untracked contents');
+	write('new.md', 'fixed\n');
+	assert.equal(stop(), null);
+	assert.notEqual(head(), before);
+	assert.match(sh('show', '--name-only', '--format=', 'HEAD'), /^new\.md$/m);
+});
+test('stopHookActive after a block re-verifies even with no change; after the cap it allows with a one-line note', () => {
+	const before = head();
+	write('a.md', 'b\n');
+	assert.match(stop({}, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/);
+	assert.match(stop({ stopHookActive: true }, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/);
+	assert.match(stop({ stop_hook_active: true }, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/);
+	assert.equal(state().blocks, 3);
+	const capped = stopOut({ stopHookActive: true }, { FAKE_VERIFY_FAIL: failLog });
+	assert.deepEqual(Object.keys(capped), ['systemMessage']);
+	assert.match(capped.systemMessage, /^Stop allowed — block cap \(3\) reached/);
+	assert.equal(head(), before);
+	// pure: a retry re-verifies a dirty tree whatever the fingerprint; without the block it stays an allow
+	const s = { head: 'h', fingerprint: 'f', blocks: 1, last: 'block', lastBlocked: 'h:f' };
+	assert.equal(plan(s, { head: 'h', fingerprint: 'f', dirty: true }, { active: true }), 'commit');
+	assert.equal(plan(s, { head: 'h', fingerprint: 'f', dirty: true }), 'allow');
+	assert.equal(plan({ ...s, last: 'allow' }, { head: 'h', fingerprint: 'f', dirty: true }, { active: true }), 'allow');
+});
+test('stopHookActive retry that fixes nothing new but now passes → commits', () => {
+	write('a.md', 'b\n');
+	assert.match(stop({}, { FAKE_VERIFY_FAIL: failLog }), /^Stop blocked/);
+	const before = head();
+	assert.equal(stop({ stopHookActive: true }), null); // e.g. the failure was outside the tree (stale dist, flaky host)
+	assert.notEqual(head(), before);
+	assert.equal(state().last, 'allow');
 });
