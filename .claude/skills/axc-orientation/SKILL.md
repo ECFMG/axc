@@ -101,6 +101,8 @@ own unit test (rest is test-wired too).
   (`Scenario: A-AC8 invalid query parameters return 400`); a feature with fewer scenarios
   than criteria is incomplete and will be sent back. Before finishing, run
   `python3 .claude/hooks/coverage_gate.py --check` — it lists any criteria still uncovered.
+  Run `python3 .claude/hooks/cellix_check.py` too: it checks EVERY aggregate you created
+  (second and third ones included) is in the contexts/<ctx>/<agg>/ shape above.
   Also run `python3 .claude/hooks/knip_check.py` (~12s) before `pnpm run verify` — it
   names unused files/exports that knip will reject, so verify passes first time.
 - Architecture: `archunit-tests/src/dependency-rules.test.ts` — see the domain list above.
