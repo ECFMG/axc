@@ -2,7 +2,7 @@
 // whose pre-commit hook stands in for husky verify (writes the verify log; fails when FAKE_VERIFY_FAIL names a log).
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { chmodSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
@@ -125,7 +125,7 @@ test('auto-commit env: husky on and SNYK_SKIP=1 (Snyk stays off the Stop path); 
 	assert.deepEqual(commitEnv(base), { PATH: '/bin', SNYK_SKIP: '1' });
 	assert.deepEqual(base, { HUSKY: '0', PATH: '/bin' });
 	const src = readFileSync(gate, 'utf8');
-	assert.match(src, /const env = commitEnv\(\);[\s\S]*git commit -q[^\n]*\], env\);/, 'the git commit spawn must use commitEnv()');
+	assert.match(src, /const env = commitEnv\(\);[\s\S]*git \$\{hooks\}commit -q[^\n]*\], env\);/, 'the git commit spawn must use commitEnv()');
 });
 
 test('untracked file: editing only its contents changes the fingerprint, so the next stop re-verifies and commits it', () => {
@@ -175,4 +175,26 @@ test('runs when invoked through a symlinked path (macOS /tmp → /private/tmp)',
 	const r = spawnSync(process.execPath, [path.join(link, 'stop-gate.mjs'), 'stop'], { cwd: repo, env: cleanEnv({ FAKE_VERIFY_FAIL: failLog }), input: JSON.stringify({ sessionId: 's1' }), encoding: 'utf8' });
 	rmSync(link);
 	assert.match(JSON.parse(r.stdout).reason, /^Stop blocked/);
+});
+
+test('missing .husky/_: self-heal generates it, the commit runs .husky/pre-commit, git config is untouched', () => {
+	rmSync(path.join(repo, '.git/hooks/pre-commit')); // only husky's hook may run
+	mkdirSync(path.join(repo, '.husky'));
+	mkdirSync(path.join(repo, 'node_modules/husky'), { recursive: true });
+	copyFileSync(path.join(import.meta.dirname, '../node_modules/husky/husky'), path.join(repo, 'node_modules/husky/husky'));
+	write('.gitignore', '*.log\nnode_modules/\nmarker\n');
+	write('.husky/pre-commit', 'touch "$PWD/marker"\nprintf \'$ pnpm run verify\\nverify ok · acceptance 1/1\\n\' > "$TMPDIR/axc-verify-$(basename "$PWD").log"\n');
+	sh('add', '-A');
+	sh('commit', '-qm', 'husky dir', '--no-verify');
+	hook('start', { sessionId: 'heal' });
+	const config = sh('config', '--list', '--local');
+	const before = head();
+	write('widget.md', 'w\n');
+	assert.equal(stop({ sessionId: 'heal' }), null);
+	assert.ok(existsSync(path.join(repo, '.husky/_/h')) && existsSync(path.join(repo, '.husky/_/pre-commit')), '.husky/_ generated');
+	assert.equal(readFileSync(path.join(repo, '.husky/_/pre-commit'), 'utf8'), '#!/usr/bin/env sh\n. "$(dirname "$0")/h"');
+	assert.ok(existsSync(path.join(repo, 'marker')), '.husky/pre-commit ran');
+	assert.notEqual(head(), before);
+	assert.equal(sh('config', '--list', '--local'), config, 'no git config write');
+	assert.equal(sh('status', '--porcelain'), '');
 });

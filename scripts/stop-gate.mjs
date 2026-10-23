@@ -10,7 +10,7 @@
 //   run:   the same for tools without a Stop hook: report + exit 1 on failure, one `verify ok` line on success.
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -103,6 +103,42 @@ export function commitMessage(nameStatus, pkgOf = (f) => f.split('/').slice(0, -
 	return [subject, `Auto-committed by the Stop hook after a green husky verify.\n\n${list.join('\n')}`];
 }
 
+// husky 9.1 install, minus its `git config core.hooksPath` write: the hook list, stub and deprecation shim it generates.
+const HUSKY_HOOKS = [
+	'pre-commit',
+	'pre-merge-commit',
+	'prepare-commit-msg',
+	'commit-msg',
+	'post-commit',
+	'applypatch-msg',
+	'pre-applypatch',
+	'post-applypatch',
+	'pre-rebase',
+	'post-rewrite',
+	'post-checkout',
+	'post-merge',
+	'pre-push',
+	'pre-auto-gc',
+];
+const HUSKY_SH = `echo "husky - DEPRECATED\n\nPlease remove the following two lines from $0:\n\n#!/usr/bin/env sh\n. \\"\\$(dirname -- \\"\\$0\\")/_/husky.sh\\"\n\nThey WILL FAIL in v10.0.0\n"`;
+
+/** Repo uses husky (`.husky/pre-commit`): make sure `.husky/_` exists, generating it like husky's install would but
+ * writing no git config (a fresh worktree has none: it is gitignored). Returns true when husky hooks are usable. */
+export function ensureHuskyHooks(root) {
+	if (!existsSync(path.join(root, '.husky/pre-commit'))) return false;
+	const _ = (x = '') => path.join(root, '.husky/_', x);
+	if (existsSync(_('h'))) return true;
+	const runner = path.join(root, 'node_modules/husky/husky');
+	if (!existsSync(runner)) return false;
+	rmSync(_('husky.sh'), { force: true });
+	mkdirSync(_(), { recursive: true });
+	writeFileSync(_('.gitignore'), '*');
+	copyFileSync(runner, _('h'));
+	for (const h of HUSKY_HOOKS) writeFileSync(_(h), '#!/usr/bin/env sh\n. "$(dirname "$0")/h"', { mode: 0o755 });
+	writeFileSync(_('husky.sh'), HUSKY_SH);
+	return true;
+}
+
 const block = (lines) => `Stop blocked — nothing committed. Fix, then stop again (no verify/commit calls):\n${lines}`;
 
 /** Env for the auto-commit: husky ON (its pre-commit IS the verify); SNYK_SKIP=1 keeps Snyk a developer-commit gate, off the Stop path. */
@@ -133,7 +169,9 @@ export function autoCommit(root) {
 		return f.split('/')[0];
 	};
 	const [subject, body] = commitMessage(staged, pkgOf);
-	const c = run('sh', ['-c', `${NVM}git commit -q -m "$1" -m "$2"`, 'commit', subject, body], env);
+	// Per-invocation hooksPath (not a config write), so the husky pre-commit runs even where core.hooksPath is unset.
+	const hooks = ensureHuskyHooks(root) ? '-c core.hooksPath=.husky/_ ' : '';
+	const c = run('sh', ['-c', `${NVM}git ${hooks}commit -q -m "$1" -m "$2"`, 'commit', subject, body], env);
 	writeFileSync(out, `${c.stdout}${c.stderr}${fresh(verifyLog(root), t0) ? readFileSync(verifyLog(root), 'utf8') : ''}`);
 	if (c.status !== 0) {
 		run('git', ['reset', '-q']); // unstage only; the working tree stays as written
