@@ -5,7 +5,8 @@
 // contents → stopHookActive re-stop must verify, allow silently and auto-commit a commit that contains the file.
 // Case 1 also adds an async-without-await source file: its auto-fix line must survive the failed first stop and
 // appear in case 2's commit body.
-// Then an auto-fixable-only change (useAwait + an exported type used only locally) must commit on the first stop.
+// Then an auto-fixable-only change (useAwait + an exported type used only locally) must commit on the first stop;
+// case 4 repeats it in a second fresh, never-built worktree (knip cannot load its config there until auto-fix builds).
 // Git runs with GIT_* stripped and global/system config ignored; the worktree is removed afterwards unless --keep.
 import { execFileSync, spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
@@ -33,9 +34,10 @@ const check = (name, ok, detail = '') => {
 	results.push(ok);
 	console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ` — ${detail}` : ''}`);
 };
-const hook = (mode, input = {}) => {
+const wt2 = path.join(path.dirname(wt), 'wt-unbuilt');
+const hook = (mode, input = {}, cwd = wt) => {
 	const t = Date.now();
-	const r = spawnSync(process.execPath, [path.join(wt, 'scripts/stop-gate.mjs'), mode], { cwd: wt, env, input: JSON.stringify({ sessionId: 'mog-probe', ...input }), encoding: 'utf8', maxBuffer: 64 << 20 });
+	const r = spawnSync(process.execPath, [path.join(cwd, 'scripts/stop-gate.mjs'), mode], { cwd, env, input: JSON.stringify({ sessionId: 'mog-probe', ...input }), encoding: 'utf8', maxBuffer: 64 << 20 });
 	return { out: r.stdout.trim(), secs: ((Date.now() - t) / 1000).toFixed(1) };
 };
 
@@ -106,9 +108,24 @@ try {
 	);
 	const fixed = readFileSync(path.join(wt, fixRel), 'utf8');
 	check('  fixes applied (no async, type no longer exported)', !/async/.test(fixed) && /^interface ZzProbeResult/m.test(fixed));
+
+	// 4: same auto-fixable change in a fresh worktree that was never built → still 0 blocks; log shows build + knip.
+	git(src, 'worktree', 'add', '--detach', '-q', wt2, 'HEAD');
+	const unbuilt = !existsSync(path.join(wt2, 'packages/cellix/config-vitest/dist'));
+	hook('start', { sessionId: 'mog-probe-unbuilt' }, wt2);
+	const head4 = git(wt2, 'rev-parse', 'HEAD');
+	writeFileSync(path.join(wt2, fixRel), readFileSync(path.join(wt, fixRel), 'utf8').replace('interface ZzProbeResult', 'export interface ZzProbeResult').replace('export const zzProbe = (', 'export const zzProbe = async ('));
+	appendFileSync(path.join(wt2, indexRel), "export { zzProbe } from './zz-stop-probe-fix.ts';\n");
+	const u = hook('stop', { sessionId: 'mog-probe-unbuilt' }, wt2);
+	const state4 = path.join(git(wt2, 'rev-parse', '--absolute-git-dir'), 'stop-gate', 'mog-probe-unbuilt.json');
+	const blocks4 = existsSync(state4) ? (JSON.parse(readFileSync(state4, 'utf8')).blocks ?? 0) : -1;
+	check('4 unbuilt worktree, same change: first stop allowed silently, 0 blocks', unbuilt && u.out === '' && blocks4 === 0, `${u.secs}s, unbuilt=${unbuilt}, blocks=${blocks4}${u.out ? `; output: ${u.out.slice(0, 300)}` : ''}`);
+	const body4 = git(wt2, 'log', '-1', '--format=%b');
+	const log4 = body4.split('\n').filter((l) => l.startsWith('- '));
+	check('  committed; log shows build + knip lines', git(wt2, 'rev-parse', 'HEAD') !== head4 && log4.some((l) => l.startsWith('- build')) && log4.some((l) => l.startsWith('- knip')), log4.join(' | '));
 } finally {
-	if (keep) console.log(`kept ${wt}`);
-	else if (existsSync(wt)) git(src, 'worktree', 'remove', '--force', wt);
+	if (keep) console.log(`kept ${wt} ${wt2}`);
+	else for (const w of [wt, wt2]) if (existsSync(w)) git(src, 'worktree', 'remove', '--force', w);
 }
 const failed = results.filter((ok) => !ok).length;
 console.log(failed ? `stop-gate probe: ${failed} FAILED` : `stop-gate probe: all ${results.length} checks PASS`);
