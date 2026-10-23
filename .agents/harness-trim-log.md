@@ -86,7 +86,7 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: the grok map is at its 11768-byte budget (rules total 19475/19545) and the boundary/negative-test rule needs ~130 bytes. Both rules kept (ledger keys `src/step-definitions/<feature>.steps.ts`, `TS2345` present).
 
 ## 2026-10-23 — practice: shared Snyk-ok state in the git common dir; seeded entry (not a trim)
-- commit: this commit (scripts/snyk-verify.mjs, its test, README)
+- commit: a063a22 (scripts/snyk-verify.mjs, its test, README)
 - change: Snyk-ok state moves from `<git dir>/mog-snyk-ok.json` (per worktree, `{hash, commit, at}`) to `<git common dir>/mog-snyk-ok.json` = `{depHash: {sha, at, snykVersion}}`, shared by every worktree. depHash = every package.json / pnpm-lock.yaml / pnpm-workspace.yaml (index blob when staged). Atomic tmp+rename write, newest 20 entries, `SNYK_OK_MAX_AGE_DAYS = 7`. The old per-worktree file is read as a fallback; miss, expiry or corrupt file → Snyk runs. Staged-and-also-modified dependency files never skip and are never recorded.
 - seeded: `/Volumes/files/src/axc/.git/mog-snyk-ok.json` entry `c7f7f6fc47ccd1e02eb8606a3eda92de5ff1cf9b` → sha 0c2f3388 (its real `Snyk: ok (23 projects)` run, 07:56 ET), snykVersion 1.1308.3 (the installed CLI). Seeded only because grok's dependency hash equals that run's hash (byte-identical manifests).
 - why: the Snyk org quota is exhausted; Chief accepted seeding from the last real Snyk ok when dependency files are byte-identical, matching Mohit's call to skip Snyk when no dependency changed. Sharing the state lets one real run cover every worktree with the same manifests.
