@@ -1,11 +1,11 @@
 // node --test scripts/snyk-verify.test.mjs — resolver + missing-CLI exit paths against fake PATH/nvm dirs in tmp.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
-import { resolveSnyk } from './snyk-verify.mjs';
+import { depsUnchanged, resolveSnyk } from './snyk-verify.mjs';
 
 const script = path.join(import.meta.dirname, 'snyk-verify.mjs');
 let dir;
@@ -52,10 +52,10 @@ test('non-executable file is ignored; nothing found → null', () => {
 
 test('missing CLI fails, SNYK_OPTIONAL=1 skips', { skip: process.platform === 'win32' }, () => {
 	const env = { PATH: path.join(dir, 'empty'), HOME: path.join(dir, 'home'), NVM_DIR: path.join(dir, 'nvm') };
-	const fail = spawnSync(process.execPath, [script], { encoding: 'utf8', env });
+	const fail = spawnSync(process.execPath, [script], { cwd: dir, encoding: 'utf8', env });
 	assert.equal(fail.status, 1);
 	assert.match(fail.stdout, /^Snyk: FAILED .*SNYK_OPTIONAL=1/m);
-	const skip = spawnSync(process.execPath, [script], { encoding: 'utf8', env: { ...env, SNYK_OPTIONAL: '1' } });
+	const skip = spawnSync(process.execPath, [script], { cwd: dir, encoding: 'utf8', env: { ...env, SNYK_OPTIONAL: '1' } });
 	assert.equal(skip.status, 0);
 	assert.match(skip.stdout, /^Snyk: SKIPPED \(SNYK_OPTIONAL=1\)/m);
 });
@@ -70,4 +70,78 @@ test('SNYK_SKIP=1 skips without calling snyk, even when one is installed', { ski
 	assert.equal(r.status, 0);
 	assert.equal(r.stdout.trim(), 'Snyk: SKIPPED (SNYK_SKIP=1, Stop-hook commit)');
 	assert.equal(existsSync(marker), false, 'snyk must not be spawned');
+});
+
+// Dependency gate: a throwaway repo (GIT_* stripped, no global/system config) + a fake snyk that counts its calls.
+const gitEnv = () => ({ ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_'))), GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' });
+const gateRepo = () => {
+	const repo = path.join(dir, 'repo');
+	mkdirSync(path.join(repo, 'pkg'), { recursive: true });
+	const g = (...args) => spawnSync('git', args, { cwd: repo, env: gitEnv(), encoding: 'utf8' });
+	g('init', '-q');
+	writeFileSync(path.join(repo, 'pkg/package.json'), '{"name":"a"}\n');
+	writeFileSync(path.join(repo, 'pnpm-lock.yaml'), 'lockfileVersion: 9\n');
+	writeFileSync(path.join(repo, 'a.ts'), 'export {};\n');
+	g('add', '-A');
+	g('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-qm', 'init');
+	const bin = path.join(dir, 'bin');
+	mkdirSync(bin, { recursive: true });
+	writeFileSync(path.join(bin, 'snyk'), `#!/bin/sh\n[ "$1" = test ] && echo x >> '${path.join(dir, 'calls')}'\necho 'no vulnerable paths found'\n`);
+	chmodSync(path.join(bin, 'snyk'), 0o755);
+	const run = (extra = {}) =>
+		spawnSync(process.execPath, [script], { cwd: repo, encoding: 'utf8', env: { ...gitEnv(), PATH: `${bin}${path.delimiter}${process.env.PATH}`, NVM_DIR: path.join(dir, 'nvm'), HOME: path.join(dir, 'home'), ...extra } });
+	const calls = () => (existsSync(path.join(dir, 'calls')) ? readFileSync(path.join(dir, 'calls'), 'utf8').split('\n').filter(Boolean).length : 0);
+	return { repo, g, run, calls };
+};
+
+test('dependency gate: unknown state runs Snyk and records it; no dependency change skips', { skip: process.platform === 'win32' }, () => {
+	const { repo, run, calls } = gateRepo();
+	const first = run();
+	assert.equal(first.status, 0);
+	assert.match(first.stdout, /^Snyk: ok/m);
+	assert.equal(calls(), 1);
+	assert.ok(existsSync(path.join(repo, '.git/mog-snyk-ok.json')), 'state lives in the git dir, untracked');
+	writeFileSync(path.join(repo, 'a.ts'), 'export const x = 1;\n'); // non-dependency edit
+	const second = run();
+	assert.equal(second.stdout.trim(), 'snyk: skipped (no dependency change)');
+	assert.equal(calls(), 1);
+});
+
+test('dependency gate: a changed or new package.json / lockfile re-runs Snyk', { skip: process.platform === 'win32' }, () => {
+	const { repo, run, calls } = gateRepo();
+	run();
+	writeFileSync(path.join(repo, 'pkg/package.json'), '{"name":"a","version":"2.0.0"}\n');
+	assert.match(run().stdout, /^Snyk: ok/m);
+	assert.equal(calls(), 2);
+	assert.equal(run().stdout.trim(), 'snyk: skipped (no dependency change)');
+	mkdirSync(path.join(repo, 'new'));
+	writeFileSync(path.join(repo, 'new/package.json'), '{"name":"b"}\n'); // untracked manifest counts
+	assert.match(run().stdout, /^Snyk: ok/m);
+	assert.equal(calls(), 3);
+});
+
+test('dependency gate: a staged dependency change always runs Snyk; a corrupt state file runs it too', { skip: process.platform === 'win32' }, () => {
+	const { repo, g, run, calls } = gateRepo();
+	run();
+	g('add', 'pnpm-lock.yaml'); // staged but identical content: diff --cached is empty → still skipped
+	assert.equal(run().stdout.trim(), 'snyk: skipped (no dependency change)');
+	writeFileSync(path.join(repo, 'pnpm-lock.yaml'), 'lockfileVersion: 9\n# x\n');
+	g('add', 'pnpm-lock.yaml');
+	run();
+	assert.equal(calls(), 2);
+	writeFileSync(path.join(repo, '.git/mog-snyk-ok.json'), 'not json');
+	g('commit', '-qm', 'lock', '--no-verify');
+	assert.match(run().stdout, /^Snyk: ok/m);
+	assert.equal(calls(), 3);
+});
+
+test('dependency gate keeps SNYK_SKIP=1 first and fails closed outside git', { skip: process.platform === 'win32' }, () => {
+	const { run, calls } = gateRepo();
+	assert.equal(run({ SNYK_SKIP: '1' }).stdout.trim(), 'Snyk: SKIPPED (SNYK_SKIP=1, Stop-hook commit)');
+	assert.equal(calls(), 0);
+	assert.equal(depsUnchanged(null), false);
+	mkdirSync(path.join(dir, 'plain'));
+	const outside = spawnSync(process.execPath, [script], { cwd: path.join(dir, 'plain'), encoding: 'utf8', env: { ...gitEnv(), PATH: `${path.join(dir, 'bin')}${path.delimiter}${process.env.PATH}`, GIT_CEILING_DIRECTORIES: dir } });
+	assert.match(outside.stdout, /^Snyk: ok/m); // not a repo → no state → run
+	assert.equal(calls(), 1);
 });

@@ -2,8 +2,12 @@
 // Resolves snyk: PATH first, then every installed nvm Node's global bin (newest first), so a CLI installed
 // under another Node still runs after `nvm use`. Missing → FAIL; SNYK_OPTIONAL=1 → print SKIPPED and continue.
 // SNYK_SKIP=1 (set only by stop-gate's auto-commit) skips before resolving, even when snyk is installed.
+// Dependency gate: Snyk runs only when the dependency manifests (every package.json, pnpm-lock.yaml,
+// pnpm-workspace.yaml) differ from the last Snyk-ok state, or the staged diff touches one. That state is a content
+// hash in this worktree's git dir (`mog-snyk-ok.json`, untracked, never committed); unknown → run.
 import { spawnSync } from 'node:child_process';
-import { accessSync, constants, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { accessSync, constants, existsSync, readdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -43,9 +47,47 @@ export function resolveSnyk({ env = process.env, home = homedir(), platform = pr
 	return null;
 }
 
+const DEP_FILES = new Set(['package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml']);
+const isDep = (f) => DEP_FILES.has(path.posix.basename(f));
+const gitOut = (args, cwd, input = undefined) => {
+	const r = spawnSync('git', args, { cwd, input, encoding: 'utf8', maxBuffer: 64 << 20 });
+	return r.status === 0 ? r.stdout : null;
+};
+
+/** Dependency-gate state for `cwd`: { stateFile, hash, stagedDeps } or null outside git (→ always run). */
+export function depState(cwd = process.cwd()) {
+	const gitDir = gitOut(['rev-parse', '--absolute-git-dir'], cwd)?.trim();
+	const files = gitOut(['ls-files', '-co', '--exclude-standard', '-z'], cwd);
+	const staged = gitOut(['diff', '--cached', '--name-only', '-z'], cwd);
+	if (!gitDir || files === null || staged === null) return null;
+	const deps = [...new Set(files.split('\0').filter((f) => f && isDep(f) && existsSync(path.join(cwd, f))))].sort();
+	const blobs = deps.length ? gitOut(['hash-object', '--stdin-paths'], cwd, deps.join('\n')) : '';
+	const hash = createHash('sha1')
+		.update(deps.join('\n'))
+		.update('\0')
+		.update(blobs ?? '')
+		.digest('hex');
+	return { stateFile: path.join(gitDir, 'mog-snyk-ok.json'), hash, stagedDeps: staged.split('\0').some((f) => f && isDep(f)) };
+}
+
+/** True when Snyk may be skipped: same dependency hash as the last Snyk-ok run and no staged dependency change. */
+export function depsUnchanged(state) {
+	if (!state || state.stagedDeps || !existsSync(state.stateFile)) return false;
+	try {
+		return JSON.parse(readFileSync(state.stateFile, 'utf8')).hash === state.hash;
+	} catch {
+		return false;
+	}
+}
+
 function main() {
 	if (process.env.SNYK_SKIP === '1') {
 		console.log('Snyk: SKIPPED (SNYK_SKIP=1, Stop-hook commit)');
+		process.exit(0);
+	}
+	const state = depState();
+	if (depsUnchanged(state)) {
+		console.log('snyk: skipped (no dependency change)');
 		process.exit(0);
 	}
 	const snyk = resolveSnyk();
@@ -62,6 +104,7 @@ function main() {
 	const output = `${test.stdout ?? ''}${test.stderr ?? ''}`;
 	if (test.status === 0) {
 		const projects = (output.match(/no vulnerable paths found/g) ?? []).length;
+		if (state) writeFileSync(state.stateFile, `${JSON.stringify({ hash: state.hash, commit: gitOut(['rev-parse', 'HEAD'])?.trim() ?? null, at: new Date().toISOString() })}\n`);
 		console.log(`Snyk: ok (${projects} projects, ${snyk} test --all-projects --policy-path=.snyk)`);
 		process.exit(0);
 	}
@@ -70,4 +113,4 @@ function main() {
 	process.exit(test.status ?? 1);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) main();
