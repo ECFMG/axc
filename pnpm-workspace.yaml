@@ -71,6 +71,10 @@ overrides:
   '@vitest/mocker': 4.1.12
   storybook: 10.6.3 # GHSA-f2ph-cmg5-wxc8 (critical, <10.6.2)
   '@storybook/addon-vitest': 10.6.3
+  '@graphql-tools/utils': 12.0.2 # GHSA-c4qx-w738-7hr3 (high, <=12.0.1)
+  'body-parser@1': 1.20.9 # SNYK-JS-BODYPARSER-21431495 (high)
+  'body-parser@2': 2.4.0
+  'webpack-dev-server@5': 5.2.7 # SNYK-JS-WEBPACKDEVSERVER-21430996/-21431002
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
@@ -86,3 +90,4 @@ minimumReleaseAgeExclude:
   - fast-uri@3.1.9
   - hono@4.13.11
   - shell-quote@1.11.0
+  - body-parser@1.20.9 || 2.4.0

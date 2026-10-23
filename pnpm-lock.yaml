@@ -301,6 +301,10 @@ overrides:
   '@vitest/mocker': 4.1.12
   storybook: 10.6.3
   '@storybook/addon-vitest': 10.6.3
+  '@graphql-tools/utils': 12.0.2
+  body-parser@1: 1.20.9
+  body-parser@2: 2.4.0
+  webpack-dev-server@5: 5.2.7
 
 patchedDependencies:
   '@azure/functions@4.11.0': 69772ce521bf6df67d814ff4f419f19b5e966a41c4ce80b5938143ad628e5645
@@ -2615,8 +2619,8 @@ packages:
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@graphql-tools/utils@12.0.1':
-    resolution: {integrity: sha512-8YC6jn4xYDS6YTY6xDAgQAs/nGgvzRaIGHS8GeSfVItQzNK7Ms24CQtE3EJY+amvR+tBnhRSX0N83aGj+V/RIg==}
+  '@graphql-tools/utils@12.0.2':
+    resolution: {integrity: sha512-N1j6fG12Cq5HN4826NGNtGu8O65eLCO6nHbTTboa0GEB7c2Ym2kLGU3ewHrG9DR/coL09GQjREChSG0SjUuAGA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
@@ -4458,9 +4462,9 @@ packages:
   '@webcontainer/env@1.1.1':
     resolution: {integrity: sha512-6aN99yL695Hi9SuIk1oC88l9o0gmxL1nGWWQ/kNy81HigJ0FoaoTXpytCj6ItzgyCEwA9kF1wixsTuv5cjsgng==}
 
-  '@whatwg-node/promise-helpers@1.3.2':
-    resolution: {integrity: sha512-Nst5JdK47VIl9UcGwtv2Rcgyn5lWtZ0/mhRQ4G8NN2isxpq2TO30iqHzmwoJycjWuyUfg3GFXqP/gFHXeV57IA==}
-    engines: {node: '>=16.0.0'}
+  '@whatwg-node/promise-helpers@2.0.0':
+    resolution: {integrity: sha512-/i9CS0Z96o+cPwaYoAyVxAThDiUX1wV3tDmNWPJbn+vtdR+JftuCDg1NGCXBrzIYVDGkJ8uT6ctwmrBOUzOpKQ==}
+    engines: {node: '>=22.15.0'}
 
   '@xtuc/ieee754@1.2.0':
     resolution: {integrity: sha512-DX8nKgqcGwsc0eJSqYt5lwP4DH5FlHnmuWWBRy7X0NcaGR0ZtuyeESgMwTYVEtxmsNGY+qit4QYT/MIYTOTPeA==}
@@ -4804,12 +4808,12 @@ packages:
   bl@6.1.6:
     resolution: {integrity: sha512-jLsPgN/YSvPUg9UX0Kd73CXpm2Psg9FxMeCSXnk3WBO3CMT10JMwijubhGfHCnFu6TPn1ei3b975dxv7K2pWVg==}
 
-  body-parser@1.20.8:
-    resolution: {integrity: sha512-JNcyFQ64OiijEkPzUBTCe+hyPXUD/3LEldGQ6iF5LR1w00mx9o7xtDWHXBY2iItjdCFGoilOLNQbH943ut7pHA==}
+  body-parser@1.20.9:
+    resolution: {integrity: sha512-FISIQxV5u91Y9gvuFq3q/tA/qTqLJn3AhRcEvyozyhJTh5OBFFtv827AdHU7Rbyct4r+Ba1/99oFa1Y3yuFsdw==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
 
-  body-parser@2.3.0:
-    resolution: {integrity: sha512-2cGmJupaNgg+QUwVLAucDuWuoMZ6EX9iHDRswZ5lsNYEmwPaRknMPCLZz07yTzVq/83p4o/wzbDZbBrTvGGTIw==}
+  body-parser@2.4.0:
+    resolution: {integrity: sha512-Ifk1KcLrxaGt1occQagQNFNNOqRt1LFuehEnHHzB8Z6cRgIxRU1TBaiIsUiCdA+gy5PL7Y1IX31DNKkRmxtXjQ==}
     engines: {node: '>=18'}
 
   bonjour-service@1.4.4:
@@ -9457,8 +9461,8 @@ packages:
       webpack:
         optional: true
 
-  webpack-dev-server@5.2.6:
-    resolution: {integrity: sha512-HNLRmamRvVavZQ+avceZifmv8hmdUjg43t6MI4SqJDwFdW7RPQwH5vzGhDRZSX59SgfbeHhLnq3g+uooWo7pVw==}
+  webpack-dev-server@5.2.7:
+    resolution: {integrity: sha512-ryXhAEoe/BZlvk0iPNHrr9nsGtNBhC7viKO/tFISSpLjleFfSoi58hpOkN18iZRgwht1aMKVIVvrYgjYfYqSiA==}
     engines: {node: '>= 18.12.0'}
     hasBin: true
     peerDependencies:
@@ -9888,7 +9892,7 @@ snapshots:
       '@apollo/utils.withrequired': 3.0.0
       '@graphql-tools/schema': 10.1.1(graphql@16.14.2)
       async-retry: 1.3.3
-      body-parser: 2.3.0
+      body-parser: 2.4.0
       content-type: 1.0.5
       cors: 2.8.6
       finalhandler: 2.1.1
@@ -11583,7 +11587,7 @@ snapshots:
       update-notifier: 6.0.2
       webpack: 5.111.1(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.28))(esbuild@0.28.2)(html-minifier-terser@7.2.0)(postcss@8.5.28)
       webpack-bundle-analyzer: 4.10.2
-      webpack-dev-server: 5.2.6(webpack@5.111.1(esbuild@0.28.2)(postcss@8.5.28))
+      webpack-dev-server: 5.2.7(webpack@5.111.1(esbuild@0.28.2)(postcss@8.5.28))
       webpack-merge: 6.0.1
     transitivePeerDependencies:
       - '@minify-html/node'
@@ -12576,21 +12580,21 @@ snapshots:
 
   '@graphql-tools/merge@9.2.4(graphql@16.14.2)':
     dependencies:
-      '@graphql-tools/utils': 12.0.1(graphql@16.14.2)
+      '@graphql-tools/utils': 12.0.2(graphql@16.14.2)
       graphql: 16.14.2
       tslib: 2.8.1
 
   '@graphql-tools/schema@10.1.1(graphql@16.14.2)':
     dependencies:
       '@graphql-tools/merge': 9.2.4(graphql@16.14.2)
-      '@graphql-tools/utils': 12.0.1(graphql@16.14.2)
+      '@graphql-tools/utils': 12.0.2(graphql@16.14.2)
       graphql: 16.14.2
       tslib: 2.8.1
 
-  '@graphql-tools/utils@12.0.1(graphql@16.14.2)':
+  '@graphql-tools/utils@12.0.2(graphql@16.14.2)':
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.14.2)
-      '@whatwg-node/promise-helpers': 1.3.2
+      '@whatwg-node/promise-helpers': 2.0.0
       cross-inspect: 1.0.1
       graphql: 16.14.2
       tslib: 2.8.1
@@ -14577,7 +14581,7 @@ snapshots:
 
   '@webcontainer/env@1.1.1': {}
 
-  '@whatwg-node/promise-helpers@1.3.2':
+  '@whatwg-node/promise-helpers@2.0.0':
     dependencies:
       tslib: 2.8.1
 
@@ -14967,7 +14971,7 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 4.7.0
 
-  body-parser@1.20.8:
+  body-parser@1.20.9:
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
@@ -14984,7 +14988,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  body-parser@2.3.0:
+  body-parser@2.4.0:
     dependencies:
       bytes: 3.1.2
       content-type: 2.1.0
@@ -15920,7 +15924,7 @@ snapshots:
     dependencies:
       accepts: 1.3.8
       array-flatten: 1.1.1
-      body-parser: 1.20.8
+      body-parser: 1.20.9
       content-disposition: 0.5.4
       content-type: 1.0.5
       cookie: 0.7.2
@@ -15955,7 +15959,7 @@ snapshots:
   express@5.2.1(supports-color@8.1.1):
     dependencies:
       accepts: 2.0.0
-      body-parser: 2.3.0
+      body-parser: 2.4.0
       content-disposition: 1.1.0
       content-type: 1.0.5
       cookie: 0.7.2
@@ -20333,7 +20337,7 @@ snapshots:
     optionalDependencies:
       webpack: 5.111.1(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.28))(esbuild@0.28.2)(html-minifier-terser@7.2.0)(postcss@8.5.28)
 
-  webpack-dev-server@5.2.6(webpack@5.111.1(esbuild@0.28.2)(postcss@8.5.28)):
+  webpack-dev-server@5.2.7(webpack@5.111.1(esbuild@0.28.2)(postcss@8.5.28)):
     dependencies:
       '@types/bonjour': 3.5.13
       '@types/connect-history-api-fallback': 1.5.4
