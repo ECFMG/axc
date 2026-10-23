@@ -3,9 +3,10 @@
 // In a fresh detached /tmp worktree of HEAD: plant a type error in a NEW untracked test file → stop must block
 // (Grok/Claude {"decision":"block","reason"}) with HEAD unchanged and the file still untracked; fix only that file's
 // contents → stopHookActive re-stop must verify, allow silently and auto-commit a commit that contains the file.
+// Then an auto-fixable-only change (useAwait + an exported type used only locally) must commit on the first stop.
 // Git runs with GIT_* stripped and global/system config ignored; the worktree is removed afterwards unless --keep.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -67,6 +68,27 @@ try {
 	check('  auto-commit landed and contains the file', head !== base && git(wt, 'show', '--name-only', '--format=', 'HEAD').split('\n').includes(rel), head.slice(0, 7));
 	check('  tree clean afterwards', git(wt, 'status', '--porcelain') === '');
 	check('  self-heal generated .husky/_ (no git config write)', existsSync(path.join(wt, '.husky/_/h')));
+
+	// 3: auto-fixable only (useAwait + an exported type used just locally) → the first stop commits, 0 blocks.
+	const fixRel = 'packages/axc/application-services/src/zz-stop-probe-fix.ts';
+	const indexRel = 'packages/axc/application-services/src/index.ts';
+	hook('start', { sessionId: 'mog-probe-fix' });
+	const head2 = git(wt, 'rev-parse', 'HEAD');
+	writeFileSync(path.join(wt, fixRel), 'export interface ZzProbeResult {\n\tok: boolean;\n}\n\nexport const zzProbe = async () => {\n\tconst r: ZzProbeResult = { ok: true };\n\treturn r;\n};\n');
+	appendFileSync(path.join(wt, indexRel), "export { zzProbe } from './zz-stop-probe-fix.ts';\n");
+	const fix = hook('stop', { sessionId: 'mog-probe-fix' });
+	const stateFile = path.join(git(wt, 'rev-parse', '--absolute-git-dir'), 'stop-gate', 'mog-probe-fix.json');
+	const blocks = existsSync(stateFile) ? (JSON.parse(readFileSync(stateFile, 'utf8')).blocks ?? 0) : -1;
+	check('3 useAwait + unused exported type: first stop allowed silently, 0 blocks', fix.out === '' && blocks === 0, `${fix.secs}s, blocks=${blocks}${fix.out ? `; output: ${fix.out.slice(0, 300)}` : ''}`);
+	const body = git(wt, 'log', '-1', '--format=%b');
+	const fixLog = body.split('\n').filter((l) => l.startsWith('- ') && /useAwait|knip|biome/.test(l));
+	check(
+		'  committed with the auto-fix log',
+		git(wt, 'rev-parse', 'HEAD') !== head2 && /Auto-fix \(Stop hook, before verify\):/.test(body) && fixLog.some((l) => l.includes('useAwait')) && fixLog.some((l) => l.includes('knip')),
+		fixLog.join(' | '),
+	);
+	const fixed = readFileSync(path.join(wt, fixRel), 'utf8');
+	check('  fixes applied (no async, type no longer exported)', !/async/.test(fixed) && /^interface ZzProbeResult/m.test(fixed));
 } finally {
 	if (keep) console.log(`kept ${wt}`);
 	else if (existsSync(wt)) git(src, 'worktree', 'remove', '--force', wt);
