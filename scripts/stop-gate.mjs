@@ -10,9 +10,10 @@
 //   run:   the same for tools without a Stop hook: report + exit 1 on failure, one `verify ok` line on success.
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { report } from './check-summary.mjs';
 
 const MAX_BLOCKS = 3;
@@ -183,7 +184,9 @@ function main() {
 	process.stdout.write(JSON.stringify({ decision: 'block', reason }));
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// realpath + file URL: a symlinked (macOS /tmp, /var) or space-containing path must still run main, not no-op.
+const isMain = () => Boolean(process.argv[1]) && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+if (isMain()) {
 	try {
 		main();
 	} catch {

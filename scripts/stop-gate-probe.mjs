@@ -5,7 +5,7 @@
 // contents → stopHookActive re-stop must verify, allow silently and auto-commit a commit that contains the file.
 // Git runs with GIT_* stripped and global/system config ignored; the worktree is removed afterwards unless --keep.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -22,7 +22,7 @@ const env = {
 const git = (cwd, ...args) => execFileSync('git', args, { cwd, env, encoding: 'utf8' }).trim();
 const src = git(process.cwd(), 'rev-parse', '--show-toplevel');
 if (git(src, 'rev-parse', '--is-bare-repository') !== 'false') throw new Error('core.bare is not false; refusing to probe');
-const wt = path.join(mkdtempSync(path.join(tmpdir(), 'mog-stopprobe-')), 'wt');
+const wt = path.join(realpathSync(mkdtempSync(path.join(tmpdir(), 'mog-stopprobe-'))), 'wt');
 const rel = 'packages/axc/application-services/src/zz-stop-probe.test.ts';
 const file = path.join(wt, rel);
 const results = [];

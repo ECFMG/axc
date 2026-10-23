@@ -2,8 +2,9 @@
 // Rules live in .github/hooks/write-boundary.json (shared with the Copilot guard). Deny rules match per line,
 // so a newline can't hide a command; quoted heredoc bodies are inert text and are skipped.
 // Shell writes (redirects, tee, sed -i, cp/mv, interpreter scripts) to protected paths are denied too.
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const HEREDOC_ANY = /<<-?\s*(?:'(\w+)'|"(\w+)"|\\?(\w+))/;
 const WRITE_CMDS = new Set(['tee', 'cp', 'mv', 'install', 'ln', 'rsync', 'truncate', 'dd', 'sed', 'perl']);
@@ -221,7 +222,9 @@ export function check(input, rules, root) {
 	return undefined;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// realpath + file URL: a symlinked or space-containing path must still run the guard, not silently no-op.
+const isMain = () => Boolean(process.argv[1]) && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+if (isMain()) {
 	try {
 		const input = JSON.parse(readFileSync(0, 'utf8') || '{}');
 		const root = input.workspaceRoot ?? process.env.CLAUDE_PROJECT_DIR ?? input.cwd ?? process.cwd();

@@ -2,7 +2,7 @@
 // whose pre-commit hook stands in for husky verify (writes the verify log; fails when FAKE_VERIFY_FAIL names a log).
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
@@ -166,4 +166,13 @@ test('stopHookActive retry that fixes nothing new but now passes → commits', (
 	assert.equal(stop({ stopHookActive: true }), null); // e.g. the failure was outside the tree (stale dist, flaky host)
 	assert.notEqual(head(), before);
 	assert.equal(state().last, 'allow');
+});
+
+test('runs when invoked through a symlinked path (macOS /tmp → /private/tmp)', () => {
+	const link = path.join(repo, 'linked-scripts');
+	symlinkSync(import.meta.dirname, link);
+	write('a.md', 'b\n');
+	const r = spawnSync(process.execPath, [path.join(link, 'stop-gate.mjs'), 'stop'], { cwd: repo, env: cleanEnv({ FAKE_VERIFY_FAIL: failLog }), input: JSON.stringify({ sessionId: 's1' }), encoding: 'utf8' });
+	rmSync(link);
+	assert.match(JSON.parse(r.stdout).reason, /^Stop blocked/);
 });
