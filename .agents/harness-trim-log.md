@@ -68,11 +68,10 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: room for the b-out-8 notes (0c2f338) inside the folder cap. No rule dropped; every ledger key still present.
 
 ## 2026-10-23 — grok map: b-out-8 notes (stophook 0c2f338) — budget change, nothing trimmed
-- commit: filled in by the next commit
+- commit: 921540b
 - file: `.grok/rules/mog-repo-map.md` · 11558 → 11768 bytes (budget raised to match; `.grok/rules` total stays under its 19545 cap)
 - added: read list names `task-set-a-requirements.md` / `task-set-b-requirements.md` (repo root); Facts "**Serenity imports**: static, top of file …; never `await import()`."
 - why: b-out-8 spent orientation round 3 finding the requirements file and the Serenity import form.
-
 
 ## 2026-10-23 — grok AGENTS wording (room for the b10 auto-fix line)
 - commit: 94c8e15
@@ -81,7 +80,7 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: AGENTS would be 2076/2075 B with the b10 "it auto-fixes, verifies, lists the rest" wording. No rule dropped; ledger keys unchanged.
 
 ## 2026-10-23 — grok map wording, to fit the negative-tests rule (negtests b89d2cd, applied to .grok/rules)
-- commit: (filled in by the next commit)
+- commit: b7cb611
 - file: `.grok/rules/mog-repo-map.md` · 11768 → 11629 bytes
-- reworded (kind 3): Step wiring and Derived check lines, same text as negtests b89d2cd (see that entry above).
+- reworded (kind 3): Step wiring and Derived check lines, same text as negtests b89d2cd ("Step wiring" and "Derived check" compressed; meaning unchanged).
 - why: the grok map is at its 11768-byte budget (rules total 19475/19545) and the boundary/negative-test rule needs ~130 bytes. Both rules kept (ledger keys `src/step-definitions/<feature>.steps.ts`, `TS2345` present).

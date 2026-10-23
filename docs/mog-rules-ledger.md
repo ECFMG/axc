@@ -43,3 +43,4 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `task-set-a-requirements.md` | .grok/rules/mog-repo-map.md | orientation round 3 (requirements file not in the read list) | b-out-8 | 0c2f338 |
 | `**Serenity imports**: static` | .grok/rules/mog-repo-map.md | orientation round 3 (Serenity import form) | b-out-8 | 0c2f338 |
 | `it auto-fixes, verifies` | AGENTS.md | useAwait / knip unused-export blocks fixed by hand (scripts/auto-fix.mjs now fixes them) | b-out-6, b-out-8 | this round |
+| `one boundary test + one negative test` | .grok/rules/mog-repo-map.md | untested validation edges (hidden boundary/negative cases) | — | negtests |
