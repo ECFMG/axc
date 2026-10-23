@@ -95,6 +95,21 @@ test('autoFix: useAwait spots from biome, knip limited to changed files, biome -
 	assert.equal(read('src/a.test.ts'), 'export const t = async () => 1;\n', 'test files never fixed');
 });
 
+test('autoFix: knip load error (unbuilt worktree) → pnpm run build once, then knip again', () => {
+	write('package.json', '{"scripts":{"build":"x"}}\n');
+	write('src/a.ts', 'export interface A {\n\tok: boolean;\n}\nexport const a = (): A => ({ ok: true });\n');
+	// fake knip: exit 2 until the fake build has run, then fix; fake pnpm (on PATH) records `run build`
+	fakeBin('knip', "[ -f node_modules/built ] || exit 2; sed -i.bak 's/^export interface/interface/' src/a.ts && rm -f src/a.ts.bak");
+	fakeBin('pnpm', 'echo "$@" >> node_modules/pnpm-args; touch node_modules/built');
+	const env = { ...process.env, PATH: `${path.join(repo, 'node_modules/.bin')}${path.delimiter}${process.env.PATH}` };
+	const log = autoFix(repo, fixTargets(changedFiles(repo)), { env });
+	assert.deepEqual(log, ['build (knip could not load its config before it)', 'knip --fix exports,types: src/a.ts']);
+	assert.equal(read('node_modules/pnpm-args'), 'run build\n');
+	assert.match(read('src/a.ts'), /^interface A/);
+	assert.deepEqual(autoFix(repo, fixTargets(changedFiles(repo)), { env }), [], 'knip ok → no build');
+	assert.equal(read('node_modules/pnpm-args'), 'run build\n');
+});
+
 test('autoFix: no fixer bins → no-op, empty log', () => {
 	write('src/a.ts', 'export const a = async () => 1;\n');
 	assert.deepEqual(autoFix(repo, fixTargets(changedFiles(repo))), []);

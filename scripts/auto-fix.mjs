@@ -2,7 +2,8 @@
 // dirs; never write-boundary path_deny files; never test/spec/feature/step files (no fixer may touch assertions).
 //   1. useAwait: drop `async` where biome reports no `await` (skipped when the signature names `Promise<`).
 //   2. knip --fix (exports + types; repeated --fix-type: knip 5.88 ignores the comma form): drop unused `export`s;
-//      any other file knip touches is restored.
+//      any other file knip touches is restored. knip errors (e.g. an unbuilt worktree: vitest configs import workspace
+//      `dist/`) → `pnpm run build` once (turbo-cached; verify's build then hits the cache) and retry.
 //   3. biome check --write: safe fixes + format only (no --unsafe).
 // Dependency-free; every fixer is optional (missing node_modules/.bin → skipped) and fails open. Returns log lines.
 import { spawnSync } from 'node:child_process';
@@ -57,6 +58,14 @@ export function dropAsync(src, spots) {
 	return { src, n };
 }
 
+const hasBuild = (root) => {
+	try {
+		return Boolean(JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8')).scripts?.build);
+	} catch {
+		return false;
+	}
+};
+
 /** Run the fixers. `prefix` is a shell snippet run first (e.g. `nvm use`). Returns log lines, e.g. `knip: a.ts`. */
 export function autoFix(root, targets, { prefix = '', env = process.env } = {}) {
 	const bin = (n) => path.join(root, 'node_modules/.bin', n);
@@ -102,7 +111,14 @@ export function autoFix(root, targets, { prefix = '', env = process.env } = {}) 
 					.filter((f) => !targets.code.includes(f))
 					.map((f) => [f, read(f)]),
 			);
-			const t = touched(targets.code, () => sh(bin('knip'), ['--fix', '--fix-type', 'exports', '--fix-type', 'types', '--no-exit-code', '--no-progress', '--no-config-hints']));
+			const knip = () => sh(bin('knip'), ['--fix', '--fix-type', 'exports', '--fix-type', 'types', '--no-exit-code', '--no-progress', '--no-config-hints']);
+			let built = false;
+			const t = touched(targets.code, () => {
+				if (knip().status === 0 || !hasBuild(root)) return;
+				built = sh('pnpm', ['run', 'build']).status === 0;
+				if (built) knip();
+			});
+			if (built) log.push('build (knip could not load its config before it)');
 			for (const f of changedFiles(root)) {
 				if (targets.code.includes(f)) continue;
 				if (!saved.has(f)) spawnSync('git', ['checkout', '-q', '--', f], { cwd: root, env: gitEnv() });
