@@ -63,7 +63,8 @@ export function summarize(log, root = process.cwd()) {
 		m = line.match(/^(\S+?)\((\d+),(\d+)\): error (TS\d+): (.*)/) ?? line.match(/^(\S+?):(\d+):(\d+) - error (TS\d+): (.*)/);
 		if (m) {
 			const fn = /^TS(2883|2742)$/.test(m[4]) ? m[5].match(/^The inferred type of '([^']+)'/)?.[1] : undefined;
-			out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} — ${fn ? `add explicit return type to exported '${fn}' (e.g. \`: Response\`); ` : ''}${m[5]}`);
+			const reexport = /^TS(2305|2459|2724)$/.test(m[4]) ? 're-export it from <pkg>/src/index.ts; ' : '';
+			out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} — ${fn ? `add explicit return type to exported '${fn}' (e.g. \`: Response\`); ` : reexport}${m[5]}`);
 			continue;
 		}
 		m = line.match(/^\s*FAIL\s+(\S+)\s*(?:>\s*(.*))?$/);
@@ -100,14 +101,14 @@ function excerpt(file) {
 	}
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-	const file = process.argv[2] ?? '/tmp/check.log';
+/** Terse failure report for a log file: one line per problem, else verify-excerpt, else the tail. */
+export function report(file, root = process.cwd()) {
 	const log = readFileSync(file, 'utf8');
-	const found = summarize(log);
+	const found = summarize(log, root);
 	const clip = (l) => (l.length > WIDTH && !l.startsWith('scenario  ') ? `${l.slice(0, WIDTH)}…` : l);
-	if (found.length) {
-		console.log(`check FAILED: ${found.length} problem(s) — full log: ${file}`);
-		console.log(found.slice(0, MAX).map(clip).join('\n'));
-		if (found.length > MAX) console.log(`… +${found.length - MAX} more (full log: ${file})`);
-	} else console.log(excerpt(file) || log.trimEnd().split('\n').slice(-30).join('\n'));
+	if (!found.length) return excerpt(file) || log.trimEnd().split('\n').slice(-30).join('\n');
+	const more = found.length > MAX ? [`… +${found.length - MAX} more (full log: ${file})`] : [];
+	return [`check FAILED: ${found.length} problem(s) — full log: ${file}`, ...found.slice(0, MAX).map(clip), ...more].join('\n');
 }
+
+if (import.meta.url === `file://${process.argv[1]}`) console.log(report(process.argv[2] ?? '/tmp/check.log'));

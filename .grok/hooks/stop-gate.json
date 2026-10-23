@@ -2,6 +2,6 @@
 	"hooks": {
 		"SessionStart": [{ "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/stop-gate.mjs\" start", "timeout": 10 }] }],
 		"UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/stop-gate.mjs\" start", "timeout": 10 }] }],
-		"Stop": [{ "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/stop-gate.mjs\" stop", "timeout": 30 }] }]
+		"Stop": [{ "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/stop-gate.mjs\" stop", "timeout": 600 }] }]
 	}
 }
