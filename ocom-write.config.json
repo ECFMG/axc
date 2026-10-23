@@ -1,12 +1,14 @@
 {
 	"agentAccess": {
+		"**": true,
 		"packages/cellix/**": false,
 		"packages/axc/**": true,
 		"packages/axc-verification/**": true,
 		"package.json": true,
 		"pnpm-lock.yaml": true,
 		"pnpm-workspace.yaml": true,
-		".cursor/**": false,
+		".snyk": true,
+		".cursor/**": true,
 		"ocom-write.config.json": false,
 		"cellix-lint.config.json": false,
 		"apps/api/package.json": true,

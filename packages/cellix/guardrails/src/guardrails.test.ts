@@ -1,0 +1,167 @@
+import { spawnSync } from 'node:child_process';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { describe, expect, it } from 'vitest';
+import { checkFlag, decidePath, decideShell, loadSession, policyFromConfig, recordSession, sessionAllows } from './index.mjs';
+
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
+
+const open = policyFromConfig({
+	agentAccess: {
+		'packages/cellix/**': false,
+		'packages/axc/**': true,
+		'packages/axc-verification/**': true,
+		'package.json': true,
+		'pnpm-lock.yaml': true,
+		'pnpm-workspace.yaml': true,
+		'.cursor/**': false,
+		'.snyk': true,
+		'apps/api/src/**': true,
+		'apps/docs/**': true,
+		'apps/**': false,
+	},
+});
+
+describe('guardrails', () => {
+	it('allows a true entry and rejects a path with no entry', () => {
+		expect(decidePath(path.join(repoRoot, 'packages/axc/rest/src/index.ts'), repoRoot, open).ok).toBe(true);
+		expect(decidePath(path.join(repoRoot, 'pnpm-workspace.yaml'), repoRoot, open).ok).toBe(true);
+		const denied = decidePath(path.join(repoRoot, 'AGENTS.md'), repoRoot, open);
+		expect(denied.ok).toBe(false);
+		expect(denied.message).toContain('agentAccess');
+	});
+
+	it('rejects a write command that does not name a file', () => {
+		expect(decideShell('node -e "console.log(1)"', repoRoot, open).ok).toBe(false);
+		expect(decideShell('pnpm exec node -e "console.log(1)"', repoRoot, open).ok).toBe(false);
+		expect(decideShell('pnpm test 2>&1', repoRoot, open).ok).toBe(true);
+	});
+
+	it('allows the lockfile and the workspace file when their entries are true', () => {
+		expect(decideShell('touch pnpm-lock.yaml', repoRoot, open).ok).toBe(true);
+		expect(decideShell('touch pnpm-workspace.yaml', repoRoot, open).ok).toBe(true);
+	});
+
+	it('treats git restore as a write and leaves git status alone', () => {
+		expect(decideShell('git status --short', repoRoot, open).ok).toBe(true);
+		expect(decideShell('git diff', repoRoot, open).ok).toBe(true);
+		expect(decideShell('git restore --source=HEAD --worktree -- packages/axc/domain/package.json', repoRoot, open).ok).toBe(true);
+		const restored = decideShell('git restore --source=HEAD --worktree -- .cursor/hooks/cellix-write-allow.mjs', repoRoot, open);
+		expect(restored.ok).toBe(false);
+		expect(restored.message).toContain('locked');
+	});
+
+	it('locks a false entry even when a broader pattern could match', () => {
+		expect(decidePath(path.join(repoRoot, 'packages/cellix/generator/src/generate.ts'), repoRoot, open).ok).toBe(false);
+		expect(decidePath(path.join(repoRoot, 'apps/docs/docs/intro.md'), repoRoot, open).ok).toBe(true);
+		expect(decidePath(path.join(repoRoot, 'apps/api/src/index.ts'), repoRoot, open).ok).toBe(true);
+		expect(decidePath(path.join(repoRoot, 'apps/api/scripts/zip-deploy.mjs'), repoRoot, open).ok).toBe(false);
+		expect(decidePath(path.join(repoRoot, '.cursor/hooks/cellix-write-allow.mjs'), repoRoot, open).ok).toBe(false);
+		expect(decideShell('touch package.json', repoRoot, open).ok).toBe(true);
+		expect(decideShell('touch AGENTS.md', repoRoot, open).ok).toBe(false);
+	});
+
+	it('narrows one agent without unlocking a locked path or closing an exact true path', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
+		try {
+			recordSession(root, 'task-a', ['packages/axc/domain/src/domain/contexts/course/']);
+			recordSession(root, 'task-a', ['packages/axc/rest/src/course-query.ts']);
+			const session = loadSession(root, 'task-a');
+			const narrowed = policyFromConfig({ agentAccess: open.agentAccess }, session);
+			const repairOnly = { agentId: 'task-a', files: ['packages/axc/rest/src/course-query.ts'] };
+			expect(sessionAllows('packages/axc/domain/src/domain/contexts/course/course.aggregate.ts', session)).toBe(true);
+			expect(sessionAllows('packages/axc/rest/src/course-query.ts', session)).toBe(true);
+			expect(sessionAllows('.snyk', repairOnly)).toBe(false);
+			expect(sessionAllows('pnpm-workspace.yaml', repairOnly)).toBe(false);
+			expect(sessionAllows('apps/docs/docs/intro.md', session)).toBe(false);
+			expect(decidePath(path.join(repoRoot, 'packages/axc/domain/src/domain/contexts/course/course.aggregate.ts'), repoRoot, narrowed).ok).toBe(true);
+			expect(decidePath(path.join(repoRoot, '.snyk'), repoRoot, narrowed).ok).toBe(true);
+			expect(decidePath(path.join(repoRoot, 'pnpm-workspace.yaml'), repoRoot, narrowed).ok).toBe(true);
+			expect(decidePath(path.join(repoRoot, 'apps/docs/docs/intro.md'), repoRoot, narrowed).ok).toBe(false);
+			expect(decidePath(path.join(repoRoot, 'packages/cellix/generator/src/generate.ts'), repoRoot, narrowed).ok).toBe(false);
+			expect(loadSession(root, 'task-b')).toBeNull();
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
+	it('keeps an empty session closed and rejects a sibling prefix', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
+		try {
+			const directory = path.join(root, '.cellix', 'sessions');
+			await mkdir(directory, { recursive: true });
+			await writeFile(path.join(directory, 'task-a.json'), `${JSON.stringify({ agentId: 'task-a', files: [] })}\n`);
+			const session = loadSession(root, 'task-a');
+			expect(sessionAllows('packages/axc/rest/src/index.ts', session)).toBe(false);
+			expect(sessionAllows('.snyk', session)).toBe(false);
+			expect(decidePath(path.join(repoRoot, '.snyk'), repoRoot, policyFromConfig({ agentAccess: open.agentAccess }, session)).ok).toBe(true);
+			const course = { agentId: 'task-a', files: ['packages/axc/domain/src/domain/contexts/course/'] };
+			expect(sessionAllows('packages/axc/domain/src/domain/contexts/course-catalog/course.aggregate.ts', course)).toBe(false);
+			expect(decidePath(path.join(repoRoot, 'packages/axc/domain/src/domain/contexts/course/../passport.ts'), repoRoot, policyFromConfig({ agentAccess: open.agentAccess }, course)).ok).toBe(false);
+			expect(decidePath(path.join(repoRoot, '.cellix/verify.json'), repoRoot, open).ok).toBe(false);
+			expect(decideShell('touch .cellix/verify.json', repoRoot, open).ok).toBe(false);
+			await writeFile(path.join(directory, 'task-a.json'), '{');
+			expect(() => loadSession(root, 'task-a')).toThrow('not valid JSON');
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
+	it('enforces the session inside the write hook and leaves the other agent open', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-hook-'));
+		try {
+			await writeFile(path.join(root, 'ocom-write.config.json'), `${JSON.stringify({ agentAccess: { 'packages/axc/**': true, 'packages/cellix/**': false, '.snyk': true } })}\n`);
+			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
+			const hook = path.join(repoRoot, '.cursor/hooks/cellix-write-allow.mjs');
+			const run = (agentId: string, file: string) => {
+				const result = spawnSync(process.execPath, [hook], {
+					input: JSON.stringify({ cwd: root, tool_name: 'Write', tool_input: { path: file } }),
+					encoding: 'utf8',
+					env: { ...process.env, CELLIX_AGENT_ID: agentId },
+				});
+				return JSON.parse(result.stdout) as { permission: string };
+			};
+			expect(run('task-a', 'packages/axc/rest/src/index.ts').permission).toBe('allow');
+			expect(run('task-a', 'packages/axc/domain/src/index.ts').permission).toBe('deny');
+			expect(run('task-a', '.snyk').permission).toBe('allow');
+			expect(run('task-b', 'packages/axc/domain/src/index.ts').permission).toBe('allow');
+			expect(run('task-a', 'packages/cellix/generator/src/generate.ts').permission).toBe('deny');
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
+	it('binds the verify flag to the working tree', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-flag-'));
+		try {
+			const git = (args: string[]) => {
+				const result = spawnSync('git', args, {
+					cwd: root,
+					encoding: 'utf8',
+					env: { ...process.env, GIT_AUTHOR_NAME: 'Test', GIT_AUTHOR_EMAIL: 'test@example.com', GIT_COMMITTER_NAME: 'Test', GIT_COMMITTER_EMAIL: 'test@example.com' },
+				});
+				expect(result.status, result.stderr).toBe(0);
+			};
+			git(['init']);
+			await writeFile(path.join(root, 'readme.md'), 'one\n');
+			git(['add', 'readme.md']);
+			git(['commit', '-m', 'start']);
+			const stamp = spawnSync(process.execPath, [path.join(repoRoot, '.cursor/hooks/cellix-stamp-verify.mjs')], {
+				cwd: root,
+				encoding: 'utf8',
+				env: { ...process.env, npm_lifecycle_event: 'verify' },
+			});
+			expect(stamp.status, stamp.stderr).toBe(0);
+			expect(stamp.stdout).toContain('CELLIX_VERIFY=pass');
+			expect(checkFlag(root)).toBe(true);
+			await writeFile(path.join(root, 'readme.md'), 'two\n');
+			expect(checkFlag(root)).toBe(false);
+			const forged = JSON.parse(await readFile(path.join(root, '.cellix/verify.json'), 'utf8')) as { head: string };
+			expect(forged.head).toMatch(/^[0-9a-f]{40}$/);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+});

@@ -22,7 +22,7 @@ catalog:
   '@serenity-js/cucumber': 3.46.0
   '@serenity-js/rest': 3.46.0
   '@serenity-js/serenity-bdd': 3.46.0
-  '@storybook/addon-vitest': ^10.4.2
+  '@storybook/addon-vitest': 10.6.2
   '@types/node': 24.10.1
   '@typescript/native-preview': 7.0.0-dev.20260428.1
   '@vitest/browser-playwright': 4.1.11
@@ -59,6 +59,12 @@ overrides:
   'shell-quote': 1.11.0
   sirv: 3.0.2
   source-map-js: 1.2.2
+  storybook: 10.6.2
+  '@storybook/addon-vitest': 10.6.2
+  follow-redirects: 1.16.1
+  launch-editor: 2.14.2
+  vite: 8.3.3
+  '@graphql-tools/utils': 12.0.2
   tinypool: 2.1.2
   vitest: 4.1.11
   '@vitest/browser-playwright': 4.1.11
@@ -77,3 +83,9 @@ minimumReleaseAgeExclude:
   - hono@4.13.11
   - qs@6.16.1
   - shell-quote@1.11.0
+  - storybook@10.6.2
+  - '@storybook/addon-vitest@10.6.2'
+  - follow-redirects@1.16.1
+  - launch-editor@2.14.2
+  - vite@8.3.3
+  - '@graphql-tools/utils@12.0.2'

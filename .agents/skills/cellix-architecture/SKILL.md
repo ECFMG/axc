@@ -24,7 +24,7 @@ Use them in this order. Each one catches a different class of drift.
 | Guardrail | What it forces | When it runs |
 | --- | --- | --- |
 | `@cellix/generator` | The file set for one context, entity, and action | Before any new feature files exist |
-| Write-allow hook | A write is allowed only when the first matching `agentAccess` entry in `ocom-write.config.json` is true | Every write and every shell write |
+| `@cellix/guardrails` | Session, write decision, and verify flag. `ocom-write.config.json` is the allow list. `.cursor/hooks/cellix-write-allow.mjs` is the Cursor adapter | Every write, and at the end of `pnpm run verify` |
 | `@cellix/lint` | File roles, file body, public imports, dependency graph | `pnpm --filter @cellix/lint lint:cellix`, `pnpm run lint`, commit, `pnpm run verify` |
 | Biome, extended from `@cellix/lint/biome` | Formatter, recommended rules, and layer import bans. The repo `biome.json` extends that file and adds only app-specific ignores and overrides | `pnpm exec biome check` |
 | `@cellix/archunit-tests` `./structure` | The same lint, as an architecture test apps opt into | `pnpm run test:arch` |
@@ -65,7 +65,9 @@ pnpm --filter @cellix/generator generate -- --context user --entity staff-user -
 
 The generator runs Biome on those files before it reports success, so import order and line length already match `biome.json`.
 
-That command writes a scaffold. It does not finish the feature. `getNewInstance` builds `const newInstance` and calls `private markAsNew()`, which sets `isNew`. Setters assign the value. They do not call `visa.determineIf`. The visa, the permissions interface, and passport are there so a later edit can add a check. There is no created event. After the files exist, build the behavior they only sketch.
+That command writes a scaffold. It does not finish the feature. The text of each new file is a template under `packages/cellix/generator/src/templates/`, in a folder named for the package that receives it. `src/plan.ts` chooses the paths. `src/write/new-files.ts` creates files that do not exist yet. `src/compose.ts` edits barrels that already exist. `src/session-files.ts` records the session.
+
+`getNewInstance` builds `const newInstance` and calls `private markAsNew()`, which sets `isNew`. Setters assign the value. They do not call `visa.determineIf`. The visa, the permissions interface, and passport are there so a later edit can add a check. There is no created event. After the files exist, build the behavior they only sketch.
 
 The command writes:
 
@@ -91,7 +93,7 @@ Then build:
 - The new service on the health host, `packages/axc/application-services/src/index.ts`. Add it beside `health` on `ApplicationServices` and return it from `buildApplicationServicesFactory`. Keep `health.getStatus`
 - The context factory's ports, when the action needs more than `DataSources`
 
-When that behavior is in place, run `pnpm run verify`. That command runs Cellix lint, then typecheck and build. Lint only checks file shape. Generate finishing is not that check. `pnpm run verify` is the last check before the work is done.
+When that behavior is in place, run `pnpm run verify`. That command runs Cellix lint, then typecheck and build. Lint only checks file shape. Generate finishing is not that check. `pnpm run verify` is the last check before the work is done. It prints `CELLIX_VERIFY=pass` and writes `.cellix/verify.json` with `"flag": "pass"` only when every step exits 0. That file is the flag. Nothing prompts again. If the flag is missing, verify did not pass.
 
 ## Testing
 
@@ -101,11 +103,29 @@ Start the application with `pnpm run dev` and call the endpoint. The rows come f
 
 A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entity>.<action>(command)` inside the function that receives `applicationServices`. Context and Entity are PascalCase. Mentioning `applicationServices`, casting it, or calling a local list when the property is missing does not count. A REST file does not keep an array of documents.
 
+## Sessions
+
+The session rules are `packages/cellix/guardrails/src/session.mjs`. The write order is `packages/cellix/guardrails/src/write/decide.mjs`: `agentAccess` first, then an exact `true` path, then the session. A session belongs to one agent. It does not replace `agentAccess`, and it does not apply to any other agent.
+
+The harness sets `CELLIX_AGENT_ID` (`task-a`, `task-b`) in that agent's environment before the agent runs. The generator then writes `.cellix/sessions/<id>.json`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
+
+The directories are the new context, the new model, and `apps/docs/docs/<context>/`. `apps/docs/sidebars.ts` is included so that page can be linked. Every other file the generator edits is an exact path, including the REST handler, the REST index, and `apps/api/src/index.ts`. The rest of `packages/axc/rest`, `apps/api/src`, `apps/docs`, the acceptance package, and `packages/axc/service-mongoose` stay closed.
+
+An `agentAccess` key with no `*` stays writable during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay fixable because they are exact `true` entries in `ocom-write.config.json`.
+
+No `CELLIX_AGENT_ID` means no session. Standing `agentAccess` is the only check. An empty file list or invalid JSON does not open the tree. The harness removes a session between runs. The agent does not delete the session file.
+
+## Verify flag
+
+The flag rules are `packages/cellix/guardrails/src/verify-flag.mjs`. `pnpm run verify` writes `.cellix/verify.json` and prints `CELLIX_VERIFY=pass` only after lint, typecheck, build, tests, audit, and Snyk all exit 0. The file records git HEAD and a hash of `git status --porcelain`, so the pass belongs to that tree. `pnpm run verify:flag` prints `CELLIX_VERIFY=pass` while the tree still matches and `CELLIX_VERIFY=stale` after another edit. `.cellix/verify.json` is not a writable product file. Turbo and Snyk print failures, not passing task logs.
+
+## Browser end-to-end tests
+
+The generator writes one API acceptance scenario. The steps call the running app and read `LastResponse.body()`. It does not write browser tests. Those follow the screen. CellixJS keeps them in `packages/ocom-verification/e2e-tests`: Playwright, portless, and Serenity screenplay, separate from `acceptance-api`. Add that package when a frontend exists, and write the scenario by hand.
+
 ## agentAccess
 
-`ocom-write.config.json` is the only write list. The first matching `agentAccess` key wins. `true` allows the path. `false` locks it. A path with no match is denied.
-
-`packages/axc/**`, `packages/axc-verification/**`, `apps/api/src/**`, `apps/docs/**`, the root `package.json`, `pnpm-lock.yaml`, and `pnpm-workspace.yaml` are open. `cellix-lint.config.json` stays locked. Deploy scripts, secrets, and env files stay locked with the rest of `apps/**`.
+`ocom-write.config.json` is the only write list. The first matching `agentAccess` key wins. `true` allows the path. `false` locks it. A path with no match is denied. The session does not declare a second list.
 
 A shell write that does not name a file is denied. `pnpm --filter @cellix/generator generate` is allowed. `git status` and `git diff` are allowed. `git restore` of a locked file is denied.
 

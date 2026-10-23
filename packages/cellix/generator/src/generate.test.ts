@@ -3,6 +3,7 @@ import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:f
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadSession } from '@cellix/guardrails';
 import { afterEach, describe, expect, it } from 'vitest';
 import { checkCellixLint, defaultCellixLintConfig } from '../../lint/src/index.ts';
 import { generateFeature } from './generate.ts';
@@ -39,6 +40,7 @@ describe('Cellix generator', () => {
 		expect(paths).toContain('course-create.steps.ts');
 		const steps = files.find((file) => file.path.endsWith('course-create.steps.ts'));
 		expect(steps?.contents).toContain('GetRequest.to(');
+		expect(steps?.contents).toContain('LastResponse.body');
 		expect(paths).toContain('datasources/readonly/mongo-data-source.ts');
 		const readRepository = files.find((file) => file.path.endsWith('course.read-repository.ts'));
 		expect(readRepository?.contents).toContain('getCourseReadRepository');
@@ -273,6 +275,45 @@ describe('Cellix generator', () => {
 		expectBiomeClean(deepFiles);
 	});
 
+	it('records a session for the current agent only', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(root);
+		const previous = process.env.CELLIX_AGENT_ID;
+		process.env.CELLIX_AGENT_ID = 'task-a';
+		try {
+			await writeStub(
+				root,
+				'packages/axc/rest/src/index.ts',
+				`import type { ApplicationServicesFactory } from '@axc/application-services';\nimport { Hono } from 'hono';\n\nexport function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {\n\tconst app = new Hono();\n\treturn app;\n}\n`,
+			);
+			await writeStub(
+				root,
+				'apps/api/src/index.ts',
+				`import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';\nimport { restHandlerCreator } from '@axc/rest';\nimport { Cellix } from '@cellix/api-core';\n\nCellix.initializeInfrastructureServices<ApiContext, ApplicationServices>(() => undefined)\n\t.initializeApplicationServices((context) => buildApplicationServicesFactory(context))\n\t.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)\n\t.startUp();\n`,
+			);
+			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', action: 'query', transport: 'rest' });
+			const session = loadSession(root, 'task-a');
+			expect(session?.files).toContain('packages/axc/domain/src/domain/contexts/course/');
+			expect(session?.files).toContain('packages/axc/domain/src/index.ts');
+			expect(session?.files).toContain('packages/axc/rest/src/index.ts');
+			expect(session?.files).toContain('apps/api/src/index.ts');
+			expect(session?.files).toContain('apps/docs/docs/course/');
+			expect(session?.files).toContain('apps/docs/sidebars.ts');
+			expect(session?.files).not.toContain('packages/axc/rest/src/');
+			expect(session?.files).not.toContain('apps/api/src/');
+			expect(session?.files).not.toContain('apps/docs/');
+			expect(session?.files).not.toContain('packages/axc-verification/acceptance-api/src/');
+			expect(session?.files).not.toContain('packages/axc/service-mongoose/');
+			expect(session?.files).not.toContain('pnpm-workspace.yaml');
+			expect(session?.files).not.toContain('.snyk');
+			expect(session?.files.join('\n')).not.toContain('packages/cellix/');
+			expect(loadSession(root, 'task-b')).toBeNull();
+		} finally {
+			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
+			else process.env.CELLIX_AGENT_ID = previous;
+		}
+	});
+
 	it('rejects an acceptance step file that keeps a document array', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
@@ -284,6 +325,9 @@ describe('Cellix generator', () => {
 		await writeFile(steps.path, `${original}\nconst courses = [{ title: 'Example' }];\n`);
 		const violations = await checkCellixLint({ root, lint });
 		expect(violations.some((violation) => violation.includes('document array'))).toBe(true);
+		await writeFile(steps.path, original.replaceAll('LastResponse.body', 'LastResponse.status'));
+		const unread = await checkCellixLint({ root, lint });
+		expect(unread.some((violation) => violation.includes('LastResponse.body()'))).toBe(true);
 	});
 
 	it('refuses to overwrite an entity file', async () => {

@@ -23,6 +23,7 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
+		"@cellix/guardrails": "workspace:*",
 		"@cellix/lint": "workspace:*"
 	},
 	"devDependencies": {

@@ -13,7 +13,6 @@ export interface CellixLintConfig {
 	layers: CellixLintLayers;
 	apiComposition: string;
 	hostFunctions: string[];
-	writable: string[];
 }
 
 export function defineCellixLint(config: CellixLintConfig): CellixLintConfig {
@@ -34,13 +33,5 @@ export function defaultCellixLintConfig(): CellixLintConfig {
 		},
 		apiComposition: 'apps/api/src/index.ts',
 		hostFunctions: ['buildApplicationServicesFactory', 'resolveEnvironment'],
-		writable: [
-			'packages/axc/domain/src/**',
-			'packages/axc/application-services/src/contexts/**',
-			'packages/axc/persistence/src/datasources/**',
-			'packages/axc/rest/src/**',
-			'packages/axc/graphql/src/**',
-			'packages/axc/data-sources-mongoose-models/src/models/**',
-		],
 	};
 }

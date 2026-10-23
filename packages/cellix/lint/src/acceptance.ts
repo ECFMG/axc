@@ -27,6 +27,9 @@ export async function checkAcceptanceShape(root: string): Promise<string[]> {
 		if (!steps.includes('GetRequest.to(')) {
 			violations.push(`${stepsRelative} must call GetRequest.to so the scenario hits the running application.`);
 		}
+		if (!steps.includes('LastResponse.body')) {
+			violations.push(`${stepsRelative} must read LastResponse.body() and check the row the application returned.`);
+		}
 		if (/=\s*\[/.test(steps)) {
 			violations.push(`${stepsRelative} keeps a document array. Read the row from the database through the running application.`);
 		}
