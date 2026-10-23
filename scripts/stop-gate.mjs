@@ -104,22 +104,7 @@ export function commitMessage(nameStatus, pkgOf = (f) => f.split('/').slice(0, -
 }
 
 // husky 9.1 install, minus its `git config core.hooksPath` write: the hook list, stub and deprecation shim it generates.
-const HUSKY_HOOKS = [
-	'pre-commit',
-	'pre-merge-commit',
-	'prepare-commit-msg',
-	'commit-msg',
-	'post-commit',
-	'applypatch-msg',
-	'pre-applypatch',
-	'post-applypatch',
-	'pre-rebase',
-	'post-rewrite',
-	'post-checkout',
-	'post-merge',
-	'pre-push',
-	'pre-auto-gc',
-];
+const HUSKY_HOOKS = 'pre-commit pre-merge-commit prepare-commit-msg commit-msg post-commit applypatch-msg pre-applypatch post-applypatch pre-rebase post-rewrite post-checkout post-merge pre-push pre-auto-gc'.split(' ');
 const HUSKY_SH = `echo "husky - DEPRECATED\n\nPlease remove the following two lines from $0:\n\n#!/usr/bin/env sh\n. \\"\\$(dirname -- \\"\\$0\\")/_/husky.sh\\"\n\nThey WILL FAIL in v10.0.0\n"`;
 
 /** Repo uses husky (`.husky/pre-commit`): make sure `.husky/_` exists, generating it like husky's install would but
