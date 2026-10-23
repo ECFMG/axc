@@ -1,4 +1,6 @@
 import { type CourseList, type CoursesQuery, listCourses } from './courses.ts';
+import { createEnrollmentRequestStore } from './enrollment-requests.store.ts';
+import type { CreateEnrollmentRequestInput, EnrollmentRequest, EnrollmentRequestsQuery, UpdateEnrollmentRequestStatusInput } from './enrollment-requests.ts';
 
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
@@ -24,6 +26,12 @@ export interface ApplicationServices {
 	courses: {
 		list(q: CoursesQuery): CourseList;
 	};
+	enrollmentRequests: {
+		list(q: EnrollmentRequestsQuery): EnrollmentRequest[];
+		create(input: CreateEnrollmentRequestInput): EnrollmentRequest;
+		getById(id: string): EnrollmentRequest;
+		updateStatus(id: string, input: UpdateEnrollmentRequestStatusInput): EnrollmentRequest;
+	};
 }
 
 export interface ApplicationServicesFactory {
@@ -31,6 +39,19 @@ export interface ApplicationServicesFactory {
 }
 
 export { type Course, type CourseList, type CoursesQuery, courseModalities, courseSorts, courseStatuses, isCourseModality, isCourseSort, isCourseStatus } from './courses.ts';
+export { EnrollmentRequestError, type EnrollmentRequestErrorCode } from './enrollment-requests.store.ts';
+export {
+	type CreateEnrollmentRequestInput,
+	type EnrollmentRequest,
+	type EnrollmentRequestStatus,
+	type EnrollmentRequestsQuery,
+	enrollmentRequestStatuses,
+	isEnrollmentRequestStatus,
+	isValidEmail,
+	isValidJustification,
+	type StatusHistoryEntry,
+	type UpdateEnrollmentRequestStatusInput,
+} from './enrollment-requests.ts';
 
 export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironment {
 	if (nodeEnv === 'production') {
@@ -43,6 +64,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const enrollmentRequestStore = createEnrollmentRequestStore();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -57,6 +79,12 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 				},
 			},
 			courses: { list: listCourses },
+			enrollmentRequests: {
+				list: enrollmentRequestStore.list,
+				create: enrollmentRequestStore.create,
+				getById: enrollmentRequestStore.getById,
+				updateStatus: enrollmentRequestStore.updateStatus,
+			},
 		});
 
 	return { forRequest };
