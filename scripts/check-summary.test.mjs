@@ -1,7 +1,7 @@
 // node --test scripts/check-summary.test.mjs — check-log fixtures in the real tools' output formats.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -74,4 +74,16 @@ test('useImportType and TS18048 lines carry a one-clause fix', () => {
 		'biome  packages/axc/rest/src/a.ts:1:1 lint/style/useImportType — use `import type` for type-only imports; All these imports are only used as types.',
 		"ts     packages/axc/rest/src/a.ts:4:7 TS18048 — narrow before use (if / `?.` / `??`); 'x' is possibly 'undefined'.",
 	]);
+});
+
+test('CLI runs when invoked through a symlinked path', () => {
+	const dir = mkdtempSync(path.join(tmpdir(), 'mog-cs-link-'));
+	try {
+		symlinkSync(import.meta.dirname, path.join(dir, 'scripts'));
+		writeFileSync(path.join(dir, 'check.log'), log);
+		const out = execFileSync(process.execPath, [path.join(dir, 'scripts/check-summary.mjs'), path.join(dir, 'check.log')], { cwd: root, encoding: 'utf8' });
+		assert.match(out, /^check FAILED: \d+ problem/);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
 });

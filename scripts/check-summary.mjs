@@ -2,8 +2,9 @@
 // naming the file (repo-relative) and the rule or error id. Nothing recognised -> verify-excerpt, else the tail.
 // Usage: <checks> >/tmp/check.log 2>&1 || node scripts/check-summary.mjs /tmp/check.log
 import { execFileSync } from 'node:child_process';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { acceptanceFailures } from './acceptance-failures.mjs';
 
 const MAX = 40;
@@ -112,4 +113,6 @@ export function report(file, root = process.cwd()) {
 	return [`check FAILED: ${found.length} problem(s) — full log: ${file}`, ...found.slice(0, MAX).map(clip), ...more].join('\n');
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) console.log(report(process.argv[2] ?? '/tmp/check.log'));
+// realpath + file URL: a symlinked or space-containing path must still run main, not no-op.
+const isMain = () => Boolean(process.argv[1]) && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+if (isMain()) console.log(report(process.argv[2] ?? '/tmp/check.log'));

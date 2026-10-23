@@ -1,6 +1,7 @@
 // PostToolUse shell-output trimmer for Grok Build (updatedToolOutput). Dependency-free; fails open (no output = unchanged).
 // Long output only: drop pass/progress/blank lines, then keep head + tail + every error-looking line between.
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 
 const MAX_LINES = 60;
 const HEAD = 10;
@@ -23,7 +24,9 @@ export function trim(text, fullLog) {
 	return `${out.join('\n')}\n${note}`;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// realpath + file URL: a symlinked or space-containing path must still run main, not no-op.
+const isMain = () => Boolean(process.argv[1]) && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+if (isMain()) {
 	try {
 		const input = JSON.parse(readFileSync(0, 'utf8') || '{}');
 		const result = input.toolResult;

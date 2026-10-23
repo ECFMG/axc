@@ -1,6 +1,8 @@
 // node --test scripts/trim-output.test.mjs — fake PostToolUse payloads.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 import { trim } from './trim-output.mjs';
@@ -33,4 +35,16 @@ test('long non-noise output keeps head, errors and tail', () => {
 test('fail open on junk or non-shell results', () => {
 	assert.equal(run('nope'), '');
 	assert.equal(run(JSON.stringify({ toolName: 'read_file', toolResult: { type: 'ReadFile' } })), '');
+});
+
+test('hook runs when invoked through a symlinked path', () => {
+	const dir = mkdtempSync(path.join(tmpdir(), 'mog-to-link-'));
+	try {
+		symlinkSync(import.meta.dirname, path.join(dir, 'scripts'));
+		const text = ['exit: 1', ...passes, 'src/a.ts(3,1): error TS2345: bad', ...passes].join('\n');
+		const out = execFileSync(process.execPath, [path.join(dir, 'scripts/trim-output.mjs')], { input: bash(text), encoding: 'utf8' });
+		assert.match(JSON.parse(out).hookSpecificOutput.updatedToolOutput, /TS2345/);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
 });
