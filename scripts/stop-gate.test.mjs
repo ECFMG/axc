@@ -6,7 +6,7 @@ import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
-import { commitMessage, plan } from './stop-gate.mjs';
+import { commitEnv, commitMessage, plan } from './stop-gate.mjs';
 
 const gate = path.join(import.meta.dirname, 'stop-gate.mjs');
 const failLog = path.join(import.meta.dirname, 'fixtures/acceptance-fail.log');
@@ -115,4 +115,12 @@ test('verify typechecks through turbo after building workspace deps, so a stale 
 	assert.match(pkg.scripts.verify, /pnpm run typecheck/);
 	assert.equal(pkg.scripts.typecheck, 'turbo run typecheck');
 	for (const task of ['typecheck', 'test', 'test:arch']) assert.ok(turbo.tasks[task].dependsOn.includes('^build'), `${task} must depend on ^build`);
+});
+
+test('auto-commit env: husky on and SNYK_SKIP=1 (Snyk stays off the Stop path); developer env untouched', () => {
+	const base = { HUSKY: '0', PATH: '/bin' };
+	assert.deepEqual(commitEnv(base), { PATH: '/bin', SNYK_SKIP: '1' });
+	assert.deepEqual(base, { HUSKY: '0', PATH: '/bin' });
+	const src = readFileSync(gate, 'utf8');
+	assert.match(src, /const env = commitEnv\(\);[\s\S]*git commit -q[^\n]*\], env\);/, 'the git commit spawn must use commitEnv()');
 });
