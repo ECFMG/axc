@@ -29,3 +29,10 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - file: `.github/copilot-instructions.md` · 2169 → 2003 bytes
 - removed (kind 1, duplicates): "Write only under: `apps/api`, `apps/docs`, `packages/axc/*`, `packages/axc-verification/*`." / "May port `packages/cellix/**` from `/Volumes/files/src/cellixjs` when a required Cellix capability is missing." / "Do not weaken verify/guardrails. Never `--no-verify`." — the same rules are in `AGENTS.md` "Write boundary" (Copilot loads AGENTS too) and enforced by the write-boundary hook; replaced by one pointer line.
 - why: 88% word containment with AGENTS.md:13; no rule dropped, 20-run protection unaffected.
+
+## 2026-10-23 — AGENTS: Dev line deduped, Territory and eval-docs lines reworded (room for the b-out-6 fixes)
+- commit: (filled in by the next commit)
+- file: `AGENTS.md` · 2075 → 1974 bytes
+- removed (kind 1, duplicate): "Dev: `pnpm run dev` / `pnpm run dev:worktree`." — same commands live in `.github/copilot-instructions.md` (Commands block); not used on the SCORE path.
+- reworded (kind 3): "Branch `mog-xai-1`. Local commits only — no push/PR. Don't drive `mog-xai-1-a-out*`; don't run `task-set-*-prompt.md` yourself." → "Local commits only — no push/PR. Don't drive other `mog-xai-1-*` worktrees or run `task-set-*-prompt.md`." (stale branch name dropped; rule kept and widened to every run worktree). "Never read or edit `evaluation-run-record.md` or eval/score docs (…) — the operator fills them." → "Never read or edit `evaluation-run-record.md`, `docs/eval-contract.md`, `docs/score-metering.md`, `docs/harness-cost-usage.md` (operator-owned)."
+- why: AGENTS is at its 2075-byte budget and the b-out-6 fixes (tool-neutral stop, never-run checks, never-read list) need ~80 bytes. No rule dropped; none of these lines is tied to a sink in the last 20 runs.

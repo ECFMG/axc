@@ -6,7 +6,7 @@ CellixJS architecture; `/Volumes/files/src/cellixjs` only to port a missing pack
 
 ## Territory
 
-Branch `mog-xai-1`. Local commits only — no push/PR. Don't drive `mog-xai-1-a-out*`; don't run `task-set-*-prompt.md` yourself.
+Local commits only — no push/PR. Don't drive other `mog-xai-1-*` worktrees or run `task-set-*-prompt.md`.
 
 ## Write boundary
 
@@ -24,8 +24,6 @@ Shell: `nvm use` first (Node 24). No narration, plans or sub-agents; success sil
 2. Write: wiring file <~30 lines → whole rewrite, imports on top; larger → targeted edits.
 3. Stop. Never run verify, `test:arch`, acceptance or `git commit` yourself — a blocked stop lists the problems; fix, stop again. No Stop hook in your tool: `node scripts/stop-gate.mjs run` once at the end.
 
-Never read: `pnpm-lock.yaml`, `node_modules/`, `dist/`, `deploy/`, `.husky/`, archunit/`test:arch` internals, `docs/skills-archive/`, agent memory (never write it). Never read or edit `evaluation-run-record.md` or eval/score docs (`docs/eval-contract.md`, `docs/score-metering.md`, `docs/harness-cost-usage.md`) — the operator fills them.
+Never read: `pnpm-lock.yaml`, `node_modules/`, `dist/`, `deploy/`, `.husky/`, archunit/`test:arch` internals, `docs/skills-archive/`, agent memory (never write it). Never read or edit `evaluation-run-record.md`, `docs/eval-contract.md`, `docs/score-metering.md`, `docs/harness-cost-usage.md` (operator-owned).
 
 Fail-repair or harness prep only: `docs/mog-critique.md` by path (3–10 rounds, stop when clean). Evidence table only if the task prompt asks.
-
-Dev: `pnpm run dev` / `pnpm run dev:worktree`.
