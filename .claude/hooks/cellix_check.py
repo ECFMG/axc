@@ -80,6 +80,22 @@ def main():
         if miss:
             problems.append(f"aggregate '{agg}' missing: " + ", ".join(base + n for n in miss))
 
+    # Test depth (Cellix colocated-test convention): every new source module has
+    # a <name>.test.ts beside it. index.ts barrels and *.d.ts are exempt.
+    def runtime_code(f):
+        """True if the file has runtime code; pure interface/type files need no test."""
+        try:
+            src = re.sub(r"/\*.*?\*/|//[^\n]*", "", open(os.path.join(root, f), errors="replace").read(), flags=re.S)
+        except Exception:
+            return True
+        src = re.sub(r"^\s*import\s.*$", "", src, flags=re.M)
+        return bool(re.search(r"\b(function|class|const|let|var|enum)\b|=>", src))
+    untested = [f for f in files if not f.endswith((".test.ts", ".d.ts")) and os.path.basename(f) != "index.ts"
+                and not re.search(r"(seed|fixture)", os.path.basename(f))
+                and not os.path.exists(os.path.join(root, f[:-3] + ".test.ts")) and runtime_code(f)]
+    if untested:
+        problems.append("modules without a colocated <name>.test.ts: " + ", ".join(untested))
+
     if not any(f.startswith(pr + "rest/src/") and f.endswith(".test.ts") for f in files):
         problems.append(f"no rest unit test under {pr}rest/src/*.test.ts")
 
