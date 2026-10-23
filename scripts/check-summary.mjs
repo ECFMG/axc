@@ -66,6 +66,11 @@ export function summarize(log, root = process.cwd()) {
 		if (m) {
 			const fn = /^TS(2883|2742)$/.test(m[4]) ? m[5].match(/^The inferred type of '([^']+)'/)?.[1] : undefined;
 			const reexport = /^TS(2305|2459|2724)$/.test(m[4]) ? 're-export it from <pkg>/src/index.ts; ' : m[4] === 'TS18048' ? 'narrow before use (if / `?.` / `??`); ' : '';
+			const unused = /^TS(6133|6196)$/.test(m[4]) ? m[5].match(/^'([^']+)' is declared but/)?.[1] : undefined;
+			if (unused) {
+				out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} \`${unused}\` — delete the unused declaration (parameter: prefix \`_\`)`);
+				continue;
+			}
 			out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} — ${fn ? `add explicit return type to exported '${fn}' (e.g. \`: Response\`); ` : reexport}${m[5]}`);
 			continue;
 		}

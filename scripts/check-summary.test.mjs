@@ -31,7 +31,7 @@ test('one line per problem: file + rule/error id', () => {
 	assert.deepEqual(summarize(log, root), [
 		'biome (warn)  packages/axc/rest/src/a.ts:1:8 lint/correctness/noUnusedImports — This import is unused.',
 		'biome  packages/axc/rest/src/a.ts:2:8 lint/suspicious/useAwait — drop `async` (return the value/Promise directly) or add a real await; This async function lacks an await expression.',
-		"ts     packages/axc/rest/src/a.ts:3:10 TS6133 — 'x' is declared but its value is never read.",
+		'ts     packages/axc/rest/src/a.ts:3:10 TS6133 `x` — delete the unused declaration (parameter: prefix `_`)',
 		'test   packages/axc/application-services/src/b.test.ts > suite > adds up — AssertionError: expected 1 to be 2 // Object.is equality',
 		'knip   Unused exports: helper packages/axc/rest/src/a.ts:9:14 — drop `export`; keep it local',
 		'ac     missing X-AC2',
@@ -73,6 +73,14 @@ test('useImportType and TS18048 lines carry a one-clause fix', () => {
 	assert.deepEqual(summarize(hints, root), [
 		'biome  packages/axc/rest/src/a.ts:1:1 lint/style/useImportType — use `import type` for type-only imports; All these imports are only used as types.',
 		"ts     packages/axc/rest/src/a.ts:4:7 TS18048 — narrow before use (if / `?.` / `??`); 'x' is possibly 'undefined'.",
+	]);
+});
+
+test('TS6133 / TS6196 unused declarations: one line naming the identifier and the fix', () => {
+	const log = ["@axc/rest:typecheck: src/a.steps.ts(3,7): error TS6133: 'expected' is declared but its value is never read.", "@axc/rest:typecheck: src/b.ts(1,6): error TS6196: 'Row' is declared but never used."].join('\n');
+	assert.deepEqual(summarize(log, root), [
+		'ts     packages/axc/rest/src/a.steps.ts:3:7 TS6133 `expected` — delete the unused declaration (parameter: prefix `_`)',
+		'ts     packages/axc/rest/src/b.ts:1:6 TS6196 `Row` — delete the unused declaration (parameter: prefix `_`)',
 	]);
 });
 
