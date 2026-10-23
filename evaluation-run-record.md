@@ -10,22 +10,22 @@ Each participant should complete one Evaluation Run Record per harness/model run
 | Model | Grok 4.6 |
 | License / Plan | Grok SuperHeavy |
 | Codebase | ECFMG/axc |
-| Task Set | A |
+| Task Set | B |
 | Run Type | Harness Engineering Iteration 2 |
 | Harness Engineering Used | AGENTS.md, SKILL.md, archunit |
-| Config / Diff Notes | Kept previous iteration and added `references/application-patterns.md` to `cellix-ddd` skill. Ported package-level archunit conventions tests from CellixJs reference into `application-services`, `domain`, and `persistence` `@axc` packages. |
-| Branch / Commit | `nrn-xai-2-a-out@1187090fd92328f1fb80ee31801923978b77cf0a` |
-| Requirements Completed / Attempted | 11/11 (A1–A11) |
-| Acceptance Criteria Passed / Total | 12/12 (A-AC1–A-AC12) |
-| Tests Passed / Failed | Unit: `@axc/application-services` 12/12. Acceptance: `@axc-verification/acceptance-api` 15/15. |
-| Static Analysis / Security Findings | Biome check: pass. knip: pass. e18e: pass. archunit-tests: 9/9 + 10/10 + 16/16 passed. audit: 4 vulnerabilities found, 3 moderate, 1 high (1 ignored). snyk: 23 projects, no vulnerable paths. |
-| Input Tokens | 6,967,372 |
-| Cached Tokens | 6,650,240 |
-| Output Tokens | 45,386 |
-| Total Tokens or Credits Used | 7,012,758 |
-| Estimated Cost | $1.4388 |
-| Elapsed Time | 17 minutes 12 seconds; API time (13m53s) |
-| Number of Human Interventions / Redirects | 0 interventions/redirects. Commit, push, and PR completed on first turn. |
-| Reviewer Notes | Implementation is functionality complete and is appropriately covered by acceptance tests. The major flaw from previous iteration has been addressed, as the agent is now much closer aligned to expected architectural patterns derived from CellixJs. There are still some deviations from the ideal patterns, which should be refined in future iterations. Also the agent failed to provide sufficient unit-level coverage for the new code that it added. Also the time/cost/token consumption all doubled compared to last run, so token optimization and effieincy should be explored in the following iteration to mitigate this if possible.|
+| Config / Diff Notes | Same iteration-2 harness as used for `nrn-xai-2-a-out` |
+| Branch / Commit | `nrn-xai-2-b-out@6edbed1fecd5603dae9530418208dd06805ec535` |
+| Requirements Completed / Attempted | 17/17 (B1–B17) |
+| Acceptance Criteria Passed / Total | 15/15 (B-AC1–B-AC15) |
+| Tests Passed / Failed | Unit: `@axc/domain` 22/22; `@axc/application-services` 40/40. Acceptance: `@axc-verification/acceptance-api` 33/33 (14 catalog, 18 enrollment, 1 healthcheck). |
+| Static Analysis / Security Findings | Biome check: pass. knip: pass. e18e: pass. archunit: `@axc/application-services` 12/12, `@axc/domain` 12/12, `@axc/persistence` 16/16, `@cellix/archunit-tests` 10/10, `@axc-verification/archunit-tests` 9/9. audit: 4 vulnerabilities found, 3 moderate, 1 high (1 ignored). snyk: 23 projects, no vulnerable paths. |
+| Input Tokens | 8,746,757 |
+| Cached Tokens | 8,325,120 |
+| Output Tokens | 57,140 |
+| Total Tokens or Credits Used | 8,803,897 |
+| Estimated Cost | $1.8185 |
+| Elapsed Time | 28 minutes 40 seconds (API time 24m1s) |
+| Number of Human Interventions / Redirects | 1 redirect: after turn 1 opened PR #19 against `nrn-xai-2`, prompted agent to re-target PR to `nrn-xai-2-a-out` |
+| Reviewer Notes | Implementation is functionally complete and meets the acceptance criteria. Acceptance level testing has sufficient coverage for all specified tasks in Task Set B. However, the unit level testing is not fully comprehensive and may leave some areas of the codebase insufficiently tested within individual packages. In terms of architecture, the code follows the CellixJs conventions and maintains proper separation of concerns through the expected layers of the application. There is still room for improvement: the domain does not leverage the base classes for Aggregate/Entity from @cellix/domain-seedwork. The persistence layer is also implemented slightly differently for domain repositories, which should be investigated on future iterations. The token usage and cost were relatively low given the scale of the task, spending comparable amounts as on the smaller task A, indicating efficient resource utilization. Suggested future refinements include expanding coverage for archunit tests to close gaps in architectural enforcement. |
 | Final Rubric Score | 91/100 |
 | Recommendation | Continue to next iteration |

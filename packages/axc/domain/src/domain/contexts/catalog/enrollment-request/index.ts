@@ -1,0 +1,35 @@
+export {
+	CourseNotActiveError,
+	CourseNotFoundError,
+	DuplicateActiveRequestError,
+	EnrollmentRequestNotFoundError,
+	EnrollmentWorkflowError,
+	InvalidRequestError,
+	InvalidStatusTransitionError,
+	type RequestErrorDetail,
+} from './enrollment-request.errors.ts';
+export {
+	assertCourseAllowsEnrollment,
+	assertNoDuplicateActiveRequest,
+	type ChangeEnrollmentRequestStatusInput,
+	type CreateEnrollmentRequestInput,
+	EnrollmentRequest,
+	type EnrollmentRequestSnapshot,
+	type StatusHistoryEntry,
+	sameLearnerEmail,
+} from './enrollment-request.ts';
+export {
+	ACTIVE_ENROLLMENT_REQUEST_STATUSES,
+	canTransitionEnrollmentStatus,
+	ENROLLMENT_REQUEST_STATUSES,
+	type EnrollmentRequestStatus,
+	isActiveEnrollmentRequestStatus,
+	isEnrollmentRequestStatus,
+	MAX_JUSTIFICATION_LENGTH,
+	MIN_JUSTIFICATION_LENGTH,
+	parseChangedBy,
+	parseEnrollmentRequestStatus,
+	parseJustification,
+	parseLearnerEmail,
+	parseRejectionReason,
+} from './enrollment-request.value-objects.ts';

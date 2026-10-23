@@ -22,6 +22,7 @@ export interface CourseSearchPage {
 
 export interface CourseReadRepository {
 	search: (criteria: CourseSearchCriteria) => Promise<CourseSearchPage>;
+	getById: (id: string) => Promise<Course | undefined>;
 }
 
 function includesKeyword(course: Course, keyword: string): boolean {
@@ -55,6 +56,10 @@ class CourseReadRepositoryImpl implements CourseReadRepository {
 
 	public constructor(courses: readonly Course[]) {
 		this.courses = courses;
+	}
+
+	public getById(id: string): Promise<Course | undefined> {
+		return Promise.resolve(this.courses.find((course) => course.id === id));
 	}
 
 	public search(criteria: CourseSearchCriteria): Promise<CourseSearchPage> {
