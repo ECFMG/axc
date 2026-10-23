@@ -14,7 +14,6 @@ Write only `apps/api` · `apps/docs` · `packages/axc/*` · `packages/axc-verifi
 
 Traps:
 - `pnpm-lock.yaml` is outside: no `pnpm add`/`install <pkg>`; adding a dep to any package.json churns it.
-- `packages/axc/domain/src/**` (tests too) must not import `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest|persistence|service-mongoose|application-services`.
 - `packages/cellix/**` is vendored: reuse, don't fork.
 
 ## Feature recipe (SCORE)

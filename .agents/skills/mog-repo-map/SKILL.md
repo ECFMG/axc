@@ -116,7 +116,7 @@ Then('every <thing> has kind {string}', (kind: string) =>
 Then('the error lists {int} details', (n: number) => actor().attemptsTo(Ensure.that(responseBody<{ details: unknown[] }>(), property('details', property('length', equals(n))))));
 ```
 
-Layering: no cycles; domain ↛ persistence/service-mongoose/application-services/rest; application-services and rest ↛ service-mongoose; no `mongoose` import in application-services.
+Layering (test:arch names file + fix): no cycles; domain (tests too) imports no `hono`, `@azure/`, `mongoose`, `mongodb`, other `@axc/*`; application-services and rest import no `mongoose`/`mongodb`/`@axc/service-mongoose` (rest no `@axc/persistence`); `apps/api` index wires only application-services + rest.
 
 ## Facts (pre-answered — don't hunt)
 

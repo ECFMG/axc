@@ -13,7 +13,13 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: ≥75% word containment with AGENTS.md lines; no rule dropped, so the 20-run protection is not affected.
 
 ## 2026-10-23 — map orientation duplicates
-- commit: (filled in by the next commit)
+- commit: 085f5bc
 - file: `.agents/skills/mog-repo-map/SKILL.md` · 12138 → 11991 bytes
 - removed (kind 1, duplicates): "Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package)." and "or anything AGENTS bans; never list cellixjs" — same rules stay once in `AGENTS.md` (line 5 "cellixjs only to port a missing package (never list)", recipe step 1 "authoritative — don't re-verify in source/cellixjs", the Never-read line). Kept: "**Never** open `packages/cellix/**` sources you won't edit."
 - why: 83% word containment with AGENTS.md line 5; no rule dropped, 20-run protection unaffected.
+
+## 2026-10-23 — domain import trap stated once
+- commit: (filled in by the next commit)
+- files: `AGENTS.md` · 2239 → 2075 bytes; `.agents/skills/mog-repo-map/SKILL.md` · 11991 → 12115 bytes
+- moved (kind 1, duplicates): AGENTS trap "- `packages/axc/domain/src/**` (tests too) must not import `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest|persistence|service-mongoose|application-services`." → merged into the map's Layering line, which now also states this round's REST / application-services / apps/api arch rules (test:arch prints file + rule + fix).
+- why: the same layering rule lived in AGENTS, the map and test:arch; one copy in the map. No rule dropped (sinks in the last 20 runs: none recorded), so the 20-run protection is unaffected.
