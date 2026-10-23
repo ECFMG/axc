@@ -3,8 +3,8 @@
 // In a fresh detached /tmp worktree of HEAD: plant a type error in a NEW untracked test file → stop must block
 // (Grok/Claude {"decision":"block","reason"}) with HEAD unchanged and the file still untracked; fix only that file's
 // contents → stopHookActive re-stop must verify, allow silently and auto-commit a commit that contains the file.
-// Case 1 also adds an async-without-await source file: its auto-fix line must survive the failed first stop and
-// appear in case 2's commit body.
+// Case 1 also adds an async-without-await source file (block body: biome useAwait skips `async () => expr`); its
+// auto-fix line must survive the failed first stop and appear in case 2's commit body.
 // Then an auto-fixable-only change (useAwait + an exported type used only locally) must commit on the first stop;
 // case 4 repeats it in a second fresh, never-built worktree (knip cannot load its config there until auto-fix builds).
 // Git runs with GIT_* stripped and global/system config ignored; the worktree is removed afterwards unless --keep.
@@ -48,7 +48,7 @@ try {
 	const asyncRel = 'packages/axc/application-services/src/zz-stop-probe-async.ts';
 	const indexRel = 'packages/axc/application-services/src/index.ts';
 	hook('start');
-	writeFileSync(path.join(wt, asyncRel), 'export const zzProbeAsync = async () => 1;\n');
+	writeFileSync(path.join(wt, asyncRel), 'export const zzProbeAsync = async () => {\n\treturn 1;\n};\n');
 	appendFileSync(path.join(wt, indexRel), "export { zzProbeAsync } from './zz-stop-probe-async.ts';\n");
 	writeFileSync(file, "import { expect, it } from 'vitest';\n\nit('stop probe', () => {\n\tconst n: number = 'not a number';\n\texpect(n).toBe(1);\n});\n");
 	const red = hook('stop');
