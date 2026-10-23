@@ -79,3 +79,9 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - file: `AGENTS.md` · 2067 → 2062 bytes
 - reworded (kind 3): "Tool with a Stop hook (e.g. Grok, Claude Code)" → "Tool with a Stop hook (Grok, Claude Code)".
 - why: AGENTS would be 2076/2075 B with the b10 "it auto-fixes, verifies, lists the rest" wording. No rule dropped; ledger keys unchanged.
+
+## 2026-10-23 — grok map wording, to fit the negative-tests rule (negtests b89d2cd, applied to .grok/rules)
+- commit: (filled in by the next commit)
+- file: `.grok/rules/mog-repo-map.md` · 11768 → 11629 bytes
+- reworded (kind 3): Step wiring and Derived check lines, same text as negtests b89d2cd (see that entry above).
+- why: the grok map is at its 11768-byte budget (rules total 19475/19545) and the boundary/negative-test rule needs ~130 bytes. Both rules kept (ledger keys `src/step-definitions/<feature>.steps.ts`, `TS2345` present).
