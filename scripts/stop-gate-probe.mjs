@@ -5,7 +5,7 @@
 // contents → stopHookActive re-stop must verify, allow silently and auto-commit a commit that contains the file.
 // Git runs with GIT_* stripped and global/system config ignored; the worktree is removed afterwards unless --keep.
 import { execFileSync, spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, realpathSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -38,6 +38,10 @@ const hook = (mode, input = {}) => {
 
 git(src, 'worktree', 'add', '--detach', '-q', wt, 'HEAD');
 try {
+	// `.husky/_` is generated (gitignored) and core.hooksPath is shared: a run worktree gets it at setup. Copy it like
+	// setup does — never run `husky` here (it writes core.hooksPath to the shared config).
+	if (!existsSync(path.join(src, '.husky/_/h'))) throw new Error(`${src}/.husky/_ missing; set up husky in the source worktree first`);
+	cpSync(path.join(src, '.husky/_'), path.join(wt, '.husky/_'), { recursive: true });
 	const base = git(wt, 'rev-parse', 'HEAD');
 	hook('start');
 	writeFileSync(file, "import { expect, it } from 'vitest';\n\nit('stop probe', () => {\n\tconst n: number = 'not a number';\n\texpect(n).toBe(1);\n});\n");
