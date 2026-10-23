@@ -1,6 +1,8 @@
 // node --test scripts/trim-guard.test.mjs — the trim guard is report-only and runs inside verify.
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 import { check, config, duplicates, overBudget, staleLedger } from './trim-guard.mjs';
@@ -38,4 +40,14 @@ test('ledger: rows whose rule left the file are reported; present rules pass', (
 		staleLedger(ledger, (f) => (f === 'map.md' ? 'Exported helpers need a return type, else TS2883.' : undefined)),
 		[`${config.ledger}: rule \`gone rule\` is no longer in map.md — drop or update the ledger row`],
 	);
+});
+
+test('CLI runs when invoked through a symlinked path (prints its ok line)', () => {
+	const dir = mkdtempSync(path.join(tmpdir(), 'mog-tg-link-'));
+	try {
+		symlinkSync(import.meta.dirname, path.join(dir, 'scripts'));
+		assert.equal(execFileSync(process.execPath, [path.join(dir, 'scripts/trim-guard.mjs')], { encoding: 'utf8' }).trim(), 'trim-guard: ok');
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
 });
