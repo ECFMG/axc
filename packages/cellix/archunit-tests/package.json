@@ -46,7 +46,6 @@
 		"build": "tsgo --build",
 		"watch": "tsgo --watch",
 		"test": "vitest run",
-		"test:arch": "vitest run",
 		"test:coverage": "pnpm run test",
 		"test:watch": "vitest",
 		"clean": "rimraf dist"

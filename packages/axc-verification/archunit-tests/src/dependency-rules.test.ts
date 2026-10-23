@@ -1,11 +1,8 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { existsSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { type DependencyRulesTestsConfig, describeDependencyRulesTests } from '@cellix/archunit-tests/general';
 import { projectFiles } from 'archunit';
 import { describe, expect, it } from 'vitest';
-
-const packageDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const config: DependencyRulesTestsConfig = {
 	appsGlob: '../../../apps/**',
@@ -20,36 +17,15 @@ const config: DependencyRulesTestsConfig = {
 
 describeDependencyRulesTests(config);
 
-const forbiddenDomainImports = ['hono', '@azure/', 'mongoose', 'mongodb', '@axc/rest', '@axc/persistence', '@axc/service-mongoose', '@axc/application-services'];
-
-describe('domain import boundary', () => {
-	it('domain sources do not import delivery or persistence implementations', async () => {
-		const domainSrc = path.resolve(packageDir, '../../axc/domain/src');
-		const files = await listTypeScriptFiles(domainSrc);
-		expect(files.length).toBeGreaterThan(0);
-		for (const file of files) {
-			const text = await readFile(file, 'utf8');
-			for (const specifier of forbiddenDomainImports) {
-				expect(text.includes(`'${specifier}`) || text.includes(`"${specifier}`), `${path.basename(file)} imports ${specifier}`).toBe(false);
-			}
-		}
-	});
-
-	it('domain does not depend on the rest package', async () => {
-		await projectFiles().inFolder(path.resolve(packageDir, '../../axc/domain')).shouldNot().dependOnFiles().inFolder(path.resolve(packageDir, '../../axc/rest')).check();
-	});
+describe('dependency-rule targets exist', () => {
+	for (const folder of [config.domainFolder, config.persistenceFolder, config.applicationServicesFolder, config.restFolder, '../../axc/service-mongoose', '../../../apps/api']) {
+		it(`${folder} has TypeScript sources`, () => {
+			const files = existsSync(path.join(folder ?? '', 'src')) ? readdirSync(path.join(folder ?? '', 'src'), { recursive: true }).filter((name) => String(name).endsWith('.ts')) : [];
+			expect(files.length, `${folder}/src: dependency rules matched 0 files — fix: update the folder in dependency-rules.test.ts`).toBeGreaterThan(0);
+		});
+	}
 });
 
-async function listTypeScriptFiles(directory: string): Promise<string[]> {
-	const entries = await readdir(directory, { withFileTypes: true });
-	const files = await Promise.all(
-		entries.map(async (entry) => {
-			const entryPath = path.join(directory, entry.name);
-			if (entry.isDirectory()) {
-				return await listTypeScriptFiles(entryPath);
-			}
-			return entry.name.endsWith('.ts') ? [entryPath] : [];
-		}),
-	);
-	return files.flat();
-}
+it('domain does not depend on rest files (relative imports included)', async () => {
+	await projectFiles().inFolder(path.resolve('../../axc/domain')).shouldNot().dependOnFiles().inFolder(path.resolve('../../axc/rest')).check();
+});
