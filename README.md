@@ -46,7 +46,7 @@ Requires Node.js 24 (`nvm use`) and pnpm 11. Dependency lifecycle scripts are di
 8. `pnpm audit`
 9. Snyk local CLI
 
-Snyk does not call `snyk monitor` and does not pass `--remote-repo-url`. The organization slug is `agentcourses`. If the Snyk CLI or credentials are missing, verify prints `Snyk: SKIPPED` and the reason, and continues. That skip is non-blocking for this first scaffold only. A successful authenticated `snyk test` still fails the gate when Snyk reports vulnerabilities.
+Snyk does not call `snyk monitor` and does not pass `--remote-repo-url`. The organization slug is `agentcourses`. verify finds the Snyk CLI on PATH or in any nvm Node bin (newest first); if it is missing, verify fails — set `SNYK_OPTIONAL=1` to print `Snyk: SKIPPED (SNYK_OPTIONAL=1)` and continue. A successful authenticated `snyk test` still fails the gate when Snyk reports vulnerabilities.
 
 Husky and lint-staged format staged files on commit. `pnpm run verify` and the GitHub Actions workflow are the enforcement boundary. CI runs `pnpm install --frozen-lockfile` and `pnpm run verify`.
 

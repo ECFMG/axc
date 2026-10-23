@@ -2,12 +2,12 @@
 
 - [ ] Use Node 24 via nvm (the repo’s `.node-version`; Node 20 breaks pnpm 11).
 - [ ] Use pnpm 11+ and JRE 17+.
-- [ ] Optionally install/authenticate Snyk CLI; `pnpm run verify` may skip Snyk when the CLI or auth is unavailable.
+- [ ] Install/authenticate the Snyk CLI (PATH or any nvm Node bin); without it verify fails unless `SNYK_OPTIONAL=1`.
 - [ ] Install/use `portless` for local service URLs.
 - [ ] Ensure Azurite is available on PATH for `pnpm run dev` (auto-starts via turbo watch; no separate terminal). The API package depends on `azurite`; `AzureWebJobsStorage=UseDevelopmentStorage=true` is written into generated `local.settings.json`.
 - [ ] Keep sibling clones/worktrees under one `src/` directory, for example `axc`, `axc-mog-xai-1`, and `axc-mog-xai-1-a-out`.
 - [ ] Run `pnpm install --frozen-lockfile`.
-- [ ] Run `pnpm run verify` (Snyk may be skipped without the CLI/auth).
+- [ ] Run `pnpm run verify`.
 - [ ] Point the tool at `AGENTS.md` and register `scripts/stop-gate.mjs` as its Stop hook (else the agent runs `node scripts/stop-gate.mjs run` once at the end).
 - [ ] Treat Copilot agents/hooks as optional; the portable core does not require Copilot.
 - [ ] Use `docs/eval-contract.md` for SCORE gates and `docs/harness-cost-usage.md` for cost fields.
