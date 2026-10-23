@@ -1,3 +1,6 @@
+import { type CoursePage, type CourseQuery, listCourses } from './courses.ts';
+import { createEnrollmentStore, type EnrollmentStore } from './enrollment-requests.store.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -19,6 +22,10 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: {
+		list(query: CourseQuery): CoursePage;
+	};
+	enrollmentRequests: EnrollmentStore;
 }
 
 export interface ApplicationServicesFactory {
@@ -36,6 +43,7 @@ export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironme
 }
 
 export function buildApplicationServicesFactory(context: ApiContext): ApplicationServicesFactory {
+	const enrollmentRequests = createEnrollmentStore();
 	const forRequest = (): Promise<ApplicationServices> =>
 		Promise.resolve({
 			health: {
@@ -49,7 +57,19 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses: {
+				list: listCourses,
+			},
+			enrollmentRequests,
 		});
 
 	return { forRequest };
 }
+
+export type { Course, CourseModality, CoursePage, CourseQuery, CourseSort, CourseStatus } from './courses.ts';
+export { courseModalities, courseSorts, courseStatuses, isCourseModality, isCourseSort, isCourseStatus } from './courses.ts';
+export { isValidJustification, isValidLearnerEmail, JUSTIFICATION_MAX, JUSTIFICATION_MIN } from './enrollment-requests.rules.ts';
+export type { EnrollmentErrorCode, EnrollmentStore } from './enrollment-requests.store.ts';
+export { EnrollmentError } from './enrollment-requests.store.ts';
+export type { ChangeEnrollmentStatusInput, CreateEnrollmentInput, EnrollmentListQuery, EnrollmentRequest, EnrollmentStatus, StatusHistoryEntry } from './enrollment-requests.ts';
+export { enrollmentStatuses, isEnrollmentStatus } from './enrollment-requests.ts';
