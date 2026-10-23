@@ -12,6 +12,10 @@
 			"default": "./dist/index.js"
 		}
 	},
+	"dependencies": {
+		"@axc/domain": "workspace:*",
+		"@axc/persistence": "workspace:*"
+	},
 	"scripts": {
 		"lint": "biome lint",
 		"format": "biome format --write",

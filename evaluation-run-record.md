@@ -1,31 +1,37 @@
-### Evaluation Run Record 
-Each participant should complete one Evaluation Run Record per harness/model run. 
+### Evaluation Run Record
+Each participant should complete one Evaluation Run Record per harness/model run.
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
+| Team | xAI |
+| Developer / Operator | Julian Memis. Taken from `git config user.name` (`Jmemis@ecfmg.org`). Unsure this is the person who operated the chat. The chat did not state a name. The Grok Build agent executed the implementation and did not commit (`gitCommitCount` 0). |
 | Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
-| License / Plan | |
+| Harness | Grok Build CLI. `grok --version` in this session reports `grok 1.0.67 (2fe064390d07) [stable]`. Unsure that build was the one at session start. Session agent name `grok-build-plan`. Session id `01a1698e-1016-7f22-a44f-d526cddaf83b`. |
+| Model | `grok-4.7-build` (`usage.json` `primaryModelId`). Session summary and signals also record `grok-4.7`. Unsure whether those two ids are distinct products. Reasoning effort: high. Sandbox: off. |
+| License / Plan | Unsure. The session did not record an xAI license or plan. |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | |
-| Cached Tokens | |
-| Output Tokens | |
-| Total Tokens or Credits Used | |
-| Estimated Cost | |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | B |
+| Run Type | Harness Engineering Iteration 3. Unsure: the branch is `jsm-xai-4-b-out`, which may mean this slot is iteration 4. HEAD `7f60a4a` is titled "Iterarion 3 Harness Update", with parents `debd6d4` "harness #2" and `64d2ebc` "harness #1". No iteration-4 harness commit is on this branch. This is not a baseline and not a confirmed final. |
+| Harness Engineering Used | Yes. Workspace rule `.grok/rules/feature-slice.md` was loaded for the whole run (repo card, write boundary, in-memory data, run `pnpm test`, `pnpm run lint`, `pnpm run build`, and `pnpm run test:arch`, and do not run verify, Knip, audit, or Snyk). That rule file was not edited. No skills, subagents, workflows, or MCP tools were used. Tools used: read_file, grep, list_dir, run_terminal_command, write, search_replace. |
+| Config / Diff Notes | Harness files were already on the branch and were not changed. Feature diff is staged, not committed: 32 files, +2301 / −23, plus a `pnpm-lock.yaml` workspace-link update of 10 lines. HEAD stays `7f60a4a`. In-memory catalog in `@axc/persistence` (mongoose adapter unused). POST `/api/enrollment-requests` returns 201. List body is `{ items }` with no pagination. Duplicate email match is case-insensitive. Unknown course-search query keys are ignored. Empty `q` and `tag` are ignored. API docs are under `apps/docs/docs/api/`, which is inside the write boundary. No MADR file. Spec command names say npm; this repo was run with pnpm. |
+| Branch / Commit | Branch `jsm-xai-4-b-out`. Base commit `7f60a4a` (`7f60a4a5308f6704ddc05e335e004a2f61ab5b69`), "Iterarion 3 Harness Update", 2026-10-21 13:02:43 −0400. Task B changes are staged only. There is no Task B commit. |
+| Requirements Completed / Attempted | B1–B17 attempted and implemented (17/17). Course search from Task A is preserved, and enrollment create, get, list, and status update are in place with the specified error envelope. Unsure whether a reviewer will treat these as gaps: unknown course query keys ignored; docs path `apps/docs/docs/api/` rather than repo-root `docs/api/`; no MADR; POST 201 and list envelope `{ items }` where the spec shows a body and does not state the success status or list wrapper; email comparison is case-insensitive; persistence is in memory. |
+| Acceptance Criteria Passed / Total | 15/15. B-AC1 through B-AC15 each have a passing acceptance or unit scenario, including the Task A course-search regression (14 course-search executions, 11 enrollment scenarios, 1 health scenario). Unsure whether ignored unknown query keys should count against B-AC1, or whether the docs path and missing MADR should count against B-AC15. |
+| Tests Passed / Failed | Final `pnpm test`: 27/27 turbo tasks successful, 0 failed, 25 cached, 16.949s. Acceptance: 26/26 scenarios (course search 14/14, enrollment requests 11/11, health 1/1), real time 11s 848ms. `@axc/application-services` vitest: 40 passed / 0 failed, 6 files, no type errors, duration 276ms. Unsure: vitest counts a typecheck pass on top of the authored tests; the three test files contain 20 `it()` calls. One earlier direct vitest run, after `dist` was cleaned, was 1 failed / 19 passed because package exports point at `dist`. After rebuild, that suite passed. `pnpm run build`: 18/18 successful, 8.754s. `pnpm --filter @apps/docs build`: docusaurus succeeded (server 2.83s, client 4.81s). The turbo docs task was a cache hit and did not recompile the new markdown. Direct `pnpm --filter @axc-verification/archunit-tests run test:arch`: 9 passed / 0 failed (12:44:24, 644ms). The turbo `pnpm run test:arch` result was a full cache hit replaying a log started at 10:37, before this source existed. |
+| Static Analysis / Security Findings | `pnpm run lint`: Biome checked 212 files, no fixes applied, exit 0. Architecture rules: 9 passed / 0 failed on the direct rerun above. Knip, npm audit, and Snyk were not run. Unsure of those findings. The feature-slice rule tells the agent not to run them. |
+| Input Tokens | 7,409,019. Snapshot from `usage.json` at 2026-10-23T16:45:06Z, the end of the implementation turn. This form-filling turn is not included. |
+| Cached Tokens | 7,213,312 cached reads. Cache creation: 0. Same snapshot as Input Tokens. Derived uncached input is 195,707. Unsure whether the rubric wants that split. |
+| Output Tokens | 116,670. Reasoning tokens: 81,825. Unsure whether reasoning is already included in the 116,670. The stored total equals input plus output, so reasoning is not added a second time. Same snapshot as Input Tokens. |
+| Total Tokens or Credits Used | 7,525,689 tokens across 64 model calls. Unsure: no separate credit balance was recorded. Same snapshot as Input Tokens. |
+| Estimated Cost | $1.5973506. `usage.json` records 15,973,506,000 `costUsdTicks` for `grok-4.7-build`. The Grok user guide defines that field as 10^10 ticks per USD, so 15,973,506,000 / 1e10 = $1.5973506. Same snapshot as Input Tokens. This form-filling turn is not included. |
+| Elapsed Time | 27m 6s (1,626 seconds). Session `created_at` 2026-10-23T16:18:00.360Z through the implementation turn `endedAt` 2026-10-23T16:45:06.552Z (local 12:18:00 to 12:45:06 EDT). `signals.json` `sessionDurationSeconds` is 1626 for that same turn. Unsure: this is the session clock, not a prompt-sent timestamp, and it does not include filling this form. |
+| Number of Human Interventions / Redirects | 0 during the implementation turn. The only user message in that turn was the original Task B request. Signals at the end of that turn: `userMessageCount` 1, `cancellationCount` 0. Three tool failures were agent-side (an unknown pnpm clean flag, vitest before `dist` was rebuilt, and a Biome pass) and were fixed without a human redirect. Unsure whether the later request to fill this form should be counted. It arrived after the implementation turn ended. |
 | Reviewer Notes | (leave blank for now) |
 | Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Recommendation | Continue. Unsure between Continue and Candidate for Pilot. The named checks passed and the changes are staged inside the write boundary. No rubric was scored in this session, so this is not a pilot decision. |
+
+### Notes on uncertainty
+
+- Token, cache, output, reasoning, total, call count, and cost figures are the implementation turn only. They come from `usage.json` updated at 2026-10-23T16:45:06Z. Filling this form is a later turn and is not in those numbers.
+- Operator name, license/plan, harness build at session start, and the iteration label (3 vs branch number 4) are the fields most likely to need a correction.
+- `pnpm run test:arch` via turbo replayed a stale cache. The 9 passing architecture tests cited above are from the direct rerun, not from that cache hit.
