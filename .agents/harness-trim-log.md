@@ -44,8 +44,14 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: the map is at its 12115-byte budget; the b-out-6 fixes (complete one-round read list, useAwait / knip-export wording) need ~135 bytes. The lockfile rule (sink a-out-18, a-out-20, b-out-5 — inside the 20-run window) is kept in two places; only its third copy went.
 
 ## 2026-10-23 — mog-xai-1-grok: map, write skeleton and patterns move into preloaded `.grok/rules/` (budget change, no rule dropped)
-- commit: filled in by the next trim commit
+- commit: 4685339
 - files: `.agents/skills/mog-repo-map/SKILL.md` 12115 → 321 bytes (pointer; budget 12115 → 321) · new `.grok/rules/mog-repo-map.md` 11816 (the map body, read-list line now names only what is not preloaded) · `.agents/skills/mog-repo-map/write-skeleton.md` → `.grok/rules/mog-write-skeleton.md` 4423 → 4404 (header says preloaded) · new generated `.grok/rules/mog-patterns.md` 3303 (healthcheck.steps.ts, questions.ts, health.test.ts; `scripts/grok-rules.mjs`, sync-tested)
 - budget: new per-file budgets for the three rules files plus a `.grok/rules` total of 19545 = old map 12115 + write skeleton 4423 + pattern sources 3007 (what the agent used to read in orientation); every `.md` there must carry a budget. AGENTS stays at 2075 (2067), run-validation 559, copilot 2003.
 - why: Grok preloads `.grok/rules/*.md` at session start (grok inspect: Project Instructions), so the b-out-5/6 orientation reads of these files (in the last 20 runs) go away; content is preloaded once, not also via the skill.
+
+## 2026-10-23 — grok map: questions.ts API list now preloaded
+- commit: filled in by the next trim commit
+- file: `.grok/rules/mog-repo-map.md` · 11816 → 11755 bytes (budget lowered to match)
+- removed (kind 1, duplicates): "(`responseBody<T>()`, `resolved()`, `patchJson(path, body)`)" after `questions.ts` in the Acceptance fact — the full `questions.ts` source is preloaded in `.grok/rules/mog-patterns.md`.
+- why: same content was preloaded twice; `.grok/rules` total drops toward its 19545 cap. No rule dropped (the `responseBody<T>()` sync note under biome `useAwait` stays: sink b-out-6, inside the 20-run window).
 
