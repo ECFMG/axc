@@ -61,9 +61,15 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: headless smoke (grok 1.0.67 `-p --always-approve`, throwaway worktree of fd424db): with the rules loaded `echo $(git rev-parse --short HEAD)` was refused ("could not be checked against the permission rules, so it was not run"); with them removed it ran. Per the docs an interactive session prompts instead (unattended → hang; unverified). No rule set avoids that path, so the write-boundary PreToolUse hook (same denials, sink b-out-6) stays the only command deny. No agent-facing rule removed.
 
 ## 2026-10-23 — grok map: stophook trim 9227bcb carried into `.grok/rules/mog-repo-map.md`
-- commit: filled in by the next commit
+- commit: b088ae4
 - file: `.grok/rules/mog-repo-map.md` · 11755 → 11558 bytes (budget lowered to match; `.grok/rules` cap 19545 unchanged)
 - removed (kind 1, duplicates) — same clauses as stophook 9227bcb: Public-API "Imports use `.ts` extensions." (TypeScript block says it); Acceptance "(global patterns)" ("Step patterns are global" line); Query-validation "; the skeleton's is a placeholder" (skeleton comment); Layout domain ", no infra imports" (Layering line). Not applied: the frontmatter clause (the grok map has no frontmatter; the pointer skill stays as is).
 - reworded (kind 3): Routes "(proven)" dropped; Acceptance host line → "Host (`scripts/start-host.ts`, port 7071 + worktree offset) is started/stopped by the Stop hook — never start it; relative paths only." (no ledger sink).
 - why: room for the b-out-8 notes (0c2f338) inside the folder cap. No rule dropped; every ledger key still present.
+
+## 2026-10-23 — grok map: b-out-8 notes (stophook 0c2f338) — budget change, nothing trimmed
+- commit: filled in by the next commit
+- file: `.grok/rules/mog-repo-map.md` · 11558 → 11768 bytes (budget raised to match; `.grok/rules` total stays under its 19545 cap)
+- added: read list names `task-set-a-requirements.md` / `task-set-b-requirements.md` (repo root); Facts "**Serenity imports**: static, top of file …; never `await import()`."
+- why: b-out-8 spent orientation round 3 finding the requirements file and the Serenity import form.
 

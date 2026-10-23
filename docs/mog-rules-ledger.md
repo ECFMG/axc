@@ -40,3 +40,5 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `"dependsOn": ["^build"]` | turbo.json | stale-dist TS2305 | b-out-6 | cd4bc93 |
 | `are preloaded (` | AGENTS.md | orientation reads of map, skeleton and pattern files | b-out-5, b-out-6 | grok g1 |
 | `read capped:` | scripts/trim-output.mjs | oversized file reads re-sent every call | — | grok g1 |
+| `task-set-a-requirements.md` | .grok/rules/mog-repo-map.md | orientation round 3 (requirements file not in the read list) | b-out-8 | 0c2f338 |
+| `**Serenity imports**: static` | .grok/rules/mog-repo-map.md | orientation round 3 (Serenity import form) | b-out-8 | 0c2f338 |
