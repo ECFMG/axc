@@ -36,6 +36,8 @@
 			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+(?:-C\\s+\\S+\\s+)?(?:config\\s+(?!(?:(?:--(?:global|system|local|worktree|show-origin|show-scope|null|name-only|includes|no-includes|type=\\S+|bool|int|path)|-z|(?:-f|--file|--blob)(?:=|\\s+)\\S+)\\s+)*(?:--get(?:-all|-regexp|-urlmatch|-color(?:bool)?)?\\s|(?:-l|--list)\\b|(?:get|list)\\b|\\w[\\w.-]*\\s*(?:$|[|;&)]|\\d?>)))|config\\s*$|init\\b)",
 			"Writes git config/repo setup shared by every worktree (reads: git config <key> / --get / --list). Do this yourself."
 		],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+(?:-C\\s+\\S+\\s+)?commit\\b", "The Stop hook verifies and commits. Just stop (no Stop hook: node scripts/stop-gate.mjs run)."],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(?:pnpm|npm|yarn)\\s+(?:run\\s+)?verify\\b", "Verify runs once in the Stop hook. Just stop (no Stop hook: node scripts/stop-gate.mjs run)."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+clean\\s+-[a-zA-Z]*[fd]", "Deletes untracked files irreversibly."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+checkout\\s+\\.\\s*$", "Discards all unstaged changes."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(curl|wget)\\b[^|]*\\|\\s*(sudo\\s+)?(ba)?sh", "Piping a download straight into a shell."],

@@ -8,7 +8,7 @@ Stay inside the write boundary in `AGENTS.md`.
 
 | Trigger | Load? |
 | --- | --- |
-| Default SCORE (clean) | **No** — `mog-repo-map` + `run-validation` only; **no** mandatory 3–10 rounds |
+| Default SCORE (clean) | **No** — `mog-repo-map` only, then stop; **no** mandatory 3–10 rounds |
 | Acceptance / verify fail → repair | **Yes** |
 | Harness prep / contract hardening | **Yes** |
 

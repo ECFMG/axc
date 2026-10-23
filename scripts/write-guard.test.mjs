@@ -73,11 +73,11 @@ const allowed = [
 	'cp pnpm-workspace.yaml /tmp/ws.yaml',
 	'{ pnpm exec turbo run typecheck; } >/tmp/check.log 2>&1 || { tail -n 30 /tmp/check.log; false; }',
 	'echo x > packages/axc/rest/src/x.ts',
-	'pnpm run verify 2>/dev/null | tail -3',
+	'pnpm run knip 2>/dev/null | tail -3',
 	`python3 -c "import json; print(json.load(open('package.json'))['name'])"`,
 	`node -e "console.log(require('./package.json').name)"`,
 	"cat > packages/axc/rest/src/x.ts <<'EOF'\nconst s = 'pnpm-workspace.yaml' > 'x';\nEOF",
-	'git commit -qm "move a > b in package.json"',
+	'git tag -m "move a > b in package.json" t1',
 ];
 test('shell: writes to protected paths are denied, reads allowed (both guards)', () => {
 	const pyOk = py('ls') !== null;
@@ -123,5 +123,17 @@ test('shell: git config reads allowed; writes and git init denied (both guards)'
 	for (const c of writes) {
 		assert.match(sh(c) ?? '', /git config/, `node should deny: ${c}`);
 		if (pyOk) assert.match(py(c) ?? '', /git config/, `python should deny: ${c}`);
+	}
+});
+
+test('shell: agent commit / verify are denied (Stop hook owns them), both guards', () => {
+	const pyOk = py('ls') !== null;
+	for (const c of ['git commit -qm x', 'git add -A && git commit -m x', 'git -C . commit -m x', 'pnpm run verify', 'pnpm verify 2>&1 | tail', 'npm run verify']) {
+		assert.match(sh(c) ?? '', /Stop hook/, `node should deny: ${c}`);
+		if (pyOk) assert.match(py(c) ?? '', /Stop hook/, `python should deny: ${c}`);
+	}
+	for (const c of ['node scripts/stop-gate.mjs run', 'git log -1 --format=%s', "cat > n.md <<'EOF'\ngit commit\nEOF"]) {
+		assert.equal(sh(c), undefined, `node should allow: ${c}`);
+		if (pyOk) assert.equal(py(c), undefined, `python should allow: ${c}`);
 	}
 });

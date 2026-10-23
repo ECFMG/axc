@@ -5,8 +5,9 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 # mog-repo-map
 
+**≤2 rounds, all reads in ONE parallel turn: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern). Write in ≤2 calls. Then stop (Stop hook verifies + commits).**
+
 Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open `packages/cellix/**` sources you won't edit or anything AGENTS bans; never list cellixjs.
-Orientation = ONE turn: every read as parallel calls in a single response, then write (no second exploration round). Read only what you still need: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step/assert API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern).
 
 ## Layout
 
@@ -130,12 +131,13 @@ strict + `exactOptionalPropertyTypes` (omit the key, don't assign `undefined` to
 `noPropertyAccessFromIndexSignature` (TS4111: `rec['k']`) · `noUnusedLocals/Parameters` · `verbatimModuleSyntax` (`import type`) ·
 `erasableSyntaxOnly` (no enums/namespaces/param properties) · NodeNext + `.ts` import extensions.
 Exported REST helpers need an explicit return type (`: Response`), else TS2883.
+Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …`, `?.`, `??`.
 
 ## Tests
 
 - **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
 - **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
-- **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the final gate.
+- **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the Stop hook.
 - **Step wiring** (`acceptance-api/cucumber.yaml`): features from `src/features/**/*.feature`; steps via `require` = `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` (loaded through `tsx/cjs`). A new step file must be `src/step-definitions/<feature>.steps.ts` — any other name/folder is never loaded (undefined steps).
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.
 - **Step patterns are global** across every `.steps.ts`: reuse an existing pattern; a second definition matching the same text makes the run fail as ambiguous.
@@ -147,11 +149,8 @@ Exported REST helpers need an explicit return type (`: Response`), else TS2883.
 
 ## Biome (`biome.json`)
 
-Tabs, single quotes, lineWidth 230, organizeImports on; the final chain runs `biome check --write`. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
+Tabs, single quotes, lineWidth 230, organizeImports on; commit runs `biome check --write`. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
 - `useAwait`: no block-body `async` without `await` — return the promise or use `responseBody<T>()` (sync).
+- `useImportType`: type-only imports use `import type` / inline `type X`.
 
 TS4111 vs `useLiteralKeys`: keep `x['k']` + `// biome-ignore lint/complexity/useLiteralKeys: index signature` (as `acceptance-api/src/world.ts`).
-
-## Iterate cheap
-
-`pnpm exec turbo run typecheck|test --filter=<pkg> --output-logs=errors-only`; green → `run-validation`.

@@ -57,13 +57,14 @@ export function summarize(log, root = process.cwd()) {
 		if (m) {
 			const [file, l, c, rule] = m[4] ? [m[1], m[2], m[3], m[4]] : [m[1], '', '', m[2]];
 			const level = next(i + 1, /^\s*([×!])\s/);
-			out.push(`biome${level === '!' ? ' (warn)' : ''}  ${rel(pkg, file)}${l ? `:${l}:${c}` : ''} ${rule} — ${next(i + 1, /^\s*[×!]\s+(.*)/)}`);
+			const hint = rule === 'lint/style/useImportType' ? 'use `import type` for type-only imports; ' : '';
+			out.push(`biome${level === '!' ? ' (warn)' : ''}  ${rel(pkg, file)}${l ? `:${l}:${c}` : ''} ${rule} — ${hint}${next(i + 1, /^\s*[×!]\s+(.*)/)}`);
 			continue;
 		}
 		m = line.match(/^(\S+?)\((\d+),(\d+)\): error (TS\d+): (.*)/) ?? line.match(/^(\S+?):(\d+):(\d+) - error (TS\d+): (.*)/);
 		if (m) {
 			const fn = /^TS(2883|2742)$/.test(m[4]) ? m[5].match(/^The inferred type of '([^']+)'/)?.[1] : undefined;
-			const reexport = /^TS(2305|2459|2724)$/.test(m[4]) ? 're-export it from <pkg>/src/index.ts; ' : '';
+			const reexport = /^TS(2305|2459|2724)$/.test(m[4]) ? 're-export it from <pkg>/src/index.ts; ' : m[4] === 'TS18048' ? 'narrow before use (if / `?.` / `??`); ' : '';
 			out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} — ${fn ? `add explicit return type to exported '${fn}' (e.g. \`: Response\`); ` : reexport}${m[5]}`);
 			continue;
 		}

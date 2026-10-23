@@ -38,7 +38,7 @@ pnpm install
 pnpm run dev              # portless: https://api.agentcourses.localhost
 pnpm run dev:worktree     # sets WORKTREE_NAME=$(basename $PWD)
 pnpm run test
-pnpm run verify           # full gate — respect husky pre-commit
+pnpm run verify           # full gate — Stop hook/husky run it; agents don't
 ```
 
 `WORKTREE_NAME` is in `turbo.json` `globalPassThroughEnv`. App `dev` scripts already suffix portless hostnames.
@@ -46,6 +46,6 @@ pnpm run verify           # full gate — respect husky pre-commit
 ## Skills
 
 Use `.agents/skills/` (symlinked from `.github/skills/` for Copilot discovery).
-**`mog-repo-map`** then **`run-validation`** (mandatory): one chained commit, husky verify = single gate. `docs/mog-critique.md` by path for fail-repair only.
+**`mog-repo-map`** (mandatory), write, stop: the Stop hook verifies + commits (no hook → `node scripts/stop-gate.mjs run`). `docs/mog-critique.md` by path for fail-repair only.
 Others archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`) — not loaded.
 

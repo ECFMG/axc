@@ -62,3 +62,16 @@ test('knip unused exports/types (real output): rows say drop export, keep local'
 		'knip   Unused exported types: ZzProbeLocal type packages/axc/rest/src/zzprobe.ts:1:13 — drop `export`; keep the type local',
 	]);
 });
+
+test('useImportType and TS18048 lines carry a one-clause fix', () => {
+	const hints = [
+		'packages/axc/rest/src/a.ts:1:1 lint/style/useImportType  FIXABLE  ━━━━━━━━━━',
+		'',
+		'  × All these imports are only used as types.',
+		"@axc/rest:typecheck: src/a.ts(4,7): error TS18048: 'x' is possibly 'undefined'.",
+	].join('\n');
+	assert.deepEqual(summarize(hints, root), [
+		'biome  packages/axc/rest/src/a.ts:1:1 lint/style/useImportType — use `import type` for type-only imports; All these imports are only used as types.',
+		"ts     packages/axc/rest/src/a.ts:4:7 TS18048 — narrow before use (if / `?.` / `??`); 'x' is possibly 'undefined'.",
+	]);
+});

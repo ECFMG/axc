@@ -8,7 +8,7 @@
 - [ ] Keep sibling clones/worktrees under one `src/` directory, for example `axc`, `axc-mog-xai-1`, and `axc-mog-xai-1-a-out`.
 - [ ] Run `pnpm install --frozen-lockfile`.
 - [ ] Run `pnpm run verify` (Snyk may be skipped without the CLI/auth).
-- [ ] Point the tool at `AGENTS.md` and require the mandatory `run-validation` skill only on the default SCORE path.
+- [ ] Point the tool at `AGENTS.md` and register `scripts/stop-gate.mjs` as its Stop hook (else the agent runs `node scripts/stop-gate.mjs run` once at the end).
 - [ ] Treat Copilot agents/hooks as optional; the portable core does not require Copilot.
 - [ ] Use `docs/eval-contract.md` for SCORE gates and `docs/harness-cost-usage.md` for cost fields.
 - [ ] Optionally install RTK (Rust Token Killer) for bash-output token savings (not a repo dependency):
