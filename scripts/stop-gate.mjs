@@ -1,8 +1,9 @@
 // Agent Stop gate (Grok Build / Claude / Codex / Cursor-compatible hook JSON; also a CLI for tools without a Stop hook).
 // The agent only writes code; this hook installs, verifies and commits. Dependency-free; fails open.
 //   start: record HEAD + tree fingerprint once per session (SessionStart; UserPromptSubmit fallback).
-//   stop:  nothing changed since start → allow (pure Q&A). Changes → `pnpm install --frozen-lockfile`, then
-//          `git add` the write dirs + `git commit` with husky ON: its pre-commit runs the one full `pnpm run verify`.
+//   stop:  nothing changed since start → allow (pure Q&A). Changes → `pnpm install --frozen-lockfile`, auto-fix
+//          (scripts/auto-fix.mjs: useAwait, knip exports/types, biome safe fixes; never tests), then `git add` the
+//          write dirs + `git commit` with husky ON: its pre-commit runs the one full `pnpm run verify`.
 //          Green (verify log ends with `verify ok`, tree clean) → silent allow. Red → block with a terse
 //          one-line-per-problem report; nothing committed. The fingerprint covers untracked file contents. A plain
 //          re-stop on the same tree state is allowed; a stopHookActive retry after a block always re-verifies.
@@ -14,6 +15,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { autoFix, changedFiles, fixTargets } from './auto-fix.mjs';
 import { report } from './check-summary.mjs';
 
 const MAX_BLOCKS = 3;
@@ -65,6 +67,15 @@ export function plan(start, now, { verified = true, active = false } = {}) {
 	if (now.head === start.head && now.fingerprint === start.fingerprint) return 'allow';
 	if (now.dirty) return 'commit';
 	return verified ? 'allow' : { block: 'Committed, but no `verify ok` summary in the verify log: verify did not run or finish. Leave committing to the Stop hook.' };
+}
+
+/** path_deny patterns from the shared write boundary (protected files: never auto-fixed). */
+function denyRules(root) {
+	try {
+		return JSON.parse(readFileSync(path.join(root, '.github/hooks/write-boundary.json'), 'utf8')).path_deny.map(([re]) => new RegExp(re));
+	} catch {
+		return [];
+	}
 }
 
 /** Writable dirs from the shared write boundary (`dir/**` globs, minus dot-dirs); empty → whole tree. */
@@ -146,6 +157,7 @@ export function autoCommit(root) {
 		}
 	}
 	const dirs = writeDirs(root);
+	const fixes = autoFix(root, fixTargets(changedFiles(root), { dirs, deny: denyRules(root) }), { prefix: NVM, env: { ...env, HUSKY: '0' } });
 	git('add', '-A', '--', ...(dirs.length ? dirs : ['.']));
 	const staged = git('diff', '--cached', '--name-status');
 	if (!staged.trim()) return block(`changes outside the write dirs (${dirs.join(', ')}); revert them:\n${git('status', '--porcelain').trim().split('\n').slice(0, 10).join('\n')}`);
@@ -153,7 +165,8 @@ export function autoCommit(root) {
 		for (let d = path.dirname(f); d !== '.' && d !== '/'; d = path.dirname(d)) if (existsSync(path.join(root, d, 'package.json'))) return path.basename(d);
 		return f.split('/')[0];
 	};
-	const [subject, body] = commitMessage(staged, pkgOf);
+	const [subject, msg] = commitMessage(staged, pkgOf);
+	const body = fixes.length ? `${msg}\n\nAuto-fix (Stop hook, before verify):\n${fixes.map((l) => `- ${l}`).join('\n')}` : msg;
 	// Per-invocation hooksPath (not a config write), so the husky pre-commit runs even where core.hooksPath is unset.
 	const hooks = ensureHuskyHooks(root) ? '-c core.hooksPath=.husky/_ ' : '';
 	const c = run('sh', ['-c', `${NVM}git ${hooks}commit -q -m "$1" -m "$2"`, 'commit', subject, body], env);
