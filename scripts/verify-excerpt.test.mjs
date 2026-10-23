@@ -62,3 +62,9 @@ test('passing test lines are noise even when their names say error/failed', () =
 	assert.doesNotMatch(r.stdout, /✔/);
 	assert.match(r.stdout, /AssertionError: nope/);
 });
+test('TS2883 (real tsgo output): hint names the function and says add explicit return type', () => {
+	const r = run(readFileSync(path.join(import.meta.dirname, 'fixtures/ts2883.log'), 'utf8'));
+	assert.equal(r.status, 1);
+	assert.match(r.stdout, /^hint: add an explicit return type to exported sendProbe, failProbe \(e\.g\. `: Response`/m);
+	assert.match(r.stdout, /error TS2883/);
+});

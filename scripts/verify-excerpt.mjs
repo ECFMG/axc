@@ -27,6 +27,9 @@ const cmdEcho = /^(\$ |> |\. \w)/; // echoed commands, not results
 // TS2305/TS2459/TS2724: a symbol imported from another module isn't exported by it.
 const missingExport = /error (TS2305|TS2459|TS2724): (?:Module )?'"?([^'"]+)"?' .*?'([^']+)'/;
 const missing = new Map();
+// TS2883/TS2742: an exported function's inferred return type names a dependency-internal type.
+const inferredType = /error (?:TS2883|TS2742): The inferred type of '([^']+)'/;
+const needsReturnType = new Set();
 
 const hits = new Set();
 let lastStep = '';
@@ -39,6 +42,8 @@ lines.forEach((line, i) => {
 	if (failedTask?.[1]) failedTasks.add(failedTask[1]);
 	const m = line.match(missingExport);
 	if (m?.[2] && m[3]) missing.set(m[2], new Set([...(missing.get(m[2]) ?? []), m[3]]));
+	const t = line.match(inferredType);
+	if (t?.[1]) needsReturnType.add(t[1]);
 	if (noise.test(line) || cmdEcho.test(line)) return;
 	if (!(fail.test(line) || auditRow.test(line))) return;
 	if (!failedStep) failedStep = lastStep;
@@ -61,6 +66,7 @@ if (missing.size) {
 	const what = [...missing].map(([mod, names]) => `${[...names].join(', ')} from ${mod}`).join('; ');
 	header.push(`hint: re-export every cross-package type from <pkg>/src/index.ts (missing: ${what})`);
 }
+if (needsReturnType.size) header.push(`hint: add an explicit return type to exported ${[...needsReturnType].join(', ')} (e.g. \`: Response\` for Hono helpers) — TS2883`);
 const body = [...hits].sort((a, b) => a - b).map((i) => lines[i] ?? '');
 const out = [...new Set([...header, ...body])].map((l) => (l.length > MAX_WIDTH && !l.startsWith('scenario  ') ? `${l.slice(0, MAX_WIDTH)}…` : l));
 const shown = out.slice(0, MAX_LINES - 1);

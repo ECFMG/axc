@@ -1,7 +1,7 @@
 // node --test scripts/check-summary.test.mjs — check-log fixtures in the real tools' output formats.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -50,4 +50,9 @@ test('cli: header + summary; unrecognised failure falls back to the excerpt/tail
 	} finally {
 		rmSync(dir, { recursive: true, force: true });
 	}
+});
+test('TS2883 (real tsgo output): line names the function + add explicit return type', () => {
+	const lines = summarize(readFileSync(path.join(import.meta.dirname, 'fixtures/ts2883.log'), 'utf8'), root);
+	assert.match(lines[0], /^ts {5}packages\/axc\/rest\/src\/zzprobe\.ts:3:14 TS2883 — add explicit return type to exported 'sendProbe' \(e\.g\. `: Response`\); The inferred type/);
+	assert.match(lines[1], /'failProbe'/);
 });

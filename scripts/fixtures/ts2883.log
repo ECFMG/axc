@@ -1,0 +1,4 @@
+@axc/rest:typecheck: src/zzprobe.ts(3,14): error TS2883: The inferred type of 'sendProbe' cannot be named without a reference to 'JSONRespondReturn' from '../node_modules/hono/dist/types/context.js'. This is likely not portable. A type annotation is necessary.
+@axc/rest:typecheck: src/zzprobe.ts(4,17): error TS2883: The inferred type of 'failProbe' cannot be named without a reference to 'JSONRespondReturn' from '../node_modules/hono/dist/types/context.js'. This is likely not portable. A type annotation is necessary.
+@axc/rest:typecheck: [ELIFECYCLE] Command failed with exit code 2.
+Failed:    @axc/rest#typecheck

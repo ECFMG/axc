@@ -62,7 +62,8 @@ export function summarize(log, root = process.cwd()) {
 		}
 		m = line.match(/^(\S+?)\((\d+),(\d+)\): error (TS\d+): (.*)/) ?? line.match(/^(\S+?):(\d+):(\d+) - error (TS\d+): (.*)/);
 		if (m) {
-			out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} — ${m[5]}`);
+			const fn = /^TS(2883|2742)$/.test(m[4]) ? m[5].match(/^The inferred type of '([^']+)'/)?.[1] : undefined;
+			out.push(`ts     ${rel(pkg, m[1])}:${m[2]}:${m[3]} ${m[4]} — ${fn ? `add explicit return type to exported '${fn}' (e.g. \`: Response\`); ` : ''}${m[5]}`);
 			continue;
 		}
 		m = line.match(/^\s*FAIL\s+(\S+)\s*(?:>\s*(.*))?$/);
