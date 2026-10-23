@@ -4,11 +4,14 @@ knip.json
 packages/axc/application-services/package.json
 packages/axc/application-services/tsconfig.json
 packages/axc/domain/package.json
+packages/axc/domain/tsconfig.vitest.json
 packages/axc/domain/vitest.config.ts
 packages/axc/persistence/package.json
 packages/axc/persistence/tsconfig.json
+packages/axc/persistence/tsconfig.vitest.json
 packages/axc/persistence/vitest.config.ts
 packages/axc/rest/package.json
+packages/axc/rest/tsconfig.vitest.json
 packages/axc/rest/vitest.config.ts
 pnpm-lock.yaml
 pnpm-workspace.yaml
