@@ -135,12 +135,12 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 - **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
 - **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`.
 - **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the Stop hook.
-- **Step wiring** (`acceptance-api/cucumber.yaml`): features from `src/features/**/*.feature`; steps via `require` = `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` (loaded through `tsx/cjs`). A new step file must be `src/step-definitions/<feature>.steps.ts` — any other name/folder is never loaded (undefined steps).
+- **Step wiring** (`acceptance-api/cucumber.yaml`): features `src/features/**/*.feature`; steps load only from `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` — name a new file `src/step-definitions/<feature>.steps.ts`, else undefined steps.
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.
 - **Step patterns are global** across every `.steps.ts`: reuse an existing pattern; a second definition matching the same text makes the run fail as ambiguous.
 - **4xx**: `Send` doesn't throw — assert the status step, then `Ensure.that(responseBody<E>(), property('<field>', equals(v)))`.
 - **Step API** beyond the skeleton: `Given`, `Question`, `PostRequest.to(p).with(body)`, `isTrue`, `containAtLeastOneItemThat`, `not`.
-- **Derived check**: an async `Question.about` is `Question<Promise<T>>`, so pass it through `resolved()` (else TS2345 `Expectation<boolean>` vs `Expectation<Promise<boolean>>`):
+- **Derived check**: an async `Question.about` is `Question<Promise<T>>` — wrap it in `resolved()` (else TS2345):
   `const nonEmpty = Question.about('non-empty', (a) => a.answer(responseBody<T[]>()).then((xs) => xs.length > 0));` → `Ensure.that(resolved(nonEmpty), equals(true))`.
 - **Scenario ids**: one scenario per AC row of the task's requirements file, named id-first (`Scenario: <ID>-AC<n> …`), one id each; an AC no scenario can prove (docs, process) gets a `# ac-meta: <ID>-AC<n>` line in the .feature instead. The evidence table reuses ids.
 
