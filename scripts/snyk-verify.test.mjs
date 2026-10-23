@@ -73,7 +73,8 @@ test('SNYK_SKIP=1 skips without calling snyk, even when one is installed', { ski
 });
 
 // Dependency gate: a throwaway repo (GIT_* stripped, no global/system config) + a fake snyk that counts its calls.
-const gitEnv = () => ({ ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_'))), GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' });
+// SNYK_* stripped too: verify inside a Stop-hook commit runs these tests with SNYK_SKIP=1 set.
+const gitEnv = () => ({ ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_') && !k.startsWith('SNYK_'))), GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' });
 const gateRepo = () => {
 	const repo = path.join(dir, 'repo');
 	mkdirSync(path.join(repo, 'pkg'), { recursive: true });
