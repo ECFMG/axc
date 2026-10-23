@@ -93,11 +93,17 @@ export function commitMessage(nameStatus, pkgOf = (f) => f.split('/').slice(0, -
 
 const block = (lines) => `Stop blocked — nothing committed. Fix, then stop again (no verify/commit calls):\n${lines}`;
 
+/** Env for the auto-commit: husky ON (its pre-commit IS the verify); SNYK_SKIP=1 keeps Snyk a developer-commit gate, off the Stop path. */
+export function commitEnv(base = process.env) {
+	const env = { ...base, SNYK_SKIP: '1' };
+	delete env.HUSKY;
+	return env;
+}
+
 /** install → add → commit (husky verify). Returns null on success, else the terse failure report. */
 export function autoCommit(root) {
 	const t0 = Date.now();
-	const env = { ...process.env };
-	delete env.HUSKY; // the commit's husky pre-commit IS the verify
+	const env = commitEnv();
 	const out = path.join(tmp(), `axc-stop-${path.basename(root)}.log`);
 	if (existsSync(path.join(root, 'pnpm-lock.yaml'))) {
 		const i = run('sh', ['-c', `${NVM}pnpm install --frozen-lockfile`], { ...env, HUSKY: '0' }); // HUSKY=0: no hooksPath rewrite

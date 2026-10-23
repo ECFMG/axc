@@ -1,7 +1,7 @@
 // node --test scripts/snyk-verify.test.mjs — resolver + missing-CLI exit paths against fake PATH/nvm dirs in tmp.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
@@ -58,4 +58,16 @@ test('missing CLI fails, SNYK_OPTIONAL=1 skips', { skip: process.platform === 'w
 	const skip = spawnSync(process.execPath, [script], { encoding: 'utf8', env: { ...env, SNYK_OPTIONAL: '1' } });
 	assert.equal(skip.status, 0);
 	assert.match(skip.stdout, /^Snyk: SKIPPED \(SNYK_OPTIONAL=1\)/m);
+});
+
+test('SNYK_SKIP=1 skips without calling snyk, even when one is installed', { skip: process.platform === 'win32' }, () => {
+	const bin = path.join(dir, 'path-bin');
+	mkdirSync(bin, { recursive: true });
+	const marker = path.join(dir, 'snyk-called');
+	writeFileSync(path.join(bin, 'snyk'), `#!/bin/sh\ntouch '${marker}'\n`);
+	chmodSync(path.join(bin, 'snyk'), 0o755);
+	const r = spawnSync(process.execPath, [script], { encoding: 'utf8', env: { PATH: bin, HOME: path.join(dir, 'home'), NVM_DIR: path.join(dir, 'nvm'), SNYK_SKIP: '1' } });
+	assert.equal(r.status, 0);
+	assert.equal(r.stdout.trim(), 'Snyk: SKIPPED (SNYK_SKIP=1, Stop-hook commit)');
+	assert.equal(existsSync(marker), false, 'snyk must not be spawned');
 });

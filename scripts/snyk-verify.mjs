@@ -1,6 +1,7 @@
 // Snyk step of `pnpm run verify` (husky pre-commit; the Stop hook's auto-commit runs the same verify).
 // Resolves snyk: PATH first, then every installed nvm Node's global bin (newest first), so a CLI installed
 // under another Node still runs after `nvm use`. Missing → FAIL; SNYK_OPTIONAL=1 → print SKIPPED and continue.
+// SNYK_SKIP=1 (set only by stop-gate's auto-commit) skips before resolving, even when snyk is installed.
 import { spawnSync } from 'node:child_process';
 import { accessSync, constants, readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
@@ -43,6 +44,10 @@ export function resolveSnyk({ env = process.env, home = homedir(), platform = pr
 }
 
 function main() {
+	if (process.env.SNYK_SKIP === '1') {
+		console.log('Snyk: SKIPPED (SNYK_SKIP=1, Stop-hook commit)');
+		process.exit(0);
+	}
 	const snyk = resolveSnyk();
 	if (!snyk) {
 		if (process.env.SNYK_OPTIONAL === '1') {
