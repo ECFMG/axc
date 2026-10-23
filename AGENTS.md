@@ -22,7 +22,7 @@ Shell: `nvm use` first (Node 24). No narration, plans or sub-agents; success sil
 
 1. Read `mog-repo-map` (authoritative — don't re-verify in source/cellixjs) and its list in one turn; nothing >~2KB.
 2. Write: wiring file <~30 lines → whole rewrite, imports on top; larger → targeted edits.
-3. Stop. Tool with a Stop hook (e.g. Grok, Claude Code): just stop — it verifies and lists problems; fix, stop again. Only a tool with no Stop hook: `node scripts/stop-gate.mjs run` once at the end. Never run vitest, biome, knip, typecheck, verify, `test:arch` or `git commit` yourself.
+3. Stop. Tool with a Stop hook (e.g. Grok, Claude Code): just stop — it auto-fixes, verifies, lists the rest; fix, stop again. Only a tool with no Stop hook: `node scripts/stop-gate.mjs run` once at the end. Never run vitest, biome, knip, typecheck, verify, `test:arch` or `git commit` yourself.
 
 Never read (the map answers them): `knip.json`, `package.json`, existing docs pages and `.feature` files, ADRs, intro docs; `pnpm-lock.yaml`, `node_modules/`, `dist/`, `deploy/`, `.husky/`, archunit/`test:arch` internals, `docs/skills-archive/`, agent memory (never write it). Never read or edit `evaluation-run-record.md`, `docs/eval-contract.md`, `docs/score-metering.md`, `docs/harness-cost-usage.md` (operator-owned).
 

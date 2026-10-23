@@ -40,3 +40,4 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `"dependsOn": ["^build"]` | turbo.json | stale-dist TS2305 | b-out-6 | cd4bc93 |
 | `task-set-a-requirements.md` | .agents/skills/mog-repo-map/SKILL.md | orientation round 3 (requirements file not in the read list) | b-out-8 | this round |
 | `**Serenity imports**: static` | .agents/skills/mog-repo-map/SKILL.md | orientation round 3 (Serenity import form) | b-out-8 | this round |
+| `it auto-fixes, verifies` | AGENTS.md | useAwait / knip unused-export blocks fixed by hand (scripts/auto-fix.mjs now fixes them) | b-out-6, b-out-8 | this round |
