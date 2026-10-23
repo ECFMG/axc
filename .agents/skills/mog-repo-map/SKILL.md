@@ -7,7 +7,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 **≤2 rounds, all reads in ONE parallel turn: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern). Write in ≤2 calls. Then stop (Stop hook verifies + commits).**
 
-Authoritative — don't re-verify it in source or cellixjs (cellixjs only to port a missing package). **Never** open `packages/cellix/**` sources you won't edit or anything AGENTS bans; never list cellixjs.
+**Never** open `packages/cellix/**` sources you won't edit.
 
 ## Layout
 
