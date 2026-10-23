@@ -3,32 +3,32 @@ Each participant should complete one Evaluation Run Record per harness/model run
 
 | Field | Value |
 | --- | --- |
-| Team | OpenAI / Anthropic / Cursor / xAI / Antigravity |
-| Developer / Operator | |
+| Team | xAI |
+| Developer / Operator | Mohit Gupta (SCORE operator); record by Eval Runner |
 | Reviewer | (leave blank for now) |
-| Harness | |
-| Model | |
+| Harness | Grok Build + mog-xai-1-negtests harness 53268aa (53268aa0502886e0cc41abab4035f73b6811363c, tag mog-xai-1-negtests-frozen-b10) |
+| Model | grok-4.7-build, reasoning effort medium |
 | License / Plan | |
 | Codebase | ECFMG/axc |
-| Task Set | A / B |
-| Run Type | Baseline / Harness Engineering Iteration N / Final |
-| Harness Engineering Used | |
-| Config / Diff Notes | |
-| Branch / Commit | |
-| Requirements Completed / Attempted | |
-| Acceptance Criteria Passed / Total | |
-| Tests Passed / Failed | |
-| Static Analysis / Security Findings | |
-| Input Tokens | ← `/usage` **Input** (do not invent) |
-| Cached Tokens | ← `/usage` **Cached**/cache-read; else `n/a` + reason |
-| Output Tokens | ← `/usage` **Output** |
-| Total Tokens or Credits Used | ← `/usage` **Total** (or credits if that is what it bills) |
-| Estimated Cost | ← `/usage` **Cost**/USD; if tokens only, note dashboard source |
-| Elapsed Time | |
-| Number of Human Interventions / Redirects | |
+| Task Set | B (TS-B-COURSE-ENROLLMENT-WORKFLOW), preferred fair comparison: clean start branch without Task Set A, full expanded task |
+| Run Type | Harness Engineering Iteration (negtests harness + Stop-hook auto-fix + Snyk dependency gate), single SCORE run |
+| Harness Engineering Used | Negtests harness 53268aa = b-out-9-negtests harness 5d44d80 (Stop hook install + husky verify + auto-commit, untracked-content fingerprint, stopHookActive re-verify, SNYK_SKIP=1 on the Stop path, write-guard denies agent commit/verify/ad-hoc checks, ONE orientation round, negative-tests map rule) plus: ef419bb/f691964 Stop-hook auto-fix before verify (scripts/auto-fix.mjs on the agent's changed non-test files inside the write dirs, never path_deny or test/spec/feature/step files: 1. biome useAwait → drop `async`, 2. knip --fix --fix-type exports --fix-type types (other files knip touches restored), 3. biome check --write safe fixes + format, no --unsafe; fixes logged in the commit body), 423452c AGENTS says the Stop hook auto-fixes before verify, 2675458/74dfd07 Snyk dependency gate (snyk-verify skips when the dependency hash of package.json/pnpm-lock.yaml/pnpm-workspace.yaml matches the worktree's last Snyk-ok state and no dependency file is staged), a2c6fe9 stop-gate self-heals .husky/_ and commits with a per-invocation core.hooksPath, b0310f1/ddbc399 symlink/space path fixes, 20e4c99 map read list names the requirements files, 79bbcc4 map trim (12115 → 11880 B), 53268aa empty freeze-check commit. Launched with --trust --no-memory and web/agent/image tools disallowed. Fresh worktree mog-xai-1-b-out-10 with `.husky/_` asserted (16 files, _/h cmp-identical), audit passing, /health OK and all 5 hooks firing at prep (Stop a no-op on the clean tree). |
+| Config / Diff Notes | Effort: medium (all 5 model responses carry reasoning_effort "medium"). Contamination: clean (--no-memory; all 11 reads inside the worktree; no cellixjs, dist/ or node_modules reads; no grep/list_dir; no prior-run tags/branches). Agent did not read or edit this record, eval/score docs, harness or config (.grok, scripts, .husky, .agents, .github, AGENTS.md, knip.json, biome.json, package.json, pnpm-workspace.yaml, lockfile, turbo.json unchanged; no dependency file changed 53268aa..6ae16a6); all 20 changed files inside apps/api, apps/docs, packages/axc, packages/axc-verification; no shared acceptance helper (questions.ts, world.ts) edited. No .skip/.only, biome-ignore, ts-ignore/expect-error, `as any`, eslint-disable or deleted tests. Write-guard: 0 denies (22 pre_tool_use: 20 write + 2 search_replace; the agent ran no shell commands, trim-output 0). **Gate integrity: OK, Stop hook auto-commit with 0 blocks.** Stop #1 (10:00:46–10:03:21 EDT, 155 s): install, auto-fix, husky verify green, auto-committed 6ae16a6 (commit stamped 10:01:11, verify log closed 10:03:20, ends `verify ok · acceptance 23/23`, post-commit `verify ok · acceptance 23/23 · 6ae16a6`; acceptance force-executed; Snyk SKIPPED via SNYK_SKIP=1 by design). Stop #2 (10:14:05, 473 ms, at exit) allowed on the clean tree. Stop-hook stats: Stop fired 2x, 0 blocks, 1 verify run (green), 1 Stop commit (session file blocks:0). Auto-fix log in the 6ae16a6 body: `knip --fix exports,types: packages/axc/application-services/src/enrollment-requests.store.ts` (unexported EnrollmentStoreDeps, the exact b-out-9 knip block) and `biome check --write:` application-services index.ts + enrollment-requests.store.ts, rest courses.routes.ts + enrollment-requests.commands.ts + enrollment-requests.routes.ts (import sorting and line wrapping only). No useAwait fix was needed (no async-without-await written). Not in the log: 4 test/step files (courses.test.ts, enrollment-requests.rules.test.ts, enrollment-requests.store.test.ts, enrollment-requests.steps.ts) were reformatted by the pre-existing husky pre-commit lint-staged `biome check --write` (import order and one line wrap; no assertion change, verified by diffing the agent's writes against 6ae16a6). Flow: 2 orientation calls (map, then one batch of 10 reads: both requirements files, write-skeleton and 7 wiring/test files), 1 write call (20 files after ~12.5 min reasoning), 1 pre-stop fix-up (2 search_replace: unused `justification` constant in enrollment-requests.steps.ts), 1 reply. Per-call token estimate (session totalTokens markers): call 1 ~12k in / ~0.4k out; call 2 ~17k / ~1.5k; call 3 ~27k / ~71k (≈90% of output: reasoning + 20 files); call 4 ~98k / ~5.5k; call 5 ~104k / ~0.6k; calls 4–5 ≈ 202k ≈ 77% of input. Tests vs b-out-9-negtests: 20 unit `it`s (courses 7, rules 5 incl. a 16-pair transition matrix, store 8) vs 19; acceptance 23 vs 22 scenarios (course search 10 vs 9). Hooks: write-guard 22 pre_tool_use, 0 denies; stop-gate session_start/user_prompt_submit 1 each, stop 2x. Cache 60.7%. Meter source: Grok Build `/usage` (matches session usage.json exactly): input 260,932 (158,336 cached), output 78,403 (57,274 reasoning), total 339,335, 5 model calls, API time 14m18s, cost $0.2566. Session 01a16903-2468-7893-a9d1-f4836cac99fb, 2026-10-23 09:46–10:03 America/New_York. No cherry-picks; feature commit is the only commit on top of 53268aa. Snyk on this record commit: dependency hash c7f7f6fc47ccd1e02eb8606a3eda92de5ff1cf9b (computed as scripts/snyk-verify.mjs does) equals the last Snyk-ok hash of the negtests/stophook worktrees and no dependency file changed 53268aa..HEAD, so mog-snyk-ok.json was seeded by hand in this worktree's git dir per Chief because the Snyk monthly quota is used up; the dependency gate then skips Snyk on this commit. |
+| Branch / Commit | mog-xai-1-b-out-10 / feature 6ae16a62c019e00d07e17dba987d792c9425aedf (Stop-hook auto-commit, 0 blocks, auto-fix logged); start 53268aa0502886e0cc41abab4035f73b6811363c |
+| Requirements Completed / Attempted | 17/17 implemented (B1–B17); B17 (existing tests pass) verified by the husky verify on 6ae16a6 (unit + acceptance green) |
+| Acceptance Criteria Passed / Total | 15/15: B-AC1–B-AC12 each have a tagged scenario (`@B-AC<n>`, id in title) with real Serenity Ensure assertions that passed at runtime in the husky verify for 6ae16a6 (2026-10-23 10:01–10:03 EDT); B-AC13–15 covered by `# ac-meta` in enrollment-requests.feature (B-AC13 by green verify, B-AC14 by unit tests courses/enrollment-requests.rules/enrollment-requests.store + acceptance, B-AC15 by docs/api/courses.md + enrollment-requests.md); check-ac-coverage exit 0 (re-checked read-only) |
+| Tests Passed / Failed | Husky verify on 6ae16a6: acceptance 23/23 (course search 10/10, enrollment requests 12/12, healthcheck 1/1; acceptance task force-executed, `cache bypass, force executing`), 0 failed; turbo test+test:acceptance 25/25 tasks; unit green (20 new unit tests); test:arch 14/14 tasks; node --test scripts 65/65. |
+| Static Analysis / Security Findings | Husky verify on 6ae16a6 (exit 0): script-policy PASS, ac-coverage PASS, node --test PASS (65/65), biome PASS (336 files), typecheck PASS (21/21), build PASS (18/18), knip PASS, e18e PASS (errors-only, none), arch PASS (14/14), unit+acceptance PASS (25/25 tasks), audit PASS (`pnpm audit --audit-level=high`: 2 moderate, 1 high ignored), snyk SKIPPED on the feature commit (SNYK_SKIP=1, Stop-hook commit, by design). Before verify the Stop hook auto-fixed 1 knip unused exported type and biome import-sort/format in 5 files (logged in the commit body). No red verify in session. Logs: /tmp/b10-capture/axc-verify-axc-mog-xai-1-b-out-10.log, /tmp/b10-capture/axc-stop-axc-mog-xai-1-b-out-10.log |
+| Input Tokens | 260932 |
+| Cached Tokens | 158336 (inside Input) |
+| Output Tokens | 78403 (reasoning 57274) |
+| Total Tokens or Credits Used | 339335 |
+| Estimated Cost | $0.2566 |
+| Elapsed Time | API 14m18s (Grok Build `/usage`); 5 model calls; wall time 09:46–10:03 America/New_York |
+| Number of Human Interventions / Redirects | 0 |
 | Reviewer Notes | (leave blank for now) |
 | Final Rubric Score | (leave blank for now) |
-| Recommendation | Continue / Remediate / Stop / Candidate for Pilot |
+| Recommendation | Pass, new best Task Set B. Stop hook auto-committed 6ae16a6 with 0 blocks; acceptance 23/23 under a real husky verify. Vs b-out-8 (431,392 / 7 calls / $0.2716): −92,057 tokens (−21.3%), −2 calls, −$0.0150 (−5.5%). Vs b-out-9-negtests (823,849 / 11 / $0.3386): −484,514 (−58.8%), −6 calls, −$0.0820 (−24.2%). The auto-fix removed the block loop: it fixed the same knip unused-export issue that cost b-out-9 a block, plus biome import order/format in 5 files, before verify. Cost fell less than tokens because output was the highest of the three (78.4k vs 74.5k and 69.2k; ~71k in the single write call) and the cache rate was lower (60.7% vs 84.5% for b-out-9). Remaining sinks: the write call's ~71k output (12.5 min reasoning before one 20-file batch) and calls 4–5 re-reading ~100k context (~202k input) for a 2-line fix-up and the reply. Call 4 (~98k input) only removed an unused constant in a step file, which auto-fix does not touch (test/step files excluded). Keep the auto-fix and the negative-tests rule; the next lever is the write call's ~71k output. |
 
 ### Grok Build `/usage` paste checklist (SCORE meter)
 
