@@ -2,7 +2,7 @@
 // near-duplicate lines across them, and rules-ledger rows whose rule left its file. Report-only — never edits.
 // Trimming is AI-driven in a harness round, never inside a SCORE run. Settings: scripts/trim-guard.config.json.
 // Usage: node scripts/trim-guard.mjs
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 export const config = JSON.parse(readFileSync(path.join(import.meta.dirname, 'trim-guard.config.json'), 'utf8'));
@@ -56,6 +56,19 @@ export function overBudget(sizes, budgets = config.budgets) {
 	return Object.entries(budgets).flatMap(([file, max]) => ((sizes[file] ?? 0) > max ? [`${file}: ${sizes[file] - max} bytes over its ${max}-byte budget — ${how()}`] : []));
 }
 
+/** Preloaded dirs: every .md in them needs its own budget, and their total stays under the dir budget. */
+export function overDirBudget(dirFiles, sizes, budgets = config.budgets, dirBudgets = config.dirBudgets ?? {}) {
+	return Object.entries(dirBudgets).flatMap(([dir, max]) => {
+		if (dir.startsWith('_')) return [];
+		const files = dirFiles(dir).map((f) => `${dir}/${f}`);
+		const total = files.reduce((n, f) => n + (sizes[f] ?? 0), 0);
+		return [
+			...files.filter((f) => !(f in budgets)).map((f) => `${f}: preloaded but has no budget — add it to scripts/trim-guard.config.json budgets`),
+			...(total > max ? [`${dir}/*.md: ${total - max} bytes over its ${max}-byte total budget — ${how()}`] : []),
+		];
+	});
+}
+
 /** Ledger rows `| \`key\` | file | …`: the key must still occur in that file. */
 export function staleLedger(ledger, read) {
 	const out = [];
@@ -69,7 +82,8 @@ export function check(root) {
 	const read = (f) => (existsSync(path.join(root, f)) ? readFileSync(path.join(root, f), 'utf8') : undefined);
 	const files = Object.fromEntries(Object.keys(config.budgets).map((f) => [f, read(f) ?? '']));
 	const sizes = Object.fromEntries(Object.entries(files).map(([f, t]) => [f, Buffer.byteLength(t)]));
-	return [...overBudget(sizes), ...duplicates(files), ...staleLedger(read(config.ledger) ?? '', read)];
+	const dirFiles = (d) => (existsSync(path.join(root, d)) ? readdirSync(path.join(root, d)).filter((f) => f.endsWith('.md')) : []);
+	return [...overBudget(sizes), ...overDirBudget(dirFiles, sizes), ...duplicates(files), ...staleLedger(read(config.ledger) ?? '', read)];
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

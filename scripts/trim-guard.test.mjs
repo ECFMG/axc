@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { test } from 'node:test';
-import { check, config, duplicates, overBudget, staleLedger } from './trim-guard.mjs';
+import { check, config, duplicates, overBudget, overDirBudget, staleLedger } from './trim-guard.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -21,6 +21,19 @@ test('over budget: one line naming the file, the bytes over and the fix', () => 
 	const [line, ...rest] = overBudget({ 'AGENTS.md': 120, 'x.md': 5 }, { 'AGENTS.md': 100, 'x.md': 10 });
 	assert.equal(rest.length, 0);
 	assert.match(line, /^AGENTS\.md: 20 bytes over its 100-byte budget — trim or move to an on-demand file \(.*never in SCORE.*last 20 runs.*\)$/);
+});
+
+test('preloaded dir: unbudgeted files and an over-total sum are reported', () => {
+	const sizes = { 'r/a.md': 60, 'r/b.md': 50 };
+	const out = overDirBudget(() => ['a.md', 'b.md'], sizes, { 'r/a.md': 60 }, { r: 100 });
+	assert.equal(out.length, 2);
+	assert.match(out[0], /^r\/b\.md: preloaded but has no budget/);
+	assert.match(out[1], /^r\/\*\.md: 10 bytes over its 100-byte total budget — trim or move/);
+	assert.deepEqual(
+		overDirBudget(() => ['a.md'], sizes, { 'r/a.md': 60 }, { r: 100 }),
+		[],
+	);
+	assert.equal(config.dirBudgets['.grok/rules'], 19545);
 });
 
 test('duplicates: exact and contained lines flagged across files; distinct and short lines and code are not', () => {

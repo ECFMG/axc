@@ -1,6 +1,6 @@
 # AXC agents (mog-xai-1)
 
-**ONE orientation round: every read in one parallel turn — `mog-repo-map` + the list atop it, nothing after. Write all files in ≤2 calls (one batch + one optional fix-up). Then stop.**
+**ONE orientation round: the map, write skeleton and patterns are preloaded (`.grok/rules/`); read only the list atop the map, in one parallel turn. Write all files in ≤2 calls (one batch + one optional fix-up). Then stop.**
 
 CellixJS architecture; `/Volumes/files/src/cellixjs` only to port a missing package (never list).
 
@@ -20,7 +20,7 @@ Traps:
 
 Shell: `nvm use` first (Node 24). No narration, plans or sub-agents; success silent, errors = what/where/next fix.
 
-1. Read `mog-repo-map` (authoritative — don't re-verify in source/cellixjs) and its list in one turn; nothing >~2KB.
+1. The preloaded map is authoritative — don't re-verify in source/cellixjs; nothing >~2KB.
 2. Write: wiring file <~30 lines → whole rewrite, imports on top; larger → targeted edits.
 3. Stop. Tool with a Stop hook (e.g. Grok, Claude Code): just stop — it verifies and lists problems; fix, stop again. Only a tool with no Stop hook: `node scripts/stop-gate.mjs run` once at the end. Never run vitest, biome, knip, typecheck, verify, `test:arch` or `git commit` yourself.
 

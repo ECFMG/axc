@@ -1,6 +1,6 @@
-# mog write-command skeleton (on demand — not a skill)
+# mog write-command skeleton (preloaded)
 
-Builds on the read-only feature skeleton in `SKILL.md` (same flat folders, same `<placeholders>`; `is<Thing>Kind` comes from `<feature>.ts`).
+Builds on the read-only feature skeleton in the map (same flat folders, same `<placeholders>`; `is<Thing>Kind` comes from `<feature>.ts`).
 
 Pure domain rules + transitions → `application-services/src/<feature>.rules.ts` (no I/O, no clock) with `<feature>.rules.test.ts`. Cellix would put them in `@axc/domain`, but app-services doesn't depend on it and adding the dep churns the lockfile, so they stay here; REST reaches them via `@axc/application-services`.
 ```ts

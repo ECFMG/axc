@@ -2,7 +2,7 @@
 	"hooks": {
 		"PostToolUse": [
 			{
-				"matcher": "run_terminal_command",
+				"matcher": "run_terminal_command|read_file",
 				"hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/trim-output.mjs\"", "timeout": 5 }]
 			}
 		]

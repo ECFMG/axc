@@ -3,11 +3,21 @@
 	"TRIM_PROTECT_RUNS": 20,
 	"budgets": {
 		"AGENTS.md": 2075,
-		".agents/skills/mog-repo-map/SKILL.md": 12115,
+		".agents/skills/mog-repo-map/SKILL.md": 321,
 		".agents/skills/run-validation/SKILL.md": 559,
-		".github/copilot-instructions.md": 2003
+		".github/copilot-instructions.md": 2003,
+		".grok/rules/mog-repo-map.md": 11816,
+		".grok/rules/mog-write-skeleton.md": 4404,
+		".grok/rules/mog-patterns.md": 3303
 	},
-	"duplicate": { "minWords": 6, "containment": 0.75 },
+	"dirBudgets": {
+		"_comment": "Grok preloads every .md here at session start: each needs a per-file budget, and the sum is capped (19545 = old map + write skeleton + pattern sources).",
+		".grok/rules": 19545
+	},
+	"duplicate": {
+		"minWords": 6,
+		"containment": 0.75
+	},
 	"ledger": "docs/mog-rules-ledger.md",
 	"trimLog": ".agents/harness-trim-log.md"
 }

@@ -85,7 +85,7 @@ Write `.agents-work/current/implementer.done` only AFTER builds/tests pass. Writ
 
 ## Required Reading
 
-- Skills (when applicable): `.agents/skills/run-validation/SKILL.md` (how the Stop hook validates), `.agents/skills/mog-repo-map/SKILL.md` (map), `docs/mog-critique.md` by path (fail-repair only)
+- Skills (when applicable): `.agents/skills/run-validation/SKILL.md` (how the Stop hook validates), `.grok/rules/mog-repo-map.md` (map, preloaded), `docs/mog-critique.md` by path (fail-repair only)
 - Not loaded: archived in `docs/skills-archive/` (`plan-feature`, `review-diff`, `tdd`, `serenity-tests`, `minimal-build`, `portless`, `turborepo`)
 - Domain seedwork instructions under `packages/cellix/domain-seedwork/.github/instructions/` when touching domain seedwork
 
