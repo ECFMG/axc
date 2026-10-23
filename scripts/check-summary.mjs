@@ -4,6 +4,7 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { acceptanceFailures } from './acceptance-failures.mjs';
 
 const MAX = 40;
 const WIDTH = 220;
@@ -84,6 +85,7 @@ export function summarize(log, root = process.cwd()) {
 			for (let j = i + 1; j < lines.length && /^\s+\S/.test(lines[j]); j++) out.push(`ac     missing ${lines[j].trim()}`);
 		}
 	}
+	out.push(...acceptanceFailures(log, root));
 	return [...new Set(out)];
 }
 
@@ -100,7 +102,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	const file = process.argv[2] ?? '/tmp/check.log';
 	const log = readFileSync(file, 'utf8');
 	const found = summarize(log);
-	const clip = (l) => (l.length > WIDTH ? `${l.slice(0, WIDTH)}…` : l);
+	const clip = (l) => (l.length > WIDTH && !l.startsWith('scenario  ') ? `${l.slice(0, WIDTH)}…` : l);
 	if (found.length) {
 		console.log(`check FAILED: ${found.length} problem(s) — full log: ${file}`);
 		console.log(found.slice(0, MAX).map(clip).join('\n'));

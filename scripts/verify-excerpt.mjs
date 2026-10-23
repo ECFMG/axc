@@ -2,6 +2,7 @@
 // Usage: pnpm run verify > /tmp/verify.log 2>&1 || node scripts/verify-excerpt.mjs /tmp/verify.log
 // Clean log -> prints nothing, exit 0. Failing log -> <=80 useful lines, exit 1.
 import { readFileSync } from 'node:fs';
+import { acceptanceFailures } from './acceptance-failures.mjs';
 
 const MAX_LINES = 80;
 const MAX_WIDTH = 240;
@@ -20,7 +21,7 @@ const fail =
 const auditRow = /^│ (high|critical|Package|Vulnerable versions|Patched versions|More info)\b/;
 const listHead = /^Unused [\w ]+ \((\d+)\)/; // knip section: include its rows
 const noise =
-	/(DeprecationWarning|--trace-deprecation|^\s*$|Spawning: |SERENITY COMMAND LINE|^\[?[^\]]*\]? ?-{5,}$|Progress: resolved|Configuration hints|more similar hints|Remove (from ignore|redundant)|0 errors?\b|\b0 failed\b|no errors)/i;
+	/(DeprecationWarning|--trace-deprecation|^\s*$|Spawning: |SERENITY COMMAND LINE|^\[?[^\]]*\]? ?-{5,}$|Progress: resolved|Configuration hints|more similar hints|Remove (from ignore|redundant)|0 errors?\b|\b0 failed\b|no errors|^\s*(\[[^\]]*\] )?at .*node_modules|^\s*(\[[^\]]*\] )?[✔✓ℹ] )/i;
 const cmdEcho = /^(\$ |> |\. \w)/; // echoed commands, not results
 
 // TS2305/TS2459/TS2724: a symbol imported from another module isn't exported by it.
@@ -55,12 +56,13 @@ if (hits.size === 0) process.exit(0);
 const parts = [failedTasks.size ? `task(s) ${[...failedTasks].join(', ')}` : '', failedStep ? `step \`${failedStep}\`` : ''].filter(Boolean);
 const header = [`FAILED: ${parts.join(' | ') || 'see lines below'}`];
 if (file) header.push(`full log: ${file}`);
+header.push(...acceptanceFailures(raw));
 if (missing.size) {
 	const what = [...missing].map(([mod, names]) => `${[...names].join(', ')} from ${mod}`).join('; ');
 	header.push(`hint: re-export every cross-package type from <pkg>/src/index.ts (missing: ${what})`);
 }
 const body = [...hits].sort((a, b) => a - b).map((i) => lines[i] ?? '');
-const out = [...new Set([...header, ...body])].map((l) => (l.length > MAX_WIDTH ? `${l.slice(0, MAX_WIDTH)}…` : l));
+const out = [...new Set([...header, ...body])].map((l) => (l.length > MAX_WIDTH && !l.startsWith('scenario  ') ? `${l.slice(0, MAX_WIDTH)}…` : l));
 const shown = out.slice(0, MAX_LINES - 1);
 if (out.length > shown.length) shown.push(`… +${out.length - shown.length} more lines${file ? ` (full log: ${file})` : ''}`);
 console.log(shown.join('\n'));

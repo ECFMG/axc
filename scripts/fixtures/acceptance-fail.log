@@ -1,0 +1,114 @@
+$ turbo run test:acceptance --filter=@axc-verification/acceptance-api
+• turbo 2.9.18
+
+   • Packages in scope: @axc-verification/acceptance-api
+   • Running test:acceptance in 1 packages
+   • Remote caching disabled, using shared worktree cache
+
+@axc-verification/acceptance-api:test:acceptance: cache bypass, force executing 6eaf84378537b0a9
+@axc-verification/acceptance-api:test:acceptance: $ rimraf target && NODE_ENV=test cucumber-js && pnpm exec serenity-bdd run --source target/site/serenity --destination target/site/serenity --features src/features
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /repo/packages/axc-verification/acceptance-api/src/features/healthcheck.feature:3
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Healthcheck: GET /health reports the API is healthy
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client requests the healthcheck
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/health' (146ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the healthcheck responds with status 200
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the status of the last response does equal 200 (1ms)
+@axc-verification/acceptance-api:test:acceptance:   And the healthcheck body matches the agentCourses contract
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health status does equal "ok" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health service does equal "agentCourses-api" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health projectCode does equal "axc" (1ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health environment does equal "test" (0ms)
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client ensures that the health timestamp does match /^\d{4}-\d{2}-\d{2}T/ (0ms)
+@axc-verification/acceptance-api:test:acceptance:   After
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✓ Execution successful (8s 522ms)
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /repo/packages/axc-verification/acceptance-api/src/features/zzprobe.feature:4
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Probe failures: PRB-AC1 health reports a wrong status
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client requests the healthcheck
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/health' (9ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the probe status is 418
+@axc-verification/acceptance-api:test:acceptance:     ✗ API client ensures that the status of the last response does equal 418 (1ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✗ Execution failed with assertion error (50ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   AssertionError: Expected the status of the last response to equal 418
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Expectation: equals(418)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Expected number: 418
+@axc-verification/acceptance-api:test:acceptance:   Received number: 200
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:       at /repo/packages/axc-verification/acceptance-api/src/step-definitions/zzprobe.steps.ts:7:99
+@axc-verification/acceptance-api:test:acceptance:       at /repo/packages/axc-verification/acceptance-api/src/step-definitions/zzprobe.steps.ts:7:99
+@axc-verification/acceptance-api:test:acceptance:       at ErrorFactory.create (/repo/node_modules/.pnpm/@serenity-js+core@3.46.0/node_modules/@serenity-js/core/src/errors/ErrorFactory.ts:36:16)
+@axc-verification/acceptance-api:test:acceptance:       at Stage.createError (/repo/node_modules/.pnpm/@serenity-js+core@3.46.0/node_modules/@serenity-js/core/src/stage/Stage.ts:336:28)
+@axc-verification/acceptance-api:test:acceptance:       at RaiseErrors.create (/repo/node_modules/.pnpm/@serenity-js+core@3.46.0/node_modules/@serenity-js/core/src/errors/RaiseErrors.ts:59:27)
+@axc-verification/acceptance-api:test:acceptance:       at Ensure.performAs (/repo/node_modules/.pnpm/@serenity-js+assertions@3.46.0/node_modules/@serenity-js/assertions/src/Ensure.ts:140:41)
+@axc-verification/acceptance-api:test:acceptance:       at async PerformActivities.perform (/repo/node_modules/.pnpm/@serenity-js+core@3.46.0/node_modules/@serenity-js/core/src/screenplay/abilities/PerformActivities.ts:60:13)
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /repo/packages/axc-verification/acceptance-api/src/features/zzprobe.feature:9
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Probe failures: PRB-AC2 uses a step nobody defined
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client requests the healthcheck
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/health' (5ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the probe step that does not exist passes
+@axc-verification/acceptance-api:test:acceptance:     ☕ImplementationPendingError: Step implementation missing:
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:     Then('the probe step that does not exist passes', async function () {
+@axc-verification/acceptance-api:test:acceptance:       // Write code here that turns the phrase above into concrete actions
+@axc-verification/acceptance-api:test:acceptance:       return 'pending';
+@axc-verification/acceptance-api:test:acceptance:     });
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ☕Implementation pending (33ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   ImplementationPendingError: Step implementation missing:
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Then('the probe step that does not exist passes', async function () {
+@axc-verification/acceptance-api:test:acceptance:     // Write code here that turns the phrase above into concrete actions
+@axc-verification/acceptance-api:test:acceptance:     return 'pending';
+@axc-verification/acceptance-api:test:acceptance:   });
+@axc-verification/acceptance-api:test:acceptance: --------------------------------------------------------------------------------
+@axc-verification/acceptance-api:test:acceptance: /repo/packages/axc-verification/acceptance-api/src/features/zzprobe.feature:14
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Probe failures: PRB-AC3 a step throws
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   Before
+@axc-verification/acceptance-api:test:acceptance:   When the client requests the healthcheck
+@axc-verification/acceptance-api:test:acceptance:     ✓ API client sends a GET request to '/health' (4ms)
+@axc-verification/acceptance-api:test:acceptance:   Then the probe step throws
+@axc-verification/acceptance-api:test:acceptance:     ✗ TypeError: Cannot read properties of undefined (reading 'id')
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: ✗ Execution failed with error (33ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance:   TypeError: Cannot read properties of undefined (reading 'id')
+@axc-verification/acceptance-api:test:acceptance:       at ConfiguredManagedSerenityWorld.<anonymous> (/repo/packages/axc-verification/acceptance-api/src/step-definitions/zzprobe.steps.ts:9:8)
+@axc-verification/acceptance-api:test:acceptance: ================================================================================
+@axc-verification/acceptance-api:test:acceptance: Execution Summary
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Healthcheck:    1 successful, 1 total (8s 522ms)
+@axc-verification/acceptance-api:test:acceptance: Probe failures: 1 broken, 1 failed, 1 pending, 3 total (116ms)
+@axc-verification/acceptance-api:test:acceptance: 
+@axc-verification/acceptance-api:test:acceptance: Total time: 8s 638ms
+@axc-verification/acceptance-api:test:acceptance: Real time: 8s 673ms
+@axc-verification/acceptance-api:test:acceptance: Scenarios:  4
+@axc-verification/acceptance-api:test:acceptance: ================================================================================
+@axc-verification/acceptance-api:test:acceptance: [ELIFECYCLE] Command failed with exit code 1.
+ ERROR  @axc-verification/acceptance-api#test:acceptance: command (/repo/packages/axc-verification/acceptance-api) /Users/mohit/.nvm/versions/node/v24.21.0/bin/pnpm run test:acceptance exited (1)
+
+ Tasks:    10 successful, 11 total
+Cached:    10 cached, 11 total
+  Time:    12.692s 
+Failed:    @axc-verification/acceptance-api#test:acceptance
+
+ ERROR  run failed: command  exited (1)
+[ELIFECYCLE] Command failed with exit code 1.

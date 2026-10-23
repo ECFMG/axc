@@ -1,7 +1,7 @@
 // node --test scripts/stop-gate.test.mjs — drives stop-gate.mjs with fake hook inputs in a throwaway repo.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
@@ -76,4 +76,9 @@ test('new commit without a finished verify (no summary line) → block', () => {
 	writeFileSync(path.join(repo, 'a.md'), 'c\n');
 	commit('verify cut short', '$ pnpm run verify\n$ pnpm run build\n');
 	assert.match(JSON.parse(hook('stop')).reason, /did not run or finish/);
+});
+test('failed acceptance since start → block reason names the scenario', () => {
+	writeFileSync(path.join(repo, 'a.md'), 'b\n');
+	verifyLog(readFileSync(path.join(import.meta.dirname, 'fixtures/acceptance-fail.log'), 'utf8'));
+	assert.match(JSON.parse(hook('stop')).reason, /zzprobe\.feature:4 "PRB-AC1 health reports a wrong status" — step "Then the probe status is 418" — AssertionError/);
 });
