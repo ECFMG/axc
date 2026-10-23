@@ -44,7 +44,7 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: the map is at its 12115-byte budget; the b-out-6 fixes (complete one-round read list, useAwait / knip-export wording) need ~135 bytes. The lockfile rule (sink a-out-18, a-out-20, b-out-5 — inside the 20-run window) is kept in two places; only its third copy went.
 
 ## 2026-10-23 — map: duplicates + host wording (room for the b-out-8 orientation notes)
-- commit: (filled in by the next commit)
+- commit: 9227bcb
 - file: `.agents/skills/mog-repo-map/SKILL.md` · 12115 → 11880 bytes
 - removed (kind 1, duplicates): Public-API line "Imports use `.ts` extensions." (TypeScript block: "NodeNext + `.ts` import extensions"); Acceptance "(global patterns)" (the "Step patterns are global" line); Query-validation "; the skeleton's is a placeholder" (skeleton comment "placeholder: use the task spec's error shape"); frontmatter "Then open only files you will change." (read list: "files you'll change"); Layout domain ", no infra imports" (Layering line lists the domain import bans).
 - reworded (kind 3): Routes "(proven)" dropped; Acceptance host "Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the Stop hook." → "Host (`scripts/start-host.ts`, port 7071 + worktree offset) is started/stopped by the Stop hook — never start it; relative paths only." (no ledger sink).

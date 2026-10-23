@@ -38,3 +38,5 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `Stop hook verifies; just stop.` | .github/hooks/write-boundary.json | ad-hoc vitest/biome/knip/typecheck calls | b-out-6 | this round |
 | `or add a real await` | scripts/check-summary.mjs | biome useAwait one-pass fix | b-out-6 | this round |
 | `"dependsOn": ["^build"]` | turbo.json | stale-dist TS2305 | b-out-6 | cd4bc93 |
+| `task-set-a-requirements.md` | .agents/skills/mog-repo-map/SKILL.md | orientation round 3 (requirements file not in the read list) | b-out-8 | this round |
+| `**Serenity imports**: static` | .agents/skills/mog-repo-map/SKILL.md | orientation round 3 (Serenity import form) | b-out-8 | this round |

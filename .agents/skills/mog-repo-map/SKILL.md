@@ -5,7 +5,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 # mog-repo-map
 
-**Read in ONE parallel turn, nothing after: the task's requirements/spec file(s) · `.agents/skills/mog-repo-map/write-skeleton.md` (write endpoints) · `apps/docs/sidebars.ts` · patterns `acceptance-api/src/step-definitions/healthcheck.steps.ts`, `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` · files you'll change (`apps/api/src/index.ts`, `axc/{application-services,rest}/src/index.ts`). Write in ≤2 calls, then stop.**
+**Read in ONE parallel turn, nothing after: the task's requirements file (`task-set-a-requirements.md` / `task-set-b-requirements.md`, repo root) · `.agents/skills/mog-repo-map/write-skeleton.md` (write endpoints) · `apps/docs/sidebars.ts` · patterns `acceptance-api/src/step-definitions/healthcheck.steps.ts`, `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` · files you'll change (`apps/api/src/index.ts`, `axc/{application-services,rest}/src/index.ts`). Write in ≤2 calls, then stop.**
 
 **Never** open `packages/cellix/**` sources you won't edit.
 
@@ -139,6 +139,7 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.
 - **Step patterns are global** across every `.steps.ts`: reuse an existing pattern; a second definition matching the same text makes the run fail as ambiguous.
 - **4xx**: `Send` doesn't throw — assert the status step, then `Ensure.that(responseBody<E>(), property('<field>', equals(v)))`.
+- **Serenity imports**: static, top of file, as in `healthcheck.steps.ts` (`@serenity-js/core`, `/assertions`, `/rest`); never `await import()`.
 - **Step API** beyond the skeleton: `Given`, `Question`, `PostRequest.to(p).with(body)`, `isTrue`, `containAtLeastOneItemThat`, `not`.
 - **Derived check**: an async `Question.about` is `Question<Promise<T>>`, so pass it through `resolved()` (else TS2345 `Expectation<boolean>` vs `Expectation<Promise<boolean>>`):
   `const nonEmpty = Question.about('non-empty', (a) => a.answer(responseBody<T[]>()).then((xs) => xs.length > 0));` → `Ensure.that(resolved(nonEmpty), equals(true))`.
