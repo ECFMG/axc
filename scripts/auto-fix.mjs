@@ -1,7 +1,8 @@
 // Stop-hook auto-fix (stop-gate runs it before the commit's verify). Only the agent's changed files inside the write
 // dirs; never write-boundary path_deny files; never test/spec/feature/step files (no fixer may touch assertions).
 //   1. useAwait: drop `async` where biome reports no `await` (skipped when the signature names `Promise<`).
-//   2. knip --fix --fix-type exports,types: drop unused `export`s; any other file knip touches is restored.
+//   2. knip --fix (exports + types; repeated --fix-type: knip 5.88 ignores the comma form): drop unused `export`s;
+//      any other file knip touches is restored.
 //   3. biome check --write: safe fixes + format only (no --unsafe).
 // Dependency-free; every fixer is optional (missing node_modules/.bin → skipped) and fails open. Returns log lines.
 import { spawnSync } from 'node:child_process';
@@ -101,7 +102,7 @@ export function autoFix(root, targets, { prefix = '', env = process.env } = {}) 
 					.filter((f) => !targets.code.includes(f))
 					.map((f) => [f, read(f)]),
 			);
-			const t = touched(targets.code, () => sh(bin('knip'), ['--fix', '--fix-type', 'exports,types', '--no-exit-code', '--no-progress', '--no-config-hints']));
+			const t = touched(targets.code, () => sh(bin('knip'), ['--fix', '--fix-type', 'exports', '--fix-type', 'types', '--no-exit-code', '--no-progress', '--no-config-hints']));
 			for (const f of changedFiles(root)) {
 				if (targets.code.includes(f)) continue;
 				if (!saved.has(f)) spawnSync('git', ['checkout', '-q', '--', f], { cwd: root, env: gitEnv() });

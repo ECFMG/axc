@@ -82,7 +82,7 @@ test('autoFix: useAwait spots from biome, knip limited to changed files, biome -
 		'if [ "$1" = lint ]; then echo "::error title=lint/suspicious/useAwait,file=src/a.ts,line=1,endLine=1,col=18,endColumn=40::lacks await"; exit 1; fi\nshift; for f; do case "$f" in --*) ;; *) echo "// fmt" >> "$f";; esac; done',
 	);
 	// fake knip: rewrites src/a.ts (changed → allowed) and src/keep.ts (unchanged → must be restored)
-	fakeBin('knip', "sed -i.bak 's/^export interface/interface/' src/a.ts && rm -f src/a.ts.bak; echo '// knip' >> src/keep.ts");
+	fakeBin('knip', "echo \"$@\" > node_modules/knip-args; sed -i.bak 's/^export interface/interface/' src/a.ts && rm -f src/a.ts.bak; echo '// knip' >> src/keep.ts");
 	write('src/a.ts', 'export const a = async () => {\n\treturn 1;\n};\nexport interface T { x: number }\n');
 	write('src/a.test.ts', 'export const t = async () => 1;\n');
 	const t = fixTargets(changedFiles(repo));
@@ -91,6 +91,7 @@ test('autoFix: useAwait spots from biome, knip limited to changed files, biome -
 	assert.deepEqual(log, ['useAwait (drop async): src/a.ts', 'knip --fix exports,types: src/a.ts', 'biome check --write: src/a.ts']);
 	assert.equal(read('src/a.ts'), 'export const a = () => {\n\treturn 1;\n};\ninterface T { x: number }\n// fmt\n');
 	assert.equal(read('src/keep.ts'), 'export const keep = 1;\n', 'knip edit outside the changed files restored');
+	assert.match(read('node_modules/knip-args'), /--fix --fix-type exports --fix-type types /, 'repeated --fix-type (knip ignores the comma form)');
 	assert.equal(read('src/a.test.ts'), 'export const t = async () => 1;\n', 'test files never fixed');
 });
 
