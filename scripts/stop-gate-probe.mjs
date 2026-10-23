@@ -49,7 +49,13 @@ try {
 		blocked = null; // no JSON: the hook allowed (or crashed and failed open)
 	}
 	check('1 planted type error blocks the stop', blocked?.decision === 'block' && typeof blocked.reason === 'string', `${red.secs}s`);
-	if (blocked?.reason) console.log(blocked.reason.split('\n').map((l) => `    ${l}`).join('\n'));
+	if (blocked?.reason)
+		console.log(
+			blocked.reason
+				.split('\n')
+				.map((l) => `    ${l}`)
+				.join('\n'),
+		);
 	check('  reason is short and names the file', (blocked?.reason ?? '').split('\n').length < 15 && (blocked?.reason ?? '').includes('zz-stop-probe'));
 	check('  nothing committed, file still untracked', git(wt, 'rev-parse', 'HEAD') === base && git(wt, 'ls-files', '-o', '--exclude-standard').split('\n').includes(rel));
 
