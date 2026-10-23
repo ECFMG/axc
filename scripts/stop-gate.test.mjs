@@ -6,7 +6,7 @@ import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSy
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, test } from 'node:test';
-import { commitEnv, commitMessage, plan } from './stop-gate.mjs';
+import { commitEnv, commitMessage, mergeFixLog, plan } from './stop-gate.mjs';
 
 const gate = path.join(import.meta.dirname, 'stop-gate.mjs');
 const failLog = path.join(import.meta.dirname, 'fixtures/acceptance-fail.log');
@@ -213,4 +213,35 @@ test('auto-fix runs before verify on changed files and is logged in the auto-com
 	assert.equal(readFileSync(path.join(repo, 'widget.test.ts'), 'utf8'), 'export const t = 1;\n');
 	assert.match(sh('log', '-1', '--format=%b'), /Auto-fix \(Stop hook, before verify\):\n- biome check --write: widget\.ts/);
 	assert.equal(sh('status', '--porcelain'), '');
+});
+
+test('auto-fix log survives a failed commit: the later auto-commit body still lists it; cleared afterwards', () => {
+	write('.gitignore', '*.log\nnode_modules/\n');
+	sh('add', '-A');
+	sh('commit', '-qm', 'ignore', '--no-verify');
+	mkdirSync(path.join(repo, 'node_modules/.bin'), { recursive: true });
+	const biome = path.join(repo, 'node_modules/.bin/biome');
+	// idempotent fake fixer: the second stop finds nothing left to fix
+	writeFileSync(biome, '#!/bin/sh\n[ "$1" = check ] || exit 0\nshift; for f; do case "$f" in --*) ;; *) grep -q "// fixed" "$f" || echo "// fixed" >> "$f";; esac; done\n');
+	chmodSync(biome, 0o755);
+	write('widget.ts', 'export const w = 1;\n');
+	const logFile = path.join(repo, '.git/stop-gate/auto-fix-log.json');
+	assert.match(stop({}, { FAKE_VERIFY_FAIL: failLog }) ?? '', /./, 'red verify blocks');
+	assert.deepEqual(JSON.parse(readFileSync(logFile, 'utf8')), ['biome check --write: widget.ts']);
+	assert.equal(stop({ stopHookActive: true }), null);
+	assert.match(sh('log', '-1', '--format=%b'), /Auto-fix \(Stop hook, before verify\):\n- biome check --write: widget\.ts/);
+	assert.equal(existsSync(logFile), false, 'log cleared after the commit');
+	assert.equal(sh('status', '--porcelain'), '');
+});
+
+test('mergeFixLog: dedupes, keeps fileless lines, limits files to the staged ones', () => {
+	const staged = 'A\tsrc/a.ts\nM\tsrc/b.ts\n';
+	assert.deepEqual(
+		mergeFixLog(
+			['useAwait (drop async): src/a.ts, src/gone.ts', 'build (knip could not load its config before it)'],
+			['useAwait (drop async): src/a.ts', 'knip --fix exports,types: src/gone.ts', 'biome check --write: src/b.ts'],
+			staged,
+		),
+		['useAwait (drop async): src/a.ts', 'build (knip could not load its config before it)', 'biome check --write: src/b.ts'],
+	);
 });

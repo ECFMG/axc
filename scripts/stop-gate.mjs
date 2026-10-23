@@ -7,7 +7,8 @@
 //          Green (verify log ends with `verify ok`, tree clean) → silent allow. Red → block with a terse
 //          one-line-per-problem report; nothing committed. The fingerprint covers untracked file contents. A plain
 //          re-stop on the same tree state is allowed; a stopHookActive retry after a block always re-verifies.
-//          At most 3 blocks per session; then allow with a one-line note.
+//          At most 3 blocks per session; then allow with a one-line note. Auto-fix log lines survive a failed commit
+//          (`<git dir>/stop-gate/auto-fix-log.json`, untracked): the next auto-commit body still lists them; cleared on commit.
 //   run:   the same for tools without a Stop hook: report + exit 1 on failure, one `verify ok` line on success.
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -144,6 +145,42 @@ export function commitEnv(base = process.env) {
 	return env;
 }
 
+/**
+ * Auto-fix lines from earlier failed stops + this one, deduped, each `fixer: files` line limited to the staged files
+ * (a later edit may have reverted a fixed file). Pure.
+ */
+export function mergeFixLog(prior, fixes, staged) {
+	const files = new Set(
+		staged
+			.split('\n')
+			.map((l) => l.split('\t').at(-1)?.trim())
+			.filter(Boolean),
+	);
+	const out = [];
+	for (const line of [...prior, ...fixes]) {
+		const m = line.match(/^([^:]+): (.+)$/);
+		const kept = m
+			? `${m[1]}: ${m[2]
+					.split(', ')
+					.filter((f) => files.has(f))
+					.join(', ')}`
+			: line;
+		if (m && kept.endsWith(': ')) continue;
+		if (!out.includes(kept)) out.push(kept);
+	}
+	return out;
+}
+
+const fixLogFile = () => path.join(git('rev-parse', '--absolute-git-dir').trim(), 'stop-gate', 'auto-fix-log.json');
+const readFixLog = (file) => {
+	try {
+		const v = JSON.parse(readFileSync(file, 'utf8'));
+		return Array.isArray(v) ? v.filter((l) => typeof l === 'string') : [];
+	} catch {
+		return [];
+	}
+};
+
 /** install → add → commit (husky verify). Returns null on success, else the terse failure report. */
 export function autoCommit(root) {
 	const t0 = Date.now();
@@ -157,9 +194,16 @@ export function autoCommit(root) {
 		}
 	}
 	const dirs = writeDirs(root);
-	const fixes = autoFix(root, fixTargets(changedFiles(root), { dirs, deny: denyRules(root) }), { prefix: NVM, env: { ...env, HUSKY: '0' } });
+	const fixed = autoFix(root, fixTargets(changedFiles(root), { dirs, deny: denyRules(root) }), { prefix: NVM, env: { ...env, HUSKY: '0' } });
+	const logFile = fixLogFile();
+	const prior = readFixLog(logFile);
+	if (fixed.length) {
+		mkdirSync(path.dirname(logFile), { recursive: true });
+		writeFileSync(logFile, JSON.stringify([...prior, ...fixed.filter((l) => !prior.includes(l))])); // kept until a commit lands
+	}
 	git('add', '-A', '--', ...(dirs.length ? dirs : ['.']));
 	const staged = git('diff', '--cached', '--name-status');
+	const fixes = mergeFixLog(prior, fixed, staged);
 	if (!staged.trim()) return block(`changes outside the write dirs (${dirs.join(', ')}); revert them:\n${git('status', '--porcelain').trim().split('\n').slice(0, 10).join('\n')}`);
 	const pkgOf = (f) => {
 		for (let d = path.dirname(f); d !== '.' && d !== '/'; d = path.dirname(d)) if (existsSync(path.join(root, d, 'package.json'))) return path.basename(d);
@@ -175,6 +219,7 @@ export function autoCommit(root) {
 		run('git', ['reset', '-q']); // unstage only; the working tree stays as written
 		return block(report(out, root));
 	}
+	rmSync(logFile, { force: true });
 	if (!verifyFinished(root, t0)) return block('commit landed without a `verify ok` summary: husky verify did not run (core.hooksPath?).');
 	const left = git('status', '--porcelain').trim();
 	return left ? block(`committed, but changes outside the write dirs remain; revert them:\n${left.split('\n').slice(0, 10).join('\n')}`) : null;

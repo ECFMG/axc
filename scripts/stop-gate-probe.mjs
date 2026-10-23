@@ -3,6 +3,8 @@
 // In a fresh detached /tmp worktree of HEAD: plant a type error in a NEW untracked test file → stop must block
 // (Grok/Claude {"decision":"block","reason"}) with HEAD unchanged and the file still untracked; fix only that file's
 // contents → stopHookActive re-stop must verify, allow silently and auto-commit a commit that contains the file.
+// Case 1 also adds an async-without-await source file: its auto-fix line must survive the failed first stop and
+// appear in case 2's commit body.
 // Then an auto-fixable-only change (useAwait + an exported type used only locally) must commit on the first stop.
 // Git runs with GIT_* stripped and global/system config ignored; the worktree is removed afterwards unless --keep.
 import { execFileSync, spawnSync } from 'node:child_process';
@@ -41,7 +43,11 @@ git(src, 'worktree', 'add', '--detach', '-q', wt, 'HEAD');
 try {
 	// No `.husky/_` here (gitignored, so a fresh worktree lacks it): this also probes stop-gate's husky self-heal.
 	const base = git(wt, 'rev-parse', 'HEAD');
+	const asyncRel = 'packages/axc/application-services/src/zz-stop-probe-async.ts';
+	const indexRel = 'packages/axc/application-services/src/index.ts';
 	hook('start');
+	writeFileSync(path.join(wt, asyncRel), 'export const zzProbeAsync = async () => 1;\n');
+	appendFileSync(path.join(wt, indexRel), "export { zzProbeAsync } from './zz-stop-probe-async.ts';\n");
 	writeFileSync(file, "import { expect, it } from 'vitest';\n\nit('stop probe', () => {\n\tconst n: number = 'not a number';\n\texpect(n).toBe(1);\n});\n");
 	const red = hook('stop');
 	let blocked = null;
@@ -60,6 +66,9 @@ try {
 		);
 	check('  reason is short and names the file', (blocked?.reason ?? '').split('\n').length < 15 && (blocked?.reason ?? '').includes('zz-stop-probe'));
 	check('  nothing committed, file still untracked', git(wt, 'rev-parse', 'HEAD') === base && git(wt, 'ls-files', '-o', '--exclude-standard').split('\n').includes(rel));
+	const fixLogFile = path.join(git(wt, 'rev-parse', '--absolute-git-dir'), 'stop-gate', 'auto-fix-log.json');
+	const kept = existsSync(fixLogFile) ? readFileSync(fixLogFile, 'utf8') : '';
+	check('  auto-fix log kept through the block', kept.includes('useAwait') && kept.includes('zz-stop-probe-async.ts'), kept.slice(0, 200));
 
 	writeFileSync(file, "import { expect, it } from 'vitest';\n\nit('stop probe', () => {\n\tconst n: number = 1;\n\texpect(n).toBe(1);\n});\n");
 	const green = hook('stop', { stopHookActive: true });
@@ -67,11 +76,19 @@ try {
 	const head = git(wt, 'rev-parse', 'HEAD');
 	check('  auto-commit landed and contains the file', head !== base && git(wt, 'show', '--name-only', '--format=', 'HEAD').split('\n').includes(rel), head.slice(0, 7));
 	check('  tree clean afterwards', git(wt, 'status', '--porcelain') === '');
+	const body2 = git(wt, 'log', '-1', '--format=%b');
+	check(
+		'  commit body lists the auto-fix from the failed stop; log cleared',
+		/Auto-fix \(Stop hook, before verify\):/.test(body2) && /- useAwait \(drop async\):.*zz-stop-probe-async\.ts/.test(body2) && !existsSync(fixLogFile),
+		body2
+			.split('\n')
+			.filter((l) => l.startsWith('- '))
+			.join(' | '),
+	);
 	check('  self-heal generated .husky/_ (no git config write)', existsSync(path.join(wt, '.husky/_/h')));
 
 	// 3: auto-fixable only (useAwait + an exported type used just locally) → the first stop commits, 0 blocks.
 	const fixRel = 'packages/axc/application-services/src/zz-stop-probe-fix.ts';
-	const indexRel = 'packages/axc/application-services/src/index.ts';
 	hook('start', { sessionId: 'mog-probe-fix' });
 	const head2 = git(wt, 'rev-parse', 'HEAD');
 	writeFileSync(path.join(wt, fixRel), 'export interface ZzProbeResult {\n\tok: boolean;\n}\n\nexport const zzProbe = async () => {\n\tconst r: ZzProbeResult = { ok: true };\n\treturn r;\n};\n');
