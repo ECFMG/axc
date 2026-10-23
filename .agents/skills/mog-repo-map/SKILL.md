@@ -5,7 +5,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 # mog-repo-map
 
-**Read in ONE parallel turn, nothing after: the task's requirements file (`task-set-a-requirements.md` / `task-set-b-requirements.md`, repo root) · `.agents/skills/mog-repo-map/write-skeleton.md` (write endpoints) · `apps/docs/sidebars.ts` · patterns `acceptance-api/src/step-definitions/healthcheck.steps.ts`, `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` · files you'll change (`apps/api/src/index.ts`, `axc/{application-services,rest}/src/index.ts`). Write in ≤2 calls, then stop.**
+**Read in ONE parallel turn, nothing after: the task's requirements file (`task-set-a-requirements.md` / `task-set-b-requirements.md`, repo root) · `.agents/skills/mog-repo-map/write-skeleton.md` (write endpoints) · `apps/docs/sidebars.ts` · patterns `acceptance-api/src/step-definitions/healthcheck.steps.ts`, `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` · files you'll change (`apps/api/src/index.ts`, `axc/{application-services,rest}/src/index.ts`).**
 
 **Never** open `packages/cellix/**` sources you won't edit.
 
@@ -148,7 +148,7 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 
 ## Biome (`biome.json`)
 
-Tabs, single quotes, lineWidth 230, organizeImports on; commit runs `biome check --write`. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
+Tabs, single quotes, lineWidth 230, organizeImports on. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
 - `useAwait`: `async` fn with no `await` → drop `async` (return the value/Promise directly) or add a real await; steps: `responseBody<T>()` (sync).
 - `useImportType`: type-only imports use `import type` / inline `type X`.
 

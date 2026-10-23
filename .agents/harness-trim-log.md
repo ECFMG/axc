@@ -55,3 +55,10 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - removed (kind 1, duplicates): Public-API line "Imports use `.ts` extensions." (TypeScript block: "NodeNext + `.ts` import extensions"); Acceptance "(global patterns)" (the "Step patterns are global" line); Query-validation "; the skeleton's is a placeholder" (skeleton comment "placeholder: use the task spec's error shape"); frontmatter "Then open only files you will change." (read list: "files you'll change"); Layout domain ", no infra imports" (Layering line lists the domain import bans).
 - reworded (kind 3): Routes "(proven)" dropped; Acceptance host "Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the Stop hook." → "Host (`scripts/start-host.ts`, port 7071 + worktree offset) is started/stopped by the Stop hook — never start it; relative paths only." (no ledger sink).
 - why: the map is at its 12115-byte budget; the b-out-8 notes (literal requirements paths in the read list, static Serenity imports) need ~210 bytes. No rule dropped; every ledger key still present, 20-run protection unaffected.
+
+## 2026-10-23 — map: duplicate stop line + sink-less biome clause (room for the mog-xai-2 rules)
+- commit: (this commit, branch mog-xai-2)
+- file: `.agents/skills/mog-repo-map/SKILL.md` · 12081 → 12014 bytes
+- removed (kind 1, duplicate): read-list tail " Write in ≤2 calls, then stop." — `AGENTS.md` (always loaded) says "Write all files in ≤2 calls (one batch + one optional fix-up). Then stop." (ledger keys `Write all files in ≤2 calls`, `Then stop` live there).
+- removed (kind 2, no sink): Biome "; commit runs `biome check --write`" — agents never commit (the Stop hook does); no ledger row, no run names it.
+- why: the map has 34 bytes of headroom and the two mog-xai-2 rules (hand-removed exports, multi-error field order) need ~100. No rule with a sink in the last 20 runs dropped; every ledger key still present.
