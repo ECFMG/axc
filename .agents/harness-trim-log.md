@@ -25,7 +25,7 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: the same layering rule lived in AGENTS, the map and test:arch; one copy in the map. No rule dropped (sinks in the last 20 runs: none recorded), so the 20-run protection is unaffected.
 
 ## 2026-10-23 — Copilot instructions point at the AGENTS write boundary
-- commit: (filled in by the next commit)
+- commit: a2b85be
 - file: `.github/copilot-instructions.md` · 2169 → 2003 bytes
 - removed (kind 1, duplicates): "Write only under: `apps/api`, `apps/docs`, `packages/axc/*`, `packages/axc-verification/*`." / "May port `packages/cellix/**` from `/Volumes/files/src/cellixjs` when a required Cellix capability is missing." / "Do not weaken verify/guardrails. Never `--no-verify`." — the same rules are in `AGENTS.md` "Write boundary" (Copilot loads AGENTS too) and enforced by the write-boundary hook; replaced by one pointer line.
 - why: 88% word containment with AGENTS.md:13; no rule dropped, 20-run protection unaffected.

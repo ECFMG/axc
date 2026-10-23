@@ -1,0 +1,13 @@
+{
+	"_comment": "Single source for the trim guard and the rules-ledger tooling. Budgets = byte size after the last harness trim round; raising one needs a trim-log entry.",
+	"TRIM_PROTECT_RUNS": 20,
+	"budgets": {
+		"AGENTS.md": 2075,
+		".agents/skills/mog-repo-map/SKILL.md": 12115,
+		".agents/skills/run-validation/SKILL.md": 559,
+		".github/copilot-instructions.md": 2003
+	},
+	"duplicate": { "minWords": 6, "containment": 0.75 },
+	"ledger": "docs/mog-rules-ledger.md",
+	"trimLog": ".agents/harness-trim-log.md"
+}
