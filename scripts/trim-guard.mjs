@@ -2,8 +2,9 @@
 // near-duplicate lines across them, and rules-ledger rows whose rule left its file. Report-only — never edits.
 // Trimming is AI-driven in a harness round, never inside a SCORE run. Settings: scripts/trim-guard.config.json.
 // Usage: node scripts/trim-guard.mjs
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 export const config = JSON.parse(readFileSync(path.join(import.meta.dirname, 'trim-guard.config.json'), 'utf8'));
 const how = () => `trim or move to an on-demand file (AI trim in a harness round, never in SCORE: duplicates → rules with no sink in the last ${config.TRIM_PROTECT_RUNS} runs → wording → on-demand; log it in ${config.trimLog})`;
@@ -86,10 +87,13 @@ export function check(root) {
 	return [...overBudget(sizes), ...overDirBudget(dirFiles, sizes), ...duplicates(files), ...staleLedger(read(config.ledger) ?? '', read)];
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+// realpath + file URL: a symlinked or space-containing path must still run main, not no-op.
+const isMain = () => Boolean(process.argv[1]) && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href;
+if (isMain()) {
 	const problems = check(path.resolve(import.meta.dirname, '..'));
 	if (problems.length) {
 		console.log(problems.join('\n'));
 		process.exit(1);
 	}
+	console.log('trim-guard: ok');
 }

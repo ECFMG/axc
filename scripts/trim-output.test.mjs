@@ -1,7 +1,8 @@
 // node --test scripts/trim-output.test.mjs — fake PostToolUse payloads.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
 import { capRead, trim } from './trim-output.mjs';
@@ -49,4 +50,16 @@ test('read_file: a spec-sized read passes untouched; a huge read is capped with 
 test('hook config: the trimmer runs after shell commands and file reads', () => {
 	const hook = JSON.parse(readFileSync(path.join(import.meta.dirname, '../.grok/hooks/trim-output.json'), 'utf8'));
 	assert.equal(hook.hooks.PostToolUse[0].matcher, 'run_terminal_command|read_file');
+});
+
+test('hook runs when invoked through a symlinked path', () => {
+	const dir = mkdtempSync(path.join(tmpdir(), 'mog-to-link-'));
+	try {
+		symlinkSync(import.meta.dirname, path.join(dir, 'scripts'));
+		const text = ['exit: 1', ...passes, 'src/a.ts(3,1): error TS2345: bad', ...passes].join('\n');
+		const out = execFileSync(process.execPath, [path.join(dir, 'scripts/trim-output.mjs')], { input: bash(text), encoding: 'utf8' });
+		assert.match(JSON.parse(out).hookSpecificOutput.updatedToolOutput, /TS2345/);
+	} finally {
+		rmSync(dir, { recursive: true, force: true });
+	}
 });
