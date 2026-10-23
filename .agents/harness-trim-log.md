@@ -50,8 +50,13 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: Grok preloads `.grok/rules/*.md` at session start (grok inspect: Project Instructions), so the b-out-5/6 orientation reads of these files (in the last 20 runs) go away; content is preloaded once, not also via the skill.
 
 ## 2026-10-23 — grok map: questions.ts API list now preloaded
-- commit: filled in by the next trim commit
+- commit: fd424db
 - file: `.grok/rules/mog-repo-map.md` · 11816 → 11755 bytes (budget lowered to match)
 - removed (kind 1, duplicates): "(`responseBody<T>()`, `resolved()`, `patchJson(path, body)`)" after `questions.ts` in the Acceptance fact — the full `questions.ts` source is preloaded in `.grok/rules/mog-patterns.md`.
 - why: same content was preloaded twice; `.grok/rules` total drops toward its 19545 cap. No rule dropped (the `responseBody<T>()` sync note under biome `useAwait` stays: sink b-out-6, inside the 20-run window).
+
+## 2026-10-23 — grok: lever 6 dropped (native `[permission]` deny rules removed)
+- commit: filled in by the next trim commit
+- files: `.grok/config.toml` (34 `Bash(...)` deny rules) deleted · ledger row "`Bash(git commit*)` | .grok/config.toml" dropped · `scripts/grok-config.test.mjs` now asserts the project config sets no Bash deny/ask rule
+- why: headless smoke (grok 1.0.67 `-p --always-approve`, throwaway worktree of fd424db): with the rules loaded `echo $(git rev-parse --short HEAD)` was refused ("could not be checked against the permission rules, so it was not run"); with them removed it ran. Per the docs an interactive session prompts instead (unattended → hang; unverified). No rule set avoids that path, so the write-boundary PreToolUse hook (same denials, sink b-out-6) stays the only command deny. No agent-facing rule removed.
 
