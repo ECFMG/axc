@@ -1,6 +1,6 @@
 ---
 name: mog-repo-map
-description: AXC map + conventions for mog-xai-1. Load first; it replaces exploring the repo, configs and arch tests. Then open only files you will change.
+description: AXC map + conventions for mog-xai-1. Load first; it replaces exploring the repo, configs and arch tests.
 ---
 
 # mog-repo-map
@@ -15,7 +15,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 apps/api/src/index.ts             Cellix composition; one .registerAzureFunctionHttpHandler(name, {route, methods, authLevel}, restHandlerCreator) per route
 apps/api/host.json                http.routePrefix "" → route is the full path ('api/<route>' ⇒ Hono sees /api/<route>)
 apps/docs/docs/*.md + sidebars.ts Docusaurus (page ids: see Docs fact)
-packages/axc/domain               entities/VOs, no infra imports
+packages/axc/domain               entities/VOs
 packages/axc/persistence          repo contracts (+ in-memory)
 packages/axc/service-mongoose     mongoose/mongodb only
 packages/axc/application-services ApplicationServices + factory (src/index.ts; health inline); only pkg with vitest
@@ -23,11 +23,11 @@ packages/axc/rest                 Hono createRestApp + restHandlerCreator (src/i
 packages/axc-verification/*       archunit-tests (rules only — don't add tests) · acceptance-api (Serenity/Cucumber)
 ```
 
-Each package's public API = `src/index.ts`: re-export from it every type/value another package imports (else TS2305/TS2459/TS2724). Imports use `.ts` extensions.
+Each package's public API = `src/index.ts`: re-export from it every type/value another package imports (else TS2305/TS2459/TS2724).
 
 ## Query validation (REST boundary)
 
-- Collect every problem (field + message) first, then return one 400. The error body is exactly the task spec's shape (names, nesting, codes) — build it in one `errorBody()`; the skeleton's is a placeholder.
+- Collect every problem (field + message) first, then return one 400. The error body is exactly the task spec's shape (names, nesting, codes) — build it in one `errorBody()`.
 - Integers: digits only → `Number.isSafeInteger` → range (huge values are 400, never `Infinity`).
 - `?x=` (empty) is present and invalid, not absent.
 - Enum values: the feature's exported `as const` array (flat domain constant; app-services has no `@axc/domain` dep); REST imports it, never retypes.
@@ -117,7 +117,7 @@ Layering (test:arch names file + fix): no cycles; domain (tests too) imports no 
 
 ## Facts (pre-answered — don't hunt)
 
-- **Routes** (proven): one `registerAzureFunctionHttpHandler` per route template, listing every method it serves; names unique — `('<feature>', { route: 'api/<feature>', methods: ['GET', 'POST'], … })`, `('<feature>-item', { route: 'api/<feature>/{id}', methods: ['PATCH'], … })`. Azure templates use `{id}`, Hono `:id` (`c.req.param('id')`); Hono sees the full path.
+- **Routes**: one `registerAzureFunctionHttpHandler` per route template, listing every method it serves; names unique — `('<feature>', { route: 'api/<feature>', methods: ['GET', 'POST'], … })`, `('<feature>-item', { route: 'api/<feature>/{id}', methods: ['PATCH'], … })`. Azure templates use `{id}`, Hono `:id` (`c.req.param('id')`); Hono sees the full path.
 - **Docs**: the path/file the task names (else `apps/docs/docs/<feature>.md`) — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
 - **knip** (`knip.json`): exports from non-entry files must be imported somewhere (a re-export from the package's `src/index.ts` counts) — `Unused exports` / `Unused exported types` fail verify. Don't `export` a type/interface/helper used only in its own file — export only what another file imports.
 - **Lockfile**: on it already — `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter`, vitest (application-services), `@serenity-js/*`, `@cucumber/cucumber`, `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`. Anything else = lockfile churn.
@@ -134,7 +134,7 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 
 - **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
 - **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`.
-- **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the Stop hook.
+- **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts`, `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host (`scripts/start-host.ts`, port 7071 + worktree offset) is started/stopped by the Stop hook — never start it; relative paths only.
 - **Step wiring** (`acceptance-api/cucumber.yaml`): features from `src/features/**/*.feature`; steps via `require` = `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` (loaded through `tsx/cjs`). A new step file must be `src/step-definitions/<feature>.steps.ts` — any other name/folder is never loaded (undefined steps).
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.
 - **Step patterns are global** across every `.steps.ts`: reuse an existing pattern; a second definition matching the same text makes the run fail as ambiguous.
