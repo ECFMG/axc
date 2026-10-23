@@ -1,3 +1,5 @@
+import { type CourseList, type CoursesQuery, listCourses } from './courses.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -19,11 +21,16 @@ export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
 	};
+	courses: {
+		list(q: CoursesQuery): CourseList;
+	};
 }
 
 export interface ApplicationServicesFactory {
 	forRequest(rawAuthHeader?: string): Promise<ApplicationServices>;
 }
+
+export { type Course, type CourseList, type CoursesQuery, courseModalities, courseSorts, courseStatuses, isCourseModality, isCourseSort, isCourseStatus } from './courses.ts';
 
 export function resolveEnvironment(nodeEnv: string | undefined): HealthEnvironment {
 	if (nodeEnv === 'production') {
@@ -49,6 +56,7 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 					};
 				},
 			},
+			courses: { list: listCourses },
 		});
 
 	return { forRequest };
