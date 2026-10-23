@@ -22,14 +22,14 @@ catalog:
   '@serenity-js/cucumber': 3.46.0
   '@serenity-js/rest': 3.46.0
   '@serenity-js/serenity-bdd': 3.46.0
-  '@storybook/addon-vitest': ^10.4.2
+  '@storybook/addon-vitest': 10.6.3
   '@types/node': 24.10.1
   '@typescript/native-preview': 7.0.0-dev.20260428.1
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/coverage-istanbul': 4.1.11
+  '@vitest/browser-playwright': 4.1.12
+  '@vitest/coverage-istanbul': 4.1.12
   archunit: ^2.1.63
   graphql: ^16.10.0
-  hono: 4.13.10
+  hono: 4.13.13
   mongodb: 6.18.0
   mongodb-memory-server: ^10.1.4
   mongodb-memory-server-core: 10.1.4
@@ -40,7 +40,7 @@ catalog:
   rimraf: 6.0.1
   tsx: ^4.21.0
   typescript: 6.0.3
-  vitest: 4.1.11
+  vitest: 4.1.12
 
 auditConfig:
   ignoreGhsas: [
@@ -51,7 +51,7 @@ overrides:
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
-  hono: 4.13.10
+  hono: 4.13.13
   http-cache-semantics: 4.3.0
   postcss-selector-parser: 7.1.6
   serialize-javascript: 7.1.2
@@ -59,9 +59,19 @@ overrides:
   sirv: 3.0.2
   source-map-js: 1.2.2
   tinypool: 2.1.2
-  vitest: 4.1.11
-  '@vitest/browser-playwright': 4.1.11
-  '@vitest/mocker': 4.1.11
+  vitest: 4.1.12
+  '@vitest/browser-playwright': 4.1.12
+  '@vitest/mocker': 4.1.12
+  follow-redirects: 1.16.1
+  vite: 8.3.5
+  launch-editor: 2.14.2
+  '@storybook/addon-vitest': 10.6.3
+  storybook: 10.6.3
+  '@graphql-tools/utils': 12.0.2
+  body-parser: 2.4.0
+  qs: 6.16.1
+  fast-uri: 3.1.9
+  webpack-dev-server: 5.2.7
 
 patchedDependencies:
   '@azure/functions@4.11.0': patches/@azure__functions@4.11.0.patch
@@ -73,5 +83,18 @@ allowBuilds:
   mongodb-memory-server: false
 
 minimumReleaseAgeExclude:
-  - hono@4.13.10
+  - hono@4.13.13
   - shell-quote@1.11.0
+  - follow-redirects@1.16.1
+  - vite@8.3.5
+  - launch-editor@2.14.2
+  - '@storybook/addon-vitest@10.6.3'
+  - storybook@10.6.3
+  - '@graphql-tools/utils@12.0.2'
+  - vitest@4.1.12
+  - '@vitest/browser-playwright@4.1.12'
+  - '@vitest/mocker@4.1.12'
+  - body-parser@2.4.0
+  - qs@6.16.1
+  - fast-uri@3.1.9
+  - webpack-dev-server@5.2.7
