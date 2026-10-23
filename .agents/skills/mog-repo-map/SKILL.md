@@ -134,6 +134,7 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 
 - **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
 - **Validation rules**: per spec validation/error rule, one boundary test + one negative test at the cheapest layer (unit first).
+- **Multi-error 400**: assert the field set, not order (unless the spec orders it).
 - **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`.
 - **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts`, `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host (`scripts/start-host.ts`, port 7071 + worktree offset) is started/stopped by the Stop hook — never start it; relative paths only.
 - **Step wiring** (`acceptance-api/cucumber.yaml`): features `src/features/**/*.feature`; steps load only from `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` — name a new file `src/step-definitions/<feature>.steps.ts`, else undefined steps.

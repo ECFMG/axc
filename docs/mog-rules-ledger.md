@@ -43,3 +43,4 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `**Serenity imports**: static` | .agents/skills/mog-repo-map/SKILL.md | orientation round 3 (Serenity import form) | b-out-8 | this round |
 | `it auto-fixes, verifies` | AGENTS.md | useAwait / knip unused-export blocks fixed by hand (scripts/auto-fix.mjs now fixes them) | b-out-6, b-out-8 | this round |
 | `never remove unused exports by hand` | .agents/skills/mog-repo-map/SKILL.md | knip unused exports removed by hand after a block (auto-fix un-exports them) | g1, a-out-21 | mog-xai-2 |
+| `assert the field set, not order` | .agents/skills/mog-repo-map/SKILL.md | multi-error validation tests asserting detail order | a-out-21, g1 | mog-xai-2 |
