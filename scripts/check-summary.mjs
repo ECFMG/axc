@@ -57,7 +57,7 @@ export function summarize(log, root = process.cwd()) {
 		if (m) {
 			const [file, l, c, rule] = m[4] ? [m[1], m[2], m[3], m[4]] : [m[1], '', '', m[2]];
 			const level = next(i + 1, /^\s*([×!])\s/);
-			const hint = rule === 'lint/style/useImportType' ? 'use `import type` for type-only imports; ' : '';
+			const hint = { 'lint/style/useImportType': 'use `import type` for type-only imports; ', 'lint/suspicious/useAwait': 'drop `async` (return the value/Promise directly) or add a real await; ' }[rule] ?? '';
 			out.push(`biome${level === '!' ? ' (warn)' : ''}  ${rel(pkg, file)}${l ? `:${l}:${c}` : ''} ${rule} — ${hint}${next(i + 1, /^\s*[×!]\s+(.*)/)}`);
 			continue;
 		}

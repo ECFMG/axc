@@ -107,3 +107,12 @@ test('plan + commitMessage (pure)', () => {
 	assert.equal(commitMessage('D\tsrc/old.ts\n', () => 'core')[0], 'chore: remove old (core)');
 	assert.equal(commitMessage('M\tpackages/axc/rest/src/index.ts\n', () => 'rest')[0], 'chore: update index (rest)');
 });
+
+test('verify typechecks through turbo after building workspace deps, so a stale dist cannot cause false TS2305', () => {
+	const root = path.resolve(import.meta.dirname, '..');
+	const pkg = JSON.parse(readFileSync(path.join(root, 'package.json'), 'utf8'));
+	const turbo = JSON.parse(readFileSync(path.join(root, 'turbo.json'), 'utf8'));
+	assert.match(pkg.scripts.verify, /pnpm run typecheck/);
+	assert.equal(pkg.scripts.typecheck, 'turbo run typecheck');
+	for (const task of ['typecheck', 'test', 'test:arch']) assert.ok(turbo.tasks[task].dependsOn.includes('^build'), `${task} must depend on ^build`);
+});

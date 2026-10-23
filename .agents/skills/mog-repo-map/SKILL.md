@@ -5,7 +5,7 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 
 # mog-repo-map
 
-**≤2 rounds, all reads in ONE parallel turn: files you'll change + `acceptance-api/src/step-definitions/healthcheck.steps.ts` (step API), `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` (unit pattern). Write in ≤2 calls. Then stop (Stop hook verifies + commits).**
+**Read in ONE parallel turn, nothing after: the task's requirements/spec file(s) · `.agents/skills/mog-repo-map/write-skeleton.md` (write endpoints) · `apps/docs/sidebars.ts` · patterns `acceptance-api/src/step-definitions/healthcheck.steps.ts`, `acceptance-api/src/questions.ts`, `application-services/src/health.test.ts` · files you'll change (`apps/api/src/index.ts`, `axc/{application-services,rest}/src/index.ts`). Write in ≤2 calls, then stop.**
 
 **Never** open `packages/cellix/**` sources you won't edit.
 
@@ -80,8 +80,6 @@ export function register<Feature>Routes(app: Hono, factory: ApplicationServicesF
 ```
 Mount: `rest/src/index.ts` imports `register<Feature>Routes` from `./<feature>.routes.ts` and calls it before `return app`; `apps/api/src/index.ts` adds `.registerAzureFunctionHttpHandler('<feature>', { route: 'api/<feature>', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)`.
 
-**Write endpoints** (POST/PUT/PATCH/DELETE): read `.agents/skills/mog-repo-map/write-skeleton.md` in your first read batch.
-
 `acceptance-api/src/features/<feature>.feature` + `src/step-definitions/<feature>.steps.ts`:
 ```gherkin
 Feature: <Feature>
@@ -121,7 +119,7 @@ Layering (test:arch names file + fix): no cycles; domain (tests too) imports no 
 
 - **Routes** (proven): one `registerAzureFunctionHttpHandler` per route template, listing every method it serves; names unique — `('<feature>', { route: 'api/<feature>', methods: ['GET', 'POST'], … })`, `('<feature>-item', { route: 'api/<feature>/{id}', methods: ['PATCH'], … })`. Azure templates use `{id}`, Hono `:id` (`c.req.param('id')`); Hono sees the full path.
 - **Docs**: the path/file the task names (else `apps/docs/docs/<feature>.md`) — `# Title`, `## Request` (http block), `## Response`, `## Example`; add its id (= filename) to `sidebars.ts` `docs: [...]`; broken links fail the build.
-- **knip** (`knip.json`): exports from non-entry files must be imported somewhere (a re-export from the package's `src/index.ts` counts) — `Unused exports` / `Unused exported types` fail verify. Don't export local-only helpers/types.
+- **knip** (`knip.json`): exports from non-entry files must be imported somewhere (a re-export from the package's `src/index.ts` counts) — `Unused exports` / `Unused exported types` fail verify. Don't `export` a type/interface/helper used only in its own file — export only what another file imports.
 - **Lockfile**: on it already — `hono`, `@azure/functions`, `@marplex/hono-azurefunc-adapter`, vitest (application-services), `@serenity-js/*`, `@cucumber/cucumber`, `@cellix/domain-seedwork`, `@cellix/mongoose-seedwork`, `mongodb-memory-server-core`. Anything else = lockfile churn.
 
 ## TypeScript (`packages/cellix/config-typescript/tsconfig.base.json`)
@@ -149,7 +147,7 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 ## Biome (`biome.json`)
 
 Tabs, single quotes, lineWidth 230, organizeImports on; commit runs `biome check --write`. Errors: `noExplicitAny`, `noNonNullAssertion` (`x!`), `noEmptyBlockStatements`, `useConst`, unused vars/imports.
-- `useAwait`: no block-body `async` without `await` — return the promise or use `responseBody<T>()` (sync).
+- `useAwait`: `async` fn with no `await` → drop `async` (return the value/Promise directly) or add a real await; steps: `responseBody<T>()` (sync).
 - `useImportType`: type-only imports use `import type` / inline `type X`.
 
 TS4111 vs `useLiteralKeys`: keep `x['k']` + `// biome-ignore lint/complexity/useLiteralKeys: index signature` (as `acceptance-api/src/world.ts`).

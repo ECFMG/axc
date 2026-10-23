@@ -137,3 +137,47 @@ test('shell: agent commit / verify are denied (Stop hook owns them), both guards
 		if (pyOk) assert.equal(py(c), undefined, `python should allow: ${c}`);
 	}
 });
+
+test('shell: ad-hoc checks are denied (Stop hook verifies), both guards; hook fallback, builds and reads allowed', () => {
+	const pyOk = py('ls') !== null;
+	const denied = [
+		'vitest run',
+		'npx vitest run src/a.test.ts',
+		'source ~/.nvm/nvm.sh && nvm use && pnpm --filter @axc/application-services exec vitest run --silent',
+		'pnpm exec biome check --write packages/axc',
+		'pnpm dlx knip',
+		'pnpm exec knip --workspace packages/axc/rest',
+		'npx tsc --noEmit',
+		'tsc --noEmit -p packages/axc/rest',
+		'pnpm --filter @axc/rest run typecheck',
+		'pnpm --filter=@axc/rest typecheck',
+		'pnpm -F @axc/rest test',
+		'pnpm run test',
+		'pnpm test:arch',
+		'pnpm lint',
+		'npm run typecheck',
+		'pnpm exec turbo run typecheck test --filter=[HEAD] --output-logs=errors-only',
+		'turbo run test',
+		'cd packages/axc/rest && pnpm typecheck',
+	];
+	const allowed = [
+		'node scripts/stop-gate.mjs run',
+		'source ~/.nvm/nvm.sh && nvm use && node scripts/stop-gate.mjs run',
+		'pnpm install --frozen-lockfile',
+		'pnpm --filter @axc/application-services run build',
+		'pnpm exec turbo run build',
+		'grep -rn "pnpm test" docs',
+		'ls node_modules/.bin/vitest',
+		'git log --oneline -3',
+		'cat packages/axc/rest/src/index.ts',
+		"rg -n 'typecheck' turbo.json",
+	];
+	for (const c of denied) {
+		assert.equal(sh(c), 'BLOCKED (write-boundary): Stop hook verifies; just stop.', `node should deny: ${c}`);
+		if (pyOk) assert.match(py(c) ?? '', /Stop hook verifies; just stop\./, `python should deny: ${c}`);
+	}
+	for (const c of allowed) {
+		assert.equal(sh(c), undefined, `node should allow: ${c}`);
+		if (pyOk) assert.equal(py(c), undefined, `python should allow: ${c}`);
+	}
+});

@@ -30,7 +30,7 @@ const log = [
 test('one line per problem: file + rule/error id', () => {
 	assert.deepEqual(summarize(log, root), [
 		'biome (warn)  packages/axc/rest/src/a.ts:1:8 lint/correctness/noUnusedImports — This import is unused.',
-		'biome  packages/axc/rest/src/a.ts:2:8 lint/suspicious/useAwait — This async function lacks an await expression.',
+		'biome  packages/axc/rest/src/a.ts:2:8 lint/suspicious/useAwait — drop `async` (return the value/Promise directly) or add a real await; This async function lacks an await expression.',
 		"ts     packages/axc/rest/src/a.ts:3:10 TS6133 — 'x' is declared but its value is never read.",
 		'test   packages/axc/application-services/src/b.test.ts > suite > adds up — AssertionError: expected 1 to be 2 // Object.is equality',
 		'knip   Unused exports: helper packages/axc/rest/src/a.ts:9:14 — drop `export`; keep it local',

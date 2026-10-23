@@ -8,7 +8,7 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 
 | rule | file | sink addressed | runs | origin |
 | --- | --- | --- | --- | --- |
-| `≤2 orientation rounds` | AGENTS.md | orientation read rounds | b-out-4, b-out-5 | 7b81611 |
+| `ONE orientation round` | AGENTS.md | orientation read rounds | b-out-4, b-out-5, b-out-6 | 7b81611 |
 | `Write all files in ≤2 calls` | AGENTS.md | write phase, 5 write calls ~444k | b-out-5 | this round |
 | `Then stop` | AGENTS.md | gate repair loops / self-run verify | a-out-18, b-out-3, b-out-4 | this round |
 | `is outside: no` | AGENTS.md | lockfile churn | a-out-18, a-out-20, b-out-5 | ddb92c5 |
@@ -16,9 +16,9 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `else TS2883` | .agents/skills/mog-repo-map/SKILL.md | TS2883 | a-out-20, b-out-3, b-out-4, b-out-5 | 923c731 |
 | `TS18048` | .agents/skills/mog-repo-map/SKILL.md | TS18048 | b-out-5 | this round |
 | `useImportType` | .agents/skills/mog-repo-map/SKILL.md | biome useImportType | b-out-5 | this round |
-| `useAwait` | .agents/skills/mog-repo-map/SKILL.md | biome useAwait | b-out-3, b-out-4 | ad5f324 |
+| `useAwait` | .agents/skills/mog-repo-map/SKILL.md | biome useAwait | b-out-3, b-out-4, b-out-6 | ad5f324 |
 | `noUnusedLocals/Parameters` | .agents/skills/mog-repo-map/SKILL.md | TS6133 | b-out-3 | 04b6945 |
-| `Unused exported types` | .agents/skills/mog-repo-map/SKILL.md | knip unused exported types | b-out-4 | 923c731 |
+| `Unused exported types` | .agents/skills/mog-repo-map/SKILL.md | knip unused exported types | b-out-4, b-out-6 | 923c731 |
 | `Layering (test:arch` | .agents/skills/mog-repo-map/SKILL.md | arch / domain import bans | — | 04b6945 |
 | `State persists across scenarios` | .agents/skills/mog-repo-map/SKILL.md | acceptance own-step failure | b-out-4 | da13ecc |
 | `Step patterns are global` | .agents/skills/mog-repo-map/SKILL.md | ambiguous steps | — | da13ecc |
@@ -31,3 +31,10 @@ Trimming is AI-driven with no human step: when `scripts/trim-guard.mjs` fails du
 | `# ac-meta:` | .agents/skills/mog-repo-map/SKILL.md | AC coverage gate | — | e076ca2 |
 | `useLiteralKeys` | .agents/skills/mog-repo-map/SKILL.md | TS4111 vs biome useLiteralKeys | — | 04b6945 |
 | `Stop blocked` | scripts/stop-gate.mjs | terse failure reason on Stop | this round | 9e64af8 |
+| `Read in ONE parallel turn, nothing after` | .agents/skills/mog-repo-map/SKILL.md | orientation rounds (6 in b-out-5 and b-out-6) | b-out-5, b-out-6 | this round |
+| `Never read (the map answers them)` | AGENTS.md | one-file orientation follow-ups (knip.json, package.json, docs, .feature) | b-out-6 | this round |
+| `Tool with a Stop hook` | AGENTS.md | self-check loop (13 calls ~1.33M) | b-out-6 | this round |
+| `Only a tool with no Stop hook` | AGENTS.md | no-hook fallback run under Grok | b-out-6 | this round |
+| `Stop hook verifies; just stop.` | .github/hooks/write-boundary.json | ad-hoc vitest/biome/knip/typecheck calls | b-out-6 | this round |
+| `or add a real await` | scripts/check-summary.mjs | biome useAwait one-pass fix | b-out-6 | this round |
+| `"dependsOn": ["^build"]` | turbo.json | stale-dist TS2305 | b-out-6 | cd4bc93 |

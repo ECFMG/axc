@@ -38,6 +38,15 @@
 		],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+(?:-C\\s+\\S+\\s+)?commit\\b", "The Stop hook verifies and commits. Just stop (no Stop hook: node scripts/stop-gate.mjs run)."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(?:pnpm|npm|yarn)\\s+(?:run\\s+)?verify\\b", "Verify runs once in the Stop hook. Just stop (no Stop hook: node scripts/stop-gate.mjs run)."],
+		[
+			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:(?:npx|bunx|yarn)\\s+|pnpm\\s+(?:(?:--filter[=\\s]|-F\\s|-C\\s|--dir[=\\s])\\S+\\s+|-r\\s+|--recursive\\s+|-w\\s+)*(?:exec|dlx)\\s+)?(?:vitest|biome|knip|tsc|tsgo)\\b",
+			"Stop hook verifies; just stop."
+		],
+		[
+			"(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:corepack\\s+)?(?:pnpm|npm|yarn)\\s+(?:(?:--filter[=\\s]|-F\\s|-C\\s|--dir[=\\s])\\S+\\s+|-r\\s+|--recursive\\s+|-w\\s+)*(?:run\\s+)?(?:typecheck|test|lint|verify)(?:[:\\s]|$)",
+			"Stop hook verifies; just stop."
+		],
+		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(?:(?:npx|bunx)\\s+|pnpm\\s+(?:exec\\s+|dlx\\s+)?)?turbo\\s+(?:run\\s+)?(?:[\\w:@/.-]+\\s+)*?(?:typecheck|test|lint)\\b", "Stop hook verifies; just stop."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+clean\\s+-[a-zA-Z]*[fd]", "Deletes untracked files irreversibly."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)git\\s+checkout\\s+\\.\\s*$", "Discards all unstaged changes."],
 		["(?:^|[;&|(`]\\s*|\\$\\(\\s*)(?![^|;&]*<<)(curl|wget)\\b[^|]*\\|\\s*(sudo\\s+)?(ba)?sh", "Piping a download straight into a shell."],
