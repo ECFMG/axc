@@ -198,3 +198,19 @@ test('missing .husky/_: self-heal generates it, the commit runs .husky/pre-commi
 	assert.equal(sh('config', '--list', '--local'), config, 'no git config write');
 	assert.equal(sh('status', '--porcelain'), '');
 });
+test('auto-fix runs before verify on changed files and is logged in the auto-commit body', () => {
+	write('.gitignore', '*.log\nnode_modules/\n');
+	sh('add', '-A');
+	sh('commit', '-qm', 'ignore', '--no-verify');
+	mkdirSync(path.join(repo, 'node_modules/.bin'), { recursive: true });
+	const biome = path.join(repo, 'node_modules/.bin/biome');
+	writeFileSync(biome, '#!/bin/sh\n[ "$1" = check ] || exit 0\nshift; for f; do case "$f" in --*) ;; *) echo "// fixed" >> "$f";; esac; done\n');
+	chmodSync(biome, 0o755);
+	write('widget.ts', 'export const w = 1;\n');
+	write('widget.test.ts', 'export const t = 1;\n');
+	assert.equal(stop(), null);
+	assert.equal(readFileSync(path.join(repo, 'widget.ts'), 'utf8'), 'export const w = 1;\n// fixed\n');
+	assert.equal(readFileSync(path.join(repo, 'widget.test.ts'), 'utf8'), 'export const t = 1;\n');
+	assert.match(sh('log', '-1', '--format=%b'), /Auto-fix \(Stop hook, before verify\):\n- biome check --write: widget\.ts/);
+	assert.equal(sh('status', '--porcelain'), '');
+});
