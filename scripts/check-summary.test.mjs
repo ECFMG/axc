@@ -33,7 +33,7 @@ test('one line per problem: file + rule/error id', () => {
 		'biome  packages/axc/rest/src/a.ts:2:8 lint/suspicious/useAwait — This async function lacks an await expression.',
 		"ts     packages/axc/rest/src/a.ts:3:10 TS6133 — 'x' is declared but its value is never read.",
 		'test   packages/axc/application-services/src/b.test.ts > suite > adds up — AssertionError: expected 1 to be 2 // Object.is equality',
-		'knip   Unused exports: helper packages/axc/rest/src/a.ts:9:14',
+		'knip   Unused exports: helper packages/axc/rest/src/a.ts:9:14 — drop `export`; keep it local',
 		'ac     missing X-AC2',
 	]);
 });
@@ -55,4 +55,10 @@ test('TS2883 (real tsgo output): line names the function + add explicit return t
 	const lines = summarize(readFileSync(path.join(import.meta.dirname, 'fixtures/ts2883.log'), 'utf8'), root);
 	assert.match(lines[0], /^ts {5}packages\/axc\/rest\/src\/zzprobe\.ts:3:14 TS2883 — add explicit return type to exported 'sendProbe' \(e\.g\. `: Response`\); The inferred type/);
 	assert.match(lines[1], /'failProbe'/);
+});
+test('knip unused exports/types (real output): rows say drop export, keep local', () => {
+	assert.deepEqual(summarize(readFileSync(path.join(import.meta.dirname, 'fixtures/knip-unused.log'), 'utf8'), root), [
+		'knip   Unused exports: zzProbeUnused packages/axc/rest/src/zzprobe.ts:2:14 — drop `export`; keep it local',
+		'knip   Unused exported types: ZzProbeLocal type packages/axc/rest/src/zzprobe.ts:1:13 — drop `export`; keep the type local',
+	]);
 });

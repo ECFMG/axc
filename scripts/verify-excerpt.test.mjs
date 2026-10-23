@@ -68,3 +68,9 @@ test('TS2883 (real tsgo output): hint names the function and says add explicit r
 	assert.match(r.stdout, /^hint: add an explicit return type to exported sendProbe, failProbe \(e\.g\. `: Response`/m);
 	assert.match(r.stdout, /error TS2883/);
 });
+test('knip unused exported types (real output): one hint line', () => {
+	const r = run(readFileSync(path.join(import.meta.dirname, 'fixtures/knip-unused.log'), 'utf8'));
+	assert.match(r.stdout, /^hint: knip unused exported types — drop `export`; keep the type local/m);
+	assert.match(r.stdout, /ZzProbeLocal {2}type/);
+	assert.doesNotMatch(run('$ x\nerror TS2345: bad\n').stdout, /knip/);
+});

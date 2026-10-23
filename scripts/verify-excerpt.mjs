@@ -66,6 +66,8 @@ if (missing.size) {
 	const what = [...missing].map(([mod, names]) => `${[...names].join(', ')} from ${mod}`).join('; ');
 	header.push(`hint: re-export every cross-package type from <pkg>/src/index.ts (missing: ${what})`);
 }
+const unusedTypes = lines.some((l) => /^Unused exported types \(\d+\)/.test(l.replace(/^\[[^\]]*\] /, '')));
+if (unusedTypes) header.push('hint: knip unused exported types — drop `export`; keep the type local (export only types used outside the file)');
 if (needsReturnType.size) header.push(`hint: add an explicit return type to exported ${[...needsReturnType].join(', ')} (e.g. \`: Response\` for Hono helpers) — TS2883`);
 const body = [...hits].sort((a, b) => a - b).map((i) => lines[i] ?? '');
 const out = [...new Set([...header, ...body])].map((l) => (l.length > MAX_WIDTH && !l.startsWith('scenario  ') ? `${l.slice(0, MAX_WIDTH)}…` : l));

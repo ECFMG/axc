@@ -79,7 +79,8 @@ export function summarize(log, root = process.cwd()) {
 					.trim()
 					.replace(/\s{2,}/g, ' '),
 			);
-			out.push(...rows.map((r) => `knip   ${m[1]}: ${r}`));
+			const fix = /^Unused exported types$/.test(m[1]) ? ' — drop `export`; keep the type local' : /^Unused exports$/.test(m[1]) ? ' — drop `export`; keep it local' : '';
+			out.push(...rows.map((r) => `knip   ${m[1]}: ${r}${fix}`));
 			continue;
 		}
 		if (/^AC coverage failed/.test(line)) {

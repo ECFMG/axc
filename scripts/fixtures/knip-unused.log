@@ -1,0 +1,6 @@
+$ knip --no-config-hints
+Unused exports (1)
+zzProbeUnused  packages/axc/rest/src/zzprobe.ts:2:14
+Unused exported types (1)
+ZzProbeLocal  type  packages/axc/rest/src/zzprobe.ts:1:13
+[ELIFECYCLE] Command failed with exit code 1.
