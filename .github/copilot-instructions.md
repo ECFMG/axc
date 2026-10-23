@@ -18,9 +18,7 @@ Output: agent-parseable + terse (AGENTS.md “Agent-to-agent output”). Success
 
 ## Write Boundary
 
-Write only under: `apps/api`, `apps/docs`, `packages/axc/*`, `packages/axc-verification/*`.
-May port `packages/cellix/**` from `/Volumes/files/src/cellixjs` when a required Cellix capability is missing.
-Do not weaken verify/guardrails. Never `--no-verify`.
+See `AGENTS.md` (write boundary + traps; enforced by `.github/hooks/write-boundary.json`).
 
 ## Layout
 

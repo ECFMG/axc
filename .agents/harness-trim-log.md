@@ -19,7 +19,13 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: 83% word containment with AGENTS.md line 5; no rule dropped, 20-run protection unaffected.
 
 ## 2026-10-23 — domain import trap stated once
-- commit: (filled in by the next commit)
+- commit: 279053e
 - files: `AGENTS.md` · 2239 → 2075 bytes; `.agents/skills/mog-repo-map/SKILL.md` · 11991 → 12115 bytes
 - moved (kind 1, duplicates): AGENTS trap "- `packages/axc/domain/src/**` (tests too) must not import `hono`, `@azure/`, `mongoose`, `mongodb`, `@axc/rest|persistence|service-mongoose|application-services`." → merged into the map's Layering line, which now also states this round's REST / application-services / apps/api arch rules (test:arch prints file + rule + fix).
 - why: the same layering rule lived in AGENTS, the map and test:arch; one copy in the map. No rule dropped (sinks in the last 20 runs: none recorded), so the 20-run protection is unaffected.
+
+## 2026-10-23 — Copilot instructions point at the AGENTS write boundary
+- commit: (filled in by the next commit)
+- file: `.github/copilot-instructions.md` · 2169 → 2003 bytes
+- removed (kind 1, duplicates): "Write only under: `apps/api`, `apps/docs`, `packages/axc/*`, `packages/axc-verification/*`." / "May port `packages/cellix/**` from `/Volumes/files/src/cellixjs` when a required Cellix capability is missing." / "Do not weaken verify/guardrails. Never `--no-verify`." — the same rules are in `AGENTS.md` "Write boundary" (Copilot loads AGENTS too) and enforced by the write-boundary hook; replaced by one pointer line.
+- why: 88% word containment with AGENTS.md:13; no rule dropped, 20-run protection unaffected.
