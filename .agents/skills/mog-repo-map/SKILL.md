@@ -14,14 +14,13 @@ description: AXC map + conventions for mog-xai-1. Load first; it replaces explor
 ```
 apps/api/src/index.ts             Cellix composition; one .registerAzureFunctionHttpHandler(name, {route, methods, authLevel}, restHandlerCreator) per route
 apps/api/host.json                http.routePrefix "" → route is the full path ('api/<route>' ⇒ Hono sees /api/<route>)
-apps/docs/docs/*.md + sidebars.ts Docusaurus; new page id must be in sidebars.ts docs: [...] (ids = file names)
+apps/docs/docs/*.md + sidebars.ts Docusaurus (page ids: see Docs fact)
 packages/axc/domain               entities/VOs, no infra imports
 packages/axc/persistence          repo contracts (+ in-memory)
 packages/axc/service-mongoose     mongoose/mongodb only
 packages/axc/application-services ApplicationServices + factory (src/index.ts; health inline); only pkg with vitest
 packages/axc/rest                 Hono createRestApp + restHandlerCreator (src/index.ts)
 packages/axc-verification/*       archunit-tests (rules only — don't add tests) · acceptance-api (Serenity/Cucumber)
-packages/cellix/*                 vendored, reuse
 ```
 
 Each package's public API = `src/index.ts`: re-export from it every type/value another package imports (else TS2305/TS2459/TS2724). Imports use `.ts` extensions.
@@ -136,7 +135,7 @@ Narrow possibly-undefined values before use (TS18048): `if (x === undefined) …
 ## Tests
 
 - **Assert properties**: non-empty and every result matches the filter; count/order invariants; or ids derived from the fixture in code. Never hand-picked id lists.
-- **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`. Tests elsewhere need new devDeps → lockfile churn.
+- **Unit**: vitest only in `application-services`. `src/*.test.ts`, `import { describe, expect, it } from 'vitest'`.
 - **Acceptance** (`acceptance-api/src`): `features/*.feature`, `step-definitions/*.steps.ts` (global patterns), `questions.ts` (`responseBody<T>()`, `resolved()`, `patchJson(path, body)`), `world.ts` (actor `CallAnApi.at(host)`). Host: `apps/api` via `scripts/start-host.ts` on 127.0.0.1:7071 (main checkout) or 7071 + worktree offset (`acceptance-port.ts`); started and stopped per run — never start it. Relative paths only; runs only in the Stop hook.
 - **Step wiring** (`acceptance-api/cucumber.yaml`): features from `src/features/**/*.feature`; steps via `require` = `src/serenity.ts`, `src/world.ts`, `src/step-definitions/**/*.steps.ts` (loaded through `tsx/cjs`). A new step file must be `src/step-definitions/<feature>.steps.ts` — any other name/folder is never loaded (undefined steps).
 - **State persists across scenarios** (one host + one in-memory store per run): give each scenario unique data and never assume an empty store.

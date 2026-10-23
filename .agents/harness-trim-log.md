@@ -31,8 +31,14 @@ Each entry: date (ET) · commit (a commit can't name its own SHA, so it is fille
 - why: 88% word containment with AGENTS.md:13; no rule dropped, 20-run protection unaffected.
 
 ## 2026-10-23 — AGENTS: Dev line deduped, Territory and eval-docs lines reworded (room for the b-out-6 fixes)
-- commit: (filled in by the next commit)
+- commit: 3335bd7
 - file: `AGENTS.md` · 2075 → 1974 bytes
 - removed (kind 1, duplicate): "Dev: `pnpm run dev` / `pnpm run dev:worktree`." — same commands live in `.github/copilot-instructions.md` (Commands block); not used on the SCORE path.
 - reworded (kind 3): "Branch `mog-xai-1`. Local commits only — no push/PR. Don't drive `mog-xai-1-a-out*`; don't run `task-set-*-prompt.md` yourself." → "Local commits only — no push/PR. Don't drive other `mog-xai-1-*` worktrees or run `task-set-*-prompt.md`." (stale branch name dropped; rule kept and widened to every run worktree). "Never read or edit `evaluation-run-record.md` or eval/score docs (…) — the operator fills them." → "Never read or edit `evaluation-run-record.md`, `docs/eval-contract.md`, `docs/score-metering.md`, `docs/harness-cost-usage.md` (operator-owned)."
 - why: AGENTS is at its 2075-byte budget and the b-out-6 fixes (tool-neutral stop, never-run checks, never-read list) need ~80 bytes. No rule dropped; none of these lines is tied to a sink in the last 20 runs.
+
+## 2026-10-23 — map: three duplicated clauses (room for the b-out-6 read list and hints)
+- commit: (filled in by the next commit)
+- file: `.agents/skills/mog-repo-map/SKILL.md` · 12115 → 11971 bytes
+- removed (kind 1, duplicates): Layout "new page id must be in sidebars.ts docs: [...] (ids = file names)" → pointer "(page ids: see Docs fact)" (the Docs fact already says "add its id (= filename) to `sidebars.ts` `docs: [...]`"); Layout row "packages/cellix/*                 vendored, reuse" (AGENTS trap "`packages/cellix/**` is vendored: reuse, don't fork"); Unit "Tests elsewhere need new devDeps → lockfile churn." (Lockfile fact "Anything else = lockfile churn" + AGENTS trap).
+- why: the map is at its 12115-byte budget; the b-out-6 fixes (complete one-round read list, useAwait / knip-export wording) need ~135 bytes. The lockfile rule (sink a-out-18, a-out-20, b-out-5 — inside the 20-run window) is kept in two places; only its third copy went.
