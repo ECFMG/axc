@@ -4,7 +4,7 @@ Orient once, build in one pass, check the packages you changed, and stop when th
 
 ## Repo card
 
-When this file includes a repo card, that card is the map of this checkout. Do not list the repository to rebuild it. Append at most five one-line notes under "Notes added during the task" when a fact would change the next directory you open. Append the note and keep going. Do not rewrite the rest of this file, and do not paste source or the task into it.
+When this file includes a repo card, that card is the map of this checkout. Do not list the repository to rebuild it.
 
 ## Orient
 
@@ -82,6 +82,4 @@ Omitted from the edges above because most packages use them: @cellix/config-type
 - Dependency and build trees: `node_modules`, `dist`, `build`, `coverage`, `target`
 - `.agents/skills/`. Those skills load on their own. Do not read their reference trees.
 - Repo-root task files. Open the one the user named, and a requirements file it points to. Leave the others unread: `evaluation-run-record.md`, `super-prompt.md`, `task-set-a-prompt.md`, `task-set-a-requirements.md`, `task-set-b-prompt.md`, `task-set-b-requirements.md`
-
-## Notes added during the task
 

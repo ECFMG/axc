@@ -1,3 +1,8 @@
+import { COURSE_CATALOG } from './course-catalog.ts';
+import { type CoursePage, searchCourses } from './course-search.ts';
+
+export { InvalidCourseQueryError } from './course-search.ts';
+
 export const HEALTH_SERVICE_NAME = 'agentCourses-api' as const;
 export const HEALTH_PROJECT_CODE = 'axc' as const;
 
@@ -18,6 +23,9 @@ export interface ApiContext {
 export interface ApplicationServices {
 	health: {
 		getStatus(): HealthStatus;
+	};
+	courses: {
+		search(query: Readonly<Record<string, string>>): CoursePage;
 	};
 }
 
@@ -47,6 +55,11 @@ export function buildApplicationServicesFactory(context: ApiContext): Applicatio
 						environment: context.environment,
 						timestamp: new Date().toISOString(),
 					};
+				},
+			},
+			courses: {
+				search(query: Readonly<Record<string, string>>): CoursePage {
+					return searchCourses(COURSE_CATALOG, query);
 				},
 			},
 		});
