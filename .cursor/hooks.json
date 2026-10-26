@@ -13,6 +13,18 @@
 				"command": ".cursor/hooks/cellix-write-allow.mjs",
 				"failClosed": true
 			}
+		],
+		"stop": [
+			{
+				"command": ".cursor/hooks/cellix-verify-stop.mjs",
+				"failClosed": true,
+				"loop_limit": 5
+			}
+		],
+		"sessionEnd": [
+			{
+				"command": ".cursor/hooks/cellix-session-end.mjs"
+			}
 		]
 	}
 }

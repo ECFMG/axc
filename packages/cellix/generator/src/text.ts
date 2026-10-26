@@ -1,4 +1,5 @@
 import { isShapeNested, type ShapeField, type ShapeMember, type ShapeNested } from './shape.ts';
+import type { FieldSpec } from './spec.ts';
 
 export function tsType(type: ShapeField['type']): string {
 	if (type === 'boolean') return 'boolean';
@@ -34,8 +35,50 @@ export function structuralType(item: ShapeNested): string {
 	return `{ ${parts.join('; ')} }`;
 }
 
-export function commandFields(shape: { fields: ShapeField[]; nested: ShapeNested[] }, mutation: boolean): string {
-	if (!mutation) return 'id: string;';
+export type ActionKind = 'create' | 'update' | 'delete' | 'read';
+
+export function actionKind(actionCamel: string): ActionKind {
+	if (/^create(?:[A-Z]|$)/.test(actionCamel)) return 'create';
+	if (/^update(?:[A-Z]|$)/.test(actionCamel)) return 'update';
+	if (/^delete(?:[A-Z]|$)/.test(actionCamel)) return 'delete';
+	return 'read';
+}
+
+/** The query and update commands choose the flow. The function name does not. */
+export function assertOperationName(actionCamel: string, operation: 'query' | 'update'): void {
+	if (operation === 'query' && /^(?:create|update|delete)(?:[A-Z]|$)/.test(actionCamel)) {
+		throw new Error(`Query name ${actionCamel} is reserved for a mutation. Use the update command, or pick another name.`);
+	}
+	if (operation === 'update' && /^(?:query|get|find)(?:[A-Z]|$)/.test(actionCamel)) {
+		throw new Error(`Update name ${actionCamel} is reserved for a read. Use the query command, or pick another name.`);
+	}
+}
+
+export function paramShape(params: FieldSpec[]): { fields: ShapeField[]; nested: ShapeNested[] } {
+	return { fields: params.map((field) => ({ name: field.name, pascal: field.name, type: field.type === 'id' ? 'string' : field.type })), nested: [] };
+}
+
+export function commandFields(shape: { fields: ShapeField[]; nested: ShapeNested[] }, kind: ActionKind): string {
 	const lines = [...shape.fields.map((field) => `${field.name}: ${tsType(field.type)};`), ...shape.nested.map((item) => `${item.camel}: ${structuralType(item)};`)];
+	if (kind === 'read') return (lines.length > 0 ? lines : ['id: string;']).join('\n\t');
+	if (kind === 'update') return ['id: string;', ...lines].join('\n\t');
 	return lines.join('\n\t');
+}
+
+/** Relative import of src/models-context.ts from a file under src/. */
+export function persistenceModelsImport(depth: number): string {
+	return `${'../'.repeat(depth)}models-context.ts`;
+}
+
+export function httpReadArgument(shape: { fields: ShapeField[]; nested: ShapeNested[] }): string {
+	const parts = [...shape.fields.map((field) => `${field.name}: ${httpValue(field)}`), ...shape.nested.map((item) => `${item.camel}: {} as ${structuralType(item)}`)];
+	if (parts.length === 0) return "{ id: c.req.query('id') ?? '' }";
+	return `{ ${parts.join(', ')} }`;
+}
+
+function httpValue(field: ShapeField): string {
+	if (field.type === 'boolean') return `c.req.query('${field.name}') === 'true'`;
+	if (field.type === 'number') return `Number(c.req.query('${field.name}'))`;
+	if (field.type === 'date') return `new Date(c.req.query('${field.name}') ?? '')`;
+	return `c.req.query('${field.name}') ?? ''`;
 }

@@ -12,6 +12,7 @@ export interface CellixLintConfig {
 	scope: string;
 	layers: CellixLintLayers;
 	apiComposition: string;
+	acceptance: string;
 	hostFunctions: string[];
 }
 
@@ -32,6 +33,7 @@ export function defaultCellixLintConfig(): CellixLintConfig {
 			graphql: 'packages/axc/graphql/src',
 		},
 		apiComposition: 'apps/api/src/index.ts',
+		acceptance: 'packages/axc-verification/acceptance-api/src',
 		hostFunctions: ['buildApplicationServicesFactory', 'resolveEnvironment'],
 	};
 }

@@ -2,11 +2,10 @@ import type { Dirent } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const featuresRoot = 'packages/axc-verification/acceptance-api/src/features';
-const stepsRoot = 'packages/axc-verification/acceptance-api/src/step-definitions';
-
 /** Every acceptance feature calls the running application. Steps do not keep a document array. */
-export async function checkAcceptanceShape(root: string): Promise<string[]> {
+export async function checkAcceptanceShape(root: string, acceptance: string): Promise<string[]> {
+	const featuresRoot = path.join(acceptance, 'features');
+	const stepsRoot = path.join(acceptance, 'step-definitions');
 	const features = await walk(path.join(root, featuresRoot), '.feature');
 	const violations: string[] = [];
 	for (const featurePath of features) {

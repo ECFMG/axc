@@ -4,10 +4,11 @@ import { commandPaths, WRITE_COMMAND } from './shell.mjs';
 
 // Order for one path:
 // 1. Outside the workspace: deny.
-// 2. First matching agentAccess key. false locks the path. No match denies it. true continues.
-// 3. An exact true key (no *) stays writable during a session.
-// 4. No session: allow. A session must list the file, or a directory entry that contains it.
-// Step 2 runs before the session, so a session cannot unlock a locked path.
+// 2. .cellix/verify.json: deny. pnpm run verify is the only writer. A session cannot open it.
+// 3. First matching agentAccess key. false locks the path. No match denies it. true continues.
+// 4. An exact true key (no *) stays writable during a session.
+// 5. No session: allow. A session must list the file, or a directory entry that contains it.
+// Step 3 runs before the session, so a session cannot unlock a locked path.
 
 export function policyFromConfig(config = {}, session = null) {
 	return {
@@ -19,6 +20,7 @@ export function policyFromConfig(config = {}, session = null) {
 export function decidePath(file, workspace, policy) {
 	const relativePath = relativeToWorkspace(file, workspace);
 	if (!relativePath) return deny('That path is outside the workspace.');
+	if (relativePath === '.cellix/verify.json') return deny('.cellix/verify.json is written only by pnpm run verify.');
 
 	const standingRule = firstMatchingAccess(relativePath, policy.agentAccess);
 	if (standingRule === false) return deny(`${relativePath} is locked. Set its agentAccess entry to true in ocom-write.config.json yourself, then ask again.`);

@@ -7,6 +7,10 @@ export interface GenerateFeatureOptions {
 	context: string;
 	entity: string;
 	action: string;
+	/** Set by the query and update commands. The action name stays whatever --name is. */
+	operation?: 'query' | 'update';
+	/** Command fields for a query or update. Aggregate fields stay on `fields`. */
+	params?: FieldSpec[];
 	transport?: 'rest' | 'graphql';
 	fields?: FieldSpec[];
 	permissions?: string[];

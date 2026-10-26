@@ -11,6 +11,8 @@ description: >
 
 `@cellix/generator` is how a new data structure starts: a new context, entity, or action. Course catalog search and course enrollment are examples of that kind of addition. They are not the only work this repo can hold.
 
+`cellix-lint.config.json` stays at the project root. `generate` reads it and writes into those paths, including `acceptance`. Cellix lint reads the same file.
+
 A change to a structure that already exists does not need the generator. That includes a bugfix, a validation rule, a query filter, a route that already has a handler, a test, or documentation. Edit the existing files. Cellix lint still checks file roles, imports, and the dependency graph.
 
 Write product code, acceptance tests, API source, and docs on paths whose `agentAccess` entry is true. The control plane stays locked. Do not hand-create a new context, entity, or action. Generate it so the file roles exist. Do not add a helper, util, common, or shared module.
@@ -43,7 +45,19 @@ pnpm --filter @cellix/generator generate -- --context course --entity course --a
   --nested activity-log:id:id,activityType:string
 ```
 
-`--context`, `--entity`, and `--action` are kebab-case. `create`, `update`, and `delete` are mutations. `query`, `get`, and `find` are reads. Repeat `--field name:type` (`string`, `boolean`, `date`, `number`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport rest` writes the REST adapter. `--transport graphql` is the same resolver output as `--resolver`.
+`--context`, `--entity`, and `--action` are kebab-case. `generate` builds the entity. `create` and `delete` are mutations on that command. Repeat `--field name:type` (`string`, `boolean`, `date`, `number`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
+
+A query and an update are separate commands. `--name` is the function name. Repeat `--param name:type` for the command. Those params are the command interface, the repository method, and the REST input. The function name does not choose the flow.
+
+```bash
+pnpm --filter @cellix/generator query -- --context course --entity course --name search \
+  --param title:string --param status:string --transport rest
+
+pnpm --filter @cellix/generator update -- --context course --entity course --name publish \
+  --param status:string --transport rest
+```
+
+`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is an array. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. The first call for an entity still writes the aggregate from `--field`. A later call adds the function and leaves that aggregate in place. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
 
 ```json
 {
@@ -74,7 +88,7 @@ The command writes:
 1. Domain permissions, visa, passport (passport is created once), value objects, aggregate, repository interface, unit-of-work interface
 2. `models/<entity>/<entity>.model.ts` and `models/<entity>/<entity>.seed.ts`
 3. Persistence domain adapter, repository, and `get<Entity>UnitOfWork`
-4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. Queries call `readonlyDataSource.<Context>.<Entity>.<Entity>ReadRepo`
+4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. The `query` command adds `<name>` on that read repository. The `update` command writes the `withScopedTransaction` action. `create` and `delete` call `getNewInstance` inside `withScopedTransaction`.
 5. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
 
 `datasources/readonly/mongo-data-source.ts`, `datasources/readonly/index.ts`, and `datasources/readonly/<context>/index.ts` are created once. A later generate leaves them in place. Add the next entity to those indexes yourself.
@@ -85,11 +99,11 @@ Then build:
 
 - Value-object bounds and what the aggregate setters enforce
 - Repository methods behind `getNewInstance` and `getById`
-- The command fields and the body inside `withScopedTransaction` or `readonlyDataSource`
+- The command fields and the body inside `withScopedTransaction` or the read-repository method
 - A visa check on a setter, when the feature needs one: `if (!this.isNew && !this.visa.determineIf(...)) throw new PermissionError(...)`
-- The `Domain` namespace, as `export * as Domain from './domain/index.ts'` on the domain package index. Do not add `export type { Course, ... }` or `export const Domain` there. Do not add document types to a domain adapter. Do not import `<camel>Seed` into a read repository or return it from one. An action imports `DataSources` from `@axc/persistence` and does not declare that type itself
-- The Azure function route in `apps/api/src/index.ts`
-- The Hono route in `packages/axc/rest/src/index.ts`. The handler calls `applicationServices.<Context>.<Entity>.<action>(command)`
+- The `Domain` namespace, as `export * as Domain from './domain/index.ts'` on the domain package index. Do not add `export type { Course, ... }` or `export const Domain` there. Do not add document types to a domain adapter. Do not import `<camel>Seed` into a read repository or return it from one. An action imports `DataSources` from `@axc/persistence` and `Domain` from `@axc/domain`. It does not declare those types itself. Files inside the persistence package import `ModelsContext` from `models-context.ts`
+- The Azure function route in `apps/api/src/index.ts`. It calls `Persistence({ service: mongoose })`. Do not start `MongoMemoryServer` or `startMockMongoDB` there. That server is for tests
+- The Hono route in `packages/axc/rest/src/index.ts` for a `query` or `update`. It calls `applicationServices.<Context>.<Entity>.<name>(command)`
 - The new service on the health host, `packages/axc/application-services/src/index.ts`. Add it beside `health` on `ApplicationServices` and return it from `buildApplicationServicesFactory`. Keep `health.getStatus`
 - The context factory's ports, when the action needs more than `DataSources`
 
@@ -113,11 +127,13 @@ The directories are the new context, the new model, and `apps/docs/docs/<context
 
 An `agentAccess` key with no `*` stays writable during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay fixable because they are exact `true` entries in `ocom-write.config.json`.
 
-No `CELLIX_AGENT_ID` means no session. Standing `agentAccess` is the only check. An empty file list or invalid JSON does not open the tree. The harness removes a session between runs. The agent does not delete the session file.
+No `CELLIX_AGENT_ID` means no session. Standing `agentAccess` is the only check. An empty file list or invalid JSON does not open the tree. The agent does not delete the session file. After `.cellix/verify.json` matches the tree, the stop hook and the session-end hook remove `.cellix/sessions/<CELLIX_AGENT_ID>.json`. The verify file stays.
 
 ## Verify flag
 
-The flag rules are `packages/cellix/guardrails/src/verify-flag.mjs`. `pnpm run verify` writes `.cellix/verify.json` and prints `CELLIX_VERIFY=pass` only after lint, typecheck, build, tests, audit, and Snyk all exit 0. The file records git HEAD and a hash of `git status --porcelain`, so the pass belongs to that tree. `pnpm run verify:flag` prints `CELLIX_VERIFY=pass` while the tree still matches and `CELLIX_VERIFY=stale` after another edit. `.cellix/verify.json` is not a writable product file. Turbo and Snyk print failures, not passing task logs.
+The flag rules are `packages/cellix/guardrails/src/verify-flag.mjs`. `pnpm run verify` writes `.cellix/verify.json` and prints `CELLIX_VERIFY=pass` only after lint, typecheck, build, tests, audit, and Snyk all exit 0. The file records git HEAD and a hash of `git status --porcelain`, so the pass belongs to that tree. `pnpm run verify:flag` prints `CELLIX_VERIFY=pass` while the tree still matches and `CELLIX_VERIFY=stale` after another edit. `.cellix/verify.json` is not a writable product file. A write to that path is denied even when `agentAccess` would allow it.
+
+`.cursor/hooks/cellix-verify-stop.mjs` runs when a turn ends. With `CELLIX_AGENT_ID` set, a missing or stale flag becomes the next user message: run `pnpm run verify`. Cursor stops sending that follow-up after 5 times. A chat with no agent id is not stopped. An aborted or errored turn is not followed up. When the flag matches, that hook removes the session file. `.cursor/hooks/cellix-session-end.mjs` removes it again when the conversation closes after a pass. Turbo and Snyk print failures, not passing task logs.
 
 ## Browser end-to-end tests
 

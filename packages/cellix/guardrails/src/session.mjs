@@ -1,7 +1,7 @@
 // One agent, one file: .cellix/sessions/<CELLIX_AGENT_ID>.json
 // This file only stores and reads that list. It does not look at ocom-write.config.json.
 // write/decide.mjs asks this file after the config has already allowed the path.
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const AGENT_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$/;
@@ -42,6 +42,14 @@ export function loadSession(root, agentId) {
 export function sessionAllows(relativePath, session) {
 	if (!session) return true;
 	return session.files.some((entry) => entryCoversPath(entry, relativePath));
+}
+
+/** Remove this agent's session file. .cellix/verify.json is left in place. */
+export function clearSession(root, agentId) {
+	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });
+	if (!id) return;
+	rmSync(sessionFile(root, id), { force: true });
+	rmSync(path.join(root, '.cellix', 'session.json'), { force: true });
 }
 
 /** Add paths to this agent id. A second call for the same id unions the lists. Other ids are left alone. */

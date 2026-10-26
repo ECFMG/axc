@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { checkFlag, decidePath, decideShell, loadSession, policyFromConfig, recordSession, sessionAllows } from './index.mjs';
+import { checkFlag, clearSession, decidePath, decideShell, loadSession, policyFromConfig, recordSession, sessionAllows } from './index.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -101,6 +101,7 @@ describe('guardrails', () => {
 			expect(sessionAllows('packages/axc/domain/src/domain/contexts/course-catalog/course.aggregate.ts', course)).toBe(false);
 			expect(decidePath(path.join(repoRoot, 'packages/axc/domain/src/domain/contexts/course/../passport.ts'), repoRoot, policyFromConfig({ agentAccess: open.agentAccess }, course)).ok).toBe(false);
 			expect(decidePath(path.join(repoRoot, '.cellix/verify.json'), repoRoot, open).ok).toBe(false);
+			expect(decidePath(path.join(repoRoot, '.cellix/verify.json'), repoRoot, policyFromConfig({ agentAccess: { '**': true } })).ok).toBe(false);
 			expect(decideShell('touch .cellix/verify.json', repoRoot, open).ok).toBe(false);
 			await writeFile(path.join(directory, 'task-a.json'), '{');
 			expect(() => loadSession(root, 'task-a')).toThrow('not valid JSON');
@@ -160,6 +161,59 @@ describe('guardrails', () => {
 			expect(checkFlag(root)).toBe(false);
 			const forged = JSON.parse(await readFile(path.join(root, '.cellix/verify.json'), 'utf8')) as { head: string };
 			expect(forged.head).toMatch(/^[0-9a-f]{40}$/);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
+	it('sends an agent back until the verify flag matches, then removes that session', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-stop-'));
+		const stop = path.join(repoRoot, '.cursor/hooks/cellix-verify-stop.mjs');
+		const end = path.join(repoRoot, '.cursor/hooks/cellix-session-end.mjs');
+		const run = (script: string, agentId: string, payload: Record<string, unknown>) => {
+			const result = spawnSync(process.execPath, [script], {
+				input: JSON.stringify({ workspace_roots: [root], ...payload }),
+				encoding: 'utf8',
+				env: { ...process.env, CELLIX_AGENT_ID: agentId, CURSOR_PROJECT_DIR: root },
+			});
+			return JSON.parse(result.stdout) as { followup_message?: string };
+		};
+		try {
+			expect(run(stop, '', { status: 'completed' })).toEqual({});
+			expect(run(stop, 'task-a', { status: 'completed' }).followup_message).toContain('pnpm run verify');
+			expect(run(stop, 'task-a', { status: 'aborted' })).toEqual({});
+			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
+			run(end, 'task-a', { hook_event_name: 'sessionEnd' });
+			expect(loadSession(root, 'task-a')?.agentId).toBe('task-a');
+			const git = (args: string[]) => {
+				const result = spawnSync('git', args, {
+					cwd: root,
+					encoding: 'utf8',
+					env: { ...process.env, GIT_AUTHOR_NAME: 'Test', GIT_AUTHOR_EMAIL: 'test@example.com', GIT_COMMITTER_NAME: 'Test', GIT_COMMITTER_EMAIL: 'test@example.com' },
+				});
+				expect(result.status, result.stderr).toBe(0);
+			};
+			git(['init']);
+			await writeFile(path.join(root, 'readme.md'), 'one\n');
+			git(['add', 'readme.md']);
+			git(['commit', '-m', 'start']);
+			const stamp = spawnSync(process.execPath, [path.join(repoRoot, '.cursor/hooks/cellix-stamp-verify.mjs')], {
+				cwd: root,
+				encoding: 'utf8',
+				env: { ...process.env, npm_lifecycle_event: 'verify' },
+			});
+			expect(stamp.status, stamp.stderr).toBe(0);
+			run(end, 'task-a', { hook_event_name: 'sessionEnd' });
+			expect(loadSession(root, 'task-a')).toBeNull();
+			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
+			expect(run(stop, 'task-a', { status: 'completed' })).toEqual({});
+			expect(loadSession(root, 'task-a')).toBeNull();
+			expect(checkFlag(root)).toBe(true);
+			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
+			recordSession(root, 'task-b', ['packages/axc/domain/src/']);
+			clearSession(root, 'task-b');
+			expect(loadSession(root, 'task-a')?.agentId).toBe('task-a');
+			expect(loadSession(root, 'task-b')).toBeNull();
 		} finally {
 			await rm(root, { recursive: true, force: true });
 		}

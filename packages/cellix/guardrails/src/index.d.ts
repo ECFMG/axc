@@ -26,6 +26,7 @@ export function sessionFile(root: string, agentId: string): string;
 export function loadSession(root: string, agentId: string): AgentSession | null;
 export function sessionAllows(relative: string, session: AgentSession | null): boolean;
 export function recordSession(root: string, agentId: string, files: readonly string[]): string;
+export function clearSession(root: string, agentId: string): void;
 export function policyFromConfig(config?: { agentAccess?: Record<string, boolean> }, session?: AgentSession | null): AccessPolicy;
 export function decidePath(file: string, workspace: string, policy: AccessPolicy): AccessDecision;
 export function decideShell(command: string, workspace: string, policy: AccessPolicy): AccessDecision;

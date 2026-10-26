@@ -5,13 +5,16 @@ import { type CellixLintConfig, checkCellixLint, defaultCellixLintConfig } from 
 import { generateFeature } from './generate.js';
 import { parseArgv, parseField, parseFieldsFile, parseNested, parsePermission } from './spec.js';
 
-const args = parseArgv(process.argv.slice(2));
+const argv = process.argv.slice(2);
+const operation = argv[0] === 'query' || argv[0] === 'update' ? argv[0] : undefined;
+const args = parseArgv(operation ? argv.slice(1) : argv);
 const root = await findRoot(process.cwd());
 const lint = await loadConfig(root);
 const transport = args.get('transport');
 const fieldsFile = args.get('fields');
 const fromFile = fieldsFile ? parseFieldsFile(await readFile(path.resolve(fieldsFile), 'utf8')) : { fields: [], permissions: [], nested: [] };
 const fields = [...fromFile.fields, ...args.list('field').map((token) => parseField(token))];
+const params = args.list('param').map((token) => parseField(token));
 const permissions = [...fromFile.permissions, ...args.list('permission').map((token) => parsePermission(token))];
 const nested = [...fromFile.nested, ...args.list('nested').map((token) => parseNested(token))];
 const files = await generateFeature({
@@ -19,7 +22,8 @@ const files = await generateFeature({
 	lint,
 	context: required(args),
 	entity: required(args, 'entity'),
-	action: required(args, 'action'),
+	action: operation ? required(args, 'name') : required(args, 'action'),
+	...(operation ? { operation, params } : {}),
 	...(transport === 'rest' || transport === 'graphql' ? { transport } : {}),
 	...(fields.length > 0 ? { fields } : {}),
 	...(permissions.length > 0 ? { permissions } : {}),

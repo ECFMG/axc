@@ -488,6 +488,12 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 			violations.push(...rejectUnexpectedTypes(file, content, allowed, 'cellix/persistence-index-types'));
 			continue;
 		}
+		if (relative === 'models-context.ts') {
+			if (!/export\s+type\s+ModelsContext\b/.test(content)) {
+				violations.push(report(file, 'cellix/persistence-models-context', 'missing ModelsContext', 'export type ModelsContext = ReturnType<typeof mongooseContextBuilder>'));
+			}
+			continue;
+		}
 		if (relative.includes('datasources/domain/') && relative.endsWith('.repository.ts')) {
 			violations.push(...checkPersistenceRepository(file, content, domainRepositories));
 			continue;

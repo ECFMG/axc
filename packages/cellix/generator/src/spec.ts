@@ -27,7 +27,7 @@ export function parseArgv(argv: string[]): ParsedArgs {
 	const values = new Map<string, string>();
 	const lists = new Map<string, string[]>();
 	const flags = new Set<string>();
-	const repeated = new Set(['field', 'permission', 'nested']);
+	const repeated = new Set(['field', 'param', 'permission', 'nested']);
 	const booleans = new Set(['resolver']);
 	for (let index = 0; index < argv.length; index += 1) {
 		const token = argv[index] ?? '';

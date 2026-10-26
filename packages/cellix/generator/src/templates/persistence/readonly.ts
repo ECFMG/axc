@@ -1,3 +1,5 @@
+import { persistenceModelsImport } from '../../text.ts';
+
 export function entityData(entityPascal: string, scope: string): string {
 	return `import type { ${entityPascal} } from '${scope}/data-sources-mongoose-models';
 import { MongoDataSourceImpl, type MongoDataSource } from '../../mongo-data-source.ts';
@@ -8,9 +10,11 @@ export class ${entityPascal}DataSourceImpl extends MongoDataSourceImpl<${entityP
 `;
 }
 
-export function readRepository(input: { context: string; entity: string; entityPascal: string; contextPascal: string; scope: string }): string {
-	const { context, entity, entityPascal, contextPascal, scope } = input;
+export function readRepository(input: { context: string; entity: string; entityPascal: string; contextPascal: string; scope: string; read?: { name: string; command: string; result: string } }): string {
+	const { context, entity, entityPascal, contextPascal, scope, read } = input;
 	const reference = `Domain.Contexts.${contextPascal}.${entityPascal}.${entityPascal}EntityReference`;
+	const method = read ? `\n\t${read.name}: (command: { ${read.command} }) => Promise<${read.result}>;` : '';
+	const methodBody = read ? `\n\n\t${read.name}(command: { ${read.command} }): Promise<${read.result}> {\n\t\treturn Promise.reject(new Error(\`not implemented: \${JSON.stringify(command)}\`));\n\t}` : '';
 	return `import type { ${entityPascal}ModelType } from '${scope}/data-sources-mongoose-models';
 import type { Domain } from '${scope}/domain';
 import { ${entityPascal}Converter } from '../../../domain/${context}/${entity}/${entity}.domain-adapter.ts';
@@ -19,7 +23,7 @@ import { ${entityPascal}DataSourceImpl, type ${entityPascal}DataSource } from '.
 
 export interface ${entityPascal}ReadRepository {
 	getAll: (options?: FindOptions) => Promise<${reference}[]>;
-	getById: (id: string, options?: FindOneOptions) => Promise<${reference} | null>;
+	getById: (id: string, options?: FindOneOptions) => Promise<${reference} | null>;${method}
 }
 
 export class ${entityPascal}ReadRepositoryImpl implements ${entityPascal}ReadRepository {
@@ -44,7 +48,7 @@ export class ${entityPascal}ReadRepositoryImpl implements ${entityPascal}ReadRep
 			return null;
 		}
 		return this.converter.toDomain(result, this.passport);
-	}
+	}${methodBody}
 }
 
 export const get${entityPascal}ReadRepository = (models: { ${entityPascal}: ${entityPascal}ModelType }, passport: Domain.Passport): ${entityPascal}ReadRepository => {
@@ -55,14 +59,13 @@ export const get${entityPascal}ReadRepository = (models: { ${entityPascal}: ${en
 
 export function readEntityIndex(entity: string, entityPascal: string, scope: string): string {
 	return `import type { Domain } from '${scope}/domain';
-import type { ModelsContext } from '${scope}/persistence';
-import { get${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
-
-export type { ${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
+import type { ModelsContext } from '${persistenceModelsImport(4)}';
+import { ${entityPascal}ReadRepositoryImpl as ${entityPascal}ReadRepositoryClass, get${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
 
 export const ${entityPascal}ReadRepositoryImpl = (models: ModelsContext, passport: Domain.Passport) => {
+	const repository: ${entityPascal}ReadRepositoryClass = get${entityPascal}ReadRepository(models, passport);
 	return {
-		${entityPascal}ReadRepo: get${entityPascal}ReadRepository(models, passport),
+		${entityPascal}ReadRepo: repository,
 	};
 };
 `;
@@ -70,7 +73,7 @@ export const ${entityPascal}ReadRepositoryImpl = (models: ModelsContext, passpor
 
 export function readContextIndex(contextPascal: string, entity: string, entityPascal: string, scope: string): string {
 	return `import type { Domain } from '${scope}/domain';
-import type { ModelsContext } from '${scope}/persistence';
+import type { ModelsContext } from '${persistenceModelsImport(3)}';
 import { ${entityPascal}ReadRepositoryImpl } from './${entity}/index.ts';
 
 export const ${contextPascal}Context = (models: ModelsContext, passport: Domain.Passport) => ({
@@ -81,7 +84,7 @@ export const ${contextPascal}Context = (models: ModelsContext, passport: Domain.
 
 export function readonlyIndex(context: string, contextPascal: string, entity: string, entityPascal: string, scope: string): string {
 	return `import type { Domain } from '${scope}/domain';
-import type { ModelsContext } from '${scope}/persistence';
+import type { ModelsContext } from '${persistenceModelsImport(2)}';
 import { ${contextPascal}Context } from './${context}/index.ts';
 import type { ${entityPascal}ReadRepository } from './${context}/${entity}/${entity}.read-repository.ts';
 

@@ -11,7 +11,7 @@ Read these files before adding or changing domain, application service, persiste
 - `packages/cellix/lint/src/check.ts` — `@cellix/lint` entry. File roles, file body, visibility, and the dependency graph.
 - `packages/cellix/lint/biome-shared.json` — the Biome rules. Root `biome.json` extends `@cellix/lint/biome` and adds only app-specific ignores.
 
-The last check before the work is done is `pnpm run verify`. That runs `pnpm run lint` first. Cellix lint is part of that lint script, so a lint violation fails verify.
+The last check before the work is done is `pnpm run verify`. That runs `pnpm run lint` first. Cellix lint is part of that lint script, so a lint violation fails verify. An agent with `CELLIX_AGENT_ID` is sent back to that command until `.cellix/verify.json` matches the tree. Do not write that file yourself.
 
 ## Do not edit
 

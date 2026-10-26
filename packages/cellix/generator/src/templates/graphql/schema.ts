@@ -1,9 +1,14 @@
-import { isShapeNested, type Shape, type ShapeNested } from '../../shape.ts';
+import { isShapeNested, type Shape, type ShapeField, type ShapeNested } from '../../shape.ts';
 import { gqlType } from '../../text.ts';
 
-export function schema(input: { entityPascal: string; actionPascal: string; actionCamel: string; operation: string; shape: Shape }): string {
-	const { entityPascal, actionPascal, actionCamel, operation, shape } = input;
+export function schema(input: { entityPascal: string; actionPascal: string; actionCamel: string; operation: string; shape: Shape; inputs?: ShapeField[] }): string {
+	const { entityPascal, actionPascal, actionCamel, operation, shape, inputs } = input;
 	const resultName = operation === 'Query' ? `${entityPascal}${actionPascal}Result` : `${entityPascal}${actionPascal}MutationResult`;
+	if (inputs) {
+		const lines = inputs.map((field) => `\t${field.name}: ${field.name === 'id' ? 'ID!' : gqlType(field.type)}`).join('\n');
+		const typeName = operation === 'Query' ? 'Query' : 'Mutation';
+		return `input ${entityPascal}${actionPascal}Input {\n${lines}\n}\n\ntype ${resultName} {\n\tid: ID!\n}\n\nextend type ${typeName} {\n\t${actionCamel}(input: ${entityPascal}${actionPascal}Input): ${resultName}!\n}\n`;
+	}
 	const result = `type ${resultName} {\n\tid: ID!\n}\n`;
 	if (operation === 'Query') {
 		return `input ${entityPascal}${actionPascal}Input {\n\tid: ID!\n}\n\n${result}\nextend type Query {\n\t${actionCamel}(input: ${entityPascal}${actionPascal}Input): ${resultName}!\n}\n`;
