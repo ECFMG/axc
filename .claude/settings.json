@@ -34,5 +34,24 @@
 			}
 		]
 	},
-	"effortLevel": "low"
+	"effortLevel": "low",
+	"permissions": {
+		"deny": [
+			"Artifact",
+			"ArtifactComments",
+			"ArtifactData",
+			"CronCreate",
+			"CronDelete",
+			"CronList",
+			"DesignSync",
+			"PushNotification",
+			"RemoteTrigger",
+			"ShareOnboardingGuide",
+			"ScheduleWakeup",
+			"ReportFindings",
+			"NotebookEdit",
+			"WebSearch"
+		]
+	},
+	"disableClaudeAiConnectors": true
 }
