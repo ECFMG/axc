@@ -50,7 +50,12 @@ reach for the cheapest thing that answers the question:
 |---|---|
 | lint or format one area | `pnpm exec biome check <path>` |
 | test one package | `pnpm --filter <pkg> run test` |
-| everything, before you claim done | `pnpm run verify` |
+| everything, before you claim done | `python3 .claude/hooks/gate_digest.py` |
+
+`gate_digest.py` runs `pnpm run verify` once and prints the exit code, every
+gate's result, test and scenario counts, and the failing gate's error lines.
+It is the evidence for your summary: quote it, do not grep the full log
+(`/tmp/verify.log`) for counts it already shows.
 
 A gate reporting **SKIPPED** is not a pass. Say so explicitly rather than
 implying the suite was green.

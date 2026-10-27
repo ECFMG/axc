@@ -103,8 +103,9 @@ own unit test (rest is test-wired too).
   `python3 .claude/hooks/coverage_gate.py --check` — it lists any criteria still uncovered.
   Run `python3 .claude/hooks/cellix_check.py` too: it checks EVERY aggregate you created
   (second and third ones included) is in the contexts/<ctx>/<agg>/ shape above.
-  Also run `python3 .claude/hooks/knip_check.py` (~12s) before `pnpm run verify` — it
+  Also run `python3 .claude/hooks/knip_check.py` (~12s) before the full gate — it
   names unused files/exports that knip will reject, so verify passes first time.
+  Run the full gate as `python3 .claude/hooks/gate_digest.py` (wraps `pnpm run verify`).
 - Architecture: `archunit-tests/src/dependency-rules.test.ts` — see the domain list above.
 
 ## Docs
@@ -124,6 +125,14 @@ Cheap equivalents while iterating:
 | typecheck one package | `cd packages/axc/<pkg> && ../../../node_modules/.bin/tsgo --noEmit` |
 | unit tests one package | `corepack pnpm --filter @axc/<pkg> run test` |
 | architecture rules only | `corepack pnpm exec turbo run test:arch --force` |
+
+## TypeScript flags (from `@cellix/config-typescript`)
+
+`strict`, `exactOptionalPropertyTypes` (optional props read as `T | undefined`; assigning
+`undefined` needs it in the type), `noUncheckedIndexedAccess` (`arr[i]`, `rec[k]` are
+`T | undefined`), `noPropertyAccessFromIndexSignature` (index-signature keys need
+`obj['k']`), `erasableSyntaxOnly` (no `enum`, `namespace`, or constructor parameter
+properties), `verbatimModuleSyntax` (type-only imports need `import type`).
 
 ## Already available (no lockfile change needed)
 
