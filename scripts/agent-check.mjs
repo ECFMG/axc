@@ -76,8 +76,13 @@ function findFailedCheck(lines) {
 }
 
 function findErrorBlock(lines) {
-	const marked = lines.filter((line) => /Expected:|Found:|error TS\d+|Cellix lint|violation|Unused export|AssertionError|\[ELIFECYCLE\]|\bFAIL\b/.test(line));
-	const unique = [...new Set(marked.map((line) => line.trim()).filter((line) => line.length > 0))];
-	if (unique.length > 0) return unique.slice(0, 24);
-	return lines.filter((line) => line.trim() !== '').slice(-12);
+	const trimmed = lines.map((line) => line.trim()).filter((line) => line.length > 0);
+	const diagnostic = [...new Set(trimmed.filter((line) => isDiagnostic(line)))];
+	if (diagnostic.length > 0) return diagnostic.slice(0, 24);
+	const wrapper = trimmed.filter((line) => /\[ELIFECYCLE\]|\bFAIL\b|^\s*Failed:/.test(line));
+	return [...new Set([...wrapper, ...trimmed.slice(-12)])].slice(-24);
+}
+
+function isDiagnostic(line) {
+	return /Expected:|Found:|Found \d+ error|error TS\d+|\berror\b|Cellix lint|violation|Unused export|AssertionError|\.[A-Za-z0-9]+:\d+:\d+|\(\d+,\d+\)/.test(line);
 }

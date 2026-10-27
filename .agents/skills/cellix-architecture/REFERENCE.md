@@ -45,7 +45,7 @@ pnpm --filter @cellix/generator generate -- --context course --entity course --a
   --nested activity-log:id:id,activityType:string
 ```
 
-`--context`, `--entity`, and `--action` are kebab-case. `generate` builds the entity. `create` and `delete` are mutations on that command. Repeat `--field name:type` (`string`, `boolean`, `date`, `number`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
+`--context`, `--entity`, and `--action` are kebab-case. `generate` builds the entity. `create` and `delete` are mutations on that command. Repeat `--field name:type`. The type is written as given (`string`, `string[]`, `'online'|'in-person'|'hybrid'`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
 
 A query and an update are separate commands. `--name` is the function name. Repeat `--param name:type` for the command. Those params are the command interface, the repository method, and the REST input. The function name does not choose the flow.
 
@@ -57,7 +57,7 @@ pnpm --filter @cellix/generator update -- --context course --entity course --nam
   --param status:string --transport rest
 ```
 
-`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is an array. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. The first call for an entity still writes the aggregate from `--field`. A later call adds the function and leaves that aggregate in place. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
+`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index. `--route` is the path name you pass (`--route courses` writes `/api/courses`). Do not pass `--return`. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. The first call for an entity still writes the aggregate from `--field`. A later call adds the function and leaves that aggregate in place. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
 
 ```json
 {
@@ -125,9 +125,9 @@ The harness sets `CELLIX_AGENT_ID` (`task-a`, `task-b`) in that agent's environm
 
 The directories are the new context and the new model. Every other file the generator edits is an exact path, including the REST index and `apps/api/src/index.ts`. Docs are not in the session. The rest of `packages/axc/rest`, `apps/api/src`, `apps/docs`, the acceptance package, and `packages/axc/service-mongoose` stay closed.
 
-An `agentAccess` key with no `*` stays writable during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay fixable because they are exact `true` entries in `ocom-write.config.json`.
+An exact `true` key with no `*` stays open for that side during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay writable because they are exact `true` entries in the `write` map.
 
-No `CELLIX_AGENT_ID` means no session. Standing `agentAccess` is the only check. An empty file list or invalid JSON does not open the tree. The agent does not delete the session file. After `.cellix/verify.json` matches the tree, the stop hook and the session-end hook remove `.cellix/sessions/<CELLIX_AGENT_ID>.json`. The verify file stays.
+No `CELLIX_AGENT_ID` means no session. Standing `read` and `write` are the only checks. An empty write list or invalid JSON does not open writes. A missing `read` array does not narrow reads. The agent does not delete the session file. After `.cellix/verify.json` matches the tree, the stop hook and the session-end hook remove `.cellix/sessions/<CELLIX_AGENT_ID>.json`. The verify file stays.
 
 ## Verify flag
 
@@ -139,9 +139,9 @@ The flag rules are `packages/cellix/guardrails/src/verify-flag.mjs`. `pnpm run v
 
 The generator writes one API acceptance scenario. The steps call the running app and read `LastResponse.body()`. It does not write browser tests. Those follow the screen. CellixJS keeps them in `packages/ocom-verification/e2e-tests`: Playwright, portless, and Serenity screenplay, separate from `acceptance-api`. Add that package when a frontend exists, and write the scenario by hand.
 
-## agentAccess
+## read and write
 
-`ocom-write.config.json` is the only write list. The first matching `agentAccess` key wins. `true` allows the path. `false` locks it. A path with no match is denied. The session does not declare a second list.
+`ocom-write.config.json` has two maps, `read` and `write`. The first matching key in that map wins. `true` allows the path. `false` locks it. A path with no match is denied. `read` has no catch-all. The open trees are `packages/axc`, `packages/axc-verification`, `apps/api/src`, and `apps/docs`, plus `AGENTS.md`, this skill, the task prompt and requirements, `cellix-lint.config.json`, `biome.json`, `package.json`, and `pnpm-workspace.yaml`. A session file may list `read` and `write` separately. `files` is the write list when `write` is absent. A session does not unlock a locked path. The generator records the write list only.
 
 A shell write that does not name a file is denied. `pnpm --filter @cellix/generator generate` is allowed. `git status` and `git diff` are allowed. `git restore` of a locked file is denied.
 

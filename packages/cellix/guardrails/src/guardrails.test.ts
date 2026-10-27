@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { checkFlag, clearSession, decidePath, decideShell, loadSession, policyFromConfig, recordSession, sessionAllows } from './index.mjs';
+import { checkFlag, clearSession, decidePath, decideRead, decideShell, loadSession, policyFromConfig, recordSession, sessionAllows, sessionAllowsRead } from './index.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -220,6 +220,36 @@ describe('guardrails', () => {
 			clearSession(root, 'task-b');
 			expect(loadSession(root, 'task-a')?.agentId).toBe('task-a');
 			expect(loadSession(root, 'task-b')).toBeNull();
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
+	it('narrows read and write separately', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
+		try {
+			recordSession(root, 'task-a', { write: ['packages/axc/rest/src/index.ts'], read: ['packages/axc/domain/src/'] });
+			const session = loadSession(root, 'task-a');
+			const policy = policyFromConfig(
+				{
+					read: { 'packages/cellix/**': false, '**': true },
+					write: { 'packages/axc/**': true, 'packages/cellix/**': false },
+				},
+				session,
+			);
+			const domain = 'packages/axc/domain/src/domain/contexts/course/course.aggregate.ts';
+			expect(sessionAllows('packages/axc/rest/src/index.ts', session)).toBe(true);
+			expect(sessionAllows(domain, session)).toBe(false);
+			expect(sessionAllowsRead(domain, session)).toBe(true);
+			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', session)).toBe(false);
+			expect(decidePath(path.join(repoRoot, 'packages/axc/rest/src/index.ts'), repoRoot, policy).ok).toBe(true);
+			expect(decidePath(path.join(repoRoot, domain), repoRoot, policy).ok).toBe(false);
+			expect(decideRead(path.join(repoRoot, domain), repoRoot, policy).ok).toBe(true);
+			expect(decideRead(path.join(repoRoot, 'packages/axc/rest/src/index.ts'), repoRoot, policy).ok).toBe(false);
+			expect(decideRead(path.join(repoRoot, 'packages/cellix/generator/src/generate.ts'), repoRoot, policy).ok).toBe(false);
+			expect(decidePath(path.join(repoRoot, 'packages/cellix/generator/src/generate.ts'), repoRoot, policy).ok).toBe(false);
+			const writeOnly = { agentId: 'task-a', files: ['packages/axc/rest/src/index.ts'] };
+			expect(sessionAllowsRead(domain, writeOnly)).toBe(true);
 		} finally {
 			await rm(root, { recursive: true, force: true });
 		}

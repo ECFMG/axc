@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { once } from 'node:events';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -71,6 +71,38 @@ describe('the transcript hook', () => {
 		assert.equal(glob.permission, 'deny');
 		const wrapped = await hookDecision({ command: 'pnpm run agent-check -- pnpm run verify', hook_event_name: 'beforeShellExecution' });
 		assert.equal(wrapped.permission, 'allow');
+		const named = await hookDecision({
+			tool_name: 'Grep',
+			tool_input: { pattern: 'health', path: 'packages/axc/rest/src' },
+			hook_event_name: 'preToolUse',
+		});
+		assert.equal(named.permission, 'allow');
+		const otherKey = await hookDecision({
+			tool_name: 'Grep',
+			tool_input: { pattern: 'health', file_path: 'packages/axc/rest/src/index.ts' },
+			hook_event_name: 'preToolUse',
+		});
+		assert.equal(otherKey.permission, 'allow');
+		const missing = await hookDecision({ tool_name: 'Grep', tool_input: { pattern: 'health' }, hook_event_name: 'preToolUse' });
+		assert.equal(missing.permission, 'deny');
+		const closed = await hookDecision({
+			tool_name: 'Grep',
+			tool_input: { pattern: 'health', path: 'packages/cellix/guardrails' },
+			hook_event_name: 'preToolUse',
+		});
+		assert.equal(closed.permission, 'deny');
+	});
+});
+
+describe('agent-check', () => {
+	it('prints the file location from a failed check', () => {
+		const result = spawnSync(
+			process.execPath,
+			['scripts/agent-check.mjs', '--', process.execPath, '--eval', "console.error('packages/axc/rest/src/index.ts:12:5 lint/style/useFilenamingConvention'); console.error('ELIFECYCLE Command failed.'); process.exit(1);"],
+			{ cwd: root, encoding: 'utf8' },
+		);
+		assert.equal(result.status, 1);
+		assert.match(result.stderr, /index\.ts:12:5/);
 	});
 });
 
