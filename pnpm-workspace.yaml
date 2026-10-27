@@ -45,7 +45,8 @@ catalog:
 auditConfig:
   ignoreGhsas:
     [
-      'GHSA-vfj7-8cjw-p6xm' # 3.0.4 listed as patched, but version unavailable on npm registry; latest is 3.0.3
+      'GHSA-vfj7-8cjw-p6xm', # 3.0.4 listed as patched, but version unavailable on npm registry; latest is 3.0.3
+      'GHSA-834v-8h66-3h79' # happy-dom pinned to 20.10.1 (upstream cellixjs pin): 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it. Review by 2026-11-26.
     ]
 
 overrides:
@@ -61,8 +62,8 @@ overrides:
   vite: 8.3.3
   follow-redirects: 1.16.1
   launch-editor: 2.14.2
-  happy-dom: 21.0.4
-  '@happy-dom/global-registrator': 21.0.4
+  happy-dom: 20.10.1
+  '@happy-dom/global-registrator': 20.10.1
   axios: 1.20.0
   hono: 4.13.11
   http-cache-semantics: 4.3.0

@@ -47,4 +47,9 @@ ignore:
         reason: No released fix - advisory's fixed-in versions (2.4.8/3.1.9/4.2.3) are not published to npm yet
         expires: 2026-11-20T00:00:00.000Z
         created: 2026-10-21T00:00:00.000Z
+  SNYK-JS-HAPPYDOM-21691240:
+    - '*':
+        reason: happy-dom pinned to 20.10.1 (upstream cellixjs pin) - 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
+        expires: 2026-11-26T00:00:00.000Z
+        created: 2026-10-27T00:00:00.000Z
 patch: {}
