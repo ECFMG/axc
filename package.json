@@ -23,7 +23,8 @@
 		"audit": "pnpm audit --audit-level=high",
 		"snyk": "node scripts/snyk-verify.mjs",
 		"verify:flag": "node scripts/cellix-verify-flag.mjs",
-		"verify": "node scripts/check-script-policy.mjs && pnpm run lint && pnpm run typecheck && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk && node .cursor/hooks/cellix-stamp-verify.mjs",
+		"check": "pnpm run lint && pnpm run typecheck",
+		"verify": "node scripts/check-script-policy.mjs && pnpm run check && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk && node .cursor/hooks/cellix-stamp-verify.mjs",
 		"prepare": "husky"
 	},
 	"optionalDependencies": {

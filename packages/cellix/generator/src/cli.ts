@@ -2,6 +2,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { type CellixLintConfig, checkCellixLint, defaultCellixLintConfig } from '@cellix/lint';
+import { filesToEdit } from './edit-targets.js';
 import { generateFeature } from './generate.js';
 import { parseArgv, parseField, parseFieldsFile, parseNested, parsePermission } from './spec.js';
 
@@ -35,8 +36,19 @@ if (violations.length > 0) {
 	console.error(violations.join('\n\n'));
 	process.exit(1);
 }
-for (const file of files) console.log(path.relative(root, file.path));
-console.log(`Cellix generator: wrote ${files.length} files`);
+for (const file of filesToEdit({
+	root,
+	lint,
+	context: required(args),
+	entity: required(args, 'entity'),
+	action: operation ? required(args, 'name') : required(args, 'action'),
+	...(operation ? { operation, params } : {}),
+	...(transport === 'rest' || transport === 'graphql' ? { transport } : {}),
+	...(args.has('resolver') ? { resolver: true } : {}),
+})) {
+	console.log(file);
+}
+console.log('Edit these. The barrels are already wired. While editing, run pnpm run check. Run pnpm run verify once before you stop.');
 
 function required(args: ReturnType<typeof parseArgv>, key = 'context'): string {
 	const value = args.get(key);

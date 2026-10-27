@@ -20,8 +20,6 @@ function sessionPrefixes(options: GenerateFeatureOptions): string[] {
 		directory(lint.layers.persistence, 'datasources/readonly', context),
 		directory(lint.layers.applicationServices, 'contexts', context),
 		directory(lint.layers.models, 'models', entity),
-		`apps/docs/docs/${context}/`,
-		'apps/docs/sidebars.ts',
 	];
 }
 

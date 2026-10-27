@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { loadSession } from '@cellix/guardrails';
 import { afterEach, describe, expect, it } from 'vitest';
 import { checkCellixLint, defaultCellixLintConfig } from '../../lint/src/index.ts';
+import { filesToEdit } from './edit-targets.ts';
 import { generateFeature } from './generate.ts';
 import { parseField, parseFieldsFile, parseNested, parsePermission } from './spec.ts';
 
@@ -317,6 +318,19 @@ describe('Cellix generator', () => {
 		expectBiomeClean(deepFiles);
 	});
 
+	it('names the files to edit and leaves the barrels off that list', () => {
+		const lint = defaultCellixLintConfig();
+		const query = filesToEdit({ root: '/repo', lint, context: 'course', entity: 'course', action: 'search', operation: 'query', transport: 'rest' });
+		expect(query).toStrictEqual([
+			'packages/axc/application-services/src/contexts/course/course/search.ts',
+			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts',
+			'packages/axc/rest/src/index.ts',
+		]);
+		const update = filesToEdit({ root: '/repo', lint, context: 'course', entity: 'course', action: 'publish', operation: 'update', transport: 'rest' });
+		expect(update).toContain('packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts');
+		expect(update).not.toContain('packages/axc/domain/src/index.ts');
+	});
+
 	it('records a session for the current agent only', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
@@ -337,10 +351,12 @@ describe('Cellix generator', () => {
 			const session = loadSession(root, 'task-a');
 			expect(session?.files).toContain('packages/axc/domain/src/domain/contexts/course/');
 			expect(session?.files).toContain('packages/axc/domain/src/index.ts');
+			expect(session?.files).toContain('packages/axc/application-services/src/contexts/course/course/search.ts');
+			expect(session?.files).toContain('packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts');
 			expect(session?.files).toContain('packages/axc/rest/src/index.ts');
 			expect(session?.files).toContain('apps/api/src/index.ts');
-			expect(session?.files).toContain('apps/docs/docs/course/');
-			expect(session?.files).toContain('apps/docs/sidebars.ts');
+			expect(session?.files).not.toContain('apps/docs/docs/course/');
+			expect(session?.files).not.toContain('apps/docs/sidebars.ts');
 			expect(session?.files).not.toContain('packages/axc/rest/src/');
 			expect(session?.files).not.toContain('apps/api/src/');
 			expect(session?.files).not.toContain('apps/docs/');
