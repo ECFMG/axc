@@ -9,6 +9,9 @@ against the CellixJS house shapes reviewers judge as Cellix-level:
   - no new domain source files sit flat in domain/src/ (outside contexts/)
   - all four layers touched; a rest-layer unit test exists
 Prints exactly what is missing, with the expected paths. Advisory: exit 0.
+With --stop it is a Stop hook: blocks finishing (at most MAX_BLOCKS times per
+session, then allows it) while the shape is wrong. Agents never ran the advisory
+check (0 of 16 runs in iterations 8-9), and one run shipped flat domain code.
 
 Paths come from cellix.config.json beside this file; defaults are axc's.
 usage: python3 .claude/hooks/cellix_check.py
@@ -40,14 +43,16 @@ def changed_files(root):
     return files
 
 
-def main():
-    root = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+MAX_BLOCKS = 2
+
+
+def check(root):
+    """(problems, aggregate count); problems is None when nothing changed yet."""
     c = cfg()
     pr = c["packages_root"].rstrip("/") + "/"
     files = [f for f in changed_files(root) if f.startswith(pr) and "/src/" in f and f.endswith(".ts")]
     if not files:
-        print("cellix check: no changed source under " + pr + " yet")
-        return
+        return None, 0
     problems = []
     layers = {f[len(pr):].split("/")[0] for f in files}
     missing_layers = [l for l in c["layers"] if l not in layers]
@@ -99,17 +104,46 @@ def main():
     if not any(f.startswith(pr + "rest/src/") and f.endswith(".test.ts") for f in files):
         problems.append(f"no rest unit test under {pr}rest/src/*.test.ts")
 
-    if problems:
+    return problems, len(aggs)
+
+
+def main():
+    root = os.environ.get("CLAUDE_PROJECT_DIR") or os.getcwd()
+    problems, n = check(root)
+    if problems is None:
+        print("cellix check: no changed source under " + cfg()["packages_root"] + " yet")
+    elif problems:
         print("cellix check: NOT Cellix-shaped yet - fix before finishing:")
         for p in problems:
             print("  - " + p)
     else:
-        print(f"cellix check: OK - {len(aggs)} aggregate(s) in Cellix shape, all layers, rest tested")
+        print(f"cellix check: OK - {n} aggregate(s) in Cellix shape, all layers, rest tested")
+
+
+def stop():
+    ev = json.loads(sys.stdin.read() or "{}")
+    problems, _ = check(os.environ.get("CLAUDE_PROJECT_DIR") or ev.get("cwd") or os.getcwd())
+    if not problems:
+        return
+    state = os.path.join(os.path.expanduser("~"), ".claude", "metrics", "cellix-gate.json")
+    os.makedirs(os.path.dirname(state), exist_ok=True)
+    st = json.load(open(state)) if os.path.exists(state) else {}
+    sid = ev.get("session_id", "?")
+    blocks = st.get(sid, 0)
+    if blocks >= MAX_BLOCKS:
+        return
+    st[sid] = blocks + 1
+    json.dump(st, open(state, "w"))
+    print(json.dumps({"decision": "block", "reason":
+        "Not Cellix-shaped yet (reviewers fail this):\n" + "\n".join("- " + p for p in problems) +
+        "\nMove the code into that shape, update imports, rerun the affected tests and the full gate, "
+        f"then finish. (Block {blocks + 1} of {MAX_BLOCKS}.)"}))
 
 
 if __name__ == "__main__":
     try:
-        main()
-    except Exception as e:
-        print(f"cellix check unavailable ({e})")
+        stop() if "--stop" in sys.argv else main()
+    except Exception as e:  # fail open
+        if "--stop" not in sys.argv:
+            print(f"cellix check unavailable ({e})")
     sys.exit(0)

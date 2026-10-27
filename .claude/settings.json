@@ -24,6 +24,11 @@
 						"type": "command",
 						"command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/secret_gate.py\"",
 						"timeout": 30
+					},
+					{
+						"type": "command",
+						"command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/cellix_check.py\" --stop",
+						"timeout": 20
 					}
 				]
 			}
