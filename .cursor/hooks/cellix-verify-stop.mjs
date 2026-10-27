@@ -6,7 +6,8 @@
 import { readFileSync } from 'node:fs';
 import { agentIdFromEnv, checkFlag, clearSession } from '../../packages/cellix/guardrails/src/index.mjs';
 
-const FOLLOWUP = 'While files are still changing, run pnpm run check. Run pnpm run verify once when the behavior is in place. Finish only after it prints CELLIX_VERIFY=pass. Do not write .cellix/verify.json.';
+const FOLLOWUP =
+	'While files are still changing, run pnpm run agent-check -- pnpm run check. Run pnpm run agent-check -- pnpm run verify once when the behavior is in place. Finish only after it prints CELLIX_VERIFY=pass. Do not write .cellix/verify.json.';
 
 const payload = readPayload();
 const workspace = workspaceFrom(payload);

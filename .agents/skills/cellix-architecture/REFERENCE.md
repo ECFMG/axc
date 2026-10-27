@@ -133,7 +133,7 @@ No `CELLIX_AGENT_ID` means no session. Standing `agentAccess` is the only check.
 
 The flag rules are `packages/cellix/guardrails/src/verify-flag.mjs`. `pnpm run verify` writes `.cellix/verify.json` and prints `CELLIX_VERIFY=pass` only after lint, typecheck, build, tests, audit, and Snyk all exit 0. The file records git HEAD and a hash of `git status --porcelain`, so the pass belongs to that tree. `pnpm run verify:flag` prints `CELLIX_VERIFY=pass` while the tree still matches and `CELLIX_VERIFY=stale` after another edit. `.cellix/verify.json` is not a writable product file. A write to that path is denied even when `agentAccess` would allow it.
 
-`.cursor/hooks/cellix-verify-stop.mjs` runs when a turn ends. With `CELLIX_AGENT_ID` set, a missing or stale flag becomes the next user message: run `pnpm run verify`. Cursor stops sending that follow-up after 5 times. A chat with no agent id is not stopped. An aborted or errored turn is not followed up. When the flag matches, that hook removes the session file. `.cursor/hooks/cellix-session-end.mjs` removes it again when the conversation closes after a pass. Turbo and Snyk print failures, not passing task logs.
+`.cursor/hooks/cellix-verify-stop.mjs` runs when a turn ends. With `CELLIX_AGENT_ID` set, a missing or stale flag becomes the next user message: run `pnpm run agent-check -- pnpm run verify`. Cursor stops sending that follow-up after 5 times. A chat with no agent id is not stopped. An aborted or errored turn is not followed up. When the flag matches, that hook removes the session file. `.cursor/hooks/cellix-session-end.mjs` removes it again when the conversation closes after a pass. Turbo and Snyk print failures, not passing task logs.
 
 ## Browser end-to-end tests
 
@@ -147,9 +147,9 @@ A shell write that does not name a file is denied. `pnpm --filter @cellix/genera
 
 ## After every edit
 
-While the files are still changing, run `pnpm run check`. That is `pnpm run lint` and typecheck. `Cellix lint: ok` is the lint bar. A violation names the file, the rule, what was found, and the expected shape. Fix the file. Do not weaken the rule.
+While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is `pnpm run lint` and typecheck. The wrapper prints pass or the first error. `Cellix lint: ok` is the lint bar. A violation names the file, the rule, what was found, and the expected shape. Fix the file. Do not weaken the rule.
 
-When the behavior is in place, run `pnpm run verify` once. It runs `pnpm run check`, then build, tests, audit, and Snyk. Do not finish on lint or build alone.
+When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. It runs `pnpm run check`, then build, tests, audit, and Snyk. Do not finish on lint or build alone.
 
 ## File body
 

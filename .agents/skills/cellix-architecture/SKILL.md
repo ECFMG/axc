@@ -35,9 +35,11 @@ A query name cannot start with `create`, `update`, or `delete`. An update name c
 
 ## Checks
 
-While the files are still changing, run `pnpm run check`. That is lint and typecheck.
+While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The full log stays out of the chat.
 
-When the behavior is in place, run `pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
+When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
+
+Do not glob a whole tree. Do not read `node_modules` or `packages/cellix`. Open `REFERENCE.md` only when a check error names a file role.
 
 ## Writes
 

@@ -24,6 +24,8 @@
 		"snyk": "node scripts/snyk-verify.mjs",
 		"verify:flag": "node scripts/cellix-verify-flag.mjs",
 		"check": "pnpm run lint && pnpm run typecheck",
+		"agent-check": "node scripts/agent-check.mjs",
+		"test:agent-check": "node --test scripts/check-budget.test.mjs",
 		"verify": "node scripts/check-script-policy.mjs && pnpm run check && pnpm run build && pnpm run knip && pnpm run e18e && pnpm run test:arch && pnpm run test && pnpm run audit && pnpm run snyk && node .cursor/hooks/cellix-stamp-verify.mjs",
 		"prepare": "husky"
 	},
