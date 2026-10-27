@@ -1,11 +1,12 @@
 import { isShapeNested, type ShapeField, type ShapeMember, type ShapeNested } from './shape.ts';
 import type { FieldSpec } from './spec.ts';
 
-export function tsType(type: ShapeField['type']): string {
+export function tsType(type: string): string {
 	if (type === 'boolean') return 'boolean';
 	if (type === 'date') return 'Date';
 	if (type === 'number') return 'number';
-	return 'string';
+	if (type === 'string' || type === 'id') return 'string';
+	return type;
 }
 
 export function mongooseField(field: ShapeField): string {
@@ -13,13 +14,31 @@ export function mongooseField(field: ShapeField): string {
 	if (field.type === 'date') return '{ type: Date, required: true }';
 	if (field.type === 'number') return '{ type: Number, required: true }';
 	if (field.type === 'string') return '{ type: String, required: true, minlength: 1, maxlength: 200 }';
+	if (field.type.endsWith('[]')) return `{ type: [${mongooseScalar(field.type.slice(0, -2))}], required: true }`;
 	return '{ type: String, required: true }';
 }
 
-export function gqlType(type: ShapeField['type']): string {
+export function gqlType(type: string): string {
+	if (type.endsWith('[]')) return `[${gqlType(type.slice(0, -2)).replace(/!$/, '')}!]!`;
 	if (type === 'boolean') return 'Boolean!';
 	if (type === 'number') return 'Float!';
+	if (type === 'string' || type === 'id') return 'String!';
 	return 'String!';
+}
+
+export function serviceResult(input: { result?: string | undefined; operation?: 'query' | 'update' | undefined; kind: ActionKind; actionCamel: string; reference: string }): string {
+	if (input.result) return input.result;
+	if (input.operation === 'query' || input.kind === 'read') {
+		if (input.operation !== 'query' && /^get(?:[A-Z]|$)/.test(input.actionCamel)) return `${input.reference} | null`;
+		return `${input.reference}[]`;
+	}
+	return input.reference;
+}
+
+/** REST uses the route as the path name. GraphQL uses it as the field name. */
+export function graphqlFieldName(actionCamel: string, transport: 'rest' | 'graphql' | undefined, route: string | undefined): string {
+	if (transport === 'graphql' && route) return route;
+	return actionCamel;
 }
 
 export function namespacePath(contextPascal: string, entityPascal: string): string {
@@ -74,6 +93,13 @@ export function httpReadArgument(shape: { fields: ShapeField[]; nested: ShapeNes
 	const parts = [...shape.fields.map((field) => `${field.name}: ${httpValue(field)}`), ...shape.nested.map((item) => `${item.camel}: {} as ${structuralType(item)}`)];
 	if (parts.length === 0) return "{ id: c.req.query('id') ?? '' }";
 	return `{ ${parts.join(', ')} }`;
+}
+
+function mongooseScalar(type: string): string {
+	if (type === 'boolean') return 'Boolean';
+	if (type === 'date') return 'Date';
+	if (type === 'number') return 'Number';
+	return 'String';
 }
 
 function httpValue(field: ShapeField): string {

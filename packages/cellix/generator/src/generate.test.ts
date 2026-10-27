@@ -209,7 +209,9 @@ describe('Cellix generator', () => {
 		expect(() => parseField('id:string')).toThrow('aggregate identity');
 		expect(() => parseFieldsFile('{ "permissions": ["CanManage"] }')).toThrow('camelCase');
 		expect(() => parseFieldsFile('{ "nested": [{ "name": "Address", "fields": [{ "name": "street", "type": "string" }] }] }')).toThrow('kebab-case');
-		expect(() => parseFieldsFile('{ "fields": [{ "name": "title", "type": "text" }] }')).toThrow('Field type');
+		expect(() => parseFieldsFile('{ "fields": [{ "name": "title", "type": "string type" }] }')).toThrow('Field type');
+		expect(parseField('tags:string[]')).toEqual({ name: 'tags', type: 'string[]' });
+		expect(parseField("modality:'online'|'in-person'|'hybrid'")).toEqual({ name: 'modality', type: "'online'|'in-person'|'hybrid'" });
 		await expect(generateFeature({ root, lint, context: 'course', entity: 'course', action: 'create', permissions: ['canManageCourse', 'canManageCourse'] })).rejects.toThrow('Permission canManageCourse is used more than once');
 		await expect(generateFeature({ root, lint, context: 'course', entity: 'course', action: 'create', fields: [parseField('courseName:string'), parseField('courseName:string')] })).rejects.toThrow(
 			'Name courseName is used more than once',
@@ -450,6 +452,61 @@ describe('Cellix generator', () => {
 		expect(schema).toContain('extend type Query {\n\tsearch(input:');
 		expect(schema).toContain('extend type Mutation {\n\tpublish(input:');
 		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
+	});
+
+	it('writes a return type and route passed in by the caller', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(root);
+		const lint = defaultCellixLintConfig();
+		await writeStub(
+			root,
+			'packages/axc/rest/src/index.ts',
+			`import type { ApplicationServicesFactory } from '@axc/application-services';\nimport { Hono } from 'hono';\n\nexport function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {\n\tconst app = new Hono();\n\treturn app;\n}\n`,
+		);
+		await generateFeature({
+			root,
+			lint,
+			context: 'course',
+			entity: 'course',
+			action: 'create',
+			fields: [parseField('tags:string[]'), parseField("modality:'online'|'in-person'|'hybrid'")],
+		});
+		const search = await generateFeature({
+			root,
+			lint,
+			context: 'course',
+			entity: 'course',
+			operation: 'query',
+			action: 'search',
+			params: [parseField('q:string')],
+			result: 'CourseSearchPage',
+			route: 'courses',
+			transport: 'rest',
+		});
+		expect(search.find((file) => file.path.endsWith('/search.ts'))?.contents).toContain('Promise<CourseSearchPage>');
+		const readRepository = await readFile(path.join(root, 'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts'), 'utf8');
+		expect(readRepository).toContain('Promise<CourseSearchPage>');
+		const rest = await readFile(path.join(root, 'packages/axc/rest/src/index.ts'), 'utf8');
+		expect(rest).toContain("app.get('/api/courses'");
+		const model = await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/src/models/course/course.model.ts'), 'utf8');
+		expect(model).toContain('tags: string[];');
+		expect(model).toContain("modality: 'online' | 'in-person' | 'hybrid';");
+		await generateFeature({
+			root,
+			lint,
+			context: 'course',
+			entity: 'course',
+			operation: 'query',
+			action: 'find',
+			params: [parseField('q:string')],
+			route: 'catalog',
+			transport: 'graphql',
+		});
+		const graphql = await readFile(path.join(root, 'packages/axc/graphql/src/schema/types/course.graphql'), 'utf8');
+		expect(graphql).toContain('catalog(input:');
+		const resolver = await readFile(path.join(root, 'packages/axc/graphql/src/schema/types/course.resolvers.ts'), 'utf8');
+		expect(resolver).toContain('catalog:');
+		expect(resolver).toContain('.find(');
 	});
 
 	it('wires a new context through the same barrels Community uses', async () => {

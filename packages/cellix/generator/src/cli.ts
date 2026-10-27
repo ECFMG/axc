@@ -18,6 +18,8 @@ const fields = [...fromFile.fields, ...args.list('field').map((token) => parseFi
 const params = args.list('param').map((token) => parseField(token));
 const permissions = [...fromFile.permissions, ...args.list('permission').map((token) => parsePermission(token))];
 const nested = [...fromFile.nested, ...args.list('nested').map((token) => parseNested(token))];
+const result = args.get('return');
+const route = args.get('route');
 const files = await generateFeature({
 	root,
 	lint,
@@ -30,6 +32,8 @@ const files = await generateFeature({
 	...(permissions.length > 0 ? { permissions } : {}),
 	...(nested.length > 0 ? { nested } : {}),
 	...(args.has('resolver') ? { resolver: true } : {}),
+	...(result !== undefined ? { result } : {}),
+	...(route !== undefined ? { route } : {}),
 });
 const violations = (await checkCellixLint({ root, lint })).filter((violation) => files.some((file) => violation.includes(file.path.split(path.sep).join('/'))));
 if (violations.length > 0) {
@@ -48,7 +52,7 @@ for (const file of filesToEdit({
 })) {
 	console.log(file);
 }
-console.log('Edit these. The barrels are already wired. While editing, run pnpm run check. Run pnpm run verify once before you stop.');
+console.log('Edit these. The barrels are already wired. While editing, run pnpm run agent-check -- pnpm run check. Run pnpm run agent-check -- pnpm run verify once before you stop.');
 
 function required(args: ReturnType<typeof parseArgv>, key = 'context'): string {
 	const value = args.get(key);

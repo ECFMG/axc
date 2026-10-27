@@ -1,6 +1,6 @@
 const HEAVY = [/(?:^|\s)pnpm(?:\s+run)?\s+verify(?:\s|$)/, /(?:^|\s)pnpm(?:\s+run)?\s+check(?:\s|$)/, /(?:^|\s)pnpm(?:\s+run)?\s+test(?::acceptance|:arch)?(?:\s|$)/];
 
-export const CLOSED_TREES = ['node_modules', 'packages/cellix'];
+export const CLOSED_TREES = ['node_modules', 'packages/cellix', 'agent-transcripts', 'dist'];
 
 export const HEAVY_MESSAGE = 'Run that command through pnpm run agent-check so its log stays out of the chat. Example: pnpm run agent-check -- pnpm run verify';
 

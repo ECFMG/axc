@@ -44,9 +44,11 @@ describe('broad globs', () => {
 });
 
 describe('closed trees', () => {
-	it('names node_modules and packages/cellix', () => {
+	it('names node_modules, packages/cellix, dist, and old transcripts', () => {
 		assert.equal(closedReferenceInText('packages/cellix/lint/src/content.ts'), 'packages/cellix/lint/src/content.ts');
 		assert.equal(closedReferenceInText('cat node_modules/mongoose/package.json'), 'node_modules/mongoose/package.json');
+		assert.equal(closedReferenceInText('packages/axc/domain/dist/course.d.ts'), 'dist/course.d.ts');
+		assert.equal(closedReferenceInText('/tmp/agent-transcripts/run.jsonl'), 'agent-transcripts/run.jsonl');
 		assert.equal(closedReferenceInText('packages/axc/rest/src/index.ts'), undefined);
 	});
 

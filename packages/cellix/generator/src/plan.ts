@@ -21,7 +21,7 @@ import { persistenceRepository } from './templates/persistence/entity.repository
 import { persistenceUnitOfWork } from './templates/persistence/entity.uow.ts';
 import { mongoDataSource } from './templates/persistence/mongo-data-source.ts';
 import { entityData, readContextIndex, readEntityIndex, readonlyIndex, readRepository } from './templates/persistence/readonly.ts';
-import { actionKind, commandFields, namespacePath, paramShape } from './text.ts';
+import { actionKind, commandFields, graphqlFieldName, namespacePath, paramShape, serviceResult } from './text.ts';
 import type { GeneratedFile, GenerateFeatureOptions } from './types.ts';
 
 export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
@@ -36,8 +36,9 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 	const shape = normalizeShape(entity, options.fields ?? [], options.permissions ?? [], options.nested ?? []);
 	const commandShape = options.operation ? paramShape(options.params ?? []) : shape;
 	const reference = `Domain.Contexts.${namespacePath(contextPascal, entityPascal)}EntityReference`;
-	const serviceResult = options.operation === 'query' ? `${reference}[]` : kind === 'read' ? (/^get(?:[A-Z]|$)/.test(actionCamel) ? `${reference} | null` : `${reference}[]`) : reference;
-	const read = kind === 'read' ? { name: actionCamel, command: commandFields(commandShape, 'read').replaceAll('\n\t', ' '), result: serviceResult } : undefined;
+	const result = serviceResult({ result: options.result, operation: options.operation, kind, actionCamel, reference });
+	const fieldName = graphqlFieldName(actionCamel, options.transport, options.route);
+	const read = kind === 'read' ? { name: actionCamel, command: commandFields(commandShape, 'read').replaceAll('\n\t', ' '), result } : undefined;
 	const resolver = options.transport !== 'rest' && (options.resolver === true || options.transport === 'graphql');
 	const domainContexts = path.join(root, lint.layers.domain, 'domain/contexts');
 	const entityDir = path.join(domainContexts, context, entity);
@@ -73,8 +74,8 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 		{ path: path.join(readonlyDir, 'index.ts'), contents: readEntityIndex(entity, entityPascal, scope) },
 		{ path: path.join(readonlyRoot, context, 'index.ts'), contents: readContextIndex(contextPascal, entity, entityPascal, scope) },
 		{ path: path.join(readonlyRoot, 'index.ts'), contents: readonlyIndex(context, contextPascal, entity, entityPascal, scope) },
-		{ path: path.join(applicationDir, `${actionName}.ts`), contents: action({ actionCamel, command, contextPascal, entityPascal, kind, result: serviceResult, scope, shape, commandShape }) },
-		{ path: path.join(applicationDir, 'index.ts'), contents: entityServiceIndex(actionName, actionCamel, command, contextPascal, entityPascal, serviceResult, scope) },
+		{ path: path.join(applicationDir, `${actionName}.ts`), contents: action({ actionCamel, command, contextPascal, entityPascal, kind, result, scope, shape, commandShape }) },
+		{ path: path.join(applicationDir, 'index.ts'), contents: entityServiceIndex(actionName, actionCamel, command, contextPascal, entityPascal, result, scope) },
 	];
 
 	const acceptanceName = `${entity}-${actionName}`;
@@ -87,18 +88,18 @@ export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
 		const operation = kind === 'read' ? 'Query' : 'Mutation';
 		const inputs = options.operation === 'query' ? queryInputs(commandShape.fields) : options.operation === 'update' ? updateInputs(commandShape.fields) : undefined;
 		files.push(
-			{ path: path.join(typesDir, `${entity}.graphql`), contents: schema({ entityPascal, actionPascal, actionCamel, operation, shape, ...(inputs ? { inputs } : {}) }) },
-			{ path: path.join(typesDir, `${entity}.resolvers.ts`), contents: resolvers(entity, entityPascal, contextPascal, actionCamel, operation) },
+			{ path: path.join(typesDir, `${entity}.graphql`), contents: schema({ entityPascal, actionPascal, actionCamel, fieldName, operation, shape, ...(inputs ? { inputs } : {}) }) },
+			{ path: path.join(typesDir, `${entity}.resolvers.ts`), contents: resolvers(entity, entityPascal, contextPascal, actionCamel, operation, fieldName) },
 		);
 	}
 	return files;
 }
 
-function queryInputs(fields: { name: string; pascal: string; type: 'string' | 'boolean' | 'date' | 'number' }[]) {
+function queryInputs(fields: { name: string; pascal: string; type: string }[]) {
 	return fields.length > 0 ? fields : [{ name: 'id', pascal: 'Id', type: 'string' as const }];
 }
 
-function updateInputs(fields: { name: string; pascal: string; type: 'string' | 'boolean' | 'date' | 'number' }[]) {
+function updateInputs(fields: { name: string; pascal: string; type: string }[]) {
 	return [{ name: 'id', pascal: 'Id', type: 'string' as const }, ...fields];
 }
 

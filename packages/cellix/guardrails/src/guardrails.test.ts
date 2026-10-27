@@ -33,6 +33,12 @@ describe('guardrails', () => {
 		expect(denied.message).toContain('agentAccess');
 	});
 
+	it('treats a directory listing as a read, including one that hides a missing path', () => {
+		expect(decidePath(path.join(repoRoot, 'packages/axc'), repoRoot, open).ok).toBe(true);
+		expect(decideShell('ls packages/axc 2>/dev/null', repoRoot, open).ok).toBe(true);
+		expect(decideShell('rm packages/axc/rest/src/index.ts 2>/dev/null', repoRoot, open).ok).toBe(true);
+	});
+
 	it('rejects a write command that does not name a file', () => {
 		expect(decideShell('node -e "console.log(1)"', repoRoot, open).ok).toBe(false);
 		expect(decideShell('pnpm exec node -e "console.log(1)"', repoRoot, open).ok).toBe(false);

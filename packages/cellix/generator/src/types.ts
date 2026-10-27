@@ -12,6 +12,10 @@ export interface GenerateFeatureOptions {
 	/** Command fields for a query or update. Aggregate fields stay on `fields`. */
 	params?: FieldSpec[];
 	transport?: 'rest' | 'graphql';
+	/** Written through as the Promise result. Omitted, a query still returns the reference array. */
+	result?: string;
+	/** REST path name, or the GraphQL field name when transport is graphql. Omitted, REST uses the entity and GraphQL uses the action. */
+	route?: string;
 	fields?: FieldSpec[];
 	permissions?: string[];
 	nested?: NestedSpec[];

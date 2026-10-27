@@ -18,6 +18,8 @@ export async function generateFeature(options: GenerateFeatureOptions): Promise<
 		throw new Error('context, entity, and action must be kebab-case');
 	}
 	if (options.operation) assertOperationName(camel(options.action), options.operation);
+	if (options.route !== undefined && !/^[A-Za-z][A-Za-z0-9-]*$/.test(options.route)) throw new Error(`Route must be a name, received ${options.route}`);
+	if (options.result !== undefined && !/^[A-Za-z0-9_|&[\]'". ,:{}<>]+$/.test(options.result)) throw new Error(`Return type must be a type, received ${options.result}`);
 	const writes = await writeNewFiles(options, plan(options));
 	const composed = await wireComposition(options);
 	formatGeneratedFiles([...writes, ...composed]);

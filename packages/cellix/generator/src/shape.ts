@@ -4,7 +4,7 @@ import type { FieldSpec, NestedSpec } from './spec.ts';
 export interface ShapeField {
 	name: string;
 	pascal: string;
-	type: 'string' | 'boolean' | 'date' | 'number';
+	type: string;
 }
 
 export interface ShapeNested {

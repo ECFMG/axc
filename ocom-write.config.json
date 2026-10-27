@@ -1,6 +1,7 @@
 {
 	"agentAccess": {
 		"packages/cellix/**": false,
+		"scripts/**": false,
 		"packages/axc/**": true,
 		"packages/axc-verification/**": true,
 		"package.json": true,

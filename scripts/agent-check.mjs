@@ -47,7 +47,6 @@ console.error(`FAIL: ${displayCommand}`);
 console.error(`Exit code: ${exitCode}`);
 if (failedCheck !== undefined) console.error(`Failed check: ${failedCheck}`);
 if (result.error !== undefined) console.error(`Cause: ${result.error.message}`);
-console.error(`Log: ${logPath}`);
 if (errorBlock.length > 0) {
 	console.error('Error:');
 	console.error(errorBlock.join('\n'));
@@ -77,24 +76,8 @@ function findFailedCheck(lines) {
 }
 
 function findErrorBlock(lines) {
-	const specificPatterns = [
-		/^\s*[×✗]\s*/,
-		/\bfunction timed out\b/i,
-		/\bExecution failed\b/i,
-		/\bFound \d+ errors?\b/i,
-		/\bUnused exports?(?:ed)?\b/i,
-		/\bUndefined(?: step|\. Implement with)\b/,
-		/\bis not a function\b/,
-		/\d+ failing\b/i,
-		/\bscenarios?.*\bfailed\b/i,
-		/\bFAIL\b/,
-		/AssertionError:/,
-		/\berror TS\d+:/i,
-		/\bFailed Tests\b/i,
-		/Cellix lint/,
-	];
-	const specificIndexes = specificPatterns.map((pattern) => lines.findIndex((line) => pattern.test(line))).filter((candidate) => candidate !== -1);
-	const index = specificIndexes.length > 0 ? Math.min(...specificIndexes) : lines.findIndex((line) => /\[ELIFECYCLE\]|\bERROR\b/.test(line));
-	if (index === -1) return lines.filter((line) => line.trim() !== '').slice(-12);
-	return lines.slice(Math.max(0, index - 1), Math.min(lines.length, index + 16));
+	const marked = lines.filter((line) => /Expected:|Found:|error TS\d+|Cellix lint|violation|Unused export|AssertionError|\[ELIFECYCLE\]|\bFAIL\b/.test(line));
+	const unique = [...new Set(marked.map((line) => line.trim()).filter((line) => line.length > 0))];
+	if (unique.length > 0) return unique.slice(0, 24);
+	return lines.filter((line) => line.trim() !== '').slice(-12);
 }

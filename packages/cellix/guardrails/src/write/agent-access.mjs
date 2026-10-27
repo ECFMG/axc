@@ -43,5 +43,7 @@ function patternMatchesPath(pattern, relativePath) {
 		.replace(/\*\*/g, '::DOUBLE::')
 		.replace(/\*/g, '[^/]*')
 		.replace(/::DOUBLE::/g, '.*');
-	return new RegExp(`^${expression}$`).test(relativePath);
+	if (new RegExp(`^${expression}$`).test(relativePath)) return true;
+	if (pattern.endsWith('/**')) return relativePath === pattern.slice(0, -3);
+	return false;
 }
