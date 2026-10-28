@@ -16,4 +16,6 @@ Each model file exports:
 
 `models/<entity>/<entity>.seed.ts` exports `<camel>Seed`, one example document for that collection. Insert it, start the app, and read it back through the endpoint. Do not import it from persistence or transport.
 
+The package root has `package.json` and `tsconfig.json`. The manifest is private, `"type": "module"`, exports `./dist`, and depends on `@cellix/mongoose-seedwork` and `mongoose`. The tsconfig extends `@cellix/config-typescript/node`. The generator writes both when they are missing.
+
 `<entity>` matches the domain `*.aggregate.ts` or `*.entity.ts` stem. Models import mongoose and `@cellix/mongoose-seedwork` only, plus other models. They do not import domain, persistence, application services, or transport.

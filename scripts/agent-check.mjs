@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { closeSync, mkdtempSync, openSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { errorBlock } from '../packages/cellix/guardrails/src/report.mjs';
 import { checkFlag } from '../packages/cellix/guardrails/src/verify-flag.mjs';
 
 const args = process.argv.slice(2);
@@ -42,14 +43,14 @@ if (result.status === 0) {
 const exitCode = result.status ?? 1;
 const lines = log.split(/\r?\n/);
 const failedCheck = findFailedCheck(lines);
-const errorBlock = findErrorBlock(lines);
+const block = errorBlock(lines);
 console.error(`FAIL: ${displayCommand}`);
 console.error(`Exit code: ${exitCode}`);
 if (failedCheck !== undefined) console.error(`Failed check: ${failedCheck}`);
 if (result.error !== undefined) console.error(`Cause: ${result.error.message}`);
-if (errorBlock.length > 0) {
+if (block.length > 0) {
 	console.error('Error:');
-	console.error(errorBlock.join('\n'));
+	console.error(block.join('\n'));
 }
 process.exit(exitCode);
 
@@ -73,20 +74,4 @@ function findFailedCheck(lines) {
 		if (turbo !== null) return turbo[1];
 	}
 	return undefined;
-}
-
-function findErrorBlock(lines) {
-	const trimmed = lines.map((line) => line.trim()).filter((line) => line.length > 0);
-	const diagnostic = [...new Set(trimmed.filter((line) => isDiagnostic(line) && !isSummary(line)))];
-	if (diagnostic.length > 0) return diagnostic.slice(0, 24);
-	const wrapper = trimmed.filter((line) => /\[ELIFECYCLE\]|\bFAIL\b|^\s*Failed:/.test(line));
-	return [...new Set([...wrapper, ...trimmed.slice(-12)])].slice(-24);
-}
-
-function isDiagnostic(line) {
-	return /Expected:|Found:|Found \d+ error|error TS\d+|\berror\b|Cellix lint|violation|Unused export|AssertionError|\.[A-Za-z0-9]+:\d+:\d+|\(\d+,\d+\)/.test(line);
-}
-
-function isSummary(line) {
-	return /^(?:Found \d+ errors?\.?|Checked \d+ files.*)$/.test(line);
 }

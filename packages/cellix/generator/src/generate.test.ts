@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -327,6 +327,7 @@ describe('Cellix generator', () => {
 			'packages/axc/application-services/src/contexts/course/course/search.ts',
 			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts',
 			'packages/axc/rest/src/index.ts',
+			'packages/axc/data-sources-mongoose-models/src/models/course/course.seed.ts',
 		]);
 		const update = filesToEdit({ root: '/repo', lint, context: 'course', entity: 'course', action: 'publish', operation: 'update', transport: 'rest' });
 		expect(update).toContain('packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts');
@@ -357,12 +358,13 @@ describe('Cellix generator', () => {
 			expect(session?.files).toContain('packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts');
 			expect(session?.files).toContain('packages/axc/rest/src/index.ts');
 			expect(session?.files).toContain('apps/api/src/index.ts');
+			expect(session?.files).toContain('apps/docs/');
+			expect(session?.files).toContain('packages/axc-verification/acceptance-api/src/');
+			expect(session?.files).toContain('packages/axc/data-sources-mongoose-models/package.json');
 			expect(session?.files).not.toContain('apps/docs/docs/course/');
 			expect(session?.files).not.toContain('apps/docs/sidebars.ts');
 			expect(session?.files).not.toContain('packages/axc/rest/src/');
 			expect(session?.files).not.toContain('apps/api/src/');
-			expect(session?.files).not.toContain('apps/docs/');
-			expect(session?.files).not.toContain('packages/axc-verification/acceptance-api/src/');
 			expect(session?.files).not.toContain('packages/axc/service-mongoose/');
 			expect(session?.files).not.toContain('pnpm-workspace.yaml');
 			expect(session?.files).not.toContain('.snyk');
@@ -544,7 +546,6 @@ describe('Cellix generator', () => {
 		);
 		const apiPackage = '{ "name": "@apps/api", "dependencies": { "@axc/application-services": "workspace:*" } }\n';
 		const apiTsconfig = '{ "references": [{ "path": "../../packages/axc/application-services" }] }\n';
-		const persistencePackage = '{ "name": "@axc/persistence", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } }, "dependencies": { "@cellix/domain-seedwork": "workspace:*" } }\n';
 		const persistenceTsconfig = '{ "references": [{ "path": "../../cellix/domain-seedwork" }] }\n';
 		const applicationPackage = '{ "name": "@axc/application-services", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } } }\n';
 		const applicationTsconfig = '{ "references": [] }\n';
@@ -592,12 +593,14 @@ describe('Cellix generator', () => {
 		expect(api).not.toContain("route: 'api/course'");
 		expect(await readFile(path.join(root, 'apps/api/package.json'), 'utf8')).toBe(apiPackage);
 		expect(await readFile(path.join(root, 'apps/api/tsconfig.json'), 'utf8')).toBe(apiTsconfig);
-		expect(await readFile(path.join(root, 'packages/axc/persistence/package.json'), 'utf8')).toBe(persistencePackage);
+		const persistenceJson = await readFile(path.join(root, 'packages/axc/persistence/package.json'), 'utf8');
+		expect(persistenceJson).toContain('"@axc/data-sources-mongoose-models": "workspace:*"');
+		expect(persistenceJson).toContain('"@cellix/domain-seedwork": "workspace:*"');
 		expect(await readFile(path.join(root, 'packages/axc/persistence/tsconfig.json'), 'utf8')).toBe(persistenceTsconfig);
 		expect(await readFile(path.join(root, 'packages/axc/application-services/package.json'), 'utf8')).toBe(applicationPackage);
 		expect(await readFile(path.join(root, 'packages/axc/application-services/tsconfig.json'), 'utf8')).toBe(applicationTsconfig);
-		await expect(access(path.join(root, 'packages/axc/data-sources-mongoose-models/package.json'))).rejects.toThrow();
-		await expect(access(path.join(root, 'packages/axc/data-sources-mongoose-models/tsconfig.json'))).rejects.toThrow();
+		expect(await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/package.json'), 'utf8')).toContain('"name": "@axc/data-sources-mongoose-models"');
+		expect(await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/tsconfig.json'), 'utf8')).toContain('@cellix/config-typescript/node');
 
 		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
 

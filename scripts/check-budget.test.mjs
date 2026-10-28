@@ -25,6 +25,9 @@ describe('heavy commands', () => {
 		assert.match(heavyCommandReason('pnpm run check') ?? '', /agent-check/);
 		assert.match(heavyCommandReason('pnpm run test') ?? '', /agent-check/);
 		assert.match(heavyCommandReason('pnpm run test:acceptance') ?? '', /agent-check/);
+		assert.match(heavyCommandReason('pnpm --filter @axc-verification/acceptance-api test:acceptance') ?? '', /agent-check/);
+		assert.match(heavyCommandReason('pnpm --filter @axc/rest test') ?? '', /agent-check/);
+		assert.equal(heavyCommandReason('pnpm --filter @cellix/generator generate -- --context course'), undefined);
 	});
 
 	it('leaves the wrapper, verify:flag, and typecheck alone', () => {
@@ -32,6 +35,8 @@ describe('heavy commands', () => {
 		assert.equal(heavyCommandReason('pnpm run verify:flag'), undefined);
 		assert.equal(heavyCommandReason('pnpm run typecheck'), undefined);
 		assert.equal(heavyCommandReason('pnpm run test:agent-check'), undefined);
+		assert.match(heavyCommandReason('export CELLIX_AGENT_ID=task-a; pnpm --filter @axc-verification/acceptance-api test:acceptance 2>&1') ?? '', /agent-check/);
+		assert.match(heavyCommandReason('pnpm run agent-check -- pnpm run verify | tail -150') ?? '', /tail/);
 	});
 });
 
@@ -50,6 +55,9 @@ describe('closed trees', () => {
 		assert.equal(closedReferenceInText('packages/axc/domain/dist/course.d.ts'), 'dist/course.d.ts');
 		assert.equal(closedReferenceInText('/tmp/agent-transcripts/run.jsonl'), 'agent-transcripts/run.jsonl');
 		assert.equal(closedReferenceInText('packages/axc/rest/src/index.ts'), undefined);
+		assert.equal(closedReferenceInText('"dist"'), undefined);
+		assert.equal(closedReferenceInText("rg --glob '!**/dist/**' packages/axc"), undefined);
+		assert.equal(closedReferenceInText('ls dist'), 'dist');
 	});
 
 	it('allows a closed file only when the check log names it', () => {
@@ -100,6 +108,18 @@ describe('the transcript hook', () => {
 		assert.equal(listed.permission, 'allow');
 		const cellix = await hookDecision({ command: 'ls packages/cellix/generator', hook_event_name: 'beforeShellExecution' });
 		assert.equal(cellix.permission, 'deny');
+		const acceptance = await hookDecision({
+			command: 'pnpm --filter @axc-verification/acceptance-api test:acceptance',
+			hook_event_name: 'beforeShellExecution',
+		});
+		assert.equal(acceptance.permission, 'deny');
+		const writePackage = await hookDecision({
+			command: 'cat > packages/axc/data-sources-mongoose-models/package.json << \'EOF\'\n{\n  "files": ["dist"]\n}\nEOF',
+			hook_event_name: 'beforeShellExecution',
+		});
+		assert.equal(writePackage.permission, 'allow');
+		const readBuild = await hookDecision({ command: 'ls packages/axc/domain/dist', hook_event_name: 'beforeShellExecution' });
+		assert.equal(readBuild.permission, 'deny');
 	});
 });
 
@@ -122,6 +142,18 @@ describe('agent-check', () => {
 		);
 		assert.equal(result.status, 1);
 		assert.match(result.stderr, /index\.ts format/);
+	});
+
+	it('prints Expected before the other diagnostics', () => {
+		const result = spawnSync(
+			process.execPath,
+			['scripts/agent-check.mjs', '--', process.execPath, '--eval', "console.error('Found: export class'); console.error('Expected: class CourseReadRepositoryImpl'); console.error('ELIFECYCLE Command failed.'); process.exit(1);"],
+			{ cwd: root, encoding: 'utf8' },
+		);
+		assert.equal(result.status, 1);
+		const block = result.stderr.slice(result.stderr.indexOf('Error:'));
+		assert.ok(block.startsWith('Error:'));
+		assert.ok(block.indexOf('Expected:') < block.indexOf('Found:'));
 	});
 });
 

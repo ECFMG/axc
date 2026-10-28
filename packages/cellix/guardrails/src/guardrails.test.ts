@@ -30,7 +30,14 @@ describe('guardrails', () => {
 		expect(decidePath(path.join(repoRoot, 'pnpm-workspace.yaml'), repoRoot, open).ok).toBe(true);
 		const denied = decidePath(path.join(repoRoot, 'AGENTS.md'), repoRoot, open);
 		expect(denied.ok).toBe(false);
-		expect(denied.message).toContain('agentAccess');
+		expect(denied.message).toContain('not writable');
+	});
+
+	it('rejects a shell assignment of the agent id', () => {
+		const assigned = decideShell('export CELLIX_AGENT_ID=task-a; pnpm --filter @cellix/generator generate -- --context course', repoRoot, open);
+		expect(assigned.ok).toBe(false);
+		expect(assigned.message).toContain('runner sets CELLIX_AGENT_ID');
+		expect(decideShell('echo CELLIX_AGENT_ID=$CELLIX_AGENT_ID', repoRoot, open).ok).toBe(true);
 	});
 
 	it('treats a directory listing as a read, including one that hides a missing path', () => {

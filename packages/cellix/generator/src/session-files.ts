@@ -14,12 +14,18 @@ export function recordAgentSession(options: GenerateFeatureOptions, written: Gen
 function sessionPrefixes(options: GenerateFeatureOptions): string[] {
 	const { lint, context, entity } = options;
 	const directory = (layer: string, ...parts: string[]) => `${[layer, ...parts].join('/')}/`;
+	const acceptance = options.lint.acceptance.replace(/\/$/, '');
+	const modelsPackage = path.posix.dirname(options.lint.layers.models);
 	return [
 		directory(lint.layers.domain, 'domain/contexts', context),
 		directory(lint.layers.persistence, 'datasources/domain', context),
 		directory(lint.layers.persistence, 'datasources/readonly', context),
 		directory(lint.layers.applicationServices, 'contexts', context),
 		directory(lint.layers.models, 'models', entity),
+		`${acceptance}/`,
+		'apps/docs/',
+		`${modelsPackage}/package.json`,
+		`${modelsPackage}/tsconfig.json`,
 	];
 }
 

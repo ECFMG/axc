@@ -5,7 +5,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { agentIdFromEnv, decideRead, loadSession, policyFromConfig } from '../../packages/cellix/guardrails/src/index.mjs';
-import { broadGlobReason, closedReferenceInText, heavyCommandReason, logAllowsPath, wideShellReason } from '../../scripts/check-budget.mjs';
+import { broadGlobReason, closedReferenceInText, heavyCommandReason, logAllowsPath, OPEN_ROOTS, wideShellReason } from '../../scripts/check-budget.mjs';
 
 try {
 	const input = await readPayload();
@@ -61,9 +61,15 @@ function findBlockedReference(input) {
 	const toolName = input.tool_name ?? input.toolName;
 	const toolInput = parseToolInput(input.tool_input);
 	if (toolName === 'Read') return closedPath(toolInput.path ?? toolInput.file_path ?? toolInput.target_file, cwd);
-	if (toolName === 'Grep' || toolName === 'Glob' || toolName === 'Shell') {
+	if (toolName === 'Shell') {
 		for (const value of collectStrings(toolInput)) {
-			const blocked = toolName === 'Shell' ? inspectionTarget(value) : closedPath(value, cwd);
+			const blocked = inspectionTarget(value);
+			if (blocked !== undefined) return blocked;
+		}
+	}
+	if (toolName === 'Grep' || toolName === 'Glob') {
+		for (const value of pathLikeValues(toolInput)) {
+			const blocked = closedPath(value, cwd);
 			if (blocked !== undefined) return blocked;
 		}
 	}
@@ -72,7 +78,14 @@ function findBlockedReference(input) {
 
 function inspectionTarget(command) {
 	if (typeof command !== 'string') return undefined;
-	return closedReferenceInText(command);
+	return closedReferenceInText(commandTextForPaths(command));
+}
+
+/** Heredoc bodies and quoted text that is not a path are file contents, not a tree to open. */
+function commandTextForPaths(command) {
+	const withoutHeredoc = command.replace(/<<-?\s*['"]?(\w+)['"]?[\s\S]*?\n\1\b/g, ' ');
+	const dropQuotedText = (match) => (match.includes('/') ? match : ' ');
+	return withoutHeredoc.replace(/"(?:\\.|[^"\\])*"/g, dropQuotedText).replace(/'(?:\\.|[^'\\])*'/g, dropQuotedText);
 }
 
 function closedPath(value, cwd) {
@@ -101,7 +114,7 @@ function readDenial(input, cwd) {
 		return error instanceof Error ? error.message : 'CELLIX_AGENT_ID is invalid.';
 	}
 	const policy = policyFromConfig(config, session);
-	if (searchWithoutRoot(input, workspace)) return 'Name a directory on the read list. A search with no path reads the whole tree.';
+	if (searchWithoutRoot(input, workspace)) return `Name a directory on the read list. Open ${OPEN_ROOTS}. A search with no path reads the whole tree.`;
 	for (const candidate of readCandidates(input, workspace)) {
 		const decision = decideRead(candidate, workspace, policy);
 		if (!decision.ok && !logNames(candidate, workspace)) return decision.message;
@@ -212,6 +225,27 @@ function newestCheckLog() {
 		}
 	}
 	return newest?.path;
+}
+
+function pathLikeValues(value) {
+	const found = [];
+	collectPathValues(value, '', found);
+	return found;
+}
+
+function collectPathValues(value, key, found) {
+	if (/^(pattern|command|cwd|workspace_roots|workspace_root|hook_event_name|tool_name|toolName|conversation_id|generation_id|model)$/i.test(key)) return;
+	if (typeof value === 'string') {
+		if (/path|dir|directory|file|glob|target|folder|uri/i.test(key)) found.push(value);
+		return;
+	}
+	if (Array.isArray(value)) {
+		for (const item of value) collectPathValues(item, key, found);
+		return;
+	}
+	if (value !== null && typeof value === 'object') {
+		for (const [childKey, child] of Object.entries(value)) collectPathValues(child, childKey, found);
+	}
 }
 
 function collectStrings(value, result = []) {

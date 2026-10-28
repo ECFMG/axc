@@ -36,8 +36,8 @@
 	},
 	"write": {
 		"packages/cellix/**": false,
-		"scripts/**": true,
-		".cursor/**": true,
+		"scripts/**": false,
+		".cursor/**": false,
 		"ocom-write.config.json": false,
 		"cellix-lint.config.json": false,
 		"packages/axc/**": true,

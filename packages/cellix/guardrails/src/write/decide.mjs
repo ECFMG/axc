@@ -1,6 +1,9 @@
+import { OPEN_ROOTS } from '../budget.mjs';
 import { sessionAllows, sessionAllowsRead } from '../session.mjs';
 import { exactOpen, firstMatchingAccess, relativeToWorkspace } from './agent-access.mjs';
 import { commandPaths, WRITE_COMMAND } from './shell.mjs';
+
+const RUNNER_OWNS_ID = 'The runner sets CELLIX_AGENT_ID. A shell assignment does not open a session.';
 
 // Order for one path:
 // 1. Outside the workspace: deny a write. A read of a path outside the workspace is not this list.
@@ -28,8 +31,8 @@ export function decidePath(file, workspace, policy) {
 	if (relativePath === '.cellix/verify.json') return deny('.cellix/verify.json is written only by pnpm run verify.');
 
 	const standingRule = firstMatchingAccess(relativePath, policy.agentAccess);
-	if (standingRule === false) return deny(`${relativePath} is locked. Set its agentAccess entry to true in ocom-write.config.json yourself, then ask again.`);
-	if (standingRule !== true) return deny(`${relativePath} has no agentAccess entry in ocom-write.config.json. Add one.`);
+	if (standingRule === false) return deny(`${relativePath} is locked. Write under ${OPEN_ROOTS}, or an exact true path. Leave ocom-write.config.json unchanged.`);
+	if (standingRule !== true) return deny(`${relativePath} is not writable. Write under ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);
 
 	if (exactOpen(relativePath, policy.agentAccess)) return allow();
 	if (sessionAllows(relativePath, policy.session)) return allow();
@@ -41,8 +44,8 @@ export function decideRead(file, workspace, policy) {
 	const relativePath = relativeToWorkspace(file, workspace);
 	if (!relativePath) return allow();
 	const standingRule = firstMatchingAccess(relativePath, policy.read ?? {});
-	if (standingRule === false) return deny(`${relativePath} is locked for read. Set its read entry to true in ocom-write.config.json yourself, then ask again.`);
-	if (standingRule !== true) return deny(`${relativePath} has no read entry in ocom-write.config.json. Add one.`);
+	if (standingRule === false) return deny(`${relativePath} is locked for read. Open ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);
+	if (standingRule !== true) return deny(`${relativePath} is not readable. Open ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);
 	if (exactOpen(relativePath, policy.read)) return allow();
 	if (sessionAllowsRead(relativePath, policy.session)) return allow();
 	return deny(`${relativePath} is outside the ${policy.session.agentId} read session (.cellix/sessions/${policy.session.agentId}.json). Other agents are unchanged. An exact true path in ocom-write.config.json stays readable.`);
@@ -50,6 +53,7 @@ export function decideRead(file, workspace, policy) {
 
 /** A command that does not match WRITE_COMMAND is not a write, so it is allowed. A write must name at least one path. */
 export function decideShell(command, workspace, policy) {
+	if (/\bCELLIX_AGENT_ID\s*=\s*(?!\$)/.test(command)) return deny(RUNNER_OWNS_ID);
 	if (!WRITE_COMMAND.test(command)) return allow();
 	const paths = commandPaths(command);
 	if (paths.length === 0) return deny('This command can write files. Name a file with an agentAccess entry.');

@@ -15,5 +15,6 @@ export function filesToEdit(options: GenerateFeatureOptions): string[] {
 	} else if (resolver === true || transport === 'graphql') {
 		files.push(`${lint.layers.graphql}/schema/types/${entity}.resolvers.ts`);
 	}
+	files.push(`${lint.layers.models}/models/${entity}/${entity}.seed.ts`);
 	return files;
 }

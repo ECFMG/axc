@@ -86,7 +86,7 @@ That command writes a scaffold. It does not finish the feature. The text of each
 The command writes:
 
 1. Domain permissions, visa, passport (passport is created once), value objects, aggregate, repository interface, unit-of-work interface
-2. `models/<entity>/<entity>.model.ts` and `models/<entity>/<entity>.seed.ts`
+2. `models/<entity>/<entity>.model.ts`, `models/<entity>/<entity>.seed.ts`, and `packages/axc/data-sources-mongoose-models/package.json` when that manifest is missing. The package is `@axc/data-sources-mongoose-models`, private, `"type": "module"`, with `exports` pointing at `./dist`. Its `tsconfig.json` extends `@cellix/config-typescript/node`. Depend on `@cellix/mongoose-seedwork` and `mongoose`, plus a dependency only when a file in that package imports it.
 3. Persistence domain adapter, repository, and `get<Entity>UnitOfWork`
 4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. The `query` command adds `<name>` on that read repository. The `update` command writes the `withScopedTransaction` action. `create` and `delete` call `getNewInstance` inside `withScopedTransaction`.
 5. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
@@ -123,7 +123,9 @@ The session rules are `packages/cellix/guardrails/src/session.mjs`. The write or
 
 The harness sets `CELLIX_AGENT_ID` (`task-a`, `task-b`) in that agent's environment before the agent runs. The generator then writes `.cellix/sessions/<id>.json`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
 
-The directories are the new context and the new model. Every other file the generator edits is an exact path, including the REST index and `apps/api/src/index.ts`. Docs are not in the session. The rest of `packages/axc/rest`, `apps/api/src`, `apps/docs`, the acceptance package, and `packages/axc/service-mongoose` stay closed.
+The directories are the new context and the new model. Every other file the generator edits is an exact path, including the REST index and `apps/api/src/index.ts`. `apps/docs/` and the acceptance tree are on the session, so the task can write the doc and the scenario. The rest of `packages/axc/rest`, `apps/api/src`, and `packages/axc/service-mongoose` stay closed. The models `package.json` and `tsconfig.json` are on the session.
+
+The runner sets `CELLIX_AGENT_ID` on the agent process before the agent starts. A shell assignment does not change the hook, and the write hook rejects it.
 
 An exact `true` key with no `*` stays open for that side during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay writable because they are exact `true` entries in the `write` map.
 

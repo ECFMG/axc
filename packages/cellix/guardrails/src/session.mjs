@@ -1,19 +1,12 @@
 // One agent, one file: .cellix/sessions/<CELLIX_AGENT_ID>.json
-// This file only stores and reads that list. It does not look at ocom-write.config.json.
+// identity.mjs reads the id. This file only stores and reads the list.
 // write/decide.mjs asks this file after the config has already allowed the path.
 // files is the write list. write is the same list. read is optional and does not narrow writes.
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { agentIdFromEnv } from './identity.mjs';
 
-const AGENT_ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$/;
-
-/** CELLIX_AGENT_ID for this process. Empty string means this agent has no session. */
-export function agentIdFromEnv(env = process.env) {
-	const id = env.CELLIX_AGENT_ID ?? '';
-	if (!id) return '';
-	if (!AGENT_ID.test(id)) throw new Error('CELLIX_AGENT_ID may contain letters, numbers, dots, underscores, and hyphens.');
-	return id;
-}
+export { agentIdFromEnv };
 
 /** .cellix/sessions/<agentId>.json */
 export function sessionFile(root, agentId) {

@@ -40,6 +40,11 @@
 			{
 				"command": ".cursor/hooks/cellix-session-end.mjs"
 			}
+		],
+		"sessionStart": [
+			{
+				"command": "node .cursor/hooks/cellix-session-start.mjs"
+			}
 		]
 	}
 }

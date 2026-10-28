@@ -52,7 +52,12 @@ for (const file of filesToEdit({
 })) {
 	console.log(file);
 }
-console.log('Edit these. The barrels are already wired. While editing, run pnpm run agent-check -- pnpm run check. Run pnpm run agent-check -- pnpm run verify once before you stop.');
+// biome-ignore lint/complexity/useLiteralKeys: CELLIX_AGENT_ID is an index signature under noPropertyAccessFromIndexSignature
+const agentId = process.env['CELLIX_AGENT_ID'];
+if (agentId) console.log(`Session write list: .cellix/sessions/${agentId}.json`);
+console.log('Edit these. The barrels are already wired. Read the session file once. Do not list the tree.');
+console.log('While editing, run pnpm run agent-check -- pnpm run check. Do not pipe it to tail. The Expected line is the next edit.');
+console.log('Run pnpm run agent-check -- pnpm run verify once before you stop.');
 
 function required(args: ReturnType<typeof parseArgv>, key = 'context'): string {
 	const value = args.get(key);

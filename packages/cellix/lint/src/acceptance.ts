@@ -29,11 +29,16 @@ export async function checkAcceptanceShape(root: string, acceptance: string): Pr
 		if (!steps.includes('LastResponse.body')) {
 			violations.push(`${stepsRelative} must read LastResponse.body() and check the row the application returned.`);
 		}
-		if (/=\s*\[/.test(steps)) {
+		if (keepsDocumentArray(steps)) {
 			violations.push(`${stepsRelative} keeps a document array. Read the row from the database through the running application.`);
 		}
 	}
 	return violations;
+}
+
+/** An array of objects is a catalog. A list of strings is not. */
+function keepsDocumentArray(steps: string): boolean {
+	return /=\s*\[\s*\{/.test(steps.replaceAll('\n', ' '));
 }
 
 async function walk(directory: string, extension: string): Promise<string[]> {

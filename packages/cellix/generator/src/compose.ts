@@ -17,6 +17,7 @@ import {
 	persistenceRoot,
 } from './templates/composition/indexes.ts';
 import { schema } from './templates/graphql/schema.ts';
+import { modelsPackageJson, modelsTsconfig } from './templates/models/package-manifest.ts';
 import { actionKind, commandFields, graphqlFieldName, httpReadArgument, namespacePath, paramShape, serviceResult } from './text.ts';
 import type { GenerateFeatureOptions } from './types.ts';
 
@@ -53,6 +54,8 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 		...(await ensureDomainDataSource(path.join(domainSrc, 'index.ts'), contextPascal, entityPascal)),
 		...(await ensurePassport(path.join(domainSrc, 'domain/contexts/passport.ts'), { context, contextPascal, entityPascal, permissions })),
 		...(await ensureModelsIndex(path.join(modelsSrc, 'index.ts'), entity, entityPascal)),
+		...(await ensureModelsPackage(options)),
+		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/data-sources-mongoose-models`, 'workspace:*')),
 		...(await writeIfAbsent(path.join(persistenceSrc, 'datasources/domain', context, entity, 'index.ts'), entityPersistence(scope, entity, entityPascal))),
 		...(await ensureObjectMember(path.join(persistenceSrc, 'datasources/domain', context, 'index.ts'), {
 			importLine: `import * as ${entityPascal} from './${entity}/index.ts';\n`,
@@ -337,6 +340,22 @@ async function spliceApi(file: string, input: { scope: string; entity: string; a
 	current = current.replace('\t.startUp();', `${registration}\n\t.startUp();`);
 	await writeFile(file, current);
 	return [{ path: file, contents: current }];
+}
+
+async function ensureModelsPackage(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
+	const packageDir = path.dirname(path.join(options.root, options.lint.layers.models));
+	const packageName = `${options.lint.scope}/${path.basename(packageDir)}`;
+	return [...(await writeIfAbsent(path.join(packageDir, 'package.json'), modelsPackageJson(packageName))), ...(await writeIfAbsent(path.join(packageDir, 'tsconfig.json'), modelsTsconfig()))];
+}
+
+async function ensureDependency(file: string, name: string, spec: string): Promise<WrittenFile[]> {
+	if (!(await exists(file))) return [];
+	const current = await readFile(file, 'utf8');
+	if (current.includes(`"${name}"`)) return [];
+	if (!current.includes('"dependencies"')) return [];
+	const next = current.replace(/"dependencies"\s*:\s*\{/, (open) => `${open}\n\t\t"${name}": "${spec}",`);
+	await writeFile(file, next);
+	return [{ path: file, contents: next }];
 }
 
 async function writeIfAbsent(file: string, contents: string): Promise<WrittenFile[]> {
