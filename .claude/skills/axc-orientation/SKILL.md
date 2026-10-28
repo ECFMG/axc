@@ -38,7 +38,8 @@ packages/cellix/*              vendored framework — read, reuse, never edit
 2. `packages/axc/rest/src/index.ts` — `createRestApp(applicationServicesFactory): Hono`;
    each handler does `await applicationServicesFactory.forRequest(c.req.header('Authorization'))`
    then calls a service. `restHandlerCreator` wraps it with `azureHonoHandler`.
-   Query string: `c.req.query()` returns `Record<string,string>`; `c.json(body, status)`.
+   Query string: `c.req.query()` returns `Record<string,string>` (read keys as `query['page']`
+   or destructure; `query.page` is TS4111); `c.json(body, status)`.
 3. `packages/axc/application-services/src/index.ts` — `interface ApplicationServices { health: {...} }`,
    `interface ApiContext { environment }`, `buildApplicationServicesFactory(context)` returns
    `{ forRequest }`. Add a capability by extending `ApplicationServices` and the object the
@@ -95,6 +96,8 @@ own unit test (rest is test-wired too).
   `actorCalled('API client').attemptsTo(Send.a(GetRequest.to('/path?x=y')))`,
   `Ensure.that(resolved(LastResponse.status()), equals(200))`,
   `Question.about('…', async a => (await a.answer(LastResponse.body<T>())).field)`.
+  `includes(x)` is for strings only; for an array answer use `contain(x)` or
+  `containAtLeastOneItemThat(equals(x))` (all from `@serenity-js/assertions`).
   The suite boots the real Functions host on :7071 (minutes) — it is the slowest gate.
   Cover every row of the task's acceptance-criteria table (`task-set-*-requirements.md`,
   ids `A-AC1…`) with its own scenario, and put the criterion id in the scenario name
