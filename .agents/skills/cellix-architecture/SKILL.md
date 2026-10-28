@@ -29,7 +29,7 @@ pnpm --filter @cellix/generator update -- --context course --entity course --nam
 
 `--field` and `--param` are `name:type`. The type is written as given (`string`, `string[]`, `'online'|'in-person'|'hybrid'`). `--route` is the path name you pass. `--route courses` writes `/api/courses`. Left off, REST uses the entity name. With `--transport graphql`, `--route` is the field name. Do not pass `--return`. `--transport rest` on a query or update adds `app.get` or `app.post` in the REST index and calls the new function. It does not create a resolver. `--resolver` or `--transport graphql` writes the resolver. A later query adds a query field. A later update adds a mutation.
 
-The generator prints the files to edit. The barrels are already wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository.
+The generator prints the files to edit. The barrels are already wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. Do not add a package.json, a tsconfig, or a dependency. `data-sources-mongoose-models` stays without a package.json. `@lucaspaganini/value-objects` is already available.
 
 A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
 

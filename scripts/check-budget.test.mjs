@@ -91,6 +91,15 @@ describe('the transcript hook', () => {
 			hook_event_name: 'preToolUse',
 		});
 		assert.equal(closed.permission, 'deny');
+		const generate = await hookDecision({
+			command: 'pnpm --filter @cellix/generator generate -- --context course --entity course --action create',
+			hook_event_name: 'beforeShellExecution',
+		});
+		assert.equal(generate.permission, 'allow');
+		const listed = await hookDecision({ command: 'pnpm list @lucaspaganini/value-objects -r --depth 0', hook_event_name: 'beforeShellExecution' });
+		assert.equal(listed.permission, 'allow');
+		const cellix = await hookDecision({ command: 'ls packages/cellix/generator', hook_event_name: 'beforeShellExecution' });
+		assert.equal(cellix.permission, 'deny');
 	});
 });
 
@@ -103,6 +112,16 @@ describe('agent-check', () => {
 		);
 		assert.equal(result.status, 1);
 		assert.match(result.stderr, /index\.ts:12:5/);
+	});
+
+	it('keeps the detail line when the only diagnostic is a summary', () => {
+		const result = spawnSync(
+			process.execPath,
+			['scripts/agent-check.mjs', '--', process.execPath, '--eval', "console.error('Found 5 errors.'); console.error('packages/axc/rest/src/index.ts format'); console.error('ELIFECYCLE Command failed.'); process.exit(1);"],
+			{ cwd: root, encoding: 'utf8' },
+		);
+		assert.equal(result.status, 1);
+		assert.match(result.stderr, /index\.ts format/);
 	});
 });
 

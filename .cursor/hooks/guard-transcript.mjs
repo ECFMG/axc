@@ -113,7 +113,7 @@ function searchWithoutRoot(input, workspace) {
 	const toolName = input.tool_name ?? input.toolName;
 	if (toolName === 'Grep') return grepRoots(input, workspace).length === 0;
 	const command = shellCommand(input);
-	if (command !== undefined && /\b(?:rg|grep)\b/.test(command)) return !command.split(/\s+/).some((token) => token.includes('/') || token.includes('\\'));
+	if (command !== undefined && /\b(?:rg|grep)\b/.test(command)) return !command.split(/\s+/).some((token) => !isPackageName(token) && (token.includes('/') || token.includes('\\')));
 	return false;
 }
 
@@ -141,8 +141,12 @@ function collectLocations(value, key, found) {
 	}
 }
 
+function isPackageName(value) {
+	return /^@[A-Za-z0-9][A-Za-z0-9._-]*\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(value);
+}
+
 function isSearchRoot(value, workspace) {
-	if (typeof value !== 'string' || value.length === 0 || value.length > 500 || value.includes('\n') || value.includes('*')) return false;
+	if (typeof value !== 'string' || value.length === 0 || value.length > 500 || value.includes('\n') || value.includes('*') || isPackageName(value)) return false;
 	if (resolve(workspace, value) === resolve(workspace)) return false;
 	return value.includes('/') || value.includes('\\') || fileExists(workspace, value);
 }
@@ -171,7 +175,7 @@ function shellReadPaths(command, workspace) {
 	for (const token of command.split(/\s+/)) {
 		const cleaned = token.replace(/^['"`]+|['"`]+$/g, '').replace(/[;,]+$/g, '');
 		const pathToken = cleaned.includes('>') ? cleaned.slice(cleaned.lastIndexOf('>') + 1) : cleaned;
-		if (!pathToken || pathToken.startsWith('-') || pathToken.includes('$') || pathToken.includes('*')) continue;
+		if (!pathToken || pathToken.startsWith('-') || pathToken.includes('$') || pathToken.includes('*') || isPackageName(pathToken)) continue;
 		if (pathToken.includes('/') || pathToken.includes('\\') || pathToken.includes('.') || fileExists(workspace, pathToken)) found.push(pathToken);
 	}
 	return found;
