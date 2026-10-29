@@ -52,4 +52,14 @@ ignore:
         reason: happy-dom pinned to 20.10.1 (upstream cellixjs pin) - 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
         expires: 2026-11-26T00:00:00.000Z
         created: 2026-10-27T00:00:00.000Z
+  SNYK-JS-HAPPYDOM-21826828:
+    - '*':
+        reason: happy-dom pinned to 20.10.1 - the only patched releases (20.14.6+, 21.x) break the build (TS2694 UnderlyingDefaultSource). Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
+        expires: 2026-11-28T00:00:00.000Z
+        created: 2026-10-29T00:00:00.000Z
+  SNYK-JS-HAPPYDOM-21826830:
+    - '*':
+        reason: happy-dom pinned to 20.10.1 - patched 20.14.7 not published, 21.x breaks the build (TS2694 UnderlyingDefaultSource). Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
+        expires: 2026-11-28T00:00:00.000Z
+        created: 2026-10-29T00:00:00.000Z
 patch: {}

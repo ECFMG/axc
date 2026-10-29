@@ -46,7 +46,10 @@ auditConfig:
   ignoreGhsas:
     [
       'GHSA-vfj7-8cjw-p6xm', # 3.0.4 listed as patched, but version unavailable on npm registry; latest is 3.0.3
-      'GHSA-834v-8h66-3h79' # happy-dom pinned to 20.10.1 (upstream cellixjs pin): 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it. Review by 2026-11-26.
+      'GHSA-834v-8h66-3h79', # happy-dom pinned to 20.10.1 (upstream cellixjs pin): 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it. Review by 2026-11-26.
+      'GHSA-c8p4-j97h-3vg8', # happy-dom: patched 20.14.7 not published; 20.14.6 and 21.x break the build the same way (TS2694 UnderlyingDefaultSource). Pin and reason as above. Review by 2026-11-28.
+      'GHSA-5fpq-26gf-qwcr', # happy-dom: only 20.14.6+ is patched, which breaks the build as above. Review by 2026-11-28.
+      'GHSA-gcqx-w48m-w2h4' # deepmerge: patched 4.3.2 not published (latest is 4.3.1). Review by 2026-11-28.
     ]
 
 overrides:
@@ -64,6 +67,8 @@ overrides:
   launch-editor: 2.14.2
   happy-dom: 20.10.1
   '@happy-dom/global-registrator': 20.10.1
+  smol-toml: 1.9.1
+  'uuid@<11.1.1': 11.1.1
   axios: 1.20.0
   hono: 4.13.11
   http-cache-semantics: 4.3.0
