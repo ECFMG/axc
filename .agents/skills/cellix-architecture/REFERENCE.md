@@ -9,13 +9,13 @@ description: >
 
 # Cellix development
 
-`@cellix/generator` is how a new data structure starts: a new context, entity, or action. That is any new slice, not one fixed feature.
+`@cellix/generator` is how a new data structure starts: a new context, subdomain, or action. That is any new slice, not one fixed feature. The `--subdomain` flag is the subdomain name.
 
 `cellix-lint.config.json` stays at the project root. `generate` reads it and writes into those paths, including `acceptance`. Cellix lint reads the same file.
 
 A change to a structure that already exists does not need the generator. That includes a bugfix, a validation rule, a query filter, a route that already has a handler, a test, or documentation. Edit the existing files. Cellix lint still checks file roles, imports, and the dependency graph.
 
-Write product code, acceptance tests, API source, and docs on paths whose `agentAccess` entry is true. The control plane stays locked. Do not hand-create a new context, entity, or action. Generate it so the file roles exist. Do not add a helper, util, common, or shared module.
+Write product code, acceptance tests, API source, and docs on paths whose `agentAccess` entry is true. The control plane stays locked. Do not hand-create a new context, subdomain, or action. Generate it so the file roles exist. Do not add a helper, util, common, or shared module.
 
 The health host in `packages/axc/application-services/src/index.ts` is the composition root. It is not an action template.
 
@@ -25,7 +25,7 @@ Use them in this order. Each one catches a different class of drift.
 
 | Guardrail | What it forces | When it runs |
 | --- | --- | --- |
-| `@cellix/generator` | The file set for one context, entity, and action | Before any new feature files exist |
+| `@cellix/generator` | The file set for one context, subdomain, and action | Before any new feature files exist |
 | `@cellix/guardrails` | Session, write decision, and verify flag. `ocom-write.config.json` is the allow list. `.cursor/hooks/cellix-write-allow.mjs` is the Cursor adapter | Every write, and at the end of `pnpm run verify` |
 | `@cellix/lint` | File roles, file body, public imports, dependency graph | `pnpm --filter @cellix/lint lint:cellix`, `pnpm run lint`, commit, `pnpm run verify` |
 | Biome, extended from `@cellix/lint/biome` | Formatter, recommended rules, and layer import bans. The repo `biome.json` extends that file and adds only app-specific ignores and overrides | `pnpm exec biome check` |
@@ -35,29 +35,38 @@ Do not edit `packages/cellix/lint`, `packages/cellix/generator`, `cellix-lint.co
 
 ## New feature
 
-Run the generator for a new context, entity, or action. Do not create that slice by hand. Skip the generator when the files already exist and the work is behavior, tests, or docs.
+Run `generate` for a new subdomain. That builds the backend and does not add a search route. A REST read runs `query` after that, with `--route` and `--transport rest`. A GraphQL read runs that same `generate`, then `query` with `--transport graphql` and no `--route`. The field name is `--name`. Do not create that slice by hand. Skip the generator when the files already exist and the work is behavior, tests, or docs.
 
 ```bash
-pnpm --filter @cellix/generator generate -- --context <context> --entity <entity> --action <action> \
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> \
   --field <field>:<type> --field <field>:boolean \
   --permission <permission> \
   --nested <name>:<field>:string,<field>:string \
   --nested <name>:id:id,<field>:string
+
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --action <action> --field <field>:<type>
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --action <action> --field <field>:<type> --transport graphql
 ```
 
-`--context`, `--entity`, and `--action` are kebab-case. `generate` builds the entity. `create` and `delete` are mutations on that command. Repeat `--field name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
+`--context`, `--subdomain`, and `--action` are kebab-case. `--subdomain` names the subdomain. `generate` builds that subdomain. `create` and `delete` are mutations on that command. `query` does not build the subdomain. Repeat `--field name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
 
 A query and an update are separate commands. `--name` is the function name. Repeat `--param name:type` for the command. Those params are the command interface, the repository method, and the REST input. The function name does not choose the flow.
 
 ```bash
-pnpm --filter @cellix/generator query -- --context <context> --entity <entity> --name <name> \
-  --param <param>:<type> --transport rest
+pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> \
+  --param <param>:<type> --route <route> --transport rest
 
-pnpm --filter @cellix/generator update -- --context <context> --entity <entity> --name <name> \
-  --param <param>:<type> --transport rest
+pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> \
+  --param <param>:<type> --transport graphql
+
+pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> \
+  --param <param>:<type> --route <route> --transport rest
+
+pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> \
+  --param <param>:<type> --transport graphql
 ```
 
-`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index. `--route` is the path name you pass (`--route <route>` writes `/api/<route>`). Do not pass `--return`. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. The first call for an entity still writes the aggregate from `--field`. A later call adds the function and leaves that aggregate in place. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
+`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index. `query` and `update` require `--transport rest` or `--transport graphql`. `--route` is required for rest (`--route <route>` writes `/api/<route>`). Leave `--route` off for graphql. Do not pass `--return`. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. Pass `--field` on `generate`, not on `query`. `query` adds the function on the subdomain `generate` already wrote. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
 
 ```json
 {
@@ -74,7 +83,7 @@ pnpm --filter @cellix/generator update -- --context <context> --entity <entity> 
 ```
 
 ```bash
-pnpm --filter @cellix/generator generate -- --context user --entity staff-user --action create --fields staff-user.fields.json
+pnpm --filter @cellix/generator generate -- --context user --subdomain staff-user --action create --fields staff-user.fields.json
 ```
 
 The generator runs Biome on those files before it reports success, so import order and line length already match `biome.json`.

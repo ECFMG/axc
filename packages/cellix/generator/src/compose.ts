@@ -34,7 +34,7 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 	const action = options.action;
 	const contextPascal = pascal(context);
 	const entityPascal = pascal(entity);
-	const kind = options.operation === 'query' ? 'read' : options.operation === 'update' ? 'update' : actionKind(camel(action));
+	const kind = options.operation === 'query' ? 'read' : options.operation === 'update' ? 'update' : action ? actionKind(camel(action)) : 'create';
 	const shape = normalizeShape(entity, options.fields ?? [], options.permissions ?? [], options.nested ?? []);
 	const commandShape = options.operation ? paramShape(options.params ?? []) : shape;
 	const mutation = kind !== 'read';
@@ -83,6 +83,7 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 
 	const applicationIndex = path.join(applicationSrc, 'index.ts');
 	if (await exists(applicationIndex)) written.push(...(await spliceApplicationHost(applicationIndex, { scope, context, contextPascal, entityPascal })));
+	if (!action) return written;
 	const restIndex = path.join(options.root, options.lint.layers.rest, 'index.ts');
 	const actionCamel = camel(action);
 	const reference = `Domain.Contexts.${namespacePath(contextPascal, entityPascal)}EntityReference`;
@@ -248,10 +249,17 @@ async function spliceEntityAction(file: string, input: { action: string; actionC
 	const lastImport = current.lastIndexOf('\nimport ');
 	const lineEnd = lastImport === -1 ? 0 : current.indexOf('\n', lastImport + 1) + 1;
 	current = `${current.slice(0, lineEnd)}${importLine}${current.slice(lineEnd)}`;
-	const interfaceAt = current.indexOf(`export interface ${input.entityPascal}ApplicationService`);
+	const interfaceName = `${input.entityPascal}ApplicationService`;
+	const typeAlias = `export type ${interfaceName} = {};`;
+	if (current.includes(typeAlias)) current = current.replace(typeAlias, `export interface ${interfaceName} {\n}`);
+	const oneLine = `export interface ${interfaceName} {}`;
+	if (current.includes(oneLine)) current = current.replace(oneLine, `export interface ${interfaceName} {\n}`);
+	current = current.replace('(_dataSources: DataSources)', '(dataSources: DataSources)');
+	const interfaceAt = current.indexOf(`export interface ${interfaceName}`);
 	const interfaceEnd = interfaceAt < 0 ? -1 : current.indexOf('\n}', interfaceAt);
 	if (interfaceEnd < 0) return [];
 	current = `${current.slice(0, interfaceEnd)}\n\t${input.actionCamel}: (command: ${input.command}) => Promise<${input.result}>;${current.slice(interfaceEnd)}`;
+	if (current.includes('return {};')) current = current.replace('return {};', 'return {\n\t};');
 	const returnAt = current.indexOf('return {');
 	if (returnAt < 0) return [];
 	const lineEndAt = current.indexOf('\n', returnAt);

@@ -27,6 +27,11 @@ export function action(input: {
 	return `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\n\nexport interface ${command} {\n\t${commandFields(commandSource, kind)}\n}\n\nexport const ${actionCamel} = (dataSources: DataSources) => {\n\treturn async (command: ${command}): Promise<${result}> => {\n\t\t${body}\n\t};\n};\n`;
 }
 
+/** An application service with no action yet. `query` and `update` add functions to it. */
+export function entityServiceShell(entityPascal: string, scope: string): string {
+	return `import type { DataSources } from '${scope}/persistence';\n\nexport interface ${entityPascal}ApplicationService {\n}\n\nexport const ${entityPascal} = (_dataSources: DataSources): ${entityPascal}ApplicationService => {\n\treturn {\n\t};\n};\n`;
+}
+
 export function entityServiceIndex(action: string, actionCamel: string, command: string, _contextPascal: string, entityPascal: string, result: string, scope: string): string {
 	return `import type { Domain } from '${scope}/domain';\nimport type { DataSources } from '${scope}/persistence';\nimport { type ${command}, ${actionCamel} } from './${action}.ts';\n\nexport interface ${entityPascal}ApplicationService {\n\t${actionCamel}: (command: ${command}) => Promise<${result}>;\n}\n\nexport const ${entityPascal} = (dataSources: DataSources): ${entityPascal}ApplicationService => {\n\treturn {\n\t\t${actionCamel}: ${actionCamel}(dataSources),\n\t};\n};\n`;
 }

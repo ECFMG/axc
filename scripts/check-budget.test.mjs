@@ -106,7 +106,7 @@ describe('the transcript hook', () => {
 		});
 		assert.equal(closed.permission, 'deny');
 		const generate = await hookDecision({
-			command: 'pnpm --filter @cellix/generator generate -- --context course --entity course --action create',
+			command: 'pnpm --filter @cellix/generator generate -- --context course --subdomain course --action create',
 			hook_event_name: 'beforeShellExecution',
 		});
 		assert.equal(generate.permission, 'allow');

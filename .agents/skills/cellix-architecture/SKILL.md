@@ -9,27 +9,46 @@ description: >
 
 # Cellix development
 
-Generate a new context, entity, or action. Edit a file that already exists. Do not invent a second layout.
+Generate a new context, subdomain, or action. Edit a file that already exists. Do not invent a second layout.
 
 `cellix-lint.config.json` stays at the project root. The generator reads it and writes into those paths.
 
 ## Commands
 
-A search or list endpoint starts with `query`. Pass `--field` on that call so the entity exists. Do not run `--help`.
+A new REST read is two commands, in this order. Do not run `--help`.
 
-`query` scaffolds a new search or list. It does not close the rest of the tree. Filter params are optional. The repository method rejects with `not implemented`. Fill that method in. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index.
-
-`generate` builds a mutation. It does not add a REST route. Use it when the task writes rows through an action. `generate` with no `--action` prints the query command and writes nothing.
-
-`update` loads with `getById` inside `withScopedTransaction`. Fill in the assignment above `save`.
+1. `generate` builds the subdomain: domain, model, and persistence. Pass every `--field` here. No `--action`. No `--transport`. It does not add a route.
+2. `query` adds the read onto that subdomain. Pass `--name`, `--param`, `--route`, and `--transport rest`. No `--field`. It writes the repository method, the application service, and `GET /api/<route>`.
 
 ```bash
-pnpm --filter @cellix/generator query -- --context <context> --entity <entity> --name <name> --field <field>:<type> --param <param>:<type> --route <route> --transport rest
-pnpm --filter @cellix/generator generate -- --context <context> --entity <entity> --action <action> --field <field>:<type>
-pnpm --filter @cellix/generator update -- --context <context> --entity <entity> --name <name> --param <param>:<type> --transport rest
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --field <field>:<type>
+pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --route <route> --transport rest
 ```
 
-`--field` and `--param` are `name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`). Do not pass `createdAt` or `updatedAt` as `--field`. The model sets those timestamps. `--route` is the path name you pass. `--route <route>` writes `/api/<route>`. Left off, REST uses the entity name. With `--transport graphql`, `--route` is the field name. Do not pass `--return`. `--transport rest` on a query or update adds `app.get` or `app.post` in the REST index and calls the new function. It does not create a resolver. `--resolver` or `--transport graphql` writes the resolver. A later query adds a query field. A later update adds a mutation.
+The repository method rejects with `not implemented`. Fill that method in. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index.
+
+A new GraphQL read is the same two commands. No `--route`. The field name is `--name`.
+
+1. `generate` is the same subdomain command. Pass every `--field`. No `--action`. No `--transport`.
+2. `query` adds the query field. Pass `--name`, `--param`, and `--transport graphql`. No `--field`. No `--route`.
+
+```bash
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --field <field>:<type>
+pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
+```
+
+That `query` writes the resolver when the file does not exist yet. A later GraphQL query adds another query field.
+
+A mutation is `generate` with `--action`. Add `--transport graphql` on that command when the mutation should have a resolver. Leave it off and there is no resolver. `update` loads with `getById` inside `withScopedTransaction`. Fill in the assignment above `save`. A REST update requires `--route`. A GraphQL update does not. The field name is `--name`.
+
+```bash
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --action <action> --field <field>:<type>
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --action <action> --field <field>:<type> --transport graphql
+pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --route <route> --transport rest
+pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
+```
+
+`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt` as `--field`. The model sets those timestamps. `query` and `update` require `--transport rest` or `--transport graphql`. `--route` is required for rest and writes `/api/<route>`. Leave `--route` off for graphql. The field name is the function name. Do not pass `--return`. `--transport rest` adds `app.get` or `app.post` in the REST index. `--transport graphql` on `generate` with `--action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver file when it is missing. A later update adds a mutation.
 
 The generator prints the files to edit. The barrels are already wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. The generator adds every dependency those files import, including `@axc/persistence` on application services and `@lucaspaganini/value-objects` on `@axc/domain`. After `query`, `pnpm run agent-check -- pnpm run check` passes before you fill in behavior. If that check cannot find one of those modules, run `pnpm install` once.
 
@@ -41,7 +60,7 @@ A query name cannot start with `create`, `update`, or `delete`. An update name c
 
 While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
-Read the files the task names. Do not list the tree or cat a directory. A new search or list endpoint starts with `query`. Edit the files it prints. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
+Read the files the task names. Do not list the tree or cat a directory. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
 
 When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 

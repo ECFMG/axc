@@ -15,7 +15,7 @@ export const WIDE_SHELL_MESSAGE = 'Read one file. A multi-file dump stays in the
 
 export const TAIL_MESSAGE = 'agent-check already prints the error block. Do not pipe that command to tail.';
 
-export const QUERY_COMMAND = 'pnpm --filter @cellix/generator query -- --context <context> --entity <entity> --name <name> --field <field>:<type> --param <param>:<type> --route <route> --transport rest';
+export const QUERY_COMMAND = 'pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --route <route> --transport rest';
 
 const TREE = /(?:^|[/\\\s`'"(=])((?:node_modules|packages\/cellix|dist|agent-transcripts))(?=$|[/\\\s`'"),\];])/g;
 

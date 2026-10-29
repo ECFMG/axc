@@ -5,8 +5,10 @@ export interface GenerateFeatureOptions {
 	root: string;
 	lint: CellixLintConfig;
 	context: string;
+	/** The `--subdomain` flag. Folder and type names still use this value. */
 	entity: string;
-	action: string;
+	/** Omitted, `generate` writes the subdomain and no action. */
+	action?: string;
 	/** Set by the query and update commands. The action name stays whatever --name is. */
 	operation?: 'query' | 'update';
 	/** Command fields for a query or update. Aggregate fields stay on `fields`. */

@@ -4,11 +4,12 @@ import path from 'node:path';
 import { agentIdForRecord } from '@cellix/guardrails';
 import { type CellixLintConfig, checkCellixLint, defaultCellixLintConfig } from '@cellix/lint';
 import { filesToEdit } from './edit-targets.js';
-import { generateFeature } from './generate.js';
+import { type GenerateFeatureOptions, generateFeature } from './generate.js';
 import { parseArgv, parseField, parseFieldsFile, parseNested, parsePermission } from './spec.js';
 
 const argv = process.argv.slice(2);
-const operation = argv[0] === 'query' || argv[0] === 'update' ? argv[0] : undefined;
+const head = argv[0];
+const operation = head === 'query' || head === 'update' ? head : undefined;
 const args = parseArgv(operation ? argv.slice(1) : argv);
 const root = await findRoot(process.cwd());
 const lint = await loadConfig(root);
@@ -21,43 +22,43 @@ const permissions = [...fromFile.permissions, ...args.list('permission').map((to
 const nested = [...fromFile.nested, ...args.list('nested').map((token) => parseNested(token))];
 const result = args.get('return');
 const route = args.get('route');
-if (argv.includes('--help') || argv.includes('-h') || (!operation && !args.get('action'))) {
-	const context = args.get('context') ?? '<context>';
-	const entity = args.get('entity') ?? context;
-	console.log('A search or list endpoint is a query. generate with no --action writes nothing.');
-	console.log(`pnpm --filter @cellix/generator query -- --context ${context} --entity ${entity} --name <name> --field <field>:<type> --param <param>:<type> --route <route> --transport rest`);
+if (args.get('entity') !== undefined) throw new Error('Use --subdomain.');
+if (argv.includes('--help') || argv.includes('-h')) {
+	console.log('generate builds the subdomain. It does not add a search route. Pass --field on generate, not on query.');
+	console.log('pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --field <field>:<type>');
+	console.log('pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --route <route> --transport rest');
+	console.log('pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql');
 	process.exit(0);
 }
-const files = await generateFeature({
+if (operation === 'query' && (fields.length > 0 || nested.length > 0 || permissions.length > 0 || fieldsFile !== undefined)) {
+	throw new Error('Pass --field on generate, not on query.');
+}
+if (operation && transport !== 'rest' && transport !== 'graphql') throw new Error('Pass --transport rest or --transport graphql.');
+if (operation && transport === 'rest' && route === undefined) throw new Error('Pass --route for rest.');
+const action = operation ? required(args, 'name') : args.get('action');
+const carryShape = operation !== 'query';
+const feature: GenerateFeatureOptions = {
 	root,
 	lint,
 	context: required(args),
-	entity: required(args, 'entity'),
-	action: operation ? required(args, 'name') : required(args, 'action'),
+	entity: required(args, 'subdomain'),
+	...(action ? { action } : {}),
 	...(operation ? { operation, params } : {}),
 	...(transport === 'rest' || transport === 'graphql' ? { transport } : {}),
-	...(fields.length > 0 ? { fields } : {}),
-	...(permissions.length > 0 ? { permissions } : {}),
-	...(nested.length > 0 ? { nested } : {}),
+	...(carryShape && fields.length > 0 ? { fields } : {}),
+	...(carryShape && permissions.length > 0 ? { permissions } : {}),
+	...(carryShape && nested.length > 0 ? { nested } : {}),
 	...(args.has('resolver') ? { resolver: true } : {}),
 	...(result !== undefined ? { result } : {}),
 	...(route !== undefined ? { route } : {}),
-});
+};
+const files = await generateFeature(feature);
 const violations = (await checkCellixLint({ root, lint })).filter((violation) => files.some((file) => violation.includes(file.path.split(path.sep).join('/'))));
 if (violations.length > 0) {
 	console.error(violations.join('\n\n'));
 	process.exit(1);
 }
-for (const file of filesToEdit({
-	root,
-	lint,
-	context: required(args),
-	entity: required(args, 'entity'),
-	action: operation ? required(args, 'name') : required(args, 'action'),
-	...(operation ? { operation, params } : {}),
-	...(transport === 'rest' || transport === 'graphql' ? { transport } : {}),
-	...(args.has('resolver') ? { resolver: true } : {}),
-})) {
+for (const file of filesToEdit(feature)) {
 	console.log(file);
 }
 const agentId = agentIdForRecord(root);

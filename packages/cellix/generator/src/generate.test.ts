@@ -245,6 +245,7 @@ describe('Cellix generator', () => {
 
 		const catalogRoot = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(catalogRoot);
+		await generateFeature({ root: catalogRoot, lint, context: 'course', entity: 'course' });
 		const catalog = await generateFeature({
 			root: catalogRoot,
 			lint,
@@ -253,10 +254,11 @@ describe('Cellix generator', () => {
 			operation: 'query',
 			action: 'search',
 			transport: 'rest',
+			route: 'course',
 			params: [parseField('title:string'), parseField('status:string')],
 		});
 		const catalogAction = catalog.find((file) => file.path.endsWith('/search.ts'));
-		const catalogRead = catalog.find((file) => file.path.endsWith('course.read-repository.ts'));
+		const catalogRead = { contents: await readFile(path.join(catalogRoot, 'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts'), 'utf8') };
 		expect(catalogAction?.contents).toContain('title?: string;');
 		expect(catalogAction?.contents).toContain('status?: string;');
 		expect(catalogAction?.contents).toContain('CourseReadRepo.search(command)');
@@ -268,6 +270,7 @@ describe('Cellix generator', () => {
 
 		const updateRoot = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(updateRoot);
+		await generateFeature({ root: updateRoot, lint, context: 'course', entity: 'course' });
 		const updateFiles = await generateFeature({
 			root: updateRoot,
 			lint,
@@ -276,6 +279,8 @@ describe('Cellix generator', () => {
 			operation: 'update',
 			action: 'publish',
 			params: [parseField('title:string')],
+			transport: 'rest',
+			route: 'course',
 		});
 		const updateAction = updateFiles.find((file) => file.path.endsWith('/publish.ts'));
 		expect(updateAction?.contents).toContain('id: string;');
@@ -329,7 +334,6 @@ describe('Cellix generator', () => {
 			'packages/axc/application-services/src/contexts/course/course/search.ts',
 			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts',
 			'packages/axc/rest/src/index.ts',
-			'packages/axc/data-sources-mongoose-models/src/models/course/course.seed.ts',
 		]);
 		const update = filesToEdit({ root: '/repo', lint, context: 'course', entity: 'course', action: 'publish', operation: 'update', transport: 'rest' });
 		expect(update).toContain('packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts');
@@ -352,7 +356,8 @@ describe('Cellix generator', () => {
 				'apps/api/src/index.ts',
 				`import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';\nimport { restHandlerCreator } from '@axc/rest';\nimport { Cellix } from '@cellix/api-core';\n\nCellix.initializeInfrastructureServices<ApiContext, ApplicationServices>(() => undefined)\n\t.initializeApplicationServices((context) => buildApplicationServicesFactory(context))\n\t.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)\n\t.startUp();\n`,
 			);
-			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], transport: 'rest' });
+			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course' });
+			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], route: 'course', transport: 'rest' });
 			expect(loadSession(root, 'task-a')).toBeNull();
 		} finally {
 			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
@@ -377,7 +382,8 @@ describe('Cellix generator', () => {
 				'apps/api/src/index.ts',
 				`import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';\nimport { restHandlerCreator } from '@axc/rest';\nimport { Cellix } from '@cellix/api-core';\n\nCellix.initializeInfrastructureServices<ApiContext, ApplicationServices>(() => undefined)\n\t.initializeApplicationServices((context) => buildApplicationServicesFactory(context))\n\t.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)\n\t.startUp();\n`,
 			);
-			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], transport: 'rest' });
+			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course' });
+			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], route: 'course', transport: 'rest' });
 			const session = loadSession(root, 'task-a');
 			expect(session?.agentId).toBe('task-a');
 			expect(session?.write).toBeUndefined();
@@ -402,6 +408,33 @@ describe('Cellix generator', () => {
 		await writeFile(steps.path, original.replaceAll('LastResponse.body', 'LastResponse.status'));
 		const unread = await checkCellixLint({ root, lint });
 		expect(unread.some((violation) => violation.includes('LastResponse.body()'))).toBe(true);
+	});
+
+	it('builds a subdomain without a route, and query only adds the read', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(root);
+		const lint = defaultCellixLintConfig();
+		await writeStub(
+			root,
+			'packages/axc/rest/src/index.ts',
+			`import type { ApplicationServicesFactory } from '@axc/application-services';\nimport { Hono } from 'hono';\n\nexport function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {\n\tconst app = new Hono();\n\treturn app;\n}\n`,
+		);
+		const backend = await generateFeature({ root, lint, context: 'course', entity: 'course', fields: [parseField('title:string')] });
+		expect(backend.map((file) => file.path).join('\n')).toContain('course.aggregate.ts');
+		expect(backend.map((file) => file.path).join('\n')).toContain('course.model.ts');
+		expect(backend.map((file) => file.path).join('\n')).not.toContain('/search.ts');
+		expect(await readFile(path.join(root, 'packages/axc/rest/src/index.ts'), 'utf8')).not.toContain("app.get('/api/course'");
+		const empty = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(empty);
+		await expect(generateFeature({ root: empty, lint, context: 'course', entity: 'course', operation: 'query', action: 'search', route: 'course', transport: 'rest' })).rejects.toThrow('Generate the subdomain before query');
+		await expect(generateFeature({ root, lint, context: 'course', entity: 'course', operation: 'query', action: 'search', fields: [parseField('title:string')] })).rejects.toThrow('Pass --field on generate');
+		const search = await generateFeature({ root, lint, context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('q:string')], route: 'course', transport: 'rest' });
+		expect(search.map((file) => file.path).join('\n')).not.toContain('course.aggregate.ts');
+		expect(search.map((file) => file.path).join('\n')).not.toContain('course.model.ts');
+		expect(await readFile(path.join(root, 'packages/axc/rest/src/index.ts'), 'utf8')).toContain("app.get('/api/course'");
+		const serviceIndex = await readFile(path.join(root, 'packages/axc/application-services/src/contexts/course/course/index.ts'), 'utf8');
+		expect(serviceIndex).toContain('search: search(dataSources)');
+		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
 	});
 
 	it('refuses to overwrite an entity file', async () => {
@@ -430,6 +463,7 @@ describe('Cellix generator', () => {
 			operation: 'query',
 			action: 'search',
 			params: [parseField('title:string'), parseField('status:string')],
+			route: 'course',
 			transport: 'rest',
 		});
 		expect(search.map((file) => file.path).join('\n')).not.toContain('course.aggregate.ts');
@@ -444,6 +478,7 @@ describe('Cellix generator', () => {
 			operation: 'update',
 			action: 'publish',
 			params: [parseField('status:string')],
+			route: 'course',
 			transport: 'rest',
 		});
 		const published = publish.find((file) => file.path.endsWith('/publish.ts'))?.contents ?? '';
