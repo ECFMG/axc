@@ -178,19 +178,24 @@ async function spliceApplicationHost(file: string, input: { scope: string; conte
 	const dataImport = `import type { DataSourcesFactory } from '${input.scope}/persistence';\n`;
 	if (!next.includes(dataImport.trim())) next = `${dataImport}${next}`;
 	if (!next.includes(serviceImport.trim())) next = `${serviceImport}${next}`;
-	if (!next.includes('dataSourcesFactory:')) {
-		next = next.replace('export interface ApiContext {\n\tenvironment: HealthEnvironment;\n}', 'export interface ApiContext {\n\tenvironment: HealthEnvironment;\n\tdataSourcesFactory: DataSourcesFactory;\n}');
+	if (!next.includes('dataSourcesFactory?:')) {
+		next = next.replace('\tdataSourcesFactory: DataSourcesFactory;\n', '\tdataSourcesFactory?: DataSourcesFactory;\n');
+	}
+	if (!next.includes('dataSourcesFactory?:') && !next.includes('dataSourcesFactory:')) {
+		next = next.replace('export interface ApiContext {\n\tenvironment: HealthEnvironment;\n}', 'export interface ApiContext {\n\tenvironment: HealthEnvironment;\n\tdataSourcesFactory?: DataSourcesFactory;\n}');
 	}
 	const member = `\t${input.contextPascal}: ${input.contextPascal}ContextApplicationService;\n`;
 	if (!next.includes(`${input.contextPascal}: ${input.contextPascal}ContextApplicationService`)) next = insertBeforeClose(next, 'export interface ApplicationServices {', member);
-	if (!next.includes('dataSourcesFactory.withSystemPassport')) {
+	if (!next.includes('dataSourcesFactory?.withSystemPassport')) {
+		next = next.replace('context.dataSourcesFactory.withSystemPassport()', 'context.dataSourcesFactory?.withSystemPassport()');
 		next = next.replace(
 			'const forRequest = (): Promise<ApplicationServices> =>\n\t\tPromise.resolve({',
-			'const forRequest = (): Promise<ApplicationServices> => {\n\t\tconst dataSources = context.dataSourcesFactory.withSystemPassport();\n\t\treturn Promise.resolve({',
+			'const forRequest = (): Promise<ApplicationServices> => {\n\t\tconst dataSources = context.dataSourcesFactory?.withSystemPassport();\n\t\treturn Promise.resolve({',
 		);
 		next = next.replace(');\n\n\treturn { forRequest };', ');\n\t};\n\n\treturn { forRequest };');
 	}
-	if (!next.includes(`${input.contextPascal}(dataSources)`)) next = insertBeforeClose(next, 'return Promise.resolve({', `\n\t\t\t${input.contextPascal}: ${input.contextPascal}(dataSources),\n`);
+	const contextCall = `${input.contextPascal}: dataSources === undefined ? ({} as ${input.contextPascal}ContextApplicationService) : ${input.contextPascal}(dataSources),`;
+	if (!next.includes(`${input.contextPascal}(dataSources)`)) next = insertBeforeClose(next, 'return Promise.resolve({', `\n\t\t\t${contextCall}\n`);
 	if (next === current) return [];
 	await writeFile(file, next);
 	return [{ path: file, contents: next }];

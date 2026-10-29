@@ -210,6 +210,8 @@ describe('Cellix generator', () => {
 		expect(() => parseFieldsFile('{ "permissions": ["CanManage"] }')).toThrow('camelCase');
 		expect(() => parseFieldsFile('{ "nested": [{ "name": "Address", "fields": [{ "name": "street", "type": "string" }] }] }')).toThrow('kebab-case');
 		expect(() => parseFieldsFile('{ "fields": [{ "name": "title", "type": "string type" }] }')).toThrow('Field type');
+		await expect(generateFeature({ root, lint, context: 'user', entity: 'staff-user', action: 'create', fields: [parseField('createdAt:string')] })).rejects.toThrow('createdAt is a timestamp');
+		await expect(generateFeature({ root, lint, context: 'user', entity: 'staff-user', action: 'create', nested: [parseNested('note:updatedAt:string')] })).rejects.toThrow('updatedAt is a timestamp');
 		expect(parseField('tags:string[]')).toEqual({ name: 'tags', type: 'string[]' });
 		expect(parseField("modality:'online'|'in-person'|'hybrid'")).toEqual({ name: 'modality', type: "'online'|'in-person'|'hybrid'" });
 		await expect(generateFeature({ root, lint, context: 'course', entity: 'course', action: 'create', permissions: ['canManageCourse', 'canManageCourse'] })).rejects.toThrow('Permission canManageCourse is used more than once');
@@ -587,8 +589,8 @@ describe('Cellix generator', () => {
 		expect(passport).toContain('forSystem()');
 		expect(contextService).toContain('export interface CourseContextApplicationService');
 		expect(contextService).toContain('Course: CourseApi(dataSources)');
-		expect(application).toContain('dataSourcesFactory.withSystemPassport()');
-		expect(application).toContain('Course: Course(dataSources)');
+		expect(application).toContain('dataSourcesFactory?.withSystemPassport()');
+		expect(application).toContain('dataSources === undefined ? ({} as CourseContextApplicationService) : Course(dataSources)');
 		expect(application).not.toContain("from 'mongoose'");
 		expect(dataSources).toContain("from '../models-context.ts'");
 		expect(dataSources).not.toContain("from '@axc/persistence'");
@@ -623,8 +625,8 @@ describe('Cellix generator', () => {
 		expect(modelsAfter).toContain('export type { StaffUser, StaffUserModelType }');
 		expect(domainAfter).toContain('StaffUserUnitOfWork: Contexts.User.StaffUser.StaffUserUnitOfWork');
 		expect(passportAfter).toContain('forStaffUser');
-		expect(applicationAfter).toContain('User: User(dataSources)');
-		expect(applicationAfter).toContain('Course: Course(dataSources)');
+		expect(applicationAfter).toContain('User(dataSources)');
+		expect(applicationAfter).toContain('Course(dataSources)');
 		const readonlyAfter = await readFile(path.join(root, 'packages/axc/persistence/src/datasources/readonly/index.ts'), 'utf8');
 		expect(readonlyAfter).toContain("from './user/staff-user/staff-user.read-repository.ts'");
 		expect(readonlyAfter).not.toContain('undefined');

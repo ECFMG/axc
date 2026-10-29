@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { checkFlag, clearSession, decidePath, decideRead, decideShell, ensureStartupSession, loadSession, policyFromConfig, recordSession, STARTUP_READ, sessionAllows, sessionAllowsRead } from './index.mjs';
+import { agentIdFromSession, checkFlag, clearSession, decidePath, decideRead, decideShell, ensureStartupSession, loadSession, policyFromConfig, recordSession, STARTUP_READ, sessionAllows, sessionAllowsRead } from './index.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -36,8 +36,14 @@ describe('guardrails', () => {
 	it('rejects a shell assignment of the agent id', () => {
 		const assigned = decideShell('export CELLIX_AGENT_ID=task-a; pnpm --filter @cellix/generator generate -- --context course', repoRoot, open);
 		expect(assigned.ok).toBe(false);
-		expect(assigned.message).toContain('runner sets CELLIX_AGENT_ID');
+		expect(assigned.message).toContain('sessionStart sets CELLIX_AGENT_ID');
 		expect(decideShell('echo CELLIX_AGENT_ID=$CELLIX_AGENT_ID', repoRoot, open).ok).toBe(true);
+	});
+
+	it('keeps an existing agent id and otherwise uses the conversation', () => {
+		expect(agentIdFromSession({ conversation_id: 'conv-1' }, { CELLIX_AGENT_ID: 'task-a' })).toBe('task-a');
+		expect(agentIdFromSession({ conversation_id: '550e8400-e29b-41d4-a716-446655440000' }, {})).toBe('550e8400-e29b-41d4-a716-446655440000');
+		expect(agentIdFromSession({}, {})).toMatch(/^agent/);
 	});
 
 	it('treats a directory listing as a read, including one that hides a missing path', () => {
@@ -266,11 +272,12 @@ describe('guardrails', () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
 		try {
 			const started = ensureStartupSession(root, 'task-a');
-			expect(started?.files).toEqual([]);
+			expect(started?.files).toBeUndefined();
 			expect(started?.read).toEqual([...STARTUP_READ].sort());
+			expect(sessionAllows('packages/axc/rest/src/index.ts', started)).toBe(true);
 			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', started)).toBe(false);
 			expect(sessionAllowsRead('AGENTS.md', started)).toBe(true);
-			expect(ensureStartupSession(root, 'task-a')?.files).toEqual([]);
+			expect(ensureStartupSession(root, 'task-a')?.files).toBeUndefined();
 			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
 			const after = loadSession(root, 'task-a');
 			expect(sessionAllows('packages/axc/rest/src/index.ts', after)).toBe(true);

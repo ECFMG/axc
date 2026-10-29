@@ -1,6 +1,6 @@
 export interface AgentSession {
 	agentId: string;
-	files: string[];
+	files?: string[];
 	write?: string[];
 	read?: string[];
 }
@@ -26,6 +26,7 @@ export interface VerifyFlag {
 }
 
 export function agentIdFromEnv(env?: NodeJS.ProcessEnv): string;
+export function agentIdFromSession(payload?: { conversation_id?: string; session_id?: string }, env?: NodeJS.ProcessEnv): string;
 export function sessionFile(root: string, agentId: string): string;
 export const STARTUP_READ: readonly string[];
 export function ensureStartupSession(root: string, agentId: string): AgentSession | null;

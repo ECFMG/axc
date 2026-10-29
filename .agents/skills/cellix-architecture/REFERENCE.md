@@ -121,11 +121,11 @@ A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entit
 
 The session rules are `packages/cellix/guardrails/src/session.mjs`. The write order is `packages/cellix/guardrails/src/write/decide.mjs`: `agentAccess` first, then an exact `true` path, then the session. A session belongs to one agent. It does not replace `agentAccess`, and it does not apply to any other agent.
 
-The harness sets `CELLIX_AGENT_ID` (`task-a`, `task-b`) in that agent's environment before the agent runs. The generator then writes `.cellix/sessions/<id>.json`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
+`sessionStart` sets `CELLIX_AGENT_ID` from the conversation when the process does not already have one. The generator then writes `.cellix/sessions/<id>.json`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
 
 The directories are the new context and the new model. Every other file the generator edits is an exact path, including the REST index and `apps/api/src/index.ts`. `apps/docs/` and the acceptance tree are on the session, so the task can write the doc and the scenario. The rest of `packages/axc/rest`, `apps/api/src`, and `packages/axc/service-mongoose` stay closed. The models `package.json` and `tsconfig.json` are on the session.
 
-The runner sets `CELLIX_AGENT_ID` on the agent process before the agent starts. A shell assignment does not change the hook, and the write hook rejects it.
+`sessionStart` puts `CELLIX_AGENT_ID` on the agent process. A shell assignment does not change the hook, and the write hook rejects it.
 
 An exact `true` key with no `*` stays open for that side during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay writable because they are exact `true` entries in the `write` map.
 

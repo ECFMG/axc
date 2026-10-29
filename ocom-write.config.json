@@ -7,8 +7,8 @@
 		"**/agent-transcripts/**": false,
 		"agent-transcripts/**": false,
 		"packages/cellix/**": true,
-		"scripts/**": true,
-		".cursor/**": true,
+		"scripts/**": false,
+		".cursor/**": false,
 		".git/**": false,
 		".cellix/**": false,
 		"patches/**": false,
@@ -35,9 +35,9 @@
 		"apps/docs/**": true
 	},
 	"write": {
-		"packages/cellix/**": true,
-		"scripts/**": true,
-		".cursor/**": true,
+		"packages/cellix/**": false,
+		"scripts/**": false,
+		".cursor/**": false,
 		"ocom-write.config.json": false,
 		"cellix-lint.config.json": false,
 		"packages/axc/**": true,

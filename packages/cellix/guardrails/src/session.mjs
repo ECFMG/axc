@@ -4,9 +4,9 @@
 // files is the write list. write is the same list. read is optional and does not narrow writes.
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { agentIdFromEnv } from './identity.mjs';
+import { agentIdFromEnv, agentIdFromSession } from './identity.mjs';
 
-export { agentIdFromEnv };
+export { agentIdFromEnv, agentIdFromSession };
 
 /** What an agent may read before query has added a slice. packages/axc and apps stay closed. */
 export const STARTUP_READ = ['.agents/skills/cellix-architecture/', 'AGENTS.md', 'cellix-lint.config.json', 'task-set-a-prompt.md', 'task-set-a-requirements.md', 'task-set-b-prompt.md', 'task-set-b-requirements.md'];
@@ -19,7 +19,7 @@ export function sessionFile(root, agentId) {
 /**
  * Read one agent's lists.
  * Missing file: null, so decide.mjs does not narrow this agent.
- * Empty write list: a session that lists nothing to write.
+ * Missing write array: standing write rules still apply.
  * Invalid JSON, or a file with neither a files array nor a write array: throw, and the hook denies the write.
  * A missing read array does not narrow reads.
  */
@@ -28,20 +28,20 @@ export function loadSession(root, agentId) {
 	const raw = readSessionFile(root, agentId);
 	if (raw === null) return null;
 	const parsed = parseSessionJson(raw, agentId);
-	const write = safeEntries(parsed.write);
-	return { agentId, files: write, write, ...(Array.isArray(parsed.read) ? { read: safeEntries(parsed.read) } : {}) };
+	const write = parsed.write === undefined ? undefined : safeEntries(parsed.write);
+	return { agentId, ...(write === undefined ? {} : { files: write, write }), ...(Array.isArray(parsed.read) ? { read: safeEntries(parsed.read) } : {}) };
 }
 
 /**
  * True when the path may be written.
- * No session object: true. Standing write rules are the only check.
+ * No session object, or a session with no write array: true. Standing write rules are the only check.
  * An entry that ends with / matches every file inside that directory.
  * Any other entry matches that one path.
  */
 export function sessionAllows(relativePath, session) {
 	if (!session) return true;
 	const list = Array.isArray(session.write) ? session.write : session.files;
-	if (!Array.isArray(list)) return false;
+	if (!Array.isArray(list)) return true;
 	return list.some((entry) => entryCoversPath(entry, relativePath));
 }
 
@@ -57,7 +57,7 @@ export function ensureStartupSession(root, agentId) {
 	if (!id) return null;
 	const existing = loadSession(root, id);
 	if (existing) return existing;
-	recordSession(root, id, { write: [], read: STARTUP_READ });
+	recordSession(root, id, { read: STARTUP_READ });
 	return loadSession(root, id);
 }
 
@@ -80,10 +80,12 @@ export function recordSession(root, agentId, filesOrLists) {
 	const previous = loadSession(root, id);
 	const lists = Array.isArray(filesOrLists) ? { write: filesOrLists } : (filesOrLists ?? {});
 	const addedWrite = lists.write ?? lists.files;
-	const write = unionEntries(previous?.write ?? previous?.files, addedWrite);
+	const previousWrite = previous?.write ?? previous?.files;
+	const hasWrite = Array.isArray(addedWrite) || Array.isArray(previousWrite);
+	const write = hasWrite ? unionEntries(previousWrite, addedWrite) : undefined;
 	let read = Array.isArray(lists.read) || Array.isArray(previous?.read) ? unionEntries(previous?.read, lists.read) : undefined;
-	if (Array.isArray(previous?.read)) read = unionEntries(read, addedWrite);
-	const body = { agentId: id, files: write, ...(read === undefined ? {} : { read }), ...(!Array.isArray(filesOrLists) || read !== undefined ? { write } : {}) };
+	if (Array.isArray(previous?.read) && Array.isArray(addedWrite)) read = unionEntries(read, addedWrite);
+	const body = { agentId: id, ...(write === undefined ? {} : { files: write, write }), ...(read === undefined ? {} : { read }) };
 	mkdirSync(path.dirname(file), { recursive: true });
 	writeFileSync(file, `${JSON.stringify(body, null, '\t')}\n`);
 	return file;
@@ -110,9 +112,11 @@ function parseSessionJson(raw, agentId) {
 	} catch {
 		throw new Error(`Session ${agentId} is not valid JSON. Fix .cellix/sessions/${agentId}.json or clear it.`);
 	}
-	const write = Array.isArray(parsed?.write) ? parsed.write : parsed?.files;
-	if (!parsed || !Array.isArray(write)) throw new Error(`Session ${agentId} must be an object with a files or write array.`);
-	return { write, read: Array.isArray(parsed.read) ? parsed.read : undefined };
+	const hasWrite = Array.isArray(parsed?.write) || Array.isArray(parsed?.files);
+	const write = hasWrite ? (Array.isArray(parsed.write) ? parsed.write : parsed.files) : undefined;
+	const read = Array.isArray(parsed?.read) ? parsed.read : undefined;
+	if (!parsed || (write === undefined && read === undefined)) throw new Error(`Session ${agentId} must be an object with a files, write, or read array.`);
+	return { write, read };
 }
 
 function unionEntries(previous, added) {

@@ -3,7 +3,7 @@ import { sessionAllows, sessionAllowsRead } from '../session.mjs';
 import { exactOpen, firstMatchingAccess, relativeToWorkspace } from './agent-access.mjs';
 import { commandPaths, WRITE_COMMAND } from './shell.mjs';
 
-const RUNNER_OWNS_ID = 'The runner sets CELLIX_AGENT_ID. A shell assignment does not open a session.';
+const RUNNER_OWNS_ID = 'sessionStart sets CELLIX_AGENT_ID. A shell assignment does not open a session.';
 
 // Order for one path:
 // 1. Outside the workspace: deny a write. A read of a path outside the workspace is not this list.

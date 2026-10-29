@@ -148,7 +148,7 @@ describe('the transcript hook', () => {
 			const piped = await hookDecision({ command: "printenv | rg -i 'cellix|agent' || true", hook_event_name: 'beforeShellExecution' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
 			assert.equal(piped.permission, 'allow');
 			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
-			assert.deepEqual(started.write, []);
+			assert.equal(started.write, undefined);
 			writeFileSync(sessionFile, `${JSON.stringify({ agentId: 'task-a', files: ['packages/axc/rest/src/'], write: ['packages/axc/rest/src/'] })}\n`);
 			const after = await hookDecision({ tool_name: 'Grep', tool_input: { pattern: 'health', path: 'packages/axc/rest/src' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
 			assert.equal(after.permission, 'allow');
@@ -173,11 +173,37 @@ describe('the transcript hook', () => {
 		await once(child, 'exit');
 		try {
 			const reply = JSON.parse(out);
-			assert.match(reply.additional_context, /already exists/);
+			assert.equal(reply.env.CELLIX_AGENT_ID, 'task-a');
+			assert.match(reply.additional_context, /exists/);
 			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
-			assert.deepEqual(started.write, []);
+			assert.equal(started.write, undefined);
 			assert.ok(started.read.includes('AGENTS.md'));
 			assert.equal(started.read.includes('packages/axc/'), false);
+		} finally {
+			rmSync(workspace, { recursive: true, force: true });
+		}
+	});
+
+	it('sets an agent id from the conversation when the process has none', async () => {
+		const workspace = mkdtempSync(join(tmpdir(), 'cellix-session-mint-'));
+		const sessionFile = join(workspace, '.cellix', 'sessions', 'conv-1.json');
+		const child = spawn(process.execPath, [join(root, '.cursor/hooks/cellix-session-start.mjs')], {
+			cwd: workspace,
+			env: { ...process.env, CELLIX_AGENT_ID: '', CURSOR_PROJECT_DIR: workspace },
+		});
+		let out = '';
+		child.stdout.setEncoding('utf8');
+		child.stdout.on('data', (chunk) => {
+			out += chunk;
+		});
+		child.stdin.end(JSON.stringify({ conversation_id: 'conv-1' }));
+		await once(child, 'exit');
+		try {
+			const reply = JSON.parse(out);
+			assert.equal(reply.env.CELLIX_AGENT_ID, 'conv-1');
+			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
+			assert.equal(started.agentId, 'conv-1');
+			assert.equal(started.write, undefined);
 		} finally {
 			rmSync(workspace, { recursive: true, force: true });
 		}

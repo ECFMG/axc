@@ -25,6 +25,7 @@ import { actionKind, commandFields, graphqlFieldName, namespacePath, paramShape,
 import type { GeneratedFile, GenerateFeatureOptions } from './types.ts';
 
 export function plan(options: GenerateFeatureOptions): GeneratedFile[] {
+	rejectOwnedTimestamps(options.fields, options.nested);
 	const { root, lint, context, entity, action: actionName } = options;
 	const scope = lint.scope;
 	const entityPascal = pascal(entity);
@@ -101,6 +102,33 @@ function queryInputs(fields: { name: string; pascal: string; type: string }[]) {
 
 function updateInputs(fields: { name: string; pascal: string; type: string }[]) {
 	return [{ name: 'id', pascal: 'Id', type: 'string' as const }, ...fields];
+}
+
+const OWNED_TIMESTAMPS = new Set(['createdAt', 'updatedAt']);
+
+function rejectOwnedTimestamps(fields: { name: string }[] | undefined, nested: { fields: unknown[] }[] | undefined): void {
+	for (const field of fields ?? []) {
+		if (OWNED_TIMESTAMPS.has(field.name)) throw new Error(`${field.name} is a timestamp. Leave it off --field. The model sets it.`);
+	}
+	for (const item of nested ?? []) {
+		const scalars: { name: string }[] = [];
+		const children: { fields: unknown[] }[] = [];
+		for (const member of item.fields) {
+			if (member === null || typeof member !== 'object') continue;
+			if ('fields' in member) {
+				const nestedFields = member.fields;
+				if (Array.isArray(nestedFields)) {
+					children.push({ fields: nestedFields });
+					continue;
+				}
+			}
+			if ('name' in member) {
+				const name = member.name;
+				if (typeof name === 'string') scalars.push({ name });
+			}
+		}
+		rejectOwnedTimestamps(scalars, children);
+	}
 }
 
 function nestedFiles(entityDir: string, context: string, shape: Shape): GeneratedFile[] {
