@@ -41,7 +41,7 @@ A query name cannot start with `create`, `update`, or `delete`. An update name c
 
 While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
-The session file `.cellix/sessions/<CELLIX_AGENT_ID>.json` exists when the agent starts. `sessionStart` sets `CELLIX_AGENT_ID` when the process does not already have one. Read the file once. Run query before reading the product tree. After the generator prints paths, edit those paths. Do not list the tree to find them. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
+The session file `.cellix/sessions/<id>.json` exists when the agent starts. The shell may not have `CELLIX_AGENT_ID`. query records the slice on that file. Do not assign the variable. Read the file once. Run query before reading the product tree. After the generator prints paths, edit those paths. Do not list the tree to find them. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
 
 When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. A diff whose paths are all on the session list lands. A path that is not on that list has to be reverted. Do not write `.cellix/verify.json`.
 
@@ -51,6 +51,6 @@ Do not glob a whole tree. Do not search without a directory. Read the slice you 
 
 ## Writes
 
-`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup. Its read list is the brief. query adds the slice to that read list and records the write list. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. `sessionStart` sets that variable when the process does not already have one.
+`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup. Its read list is the brief. query adds the slice to that read list and records the write list. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. query records the existing session when the shell has no id.
 
 File roles, visibility, and the dependency graph are in `REFERENCE.md` next to this file. Open that when a lint or write error names them.

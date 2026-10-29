@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { agentIdForRecord } from '@cellix/guardrails';
 import { type CellixLintConfig, checkCellixLint, defaultCellixLintConfig } from '@cellix/lint';
 import { filesToEdit } from './edit-targets.js';
 import { generateFeature } from './generate.js';
@@ -59,8 +60,7 @@ for (const file of filesToEdit({
 })) {
 	console.log(file);
 }
-// biome-ignore lint/complexity/useLiteralKeys: CELLIX_AGENT_ID is an index signature under noPropertyAccessFromIndexSignature
-const agentId = process.env['CELLIX_AGENT_ID'];
+const agentId = agentIdForRecord(root);
 if (agentId) console.log(`Session write list: .cellix/sessions/${agentId}.json`);
 console.log('Edit these. The barrels are already wired. Read the session file once. Do not list the tree.');
 console.log('While editing, run pnpm run agent-check -- pnpm run check. Do not pipe it to tail. The Expected line is the next edit.');

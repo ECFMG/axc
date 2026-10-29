@@ -179,6 +179,7 @@ describe('the transcript hook', () => {
 			assert.equal(started.write, undefined);
 			assert.ok(started.read.includes('AGENTS.md'));
 			assert.equal(started.read.includes('packages/axc/'), false);
+			assert.equal(readFileSync(join(workspace, '.cellix', 'active-id'), 'utf8').trim(), 'task-a');
 		} finally {
 			rmSync(workspace, { recursive: true, force: true });
 		}
@@ -204,6 +205,7 @@ describe('the transcript hook', () => {
 			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
 			assert.equal(started.agentId, 'conv-1');
 			assert.equal(started.write, undefined);
+			assert.equal(readFileSync(join(workspace, '.cellix', 'active-id'), 'utf8').trim(), 'conv-1');
 		} finally {
 			rmSync(workspace, { recursive: true, force: true });
 		}

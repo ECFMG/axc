@@ -4,7 +4,23 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { agentIdFromSession, checkFlag, clearSession, decidePath, decideRead, decideShell, ensureStartupSession, loadSession, policyFromConfig, recordSession, STARTUP_READ, sessionAllows, sessionAllowsRead } from './index.mjs';
+import {
+	agentIdForRecord,
+	agentIdFromSession,
+	checkFlag,
+	clearSession,
+	decidePath,
+	decideRead,
+	decideShell,
+	ensureStartupSession,
+	loadSession,
+	noteActiveAgent,
+	policyFromConfig,
+	recordSession,
+	STARTUP_READ,
+	sessionAllows,
+	sessionAllowsRead,
+} from './index.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -44,6 +60,23 @@ describe('guardrails', () => {
 		expect(agentIdFromSession({ conversation_id: 'conv-1' }, { CELLIX_AGENT_ID: 'task-a' })).toBe('task-a');
 		expect(agentIdFromSession({ conversation_id: '550e8400-e29b-41d4-a716-446655440000' }, {})).toBe('550e8400-e29b-41d4-a716-446655440000');
 		expect(agentIdFromSession({}, {})).toMatch(/^agent/);
+	});
+
+	it('records against the active session when the shell has no id', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-active-'));
+		try {
+			ensureStartupSession(root, 'task-a');
+			expect(agentIdForRecord(root, {})).toBe('task-a');
+			ensureStartupSession(root, 'task-b');
+			expect(() => agentIdForRecord(root, {})).toThrow(/shell has no agent id/);
+			noteActiveAgent(root, 'task-a');
+			expect(agentIdForRecord(root, {})).toBe('task-a');
+			expect(agentIdForRecord(root, { CELLIX_AGENT_ID: 'task-b' })).toBe('task-b');
+			clearSession(root, 'task-a');
+			expect(agentIdForRecord(root, {})).toBe('task-b');
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
 	});
 
 	it('treats a directory listing as a read, including one that hides a missing path', () => {

@@ -30,6 +30,8 @@ export function agentIdFromSession(payload?: { conversation_id?: string; session
 export function sessionFile(root: string, agentId: string): string;
 export const STARTUP_READ: readonly string[];
 export function ensureStartupSession(root: string, agentId: string): AgentSession | null;
+export function noteActiveAgent(root: string, agentId: string): void;
+export function agentIdForRecord(root: string, env?: NodeJS.ProcessEnv): string;
 export function loadSession(root: string, agentId: string): AgentSession | null;
 export function sessionAllows(relative: string, session: AgentSession | null): boolean;
 export function sessionAllowsRead(relative: string, session: AgentSession | null): boolean;

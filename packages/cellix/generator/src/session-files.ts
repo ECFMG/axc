@@ -1,11 +1,10 @@
 import path from 'node:path';
-import { recordSession } from '@cellix/guardrails';
+import { agentIdForRecord, recordSession } from '@cellix/guardrails';
 import type { GeneratedFile, GenerateFeatureOptions } from './types.ts';
 
-/** Writes .cellix/sessions/<CELLIX_AGENT_ID>.json. No agent id means no session file. */
+/** Writes .cellix/sessions/<id>.json. No session on disk means nothing is recorded. */
 export function recordAgentSession(options: GenerateFeatureOptions, written: GeneratedFile[]): void {
-	// biome-ignore lint/complexity/useLiteralKeys: CELLIX_AGENT_ID is an index signature under noPropertyAccessFromIndexSignature
-	const agentId = process.env['CELLIX_AGENT_ID'];
+	const agentId = agentIdForRecord(options.root);
 	if (!agentId) return;
 	recordSession(options.root, agentId, [...sessionPrefixes(options), ...written.map((file) => relativePosix(options.root, file.path))]);
 }

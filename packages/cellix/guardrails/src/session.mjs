@@ -2,7 +2,7 @@
 // identity.mjs reads the id. This file only stores and reads the list.
 // write/decide.mjs asks this file after the config has already allowed the path.
 // files is the write list. write is the same list. read is optional and does not narrow writes.
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { agentIdFromEnv, agentIdFromSession } from './identity.mjs';
 
@@ -61,12 +61,37 @@ export function ensureStartupSession(root, agentId) {
 	return loadSession(root, id);
 }
 
+/** Remember which session sessionStart just opened. The shell does not inherit the hook env. */
+export function noteActiveAgent(root, agentId) {
+	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });
+	if (!id) return;
+	const dir = path.join(root, '.cellix');
+	mkdirSync(dir, { recursive: true });
+	writeFileSync(path.join(dir, 'active-id'), `${id}\n`);
+}
+
+/**
+ * The env id, or the session sessionStart stored when the shell has no id.
+ * One session file and no pointer: that file. Several files and no pointer: throw.
+ */
+export function agentIdForRecord(root, env = process.env) {
+	const existing = agentIdFromEnv(env);
+	if (existing) return existing;
+	const pointed = readActiveId(root);
+	if (pointed && loadSession(root, pointed)) return pointed;
+	const ids = sessionIdsOnDisk(root);
+	if (ids.length === 1) return ids[0];
+	if (ids.length > 1) throw new Error('Several session files exist and the shell has no agent id. Do not assign CELLIX_AGENT_ID.');
+	return '';
+}
+
 /** Remove this agent's session file. .cellix/verify.json is left in place. */
 export function clearSession(root, agentId) {
 	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });
 	if (!id) return;
 	rmSync(sessionFile(root, id), { force: true });
 	rmSync(path.join(root, '.cellix', 'session.json'), { force: true });
+	if (readActiveId(root) === id) rmSync(path.join(root, '.cellix', 'active-id'), { force: true });
 }
 
 /**
@@ -94,6 +119,42 @@ export function recordSession(root, agentId, filesOrLists) {
 function entryCoversPath(entry, relativePath) {
 	if (entry.endsWith('/')) return relativePath.startsWith(entry);
 	return entry === relativePath;
+}
+
+function readActiveId(root) {
+	let raw = '';
+	try {
+		raw = readFileSync(path.join(root, '.cellix', 'active-id'), 'utf8');
+	} catch (error) {
+		if (error && error.code === 'ENOENT') return '';
+		throw error;
+	}
+	try {
+		return agentIdFromEnv({ CELLIX_AGENT_ID: raw.trim() });
+	} catch {
+		return '';
+	}
+}
+
+function sessionIdsOnDisk(root) {
+	let names = [];
+	try {
+		names = readdirSync(path.join(root, '.cellix', 'sessions'));
+	} catch (error) {
+		if (error && error.code === 'ENOENT') return [];
+		throw error;
+	}
+	const ids = [];
+	for (const name of names) {
+		if (!name.endsWith('.json')) continue;
+		try {
+			const id = agentIdFromEnv({ CELLIX_AGENT_ID: name.slice(0, -'.json'.length) });
+			if (id) ids.push(id);
+		} catch {
+			// A file whose name is not an agent id is not a session.
+		}
+	}
+	return ids;
 }
 
 function readSessionFile(root, agentId) {

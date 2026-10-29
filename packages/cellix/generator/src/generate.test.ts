@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promis
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadSession } from '@cellix/guardrails';
+import { ensureStartupSession, loadSession } from '@cellix/guardrails';
 import { afterEach, describe, expect, it } from 'vitest';
 import { checkCellixLint, defaultCellixLintConfig } from '../../lint/src/index.ts';
 import { filesToEdit } from './edit-targets.ts';
@@ -373,6 +373,33 @@ describe('Cellix generator', () => {
 			expect(session?.files).not.toContain('.snyk');
 			expect(session?.files.join('\n')).not.toContain('packages/cellix/');
 			expect(loadSession(root, 'task-b')).toBeNull();
+		} finally {
+			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
+			else process.env.CELLIX_AGENT_ID = previous;
+		}
+	});
+
+	it('records the only session file when the shell has no agent id', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
+		roots.push(root);
+		const previous = process.env.CELLIX_AGENT_ID;
+		delete process.env.CELLIX_AGENT_ID;
+		try {
+			ensureStartupSession(root, 'task-a');
+			await writeStub(
+				root,
+				'packages/axc/rest/src/index.ts',
+				`import type { ApplicationServicesFactory } from '@axc/application-services';\nimport { Hono } from 'hono';\n\nexport function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {\n\tconst app = new Hono();\n\treturn app;\n}\n`,
+			);
+			await writeStub(
+				root,
+				'apps/api/src/index.ts',
+				`import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';\nimport { restHandlerCreator } from '@axc/rest';\nimport { Cellix } from '@cellix/api-core';\n\nCellix.initializeInfrastructureServices<ApiContext, ApplicationServices>(() => undefined)\n\t.initializeApplicationServices((context) => buildApplicationServicesFactory(context))\n\t.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)\n\t.startUp();\n`,
+			);
+			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], transport: 'rest' });
+			const session = loadSession(root, 'task-a');
+			expect(session?.write).toContain('packages/axc/rest/src/index.ts');
+			expect(session?.read).toContain('packages/axc/rest/src/index.ts');
 		} finally {
 			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
 			else process.env.CELLIX_AGENT_ID = previous;

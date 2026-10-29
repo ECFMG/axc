@@ -121,15 +121,15 @@ A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entit
 
 The session rules are `packages/cellix/guardrails/src/session.mjs`. The write order is `packages/cellix/guardrails/src/write/decide.mjs`: `agentAccess` first, then an exact `true` path, then the session. A session belongs to one agent. It does not replace `agentAccess`, and it does not apply to any other agent.
 
-`sessionStart` sets `CELLIX_AGENT_ID` from the conversation when the process does not already have one. The generator then writes `.cellix/sessions/<id>.json`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
+`sessionStart` stores the id in `.cellix/active-id` and creates `.cellix/sessions/<id>.json`. The generator records on that id when the shell has no `CELLIX_AGENT_ID`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
 
 The directories are the new context and the new model. Every other file the generator edits is an exact path, including the REST index and `apps/api/src/index.ts`. `apps/docs/` and the acceptance tree are on the session, so the task can write the doc and the scenario. The rest of `packages/axc/rest`, `apps/api/src`, and `packages/axc/service-mongoose` stay closed. The models `package.json` and `tsconfig.json` are on the session.
 
-`sessionStart` puts `CELLIX_AGENT_ID` on the agent process. A shell assignment does not change the hook, and the write hook rejects it.
+The shell may not inherit `CELLIX_AGENT_ID`. A shell assignment does not open a session, and the write hook rejects it.
 
 An exact `true` key with no `*` stays open for that side during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay writable because they are exact `true` entries in the `write` map.
 
-No `CELLIX_AGENT_ID` means no session. Standing `read` and `write` are the only checks. An empty write list or invalid JSON does not open writes. A missing `read` array does not narrow reads. The agent does not delete the session file. After `.cellix/verify.json` matches the tree, the stop hook and the session-end hook remove `.cellix/sessions/<CELLIX_AGENT_ID>.json`. The verify file stays.
+No session file means no session. Standing `read` and `write` are the only checks. An empty write list or invalid JSON does not open writes. A missing `read` array does not narrow reads. The agent does not delete the session file. After `.cellix/verify.json` matches the tree, the stop hook and the session-end hook remove `.cellix/sessions/<CELLIX_AGENT_ID>.json`. The verify file stays.
 
 ## Verify flag
 
