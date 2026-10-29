@@ -132,26 +132,20 @@ describe('the transcript hook', () => {
 		assert.equal(bareSearch.permission, 'deny');
 	});
 
-	it('creates the session at startup and keeps packages/axc closed until query', async () => {
+	it('creates the session at startup and leaves the product tree readable', async () => {
 		const workspace = mkdtempSync(join(tmpdir(), 'cellix-startup-'));
 		const sessionFile = join(workspace, '.cellix', 'sessions', 'task-a.json');
 		writeFileSync(join(workspace, 'ocom-write.config.json'), `${JSON.stringify({ read: { '.cellix/**': false, 'packages/axc/**': true, '**': true }, write: { '**': true } })}\n`);
 		try {
 			const searched = await hookDecision({ tool_name: 'Grep', tool_input: { pattern: 'health', path: 'packages/axc/rest/src' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
-			assert.equal(searched.permission, 'deny');
-			assert.match(searched.agent_message, /query/);
+			assert.equal(searched.permission, 'allow');
 			const read = await hookDecision({ tool_name: 'Read', tool_input: { path: 'packages/axc/rest/src/index.ts' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
-			assert.equal(read.permission, 'deny');
-			assert.match(read.agent_message, /query/);
-			const brief = await hookDecision({ tool_name: 'Read', tool_input: { path: 'AGENTS.md' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
-			assert.equal(brief.permission, 'allow');
-			const piped = await hookDecision({ command: "printenv | rg -i 'cellix|agent' || true", hook_event_name: 'beforeShellExecution' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
-			assert.equal(piped.permission, 'allow');
+			assert.equal(read.permission, 'allow');
+			const dumped = await hookDecision({ command: "find packages/axc -name '*.ts' | while read f; do cat $f; done", hook_event_name: 'beforeShellExecution' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
+			assert.equal(dumped.permission, 'deny');
 			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
 			assert.equal(started.write, undefined);
-			writeFileSync(sessionFile, `${JSON.stringify({ agentId: 'task-a', files: ['packages/axc/rest/src/'], write: ['packages/axc/rest/src/'] })}\n`);
-			const after = await hookDecision({ tool_name: 'Grep', tool_input: { pattern: 'health', path: 'packages/axc/rest/src' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
-			assert.equal(after.permission, 'allow');
+			assert.equal(started.read, undefined);
 		} finally {
 			rmSync(workspace, { recursive: true, force: true });
 		}
@@ -174,11 +168,10 @@ describe('the transcript hook', () => {
 		try {
 			const reply = JSON.parse(out);
 			assert.equal(reply.env.CELLIX_AGENT_ID, 'task-a');
-			assert.match(reply.additional_context, /exists/);
 			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
 			assert.equal(started.write, undefined);
-			assert.ok(started.read.includes('AGENTS.md'));
-			assert.equal(started.read.includes('packages/axc/'), false);
+			assert.equal(started.read, undefined);
+			assert.match(reply.additional_context, /Do not list the tree/);
 			assert.equal(readFileSync(join(workspace, '.cellix', 'active-id'), 'utf8').trim(), 'task-a');
 		} finally {
 			rmSync(workspace, { recursive: true, force: true });
@@ -251,6 +244,7 @@ describe('wide shell dumps', () => {
 	it('rejects a multi-file cat and a nameless find', () => {
 		assert.match(wideShellReason('cat a.json; cat b.json; cat c.json') ?? '', /one file/);
 		assert.match(wideShellReason('find packages/axc -type f') ?? '', /one file/);
+		assert.match(wideShellReason("find packages/axc -name '*.ts' | while read f; do cat $f; done") ?? '', /one file/);
 		assert.equal(wideShellReason('find packages/axc -name package.json'), undefined);
 		assert.equal(wideShellReason('cat packages/axc/rest/src/index.ts'), undefined);
 	});

@@ -17,7 +17,7 @@ Generate a new context, entity, or action. Edit a file that already exists. Do n
 
 A search or list endpoint starts with `query`. Pass `--field` on that call so the entity exists. Do not run `--help`.
 
-`query` adds a read. Filter params are optional. The repository method rejects with `not implemented`. Fill that method in. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index.
+`query` scaffolds a new search or list. It does not close the rest of the tree. Filter params are optional. The repository method rejects with `not implemented`. Fill that method in. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index.
 
 `generate` builds a mutation. It does not add a REST route. Use it when the task writes rows through an action. `generate` with no `--action` prints the query command and writes nothing.
 
@@ -41,16 +41,16 @@ A query name cannot start with `create`, `update`, or `delete`. An update name c
 
 While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
-The session file `.cellix/sessions/<id>.json` exists when the agent starts. The shell may not have `CELLIX_AGENT_ID`. query records the slice on that file. Do not assign the variable. Read the file once. Run query before reading the product tree. After the generator prints paths, edit those paths. Do not list the tree to find them. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
+Read the files the task names. Do not list the tree or cat a directory. A new search or list endpoint starts with `query`. Edit the files it prints. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
 
-When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. A diff whose paths are all on the session list lands. A path that is not on that list has to be reverted. Do not write `.cellix/verify.json`.
+When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 
 Acceptance owns the database process. In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and set `process.env['MONGODB_URI']` to `getUri()` inside `setupEnvironment`, before the API process spawns. Stop the server in `afterAll`. `apps/api/src/index.ts` reads `process.env['MONGODB_URI']`. It does not construct `MongoMemoryServer`. Insert `<camel>Seed` from `packages/axc/service-mongoose/src/index.ts`. Re-export it from the models index: `export { <camel>Seed } from './models/<entity>/<entity>.seed.ts'`. Persistence does not import the seed.
 
-Do not glob a whole tree. Do not search without a directory. Read the slice you are editing. After query, the open trees are `packages/axc`, `packages/axc-verification`, `apps/api/src`, and `apps/docs`. Also open `AGENTS.md`, this skill, the task requirements file, and `cellix-lint.config.json`. Open `REFERENCE.md` only when a check error names a file role. `node_modules`, `packages/cellix`, `scripts`, `.cursor`, and `pnpm-lock.yaml` are closed.
+Do not glob a whole tree. Do not search without a directory. Read the file you are changing. The open trees are `packages/axc`, `packages/axc-verification`, `apps/api/src`, and `apps/docs`. Also open `AGENTS.md`, this skill, the task requirements file, and `cellix-lint.config.json`. Open `REFERENCE.md` only when a check error names a file role. `node_modules`, `packages/cellix`, `scripts`, `.cursor`, and `pnpm-lock.yaml` are closed.
 
 ## Writes
 
-`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup. Its read list is the brief. query adds the slice to that read list and records the write list. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. query records the existing session when the shell has no id.
+`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup and holds the agent id. It does not close the product tree. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. The shell may not have that variable.
 
 File roles, visibility, and the dependency graph are in `REFERENCE.md` next to this file. Open that when a lint or write error names them.

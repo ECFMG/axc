@@ -10,8 +10,7 @@ const RUNNER_OWNS_ID = 'sessionStart sets CELLIX_AGENT_ID. A shell assignment do
 // 2. .cellix/verify.json: deny writes. pnpm run verify is the only writer. A session cannot open it.
 // 3. First matching key in the write map, or the read map. false locks the path. No match denies it. true continues.
 // 4. An exact true key (no *) stays open during a session for that side only.
-// 5. No session list for that side: allow. A write list must name the file, or a directory entry that contains it.
-//    A missing read list does not narrow reads.
+// 5. No session list for that side: allow. A startup session has no list, so it does not close the product tree.
 // Step 3 runs before the session, so a session cannot unlock a locked path.
 // config.write replaces config.agentAccess. agentAccess is still accepted.
 

@@ -5,7 +5,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { agentIdFromEnv, decideRead, ensureStartupSession, loadSession, policyFromConfig } from '../../packages/cellix/guardrails/src/index.mjs';
-import { broadGlobReason, closedReferenceInText, heavyCommandReason, logAllowsPath, OPEN_ROOTS, READ_BEFORE_SLICE, searchBeforeSessionReason, wideShellReason } from '../../scripts/check-budget.mjs';
+import { broadGlobReason, closedReferenceInText, heavyCommandReason, logAllowsPath, OPEN_ROOTS, wideShellReason } from '../../scripts/check-budget.mjs';
 
 try {
 	const input = await readPayload();
@@ -116,26 +116,12 @@ function readDenial(input, cwd) {
 		return error instanceof Error ? error.message : 'CELLIX_AGENT_ID is invalid.';
 	}
 	const policy = policyFromConfig(config, session);
-	const beforeSession = isSearch(input) ? searchBeforeSessionReason(agentId, session) : undefined;
-	if (beforeSession !== undefined) return beforeSession;
 	if (searchWithoutRoot(input, workspace)) return `Name a directory on the read list. Open ${OPEN_ROOTS}. A search with no path reads the whole tree.`;
-	const write = session?.write ?? session?.files ?? [];
-	const waitingForQuery = agentId !== '' && Array.isArray(write) && write.length === 0;
 	for (const candidate of readCandidates(input, workspace)) {
 		const decision = decideRead(candidate, workspace, policy);
-		if (!decision.ok && !logNames(candidate, workspace)) return waitingForQuery && decision.message.includes('read session') ? READ_BEFORE_SLICE : decision.message;
+		if (!decision.ok && !logNames(candidate, workspace)) return decision.message;
 	}
 	return undefined;
-}
-
-function isSearch(input) {
-	const toolName = input.tool_name ?? input.toolName;
-	if (toolName === 'Grep' || toolName === 'Glob') return true;
-	const command = shellCommand(input);
-	if (command === undefined || !/\b(?:rg|grep)\b/.test(command)) return false;
-	const pipe = command.indexOf('|');
-	const searchAt = command.search(/\b(?:rg|grep)\b/);
-	return !(pipe !== -1 && searchAt > pipe);
 }
 
 function searchWithoutRoot(input, workspace) {

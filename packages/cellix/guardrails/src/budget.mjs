@@ -17,10 +17,6 @@ export const TAIL_MESSAGE = 'agent-check already prints the error block. Do not 
 
 export const QUERY_COMMAND = 'pnpm --filter @cellix/generator query -- --context <context> --entity <entity> --name <name> --field <field>:<type> --param <param>:<type> --route <route> --transport rest';
 
-export const SEARCH_BEFORE_SESSION = `Run query before searching the tree. ${QUERY_COMMAND}`;
-
-export const READ_BEFORE_SLICE = `Run query before reading the tree. ${QUERY_COMMAND}`;
-
 const TREE = /(?:^|[/\\\s`'"(=])((?:node_modules|packages\/cellix|dist|agent-transcripts))(?=$|[/\\\s`'"),\];])/g;
 
 export function isWrapped(text) {
@@ -42,12 +38,6 @@ export function tailPipeReason(text) {
 	return undefined;
 }
 
-/** A runner id with no session file yet. Reads of a known path stay open. A search waits for query. */
-export function searchBeforeSessionReason(agentId, session) {
-	if (!agentId || session) return undefined;
-	return SEARCH_BEFORE_SESSION;
-}
-
 /** A glob with no filename. **\/*.ts stays allowed. */
 export function broadGlobReason(pattern) {
 	if (typeof pattern !== 'string' || pattern.length === 0) return undefined;
@@ -60,6 +50,9 @@ export function broadGlobReason(pattern) {
 export function wideShellReason(text) {
 	const dumps = text.match(/\b(?:cat|head|tail)\b/g);
 	if (dumps && dumps.length > 2) return WIDE_SHELL_MESSAGE;
+	if (/\bfind\b/.test(text) && /\b(?:cat|head|tail)\b/.test(text)) return WIDE_SHELL_MESSAGE;
+	if (/\bwhile\b/.test(text) && /\bread\b/.test(text) && /\b(?:cat|head|tail)\b/.test(text)) return WIDE_SHELL_MESSAGE;
+	if (/\bxargs\b/.test(text) && /\b(?:cat|head|tail)\b/.test(text)) return WIDE_SHELL_MESSAGE;
 	if (/\bfind\b/.test(text) && !text.includes('-name') && !text.includes('-path')) return WIDE_SHELL_MESSAGE;
 	return undefined;
 }

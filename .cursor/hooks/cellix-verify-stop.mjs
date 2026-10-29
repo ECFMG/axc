@@ -8,7 +8,7 @@ import { agentIdFromEnv, checkFlag, clearSession, loadSession } from '../../pack
 import { changedPaths, landDecision } from '../../scripts/land.mjs';
 
 const FOLLOWUP =
-	'While files are still changing, run pnpm run agent-check -- pnpm run check. Run pnpm run agent-check -- pnpm run verify once when the behavior is in place. Finish only after it prints CELLIX_VERIFY=pass. Do not write .cellix/verify.json.';
+	'While files are still changing, run pnpm run agent-check -- pnpm run check. Do not list the tree. Run pnpm run agent-check -- pnpm run verify once when the behavior is in place. Finish only after it prints CELLIX_VERIFY=pass. Do not write .cellix/verify.json.';
 
 const payload = readPayload();
 const workspace = workspaceFrom(payload);

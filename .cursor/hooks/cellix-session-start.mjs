@@ -25,10 +25,7 @@ try {
 	agentId = '';
 }
 
-const session = agentId
-	? ` The session file .cellix/sessions/${agentId}.json exists. The shell may not have CELLIX_AGENT_ID. Do not assign it. query records this session. Read the file once. Run query before reading the product tree.`
-	: '';
-
-const additional_context = `Cellix. A search endpoint is a query. Edit the files the generator prints.${session} Leave ocom-write.config.json unchanged. pnpm run agent-check prints the next edit. Do not pipe it to tail. The Expected line is the shape.`;
+const additional_context =
+	'Cellix. Read the files the task names. Do not list the tree or cat a directory. A new search or list endpoint starts with query, then edit the files it prints. Any other change edits the existing file. Do not assign CELLIX_AGENT_ID. Leave ocom-write.config.json unchanged. pnpm run agent-check prints the next edit. Do not pipe it to tail. The Expected line is the shape. Finish only after pnpm run agent-check -- pnpm run verify prints CELLIX_VERIFY=pass.';
 
 process.stdout.write(`${JSON.stringify({ ...(agentId ? { env: { CELLIX_AGENT_ID: agentId } } : {}), additional_context })}\n`);

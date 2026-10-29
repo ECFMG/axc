@@ -336,7 +336,7 @@ describe('Cellix generator', () => {
 		expect(update).not.toContain('packages/axc/domain/src/index.ts');
 	});
 
-	it('records a session for the current agent only', async () => {
+	it('scaffolds a slice without closing the rest of the tree', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
 		const previous = process.env.CELLIX_AGENT_ID;
@@ -353,33 +353,14 @@ describe('Cellix generator', () => {
 				`import { type ApiContext, type ApplicationServices, buildApplicationServicesFactory } from '@axc/application-services';\nimport { restHandlerCreator } from '@axc/rest';\nimport { Cellix } from '@cellix/api-core';\n\nCellix.initializeInfrastructureServices<ApiContext, ApplicationServices>(() => undefined)\n\t.initializeApplicationServices((context) => buildApplicationServicesFactory(context))\n\t.registerAzureFunctionHttpHandler('health', { route: 'health', methods: ['GET'], authLevel: 'anonymous' }, restHandlerCreator)\n\t.startUp();\n`,
 			);
 			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], transport: 'rest' });
-			const session = loadSession(root, 'task-a');
-			expect(session?.files).toContain('packages/axc/domain/src/domain/contexts/course/');
-			expect(session?.files).toContain('packages/axc/domain/src/index.ts');
-			expect(session?.files).toContain('packages/axc/application-services/src/contexts/course/course/search.ts');
-			expect(session?.files).toContain('packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts');
-			expect(session?.files).toContain('packages/axc/rest/src/index.ts');
-			expect(session?.files).toContain('apps/api/src/index.ts');
-			expect(session?.files).toContain('apps/docs/');
-			expect(session?.files).toContain('packages/axc-verification/acceptance-api/src/');
-			expect(session?.files).toContain('packages/axc/data-sources-mongoose-models/package.json');
-			expect(session?.files).not.toContain('apps/docs/docs/course/');
-			expect(session?.files).not.toContain('apps/docs/sidebars.ts');
-			expect(session?.files).not.toContain('packages/axc/rest/src/');
-			expect(session?.files).not.toContain('apps/api/src/');
-			expect(session?.files).toContain('packages/axc/service-mongoose/src/index.ts');
-			expect(session?.files).not.toContain('packages/axc/service-mongoose/');
-			expect(session?.files).not.toContain('pnpm-workspace.yaml');
-			expect(session?.files).not.toContain('.snyk');
-			expect(session?.files.join('\n')).not.toContain('packages/cellix/');
-			expect(loadSession(root, 'task-b')).toBeNull();
+			expect(loadSession(root, 'task-a')).toBeNull();
 		} finally {
 			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
 			else process.env.CELLIX_AGENT_ID = previous;
 		}
 	});
 
-	it('records the only session file when the shell has no agent id', async () => {
+	it('leaves the startup session open when the shell has no agent id', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
 		const previous = process.env.CELLIX_AGENT_ID;
@@ -398,8 +379,9 @@ describe('Cellix generator', () => {
 			);
 			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], transport: 'rest' });
 			const session = loadSession(root, 'task-a');
-			expect(session?.write).toContain('packages/axc/rest/src/index.ts');
-			expect(session?.read).toContain('packages/axc/rest/src/index.ts');
+			expect(session?.agentId).toBe('task-a');
+			expect(session?.write).toBeUndefined();
+			expect(session?.read).toBeUndefined();
 		} finally {
 			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
 			else process.env.CELLIX_AGENT_ID = previous;

@@ -1,12 +1,11 @@
 // After verify passes, a diff lands when every path is on the session list.
 import { spawnSync } from 'node:child_process';
-import { QUERY_COMMAND } from '../packages/cellix/guardrails/src/budget.mjs';
 import { sessionAllows } from '../packages/cellix/guardrails/src/session.mjs';
 
 const SIDE_EFFECTS = new Set(['pnpm-lock.yaml']);
 
 export function landDecision(paths, session) {
-	if (!session) return { ok: false, reason: 'no-session', off: [], message: `No session file. ${QUERY_COMMAND}` };
+	if (!session) return { ok: false, reason: 'no-session', off: [], message: 'No session file. pnpm run agent-check -- pnpm run verify is still required.' };
 	const off = paths.filter((file) => !onSession(file, session));
 	if (off.length === 0) return { ok: true, reason: 'land', off: [], message: 'CELLIX_LAND=pass' };
 	return { ok: false, reason: 'off-session', off, message: `These paths are not on the session list: ${off.join(', ')}. Revert them. Leave ocom-write.config.json unchanged.` };

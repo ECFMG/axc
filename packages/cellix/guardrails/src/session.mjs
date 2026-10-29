@@ -8,9 +8,6 @@ import { agentIdFromEnv, agentIdFromSession } from './identity.mjs';
 
 export { agentIdFromEnv, agentIdFromSession };
 
-/** What an agent may read before query has added a slice. packages/axc and apps stay closed. */
-export const STARTUP_READ = ['.agents/skills/cellix-architecture/', 'AGENTS.md', 'cellix-lint.config.json', 'task-set-a-prompt.md', 'task-set-a-requirements.md', 'task-set-b-prompt.md', 'task-set-b-requirements.md'];
-
 /** .cellix/sessions/<agentId>.json */
 export function sessionFile(root, agentId) {
 	return path.join(root, '.cellix', 'sessions', `${agentId}.json`);
@@ -34,9 +31,9 @@ export function loadSession(root, agentId) {
 
 /**
  * True when the path may be written.
- * No session object, or a session with no write array: true. Standing write rules are the only check.
+ * No session object, or a session with no write array: true. ocom-write.config.json is the map.
+ * A startup session has no write array, so a task that is not a generated slice stays writable.
  * An entry that ends with / matches every file inside that directory.
- * Any other entry matches that one path.
  */
 export function sessionAllows(relativePath, session) {
 	if (!session) return true;
@@ -51,13 +48,15 @@ export function sessionAllowsRead(relativePath, session) {
 	return session.read.some((entry) => entryCoversPath(entry, relativePath));
 }
 
-/** Create the startup session once. A later recordSession unions the slice into this file. */
+/** Create the startup session once. The file holds the agent id and does not close the product tree. */
 export function ensureStartupSession(root, agentId) {
 	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });
 	if (!id) return null;
 	const existing = loadSession(root, id);
 	if (existing) return existing;
-	recordSession(root, id, { read: STARTUP_READ });
+	const file = sessionFile(root, id);
+	mkdirSync(path.dirname(file), { recursive: true });
+	writeFileSync(file, `${JSON.stringify({ agentId: id }, null, '\t')}\n`);
 	return loadSession(root, id);
 }
 
@@ -176,7 +175,7 @@ function parseSessionJson(raw, agentId) {
 	const hasWrite = Array.isArray(parsed?.write) || Array.isArray(parsed?.files);
 	const write = hasWrite ? (Array.isArray(parsed.write) ? parsed.write : parsed.files) : undefined;
 	const read = Array.isArray(parsed?.read) ? parsed.read : undefined;
-	if (!parsed || (write === undefined && read === undefined)) throw new Error(`Session ${agentId} must be an object with a files, write, or read array.`);
+	if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error(`Session ${agentId} must be a JSON object.`);
 	return { write, read };
 }
 

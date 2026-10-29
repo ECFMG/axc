@@ -22,6 +22,6 @@ describe('land', () => {
 		assert.equal(dirty.ok, false);
 		assert.deepEqual(dirty.off, ['scripts/land.mjs']);
 		const missing = landDecision(['packages/axc/rest/src/index.ts'], null);
-		assert.match(missing.message, /query/);
+		assert.match(missing.message, /verify/);
 	});
 });

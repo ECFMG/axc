@@ -17,7 +17,6 @@ import {
 	noteActiveAgent,
 	policyFromConfig,
 	recordSession,
-	STARTUP_READ,
 	sessionAllows,
 	sessionAllowsRead,
 } from './index.mjs';
@@ -301,14 +300,15 @@ describe('guardrails', () => {
 		}
 	});
 
-	it('opens the slice for reading after query', async () => {
+	it('opens the product tree at startup', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
 		try {
 			const started = ensureStartupSession(root, 'task-a');
 			expect(started?.files).toBeUndefined();
-			expect(started?.read).toEqual([...STARTUP_READ].sort());
+			expect(started?.read).toBeUndefined();
+			expect(started?.write).toBeUndefined();
 			expect(sessionAllows('packages/axc/rest/src/index.ts', started)).toBe(true);
-			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', started)).toBe(false);
+			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', started)).toBe(true);
 			expect(sessionAllowsRead('AGENTS.md', started)).toBe(true);
 			expect(ensureStartupSession(root, 'task-a')?.files).toBeUndefined();
 			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
