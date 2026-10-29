@@ -255,11 +255,11 @@ describe('Cellix generator', () => {
 		});
 		const catalogAction = catalog.find((file) => file.path.endsWith('/search.ts'));
 		const catalogRead = catalog.find((file) => file.path.endsWith('course.read-repository.ts'));
-		expect(catalogAction?.contents).toContain('title: string;');
-		expect(catalogAction?.contents).toContain('status: string;');
+		expect(catalogAction?.contents).toContain('title?: string;');
+		expect(catalogAction?.contents).toContain('status?: string;');
 		expect(catalogAction?.contents).toContain('CourseReadRepo.search(command)');
 		expect(catalogAction?.contents).not.toContain('domainDataSource');
-		expect(catalogRead?.contents).toContain('search(command: { title: string; status: string })');
+		expect(catalogRead?.contents).toContain('search(command: { title?: string; status?: string })');
 		expect(catalogRead?.contents).toContain('return Promise.reject');
 		expect(catalogRead?.contents).toContain('async getById');
 		await expect(checkCellixLint({ root: catalogRoot, lint })).resolves.toStrictEqual([]);
@@ -365,6 +365,7 @@ describe('Cellix generator', () => {
 			expect(session?.files).not.toContain('apps/docs/sidebars.ts');
 			expect(session?.files).not.toContain('packages/axc/rest/src/');
 			expect(session?.files).not.toContain('apps/api/src/');
+			expect(session?.files).toContain('packages/axc/service-mongoose/src/index.ts');
 			expect(session?.files).not.toContain('packages/axc/service-mongoose/');
 			expect(session?.files).not.toContain('pnpm-workspace.yaml');
 			expect(session?.files).not.toContain('.snyk');
@@ -422,7 +423,7 @@ describe('Cellix generator', () => {
 		});
 		expect(search.map((file) => file.path).join('\n')).not.toContain('course.aggregate.ts');
 		const readRepository = await readFile(path.join(root, 'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts'), 'utf8');
-		expect(readRepository).toContain('search(command: { title: string; status: string })');
+		expect(readRepository).toContain('search(command: { title?: string; status?: string })');
 		expect(search.find((file) => file.path.endsWith('/search.ts'))?.contents).toContain('CourseReadRepo.search(command)');
 		const publish = await generateFeature({
 			root,
@@ -520,6 +521,11 @@ describe('Cellix generator', () => {
 			'packages/axc/domain/src/index.ts',
 			"import type { Repository } from '@cellix/domain-seedwork/repository';\n\n/** Repositories added in this package implement the Cellix repository contract. */\nexport type DomainRepository<T> = Repository<T>;\n",
 		);
+		await writeStub(
+			root,
+			'packages/axc/domain/package.json',
+			'{ "name": "@axc/domain", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } }, "dependencies": { "@cellix/domain-seedwork": "workspace:*" } }\n',
+		);
 		await writeStub(root, 'packages/axc/persistence/src/index.ts', "export type { UnitOfWork } from '@cellix/domain-seedwork/unit-of-work';\n");
 		await writeStub(
 			root,
@@ -547,7 +553,6 @@ describe('Cellix generator', () => {
 		const apiPackage = '{ "name": "@apps/api", "dependencies": { "@axc/application-services": "workspace:*" } }\n';
 		const apiTsconfig = '{ "references": [{ "path": "../../packages/axc/application-services" }] }\n';
 		const persistenceTsconfig = '{ "references": [{ "path": "../../cellix/domain-seedwork" }] }\n';
-		const applicationPackage = '{ "name": "@axc/application-services", "exports": { ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" } } }\n';
 		const applicationTsconfig = '{ "references": [] }\n';
 		await writeStub(root, 'apps/api/package.json', apiPackage);
 		await writeStub(root, 'apps/api/tsconfig.json', apiTsconfig);
@@ -593,11 +598,16 @@ describe('Cellix generator', () => {
 		expect(api).not.toContain("route: 'api/course'");
 		expect(await readFile(path.join(root, 'apps/api/package.json'), 'utf8')).toBe(apiPackage);
 		expect(await readFile(path.join(root, 'apps/api/tsconfig.json'), 'utf8')).toBe(apiTsconfig);
+		const domainJson = await readFile(path.join(root, 'packages/axc/domain/package.json'), 'utf8');
+		expect(domainJson).toContain('"@lucaspaganini/value-objects": "1.3.1"');
 		const persistenceJson = await readFile(path.join(root, 'packages/axc/persistence/package.json'), 'utf8');
 		expect(persistenceJson).toContain('"@axc/data-sources-mongoose-models": "workspace:*"');
+		expect(persistenceJson).toContain('"@axc/domain": "workspace:*"');
 		expect(persistenceJson).toContain('"@cellix/domain-seedwork": "workspace:*"');
 		expect(await readFile(path.join(root, 'packages/axc/persistence/tsconfig.json'), 'utf8')).toBe(persistenceTsconfig);
-		expect(await readFile(path.join(root, 'packages/axc/application-services/package.json'), 'utf8')).toBe(applicationPackage);
+		const applicationJson = await readFile(path.join(root, 'packages/axc/application-services/package.json'), 'utf8');
+		expect(applicationJson).toContain('"@axc/domain": "workspace:*"');
+		expect(applicationJson).toContain('"@axc/persistence": "workspace:*"');
 		expect(await readFile(path.join(root, 'packages/axc/application-services/tsconfig.json'), 'utf8')).toBe(applicationTsconfig);
 		expect(await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/package.json'), 'utf8')).toContain('"name": "@axc/data-sources-mongoose-models"');
 		expect(await readFile(path.join(root, 'packages/axc/data-sources-mongoose-models/tsconfig.json'), 'utf8')).toContain('@cellix/config-typescript/node');

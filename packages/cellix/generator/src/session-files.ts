@@ -26,6 +26,7 @@ function sessionPrefixes(options: GenerateFeatureOptions): string[] {
 		'apps/docs/',
 		`${modelsPackage}/package.json`,
 		`${modelsPackage}/tsconfig.json`,
+		`${lint.layers.serviceMongoose}/index.ts`,
 	];
 }
 

@@ -27,6 +27,8 @@ export interface VerifyFlag {
 
 export function agentIdFromEnv(env?: NodeJS.ProcessEnv): string;
 export function sessionFile(root: string, agentId: string): string;
+export const STARTUP_READ: readonly string[];
+export function ensureStartupSession(root: string, agentId: string): AgentSession | null;
 export function loadSession(root: string, agentId: string): AgentSession | null;
 export function sessionAllows(relative: string, session: AgentSession | null): boolean;
 export function sessionAllowsRead(relative: string, session: AgentSession | null): boolean;

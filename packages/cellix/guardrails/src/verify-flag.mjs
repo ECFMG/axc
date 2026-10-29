@@ -14,18 +14,26 @@ export function workingTree(cwd) {
 }
 
 export function writeFlag(cwd) {
+	return writeStamp(cwd, 'verify.json');
+}
+
+export function checkFlag(cwd) {
+	return checkStamp(cwd, 'verify.json');
+}
+
+function writeStamp(cwd, name) {
 	const snapshot = workingTree(cwd);
 	const directory = path.join(cwd, '.cellix');
 	mkdirSync(directory, { recursive: true });
 	const body = { flag: 'pass', exitCode: 0, endedAt: new Date().toISOString(), head: snapshot.head, tree: snapshot.tree };
-	writeFileSync(path.join(directory, 'verify.json'), `${JSON.stringify(body)}\n`);
+	writeFileSync(path.join(directory, name), `${JSON.stringify(body)}\n`);
 	return body;
 }
 
-export function checkFlag(cwd) {
+function checkStamp(cwd, name) {
 	let stamp = null;
 	try {
-		stamp = JSON.parse(readFileSync(path.join(cwd, '.cellix', 'verify.json'), 'utf8'));
+		stamp = JSON.parse(readFileSync(path.join(cwd, '.cellix', name), 'utf8'));
 	} catch {
 		return false;
 	}

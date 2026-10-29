@@ -8,6 +8,9 @@ import { agentIdFromEnv } from './identity.mjs';
 
 export { agentIdFromEnv };
 
+/** What an agent may read before query has added a slice. packages/axc and apps stay closed. */
+export const STARTUP_READ = ['.agents/skills/cellix-architecture/', 'AGENTS.md', 'cellix-lint.config.json', 'task-set-a-prompt.md', 'task-set-a-requirements.md', 'task-set-b-prompt.md', 'task-set-b-requirements.md'];
+
 /** .cellix/sessions/<agentId>.json */
 export function sessionFile(root, agentId) {
 	return path.join(root, '.cellix', 'sessions', `${agentId}.json`);
@@ -48,6 +51,16 @@ export function sessionAllowsRead(relativePath, session) {
 	return session.read.some((entry) => entryCoversPath(entry, relativePath));
 }
 
+/** Create the startup session once. A later recordSession unions the slice into this file. */
+export function ensureStartupSession(root, agentId) {
+	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });
+	if (!id) return null;
+	const existing = loadSession(root, id);
+	if (existing) return existing;
+	recordSession(root, id, { write: [], read: STARTUP_READ });
+	return loadSession(root, id);
+}
+
 /** Remove this agent's session file. .cellix/verify.json is left in place. */
 export function clearSession(root, agentId) {
 	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });
@@ -66,8 +79,10 @@ export function recordSession(root, agentId, filesOrLists) {
 	const file = sessionFile(root, id);
 	const previous = loadSession(root, id);
 	const lists = Array.isArray(filesOrLists) ? { write: filesOrLists } : (filesOrLists ?? {});
-	const write = unionEntries(previous?.write ?? previous?.files, lists.write ?? lists.files);
-	const read = Array.isArray(lists.read) || Array.isArray(previous?.read) ? unionEntries(previous?.read, lists.read) : undefined;
+	const addedWrite = lists.write ?? lists.files;
+	const write = unionEntries(previous?.write ?? previous?.files, addedWrite);
+	let read = Array.isArray(lists.read) || Array.isArray(previous?.read) ? unionEntries(previous?.read, lists.read) : undefined;
+	if (Array.isArray(previous?.read)) read = unionEntries(read, addedWrite);
 	const body = { agentId: id, files: write, ...(read === undefined ? {} : { read }), ...(!Array.isArray(filesOrLists) || read !== undefined ? { write } : {}) };
 	mkdirSync(path.dirname(file), { recursive: true });
 	writeFileSync(file, `${JSON.stringify(body, null, '\t')}\n`);

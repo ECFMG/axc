@@ -9,7 +9,7 @@ description: >
 
 # Cellix development
 
-`@cellix/generator` is how a new data structure starts: a new context, entity, or action. Course catalog search and course enrollment are examples of that kind of addition. They are not the only work this repo can hold.
+`@cellix/generator` is how a new data structure starts: a new context, entity, or action. That is any new slice, not one fixed feature.
 
 `cellix-lint.config.json` stays at the project root. `generate` reads it and writes into those paths, including `acceptance`. Cellix lint reads the same file.
 
@@ -38,26 +38,26 @@ Do not edit `packages/cellix/lint`, `packages/cellix/generator`, `cellix-lint.co
 Run the generator for a new context, entity, or action. Do not create that slice by hand. Skip the generator when the files already exist and the work is behavior, tests, or docs.
 
 ```bash
-pnpm --filter @cellix/generator generate -- --context course --entity course --action create \
-  --field courseName:string --field isPublished:boolean \
-  --permission canManageCourse \
-  --nested address:street:string,city:string \
-  --nested activity-log:id:id,activityType:string
+pnpm --filter @cellix/generator generate -- --context <context> --entity <entity> --action <action> \
+  --field <field>:<type> --field <field>:boolean \
+  --permission <permission> \
+  --nested <name>:<field>:string,<field>:string \
+  --nested <name>:id:id,<field>:string
 ```
 
-`--context`, `--entity`, and `--action` are kebab-case. `generate` builds the entity. `create` and `delete` are mutations on that command. Repeat `--field name:type`. The type is written as given (`string`, `string[]`, `'online'|'in-person'|'hybrid'`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
+`--context`, `--entity`, and `--action` are kebab-case. `generate` builds the entity. `create` and `delete` are mutations on that command. Repeat `--field name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport graphql` is the same resolver output as `--resolver`. `--transport rest` does not write a resolver. `generate` does not add a route.
 
 A query and an update are separate commands. `--name` is the function name. Repeat `--param name:type` for the command. Those params are the command interface, the repository method, and the REST input. The function name does not choose the flow.
 
 ```bash
-pnpm --filter @cellix/generator query -- --context course --entity course --name search \
-  --param title:string --param status:string --transport rest
+pnpm --filter @cellix/generator query -- --context <context> --entity <entity> --name <name> \
+  --param <param>:<type> --transport rest
 
-pnpm --filter @cellix/generator update -- --context course --entity course --name publish \
-  --param status:string --transport rest
+pnpm --filter @cellix/generator update -- --context <context> --entity <entity> --name <name> \
+  --param <param>:<type> --transport rest
 ```
 
-`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index. `--route` is the path name you pass (`--route courses` writes `/api/courses`). Do not pass `--return`. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. The first call for an entity still writes the aggregate from `--field`. A later call adds the function and leaves that aggregate in place. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
+`query` adds `<name>` on the read repository and calls it from the action. The method rejects with `not implemented`. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index. `--route` is the path name you pass (`--route <route>` writes `/api/<route>`). Do not pass `--return`. `update` loads with `getById` inside `withScopedTransaction`, leaves a comment where the assignment goes, and `save`s. Its command is `id` plus the params. With `--transport rest`, each of those commands adds one route to `packages/axc/rest/src/index.ts`. A query is `app.get`. An update is `app.post`. The route calls `applicationServices.<Context>.<Entity>.<name>`. It does not write a resolver file. When a resolver already exists, `query` adds a GraphQL query and `update` adds a mutation. The first call for an entity still writes the aggregate from `--field`. A later call adds the function and leaves that aggregate in place. A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`.
 
 ```json
 {
@@ -101,7 +101,7 @@ Then build:
 - Repository methods behind `getNewInstance` and `getById`
 - The command fields and the body inside `withScopedTransaction` or the read-repository method
 - A visa check on a setter, when the feature needs one: `if (!this.isNew && !this.visa.determineIf(...)) throw new PermissionError(...)`
-- The `Domain` namespace, as `export * as Domain from './domain/index.ts'` on the domain package index. Do not add `export type { Course, ... }` or `export const Domain` there. Do not add document types to a domain adapter. Do not import `<camel>Seed` into a read repository or return it from one. An action imports `DataSources` from `@axc/persistence` and `Domain` from `@axc/domain`. It does not declare those types itself. Files inside the persistence package import `ModelsContext` from `models-context.ts`
+- The `Domain` namespace, as `export * as Domain from './domain/index.ts'` on the domain package index. Do not add `export type { <Entity>, ... }` or `export const Domain` there. Do not add document types to a domain adapter. Do not import `<camel>Seed` into a read repository or return it from one. An action imports `DataSources` from `@axc/persistence` and `Domain` from `@axc/domain`. It does not declare those types itself. Files inside the persistence package import `ModelsContext` from `models-context.ts`
 - The Azure function route in `apps/api/src/index.ts`. It calls `Persistence({ service: mongoose })`. Do not start `MongoMemoryServer` or `startMockMongoDB` there. That server is for tests
 - The Hono route in `packages/axc/rest/src/index.ts` for a `query` or `update`. It calls `applicationServices.<Context>.<Entity>.<name>(command)`
 - The new service on the health host, `packages/axc/application-services/src/index.ts`. Add it beside `health` on `ApplicationServices` and return it from `buildApplicationServicesFactory`. Keep `health.getStatus`
@@ -161,13 +161,13 @@ Actions are one const whose name is the camelCase filename:
 import type { Domain } from '@axc/domain';
 import type { DataSources } from '@axc/persistence';
 
-export interface CourseCreateCommand {
+export interface <PascalAction>Command {
 	name: string;
 }
 
-export const create = (dataSources: DataSources) => {
-	return async (command: CourseCreateCommand): Promise<Domain.Contexts.Course.Course.CourseEntityReference> => {
-		return await dataSources.domainDataSource.Course.Course.CourseUnitOfWork.withScopedTransaction(async (repo) => {
+export const <camelAction> = (dataSources: DataSources) => {
+	return async (command: <PascalAction>Command): Promise<Domain.Contexts.<Context>.<Entity>.<Entity>EntityReference> => {
+		return await dataSources.domainDataSource.<Context>.<Entity>.<Entity>UnitOfWork.withScopedTransaction(async (repo) => {
 			return repo.save(await repo.getNewInstance(command.name));
 		});
 	};
@@ -179,11 +179,11 @@ Reads use `dataSources.readonlyDataSource.<Context>.<Entity>.<Entity>ReadRepo`. 
 String setters on an aggregate check the visa and assign a value object:
 
 ```ts
-set courseName(courseName: string) {
-	if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageCourse)) {
-		throw new PermissionError('You do not have permission to change courseName');
+set <field>(<field>: string) {
+	if (!this.isNew && !this.visa.determineIf((permissions) => permissions.<permission>)) {
+		throw new PermissionError('You do not have permission to change <field>');
 	}
-	this.props.courseName = new ValueObjects.CourseName(courseName).valueOf();
+	this.props.<field> = new ValueObjects.<Field>(<field>).valueOf();
 }
 ```
 
@@ -199,7 +199,7 @@ Import another layer only through its package barrel: `@axc/domain`, `@axc/persi
 
 | Stem | Domain | Persistence | Model | Application |
 | --- | --- | --- | --- | --- |
-| `course` | `CourseRepository` interface | `class CourseRepository` | `CourseModelFactory`, `CourseModelType`, `CourseModelName` | folder `course`, file `create.ts`, const `create` |
+| `<entity>` | `<Entity>Repository` interface | `class <Entity>Repository` | `<Entity>ModelFactory`, `<Entity>ModelType`, `<Entity>ModelName` | folder `<entity>`, file `<action>.ts`, const `<camelAction>` |
 
 The application folder name must exist as a directory under domain.
 

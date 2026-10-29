@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { checkFlag, clearSession, decidePath, decideRead, decideShell, loadSession, policyFromConfig, recordSession, sessionAllows, sessionAllowsRead } from './index.mjs';
+import { checkFlag, clearSession, decidePath, decideRead, decideShell, ensureStartupSession, loadSession, policyFromConfig, recordSession, STARTUP_READ, sessionAllows, sessionAllowsRead } from './index.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -257,6 +257,28 @@ describe('guardrails', () => {
 			expect(decidePath(path.join(repoRoot, 'packages/cellix/generator/src/generate.ts'), repoRoot, policy).ok).toBe(false);
 			const writeOnly = { agentId: 'task-a', files: ['packages/axc/rest/src/index.ts'] };
 			expect(sessionAllowsRead(domain, writeOnly)).toBe(true);
+		} finally {
+			await rm(root, { recursive: true, force: true });
+		}
+	});
+
+	it('opens the slice for reading after query', async () => {
+		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
+		try {
+			const started = ensureStartupSession(root, 'task-a');
+			expect(started?.files).toEqual([]);
+			expect(started?.read).toEqual([...STARTUP_READ].sort());
+			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', started)).toBe(false);
+			expect(sessionAllowsRead('AGENTS.md', started)).toBe(true);
+			expect(ensureStartupSession(root, 'task-a')?.files).toEqual([]);
+			recordSession(root, 'task-a', ['packages/axc/rest/src/']);
+			const after = loadSession(root, 'task-a');
+			expect(sessionAllows('packages/axc/rest/src/index.ts', after)).toBe(true);
+			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', after)).toBe(true);
+			expect(sessionAllowsRead('AGENTS.md', after)).toBe(true);
+			const locked = policyFromConfig({ read: { '.cellix/**': false, '**': true }, write: {} }, after);
+			expect(decideRead(path.join(root, '.cellix/sessions/task-a.json'), root, locked).ok).toBe(true);
+			expect(decideRead(path.join(root, '.cellix/verify.json'), root, locked).ok).toBe(false);
 		} finally {
 			await rm(root, { recursive: true, force: true });
 		}

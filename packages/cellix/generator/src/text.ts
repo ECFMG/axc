@@ -78,10 +78,13 @@ export function paramShape(params: FieldSpec[]): { fields: ShapeField[]; nested:
 }
 
 export function commandFields(shape: { fields: ShapeField[]; nested: ShapeNested[] }, kind: ActionKind): string {
-	const lines = [...shape.fields.map((field) => `${field.name}: ${tsType(field.type)};`), ...shape.nested.map((item) => `${item.camel}: ${structuralType(item)};`)];
-	if (kind === 'read') return (lines.length > 0 ? lines : ['id: string;']).join('\n\t');
-	if (kind === 'update') return ['id: string;', ...lines].join('\n\t');
-	return lines.join('\n\t');
+	const lines = (optional: boolean) => [
+		...shape.fields.map((field) => `${field.name}${optional ? '?' : ''}: ${tsType(field.type)};`),
+		...shape.nested.map((item) => `${item.camel}${optional ? '?' : ''}: ${structuralType(item)};`),
+	];
+	if (kind === 'read') return (lines(true).length > 0 ? lines(true) : ['id: string;']).join('\n\t');
+	if (kind === 'update') return ['id: string;', ...lines(false)].join('\n\t');
+	return lines(false).join('\n\t');
 }
 
 /** Relative import of src/models-context.ts from a file under src/. */
@@ -103,8 +106,9 @@ function mongooseScalar(type: string): string {
 }
 
 function httpValue(field: ShapeField): string {
-	if (field.type === 'boolean') return `c.req.query('${field.name}') === 'true'`;
-	if (field.type === 'number') return `Number(c.req.query('${field.name}'))`;
-	if (field.type === 'date') return `new Date(c.req.query('${field.name}') ?? '')`;
-	return `c.req.query('${field.name}') ?? ''`;
+	const raw = `c.req.query('${field.name}')`;
+	if (field.type === 'boolean') return `${raw} === undefined ? undefined : ${raw} === 'true'`;
+	if (field.type === 'number') return `${raw} === undefined ? undefined : Number(${raw})`;
+	if (field.type === 'date') return `${raw} === undefined ? undefined : new Date(${raw})`;
+	return raw;
 }

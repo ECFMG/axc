@@ -20,6 +20,13 @@ const permissions = [...fromFile.permissions, ...args.list('permission').map((to
 const nested = [...fromFile.nested, ...args.list('nested').map((token) => parseNested(token))];
 const result = args.get('return');
 const route = args.get('route');
+if (argv.includes('--help') || argv.includes('-h') || (!operation && !args.get('action'))) {
+	const context = args.get('context') ?? '<context>';
+	const entity = args.get('entity') ?? context;
+	console.log('A search or list endpoint is a query. generate with no --action writes nothing.');
+	console.log(`pnpm --filter @cellix/generator query -- --context ${context} --entity ${entity} --name <name> --field <field>:<type> --param <param>:<type> --route <route> --transport rest`);
+	process.exit(0);
+}
 const files = await generateFeature({
 	root,
 	lint,

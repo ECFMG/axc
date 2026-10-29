@@ -43,6 +43,7 @@ export function decidePath(file, workspace, policy) {
 export function decideRead(file, workspace, policy) {
 	const relativePath = relativeToWorkspace(file, workspace);
 	if (!relativePath) return allow();
+	if (relativePath === '.cellix/sessions' || relativePath.startsWith('.cellix/sessions/')) return allow();
 	const standingRule = firstMatchingAccess(relativePath, policy.read ?? {});
 	if (standingRule === false) return deny(`${relativePath} is locked for read. Open ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);
 	if (standingRule !== true) return deny(`${relativePath} is not readable. Open ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);

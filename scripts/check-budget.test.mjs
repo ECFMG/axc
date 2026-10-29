@@ -1,14 +1,20 @@
 import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { once } from 'node:events';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { broadGlobReason, closedReferenceInText, heavyCommandReason, logAllowsPath, wideShellReason } from './check-budget.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 
-async function hookDecision(payload) {
-	const child = spawn(process.execPath, ['.cursor/hooks/guard-transcript.mjs'], { cwd: root });
+async function hookDecision(payload, env = {}, cwd = root) {
+	const child = spawn(process.execPath, [join(root, '.cursor/hooks/guard-transcript.mjs')], {
+		cwd,
+		env: { ...process.env, CELLIX_AGENT_ID: '', CURSOR_PROJECT_DIR: cwd, ...env },
+	});
 	let out = '';
 	child.stdout.setEncoding('utf8');
 	child.stdout.on('data', (chunk) => {
@@ -120,6 +126,61 @@ describe('the transcript hook', () => {
 		assert.equal(writePackage.permission, 'allow');
 		const readBuild = await hookDecision({ command: 'ls packages/axc/domain/dist', hook_event_name: 'beforeShellExecution' });
 		assert.equal(readBuild.permission, 'deny');
+		const environment = await hookDecision({ command: "printenv | rg -i 'cellix|agent' || true", hook_event_name: 'beforeShellExecution' });
+		assert.equal(environment.permission, 'allow');
+		const bareSearch = await hookDecision({ command: 'rg health', hook_event_name: 'beforeShellExecution' });
+		assert.equal(bareSearch.permission, 'deny');
+	});
+
+	it('creates the session at startup and keeps packages/axc closed until query', async () => {
+		const workspace = mkdtempSync(join(tmpdir(), 'cellix-startup-'));
+		const sessionFile = join(workspace, '.cellix', 'sessions', 'task-a.json');
+		writeFileSync(join(workspace, 'ocom-write.config.json'), `${JSON.stringify({ read: { '.cellix/**': false, 'packages/axc/**': true, '**': true }, write: { '**': true } })}\n`);
+		try {
+			const searched = await hookDecision({ tool_name: 'Grep', tool_input: { pattern: 'health', path: 'packages/axc/rest/src' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
+			assert.equal(searched.permission, 'deny');
+			assert.match(searched.agent_message, /query/);
+			const read = await hookDecision({ tool_name: 'Read', tool_input: { path: 'packages/axc/rest/src/index.ts' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
+			assert.equal(read.permission, 'deny');
+			assert.match(read.agent_message, /query/);
+			const brief = await hookDecision({ tool_name: 'Read', tool_input: { path: 'AGENTS.md' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
+			assert.equal(brief.permission, 'allow');
+			const piped = await hookDecision({ command: "printenv | rg -i 'cellix|agent' || true", hook_event_name: 'beforeShellExecution' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
+			assert.equal(piped.permission, 'allow');
+			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
+			assert.deepEqual(started.write, []);
+			writeFileSync(sessionFile, `${JSON.stringify({ agentId: 'task-a', files: ['packages/axc/rest/src/'], write: ['packages/axc/rest/src/'] })}\n`);
+			const after = await hookDecision({ tool_name: 'Grep', tool_input: { pattern: 'health', path: 'packages/axc/rest/src' }, hook_event_name: 'preToolUse' }, { CELLIX_AGENT_ID: 'task-a' }, workspace);
+			assert.equal(after.permission, 'allow');
+		} finally {
+			rmSync(workspace, { recursive: true, force: true });
+		}
+	});
+
+	it('writes the startup session from sessionStart', async () => {
+		const workspace = mkdtempSync(join(tmpdir(), 'cellix-session-start-'));
+		const sessionFile = join(workspace, '.cellix', 'sessions', 'task-a.json');
+		const child = spawn(process.execPath, [join(root, '.cursor/hooks/cellix-session-start.mjs')], {
+			cwd: workspace,
+			env: { ...process.env, CELLIX_AGENT_ID: 'task-a', CURSOR_PROJECT_DIR: workspace },
+		});
+		let out = '';
+		child.stdout.setEncoding('utf8');
+		child.stdout.on('data', (chunk) => {
+			out += chunk;
+		});
+		child.stdin.end('{}');
+		await once(child, 'exit');
+		try {
+			const reply = JSON.parse(out);
+			assert.match(reply.additional_context, /already exists/);
+			const started = JSON.parse(readFileSync(sessionFile, 'utf8'));
+			assert.deepEqual(started.write, []);
+			assert.ok(started.read.includes('AGENTS.md'));
+			assert.equal(started.read.includes('packages/axc/'), false);
+		} finally {
+			rmSync(workspace, { recursive: true, force: true });
+		}
 	});
 });
 
@@ -151,6 +212,7 @@ describe('agent-check', () => {
 			{ cwd: root, encoding: 'utf8' },
 		);
 		assert.equal(result.status, 1);
+		assert.match(result.stderr, /FAIL:.*Expected: class CourseReadRepositoryImpl/);
 		const block = result.stderr.slice(result.stderr.indexOf('Error:'));
 		assert.ok(block.startsWith('Error:'));
 		assert.ok(block.indexOf('Expected:') < block.indexOf('Found:'));

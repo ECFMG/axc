@@ -15,6 +15,12 @@ export const WIDE_SHELL_MESSAGE = 'Read one file. A multi-file dump stays in the
 
 export const TAIL_MESSAGE = 'agent-check already prints the error block. Do not pipe that command to tail.';
 
+export const QUERY_COMMAND = 'pnpm --filter @cellix/generator query -- --context <context> --entity <entity> --name <name> --field <field>:<type> --param <param>:<type> --route <route> --transport rest';
+
+export const SEARCH_BEFORE_SESSION = `Run query before searching the tree. ${QUERY_COMMAND}`;
+
+export const READ_BEFORE_SLICE = `Run query before reading the tree. ${QUERY_COMMAND}`;
+
 const TREE = /(?:^|[/\\\s`'"(=])((?:node_modules|packages\/cellix|dist|agent-transcripts))(?=$|[/\\\s`'"),\];])/g;
 
 export function isWrapped(text) {
@@ -34,6 +40,12 @@ export function tailPipeReason(text) {
 	if (typeof text !== 'string' || !/\|\s*tail\b/.test(text)) return undefined;
 	if (/\b(?:agent-check|verify|check|test(?::acceptance|:arch)?|lint:cellix)\b/.test(text)) return TAIL_MESSAGE;
 	return undefined;
+}
+
+/** A runner id with no session file yet. Reads of a known path stay open. A search waits for query. */
+export function searchBeforeSessionReason(agentId, session) {
+	if (!agentId || session) return undefined;
+	return SEARCH_BEFORE_SESSION;
 }
 
 /** A glob with no filename. **\/*.ts stays allowed. */

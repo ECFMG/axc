@@ -55,6 +55,10 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 		...(await ensurePassport(path.join(domainSrc, 'domain/contexts/passport.ts'), { context, contextPascal, entityPascal, permissions })),
 		...(await ensureModelsIndex(path.join(modelsSrc, 'index.ts'), entity, entityPascal)),
 		...(await ensureModelsPackage(options)),
+		...(await ensureDependency(path.join(domainSrc, '..', 'package.json'), '@lucaspaganini/value-objects', '1.3.1')),
+		...(await ensureDependency(path.join(applicationSrc, '..', 'package.json'), `${scope}/domain`, 'workspace:*')),
+		...(await ensureDependency(path.join(applicationSrc, '..', 'package.json'), `${scope}/persistence`, 'workspace:*')),
+		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/domain`, 'workspace:*')),
 		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/data-sources-mongoose-models`, 'workspace:*')),
 		...(await writeIfAbsent(path.join(persistenceSrc, 'datasources/domain', context, entity, 'index.ts'), entityPersistence(scope, entity, entityPascal))),
 		...(await ensureObjectMember(path.join(persistenceSrc, 'datasources/domain', context, 'index.ts'), {
@@ -352,8 +356,11 @@ async function ensureDependency(file: string, name: string, spec: string): Promi
 	if (!(await exists(file))) return [];
 	const current = await readFile(file, 'utf8');
 	if (current.includes(`"${name}"`)) return [];
-	if (!current.includes('"dependencies"')) return [];
-	const next = current.replace(/"dependencies"\s*:\s*\{/, (open) => `${open}\n\t\t"${name}": "${spec}",`);
+	const entry = `\n\t\t"${name}": "${spec}"`;
+	let next: string;
+	if (/"dependencies"\s*:\s*\{/.test(current)) next = current.replace(/"dependencies"\s*:\s*\{/, (open) => `${open}${entry},`);
+	else if (/"devDependencies"\s*:/.test(current)) next = current.replace(/"devDependencies"\s*:/, `"dependencies": {${entry}\n\t},\n\t"devDependencies":`);
+	else next = current.replace(/\}\s*$/, `,\n\t"dependencies": {${entry}\n\t}\n}`);
 	await writeFile(file, next);
 	return [{ path: file, contents: next }];
 }
