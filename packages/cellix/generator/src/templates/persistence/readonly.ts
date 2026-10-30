@@ -26,7 +26,7 @@ export interface ${entityPascal}ReadRepository {
 	getById: (id: string, options?: FindOneOptions) => Promise<${reference} | null>;${method}
 }
 
-export class ${entityPascal}ReadRepositoryImpl implements ${entityPascal}ReadRepository {
+class ${entityPascal}ReadRepositoryImpl implements ${entityPascal}ReadRepository {
 	private readonly mongoDataSource: ${entityPascal}DataSource;
 	private readonly converter: ${entityPascal}Converter;
 	private readonly passport: Domain.Passport;
@@ -60,10 +60,10 @@ export const get${entityPascal}ReadRepository = (models: { ${entityPascal}: ${en
 export function readEntityIndex(entity: string, entityPascal: string, scope: string): string {
 	return `import type { Domain } from '${scope}/domain';
 import type { ModelsContext } from '${persistenceModelsImport(4)}';
-import { ${entityPascal}ReadRepositoryImpl as ${entityPascal}ReadRepositoryClass, get${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
+import { get${entityPascal}ReadRepository, type ${entityPascal}ReadRepository } from './${entity}.read-repository.ts';
 
 export const ${entityPascal}ReadRepositoryImpl = (models: ModelsContext, passport: Domain.Passport) => {
-	const repository: ${entityPascal}ReadRepositoryClass = get${entityPascal}ReadRepository(models, passport);
+	const repository: ${entityPascal}ReadRepository = get${entityPascal}ReadRepository(models, passport);
 	return {
 		${entityPascal}ReadRepo: repository,
 	};

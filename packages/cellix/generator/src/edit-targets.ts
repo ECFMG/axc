@@ -19,6 +19,10 @@ export function filesToEdit(options: GenerateFeatureOptions): string[] {
 		files.push(`${lint.layers.graphql}/schema/types/${entity}.resolvers.ts`);
 	}
 	if (operation !== 'query') files.push(seed);
+	if (lint.acceptance) {
+		files.push(`${lint.acceptance}/features/${entity}-${action}.feature`);
+		files.push(`${lint.acceptance}/step-definitions/${entity}-${action}.steps.ts`);
+	}
 	return files;
 }
 
@@ -28,7 +32,7 @@ export function readsForEdit(options: GenerateFeatureOptions): string[] {
 	const acceptance = lint.acceptance;
 	const behavior = [
 		`${lint.layers.domain}/domain/contexts/${context}/${entity}/${entity}.value-objects.ts`,
-		...(acceptance ? [`${acceptance}/infrastructure.ts`, `${acceptance}/cucumber-lifecycle-hooks.ts`, `${acceptance}/features/`, `${acceptance}/step-definitions/`] : []),
+		...(acceptance ? [`${acceptance}/infrastructure.ts`, `${acceptance}/cucumber-lifecycle-hooks.ts`] : []),
 		...(lint.apiComposition ? [lint.apiComposition] : []),
 		'apps/docs/',
 		'AGENTS.md',
@@ -37,4 +41,11 @@ export function readsForEdit(options: GenerateFeatureOptions): string[] {
 		'cellix-lint.config.json',
 	];
 	return [...new Set([...filesToEdit(options), ...behavior])];
+}
+
+const INSTRUCTION = new Set(['AGENTS.md', '.agents/skills/cellix-architecture/SKILL.md', '.agents/skills/cellix-architecture/REFERENCE.md', 'cellix-lint.config.json']);
+
+/** Same slice as the read list. Instruction files stay readable and are not writable. */
+export function writesForEdit(options: GenerateFeatureOptions): string[] {
+	return readsForEdit(options).filter((entry) => !INSTRUCTION.has(entry));
 }

@@ -1,5 +1,8 @@
 // What may enter the transcript. scripts/check-budget.mjs re-exports this file.
 // A closed tree is a path prefix. A quoted word and an exclude glob are not a path.
+import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path, { relative, resolve, sep } from 'node:path';
 
 const HEAVY = [/(?:^|\s)pnpm(?:\s+(?:--\S+(?:\s+\S+)?|run))*\s+(?:verify|check|test(?::acceptance|:arch)?)(?:\s|$)/];
 
@@ -82,7 +85,82 @@ export function closedReferenceInText(value) {
 
 /** A closed path may be opened when the newest check log names that file. */
 export function logAllowsPath(log, blockedReference) {
-	const leaf = blockedReference.slice(blockedReference.lastIndexOf('/') + 1);
-	if (!blockedReference.includes('/') || !leaf.includes('.')) return false;
-	return log.includes(blockedReference);
+	const normalized = blockedReference.replaceAll('\\', '/');
+	const leaf = normalized.slice(normalized.lastIndexOf('/') + 1);
+	if (!normalized.includes('/') || !leaf.includes('.')) return false;
+	if (log.includes(normalized)) return true;
+	const parts = normalized.split('/');
+	for (let start = 1; start <= parts.length - 3; start++) {
+		const suffix = parts.slice(start).join('/');
+		if (log.includes(suffix)) return true;
+	}
+	return false;
+}
+
+const STOP = 'Stop. That path stays closed. A failing check names the next file.';
+
+/** True when the newest agent-check log names this file, including a package-relative path. */
+export function logNames(blockedReference, cwd) {
+	const logPath = newestCheckLog();
+	if (logPath === undefined) return false;
+	const log = readFileSync(logPath, 'utf8').replaceAll('\\', '/');
+	const workspace = cwd ?? process.cwd();
+	const absolute = resolve(workspace, blockedReference).replaceAll('\\', '/');
+	const relativePath = relative(workspace, absolute).split(sep).join('/');
+	return logAllowsPath(log, blockedReference) || logAllowsPath(log, absolute) || logAllowsPath(log, relativePath);
+}
+
+/** Count one repeated denial or command. The third attempt is the stop. */
+export function noteRepeat(root, agentId, key) {
+	const file = path.join(root, '.cellix', 'budget', `${agentId}.json`);
+	const counts = readCounts(file);
+	const next = (counts[key] ?? 0) + 1;
+	counts[key] = next;
+	mkdirSync(path.dirname(file), { recursive: true });
+	writeFileSync(file, `${JSON.stringify(counts)}\n`);
+	return next;
+}
+
+export function repeatMessage(count, message) {
+	return count > 2 ? STOP : message;
+}
+
+/** Wrapped verify and test:acceptance. Two runs are allowed. The third is refused. */
+export function commandCap(root, agentId, command) {
+	if (!agentId || typeof command !== 'string' || !command.includes('agent-check')) return undefined;
+	const key = /(?:^|\s)pnpm(?:\s+run)?\s+verify(?:\s|$)/.test(command) ? 'verify' : /test:acceptance/.test(command) ? 'acceptance' : undefined;
+	if (key === undefined) return undefined;
+	const count = noteRepeat(root, agentId, key);
+	if (count > 2) return `${key === 'verify' ? 'verify' : 'test:acceptance'} already ran twice. Edit the file the last failure named.`;
+	return undefined;
+}
+
+function newestCheckLog() {
+	let newest;
+	let entries = [];
+	try {
+		entries = readdirSync(tmpdir(), { withFileTypes: true });
+	} catch {
+		return undefined;
+	}
+	for (const entry of entries) {
+		if (!entry.isDirectory() || !entry.name.startsWith('cellix-agent-check-')) continue;
+		const logPath = resolve(tmpdir(), entry.name, 'command.log');
+		try {
+			const modified = statSync(logPath).mtimeMs;
+			if (newest === undefined || modified > newest.modified) newest = { path: logPath, modified };
+		} catch {
+			// An unfinished check has no log yet.
+		}
+	}
+	return newest?.path;
+}
+
+function readCounts(file) {
+	try {
+		const parsed = JSON.parse(readFileSync(file, 'utf8'));
+		return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+	} catch {
+		return {};
+	}
 }

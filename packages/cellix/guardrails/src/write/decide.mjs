@@ -28,6 +28,8 @@ export function decidePath(file, workspace, policy) {
 	const relativePath = relativeToWorkspace(file, workspace);
 	if (!relativePath) return deny('That path is outside the workspace.');
 	if (relativePath === '.cellix/verify.json') return deny('.cellix/verify.json is written only by pnpm run verify.');
+	if (relativePath === '.cellix/sessions' || relativePath.startsWith('.cellix/sessions/')) return deny('The session file stays closed. A failing check names the next file.');
+	if (relativePath === '.cellix/budget' || relativePath.startsWith('.cellix/budget/')) return deny('The session file stays closed. A failing check names the next file.');
 
 	const standingRule = firstMatchingAccess(relativePath, policy.agentAccess);
 	if (standingRule === false) return deny(`${relativePath} is locked. Write under ${OPEN_ROOTS}, or an exact true path. Leave ocom-write.config.json unchanged.`);
@@ -42,7 +44,8 @@ export function decidePath(file, workspace, policy) {
 export function decideRead(file, workspace, policy) {
 	const relativePath = relativeToWorkspace(file, workspace);
 	if (!relativePath) return allow();
-	if (relativePath === '.cellix/sessions' || relativePath.startsWith('.cellix/sessions/')) return allow();
+	if (relativePath === '.cellix/sessions' || relativePath.startsWith('.cellix/sessions/')) return deny('The session file stays closed. A failing check names the next file.');
+	if (relativePath === '.cellix/budget' || relativePath.startsWith('.cellix/budget/')) return deny('The session file stays closed. A failing check names the next file.');
 	const standingRule = firstMatchingAccess(relativePath, policy.read ?? {});
 	if (standingRule === false) return deny(`${relativePath} is locked for read. Open ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);
 	if (standingRule !== true) return deny(`${relativePath} is not readable. Open ${OPEN_ROOTS}. Leave ocom-write.config.json unchanged.`);

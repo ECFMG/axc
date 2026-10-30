@@ -69,16 +69,24 @@ Run `pnpm run agent-check -- pnpm run check` while those behavior files change. 
 
 While files change, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it, and do not redirect it into a file. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
-Read the files the task names. Do not list the tree. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json`.
+Read the files the task names. Do not list the tree. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` or `.cellix/sessions`.
 
 When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Stop only after `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 
-In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and set `process.env['MONGODB_URI']` to `getUri()` inside `setupEnvironment`, before the API process spawns. Stop the server in `afterAll`. That dependency is already declared. `apps/api/src/index.ts` reads `process.env['MONGODB_URI']`. It does not construct `MongoMemoryServer`. Import `<camel>Seed` from `@axc/service-mongoose` and insert it with the line from the seed file. The generator already re-exports `<camel>Seed`. Persistence does not import the seed.
+In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and assign the uri before the API process spawns:
 
-Do not glob a whole tree. Do not search without a directory. Open trees: `packages/axc`, `packages/axc-verification`, `apps/api/src`, `apps/docs`, `AGENTS.md`, this skill, the task requirements, and `cellix-lint.config.json`. Open `REFERENCE.md` only when a check names a file role. Closed: `node_modules`, `packages/cellix`, `scripts`, `.cursor`, `pnpm-lock.yaml`.
+```ts
+const mongoUri = memoryMongo.getUri();
+const env = process.env as { MONGODB_URI?: string };
+env.MONGODB_URI = mongoUri;
+```
+
+Stop the server in `afterAll`. `apps/api/src/index.ts` reads the same cast (`const env = process.env as { MONGODB_URI?: string }`). It does not construct `MongoMemoryServer`. Import `<camel>Seed` from `@axc/service-mongoose` and insert it with the line from the seed file. The generator already re-exports `<camel>Seed`. Persistence does not import the seed. Edit the feature and the steps the generator wrote. Do not add a second feature file.
+
+`generate` narrows reads and writes to the files it printed. Instruction files stay readable. Do not edit `.cellix/sessions` to widen that list. A failing check names the next file. Do not glob a whole tree. Open `REFERENCE.md` only when a check names a file role.
 
 ## Writes
 
-`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup and holds the agent id. It does not close the product tree. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. The shell may not have that variable.
+`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup and holds the agent id. `generate` narrows that file's read and write lists to the slice. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. The shell may not have that variable.
 
 File roles, visibility, and the dependency graph are in `REFERENCE.md` next to this file. Open that when a lint or write error names them.

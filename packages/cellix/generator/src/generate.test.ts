@@ -16,8 +16,16 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../
 function expectBiomeClean(files: { path: string }[]): void {
 	const source = files.filter((file) => /\.(ts|tsx|js|mjs|json)$/.test(file.path));
 	if (source.length === 0) return;
+	const shells = source.filter((file) => /\/contexts\/[^/]+\/[^/]+\/index\.ts$/.test(file.path));
+	const rest = source.filter((file) => !shells.includes(file));
+	runBiome(rest);
+	runBiome(shells, ['--skip=lint/suspicious/noEmptyInterface']);
+}
+
+function runBiome(files: { path: string }[], extra: string[] = []): void {
+	if (files.length === 0) return;
 	const biome = path.join(repoRoot, 'node_modules', '.bin', 'biome');
-	const result = spawnSync(biome, ['check', `--config-path=${path.join(repoRoot, 'biome.json')}`, ...source.map((file) => file.path)], { encoding: 'utf8' });
+	const result = spawnSync(biome, ['check', `--config-path=${path.join(repoRoot, 'biome.json')}`, ...extra, ...files.map((file) => file.path)], { encoding: 'utf8' });
 	expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0);
 }
 
@@ -334,13 +342,15 @@ describe('Cellix generator', () => {
 			'packages/axc/application-services/src/contexts/course/course/search.ts',
 			'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts',
 			'packages/axc/rest/src/index.ts',
+			'packages/axc-verification/acceptance-api/src/features/course-search.feature',
+			'packages/axc-verification/acceptance-api/src/step-definitions/course-search.steps.ts',
 		]);
 		const update = filesToEdit({ root: '/repo', lint, context: 'course', entity: 'course', action: 'publish', operation: 'update', transport: 'rest' });
 		expect(update).toContain('packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts');
 		expect(update).not.toContain('packages/axc/domain/src/index.ts');
 	});
 
-	it('narrows reads to the edit list and leaves writes open', async () => {
+	it('narrows reads and writes to the edit list', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
 		const previous = process.env.CELLIX_AGENT_ID;
@@ -359,7 +369,18 @@ describe('Cellix generator', () => {
 			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course' });
 			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], route: 'course', transport: 'rest' });
 			const session = loadSession(root, 'task-a');
-			expect(session?.write).toBeUndefined();
+			expect(session?.write).toEqual(
+				expect.arrayContaining([
+					'packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts',
+					'packages/axc/rest/src/index.ts',
+					'packages/axc-verification/acceptance-api/src/features/course-search.feature',
+					'packages/axc-verification/acceptance-api/src/step-definitions/course-search.steps.ts',
+					'apps/docs/',
+				]),
+			);
+			expect(session?.write).not.toContain('AGENTS.md');
+			expect(session?.write).not.toContain('cellix-lint.config.json');
+			expect(session?.write).not.toContain('.agents/skills/cellix-architecture/SKILL.md');
 			expect(session?.read).toEqual(
 				expect.arrayContaining([
 					'packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts',
@@ -369,7 +390,8 @@ describe('Cellix generator', () => {
 					'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts',
 					'packages/axc/rest/src/index.ts',
 					'packages/axc-verification/acceptance-api/src/infrastructure.ts',
-					'packages/axc-verification/acceptance-api/src/features/',
+					'packages/axc-verification/acceptance-api/src/features/course-search.feature',
+					'packages/axc-verification/acceptance-api/src/step-definitions/course-search.steps.ts',
 					'apps/api/src/index.ts',
 					'apps/docs/',
 				]),

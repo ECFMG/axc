@@ -70,6 +70,8 @@ describe('closed trees', () => {
 		assert.equal(logAllowsPath('error TS2307 packages/cellix/lint/src/content.ts', 'packages/cellix/lint/src/content.ts'), true);
 		assert.equal(logAllowsPath('error in content.ts', 'packages/cellix'), false);
 		assert.equal(logAllowsPath('nothing', 'node_modules/mongoose/package.json'), false);
+		assert.equal(logAllowsPath('src/contexts/catalog/course/index.ts(5,66): error TS2503', 'packages/axc/application-services/src/contexts/catalog/course/index.ts'), true);
+		assert.equal(logAllowsPath('error in index.ts', 'packages/axc/rest/src/index.ts'), false);
 	});
 });
 
@@ -130,6 +132,27 @@ describe('the transcript hook', () => {
 		assert.equal(environment.permission, 'allow');
 		const bareSearch = await hookDecision({ command: 'rg health', hook_event_name: 'beforeShellExecution' });
 		assert.equal(bareSearch.permission, 'deny');
+	});
+
+	it('stops the third denial and the third verify', async () => {
+		const workspace = mkdtempSync(join(tmpdir(), 'cellix-repeat-'));
+		writeFileSync(join(workspace, 'ocom-write.config.json'), `${JSON.stringify({ read: { '**': true }, write: { '**': true } })}\n`);
+		const env = { CELLIX_AGENT_ID: 'task-a' };
+		const read = { tool_name: 'Read', tool_input: { path: '.cellix/sessions/task-a.json' }, hook_event_name: 'preToolUse' };
+		const verify = { command: 'pnpm run agent-check -- pnpm run verify', hook_event_name: 'beforeShellExecution' };
+		try {
+			const first = await hookDecision(read, env, workspace);
+			const second = await hookDecision(read, env, workspace);
+			const third = await hookDecision(read, env, workspace);
+			assert.match(first.agent_message, /session file stays closed/);
+			assert.match(second.agent_message, /session file stays closed/);
+			assert.match(third.agent_message, /Stop/);
+			assert.equal((await hookDecision(verify, env, workspace)).permission, 'allow');
+			assert.equal((await hookDecision(verify, env, workspace)).permission, 'allow');
+			assert.equal((await hookDecision(verify, env, workspace)).permission, 'deny');
+		} finally {
+			rmSync(workspace, { recursive: true, force: true });
+		}
 	});
 
 	it('creates the session at startup and leaves the product tree readable', async () => {

@@ -57,7 +57,7 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 		...(await ensureModelsIndex(path.join(modelsSrc, 'index.ts'), entity, entityPascal)),
 		...(await ensureModelsPackage(options)),
 		...(await ensureDependency(path.join(domainSrc, '..', 'package.json'), '@lucaspaganini/value-objects', '1.3.1')),
-		...(await ensureDependency(path.join(applicationSrc, '..', 'package.json'), `${scope}/domain`, 'workspace:*')),
+		...(options.action ? await ensureDependency(path.join(applicationSrc, '..', 'package.json'), `${scope}/domain`, 'workspace:*') : []),
 		...(await ensureDependency(path.join(applicationSrc, '..', 'package.json'), `${scope}/persistence`, 'workspace:*')),
 		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/domain`, 'workspace:*')),
 		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/data-sources-mongoose-models`, 'workspace:*')),
@@ -373,7 +373,6 @@ async function ensureModelsPackage(options: GenerateFeatureOptions): Promise<Wri
 async function ensureCatalogWiring(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
 	const persistenceDir = path.join(options.root, options.lint.layers.persistence, '..');
 	const serviceDir = path.join(options.root, options.lint.layers.serviceMongoose, '..');
-	const acceptanceDir = path.join(options.root, options.lint.acceptance, '..');
 	const modelsDir = path.dirname(path.join(options.root, options.lint.layers.models));
 	return [
 		...(await ensureDependency(path.join(persistenceDir, 'package.json'), '@cellix/event-bus-seedwork-node', 'workspace:*')),
@@ -385,21 +384,16 @@ async function ensureCatalogWiring(options: GenerateFeatureOptions): Promise<Wri
 		...(await ensureProjectReference(path.join(persistenceDir, 'tsconfig.json'), path.relative(persistenceDir, modelsDir))),
 		...(await ensureDependency(path.join(serviceDir, 'package.json'), `${options.lint.scope}/data-sources-mongoose-models`, 'workspace:*')),
 		...(await ensureProjectReference(path.join(serviceDir, 'tsconfig.json'), path.relative(serviceDir, modelsDir))),
-		...(await ensureDependency(path.join(acceptanceDir, 'package.json'), `${options.lint.scope}/service-mongoose`, 'workspace:*')),
-		...(await ensureProjectReference(path.join(acceptanceDir, 'tsconfig.json'), path.relative(acceptanceDir, serviceDir))),
 	];
 }
 
 async function ensureApiWiring(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
 	const apiDir = path.join(options.root, path.dirname(options.lint.apiComposition), '..');
 	const persistenceDir = path.join(options.root, options.lint.layers.persistence, '..');
-	const serviceDir = path.join(options.root, options.lint.layers.serviceMongoose, '..');
 	return [
 		...(await ensureDependency(path.join(apiDir, 'package.json'), `${options.lint.scope}/persistence`, 'workspace:*')),
-		...(await ensureDependency(path.join(apiDir, 'package.json'), `${options.lint.scope}/service-mongoose`, 'workspace:*')),
 		...(await ensureDependency(path.join(apiDir, 'package.json'), 'mongoose', 'catalog:')),
 		...(await ensureProjectReference(path.join(apiDir, 'tsconfig.json'), path.relative(apiDir, persistenceDir))),
-		...(await ensureProjectReference(path.join(apiDir, 'tsconfig.json'), path.relative(apiDir, serviceDir))),
 	];
 }
 

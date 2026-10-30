@@ -600,8 +600,8 @@ function checkReadRepository(file: string, content: string): string[] {
 	if (!new RegExp(`export\\s+interface\\s+${pascal}ReadRepository\\b`).test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository', `missing ${pascal}ReadRepository`, `export interface ${pascal}ReadRepository`));
 	}
-	if (!new RegExp(`export\\s+class\\s+${pascal}ReadRepositoryImpl\\b`).test(content)) {
-		violations.push(report(file, 'cellix/persistence-read-repository-class', `missing ${pascal}ReadRepositoryImpl`, `export class ${pascal}ReadRepositoryImpl`));
+	if (!new RegExp(`class\\s+${pascal}ReadRepositoryImpl\\b`).test(content)) {
+		violations.push(report(file, 'cellix/persistence-read-repository-class', `missing ${pascal}ReadRepositoryImpl`, `class ${pascal}ReadRepositoryImpl`));
 	}
 	if (!new RegExp(`export\\s+const\\s+get${pascal}ReadRepository\\b`).test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository-factory', `missing get${pascal}ReadRepository`, `export const get${pascal}ReadRepository`));

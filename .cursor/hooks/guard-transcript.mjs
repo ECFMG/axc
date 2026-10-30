@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 // Keeps whole-tree searches and fat command logs out of an agent transcript.
 // A check failure may still name one closed file. That file can be opened.
-import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { readFileSync, statSync } from 'node:fs';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { agentIdFromEnv, decideRead, ensureStartupSession, loadSession, policyFromConfig } from '../../packages/cellix/guardrails/src/index.mjs';
-import { broadGlobReason, closedReferenceInText, heavyCommandReason, logAllowsPath, OPEN_ROOTS, wideShellReason } from '../../scripts/check-budget.mjs';
+import { broadGlobReason, closedReferenceInText, commandCap, heavyCommandReason, logNames, noteRepeat, OPEN_ROOTS, repeatMessage, wideShellReason } from '../../scripts/check-budget.mjs';
 
 try {
 	const input = await readPayload();
@@ -24,7 +23,11 @@ try {
 			else {
 				const readBlock = readDenial(input, cwd);
 				if (readBlock !== undefined) deny(readBlock, input.hook_event_name);
-				else allow();
+				else {
+					const cap = commandCap(cwd ?? process.cwd(), agentId(), command);
+					if (cap !== undefined) deny(cap, input.hook_event_name);
+					else allow();
+				}
 			}
 		}
 	}
@@ -211,31 +214,6 @@ function fileExists(workspace, token) {
 	}
 }
 
-function logNames(blockedReference, cwd) {
-	const logPath = newestCheckLog();
-	if (logPath === undefined) return false;
-	const log = readFileSync(logPath, 'utf8').replaceAll('\\', '/');
-	const workspace = cwd ?? process.cwd();
-	const absolute = resolve(workspace, blockedReference).replaceAll('\\', '/');
-	const relativePath = relative(workspace, absolute).split(sep).join('/');
-	return logAllowsPath(log, blockedReference) || logAllowsPath(log, absolute) || logAllowsPath(log, relativePath);
-}
-
-function newestCheckLog() {
-	let newest;
-	for (const entry of readdirSync(tmpdir(), { withFileTypes: true })) {
-		if (!entry.isDirectory() || !entry.name.startsWith('cellix-agent-check-')) continue;
-		const path = resolve(tmpdir(), entry.name, 'command.log');
-		try {
-			const modified = statSync(path).mtimeMs;
-			if (newest === undefined || modified > newest.modified) newest = { path, modified };
-		} catch {
-			// An unfinished check has no log yet.
-		}
-	}
-	return newest?.path;
-}
-
 function pathLikeValues(value) {
 	const found = [];
 	collectPathValues(value, '', found);
@@ -285,8 +263,18 @@ function allow() {
 }
 
 function deny(message, eventName) {
-	const output = { permission: 'deny', user_message: message };
-	if (eventName !== 'beforeReadFile') output.agent_message = message;
+	const id = agentId();
+	const text = id ? repeatMessage(noteRepeat(process.cwd(), id, message), message) : message;
+	const output = { permission: 'deny', user_message: text };
+	if (eventName !== 'beforeReadFile') output.agent_message = text;
 	process.stdout.write(`${JSON.stringify(output)}\n`);
 	process.exit(0);
+}
+
+function agentId() {
+	try {
+		return agentIdFromEnv();
+	} catch {
+		return '';
+	}
 }

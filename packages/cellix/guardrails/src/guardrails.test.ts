@@ -317,7 +317,7 @@ describe('guardrails', () => {
 			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', after)).toBe(true);
 			expect(sessionAllowsRead('AGENTS.md', after)).toBe(true);
 			const locked = policyFromConfig({ read: { '.cellix/**': false, '**': true }, write: {} }, after);
-			expect(decideRead(path.join(root, '.cellix/sessions/task-a.json'), root, locked).ok).toBe(true);
+			expect(decideRead(path.join(root, '.cellix/sessions/task-a.json'), root, locked).ok).toBe(false);
 			expect(decideRead(path.join(root, '.cellix/verify.json'), root, locked).ok).toBe(false);
 		} finally {
 			await rm(root, { recursive: true, force: true });

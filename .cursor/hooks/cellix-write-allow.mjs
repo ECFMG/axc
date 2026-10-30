@@ -4,6 +4,7 @@
 // The rules are packages/cellix/guardrails/src/write/decide.mjs. This file only reads Cursor's payload.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import { logNames } from '../../packages/cellix/guardrails/src/budget.mjs';
 import { agentIdFromEnv, decidePath, decideShell, loadSession, policyFromConfig } from '../../packages/cellix/guardrails/src/index.mjs';
 
 const payload = readPayload();
@@ -14,14 +15,16 @@ const toolName = String(payload.tool_name ?? payload.toolName ?? '');
 const command = String(payload.command ?? toolInput.command ?? '');
 
 if (command && (!toolName || toolName === 'Shell')) {
-	reply(decideShell(command, workspace, policy));
+	const decision = decideShell(command, workspace, policy);
+	if (decision.ok || openedByFailure(decision, workspace)) reply(allow());
+	reply(decision);
 }
 
 const editedPaths = pathsInToolInput(toolInput, payload);
 if (isFileEdit(toolName) && editedPaths.length === 0) reply(deny('Refusing a write whose path could not be read.'));
 for (const file of editedPaths) {
 	const decision = decidePath(file, workspace, policy);
-	if (!decision.ok) reply(decision);
+	if (!decision.ok && !openedByFailure(decision, workspace)) reply(decision);
 }
 reply(allow());
 
@@ -82,6 +85,14 @@ function pathsInToolInput(toolInput, payload) {
 
 function allow() {
 	return { ok: true, message: '' };
+}
+
+function openedByFailure(decision, workspace) {
+	if (decision.ok) return false;
+	const marker = ' is outside the ';
+	const at = decision.message.indexOf(marker);
+	if (at < 0 || !decision.message.includes('write session')) return false;
+	return logNames(decision.message.slice(0, at), workspace);
 }
 
 function deny(message) {
