@@ -8,6 +8,12 @@ const acceptanceDir = path.dirname(fileURLToPath(import.meta.url));
 const apiDir = path.resolve(acceptanceDir, '../../../../apps/api');
 const port = '7071';
 
+/**
+ * A catalog scenario needs Mongo. In setupEnvironment, start createMemoryMongoServer from
+ * @axc/service-mongoose, set process.env.MONGODB_URI to getUri(), and stop the server in afterAll.
+ * The API process inherits the variable. Do not start that server in apps/api/src/index.ts.
+ */
+
 export const apiServer = new ProcessTestServer({
 	serverName: 'agentCourses-api',
 	executable: 'node',

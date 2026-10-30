@@ -1,5 +1,4 @@
-import { rm } from 'node:fs/promises';
-import { agentIdFromEnv, sessionFile } from '../packages/cellix/guardrails/src/session.mjs';
+import { agentIdFromEnv, clearSession } from '../packages/cellix/guardrails/src/index.mjs';
 
 const agentId = agentIdFromEnv();
 if (!agentId) {
@@ -7,5 +6,4 @@ if (!agentId) {
 	process.exit(1);
 }
 
-await rm(sessionFile(process.cwd(), agentId), { force: true });
-await rm('.cellix/session.json', { force: true });
+clearSession(process.cwd(), agentId);

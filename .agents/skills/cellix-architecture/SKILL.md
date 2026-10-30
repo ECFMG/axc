@@ -9,187 +9,67 @@ description: >
 
 # Cellix development
 
-`@cellix/generator` is how a new data structure starts: a new context, entity, or action. Course catalog search and course enrollment are examples of that kind of addition. They are not the only work this repo can hold.
+Generate a new context, subdomain, or action. Edit a file that already exists. Do not invent a second layout.
 
-A change to a structure that already exists does not need the generator. That includes a bugfix, a validation rule, a query filter, a route that already has a handler, a test, or documentation. Edit the existing files. Cellix lint still checks file roles, imports, and the dependency graph.
+`cellix-lint.config.json` stays at the project root. The generator reads it and writes into those paths.
 
-Write product code, acceptance tests, API source, and docs on paths whose `agentAccess` entry is true. The control plane stays locked. Do not hand-create a new context, entity, or action. Generate it so the file roles exist. Do not add a helper, util, common, or shared module.
+## Commands
 
-The health host in `packages/axc/application-services/src/index.ts` is the composition root. It is not an action template.
+A new REST read is two commands, in this order. Do not run `--help`.
 
-## Guardrails
-
-Use them in this order. Each one catches a different class of drift.
-
-| Guardrail | What it forces | When it runs |
-| --- | --- | --- |
-| `@cellix/generator` | The file set for one context, entity, and action | Before any new feature files exist |
-| `@cellix/guardrails` | Session, write decision, and verify flag. `ocom-write.config.json` is the allow list. `.cursor/hooks/cellix-write-allow.mjs` is the Cursor adapter | Every write, and at the end of `pnpm run verify` |
-| `@cellix/lint` | File roles, file body, public imports, dependency graph | `pnpm --filter @cellix/lint lint:cellix`, `pnpm run lint`, commit, `pnpm run verify` |
-| Biome, extended from `@cellix/lint/biome` | Formatter, recommended rules, and layer import bans. The repo `biome.json` extends that file and adds only app-specific ignores and overrides | `pnpm exec biome check` |
-| `@cellix/archunit-tests` `./structure` | The same lint, as an architecture test apps opt into | `pnpm run test:arch` |
-
-Do not edit `packages/cellix/lint`, `packages/cellix/generator`, `cellix-lint.config.json`, or `.cursor/hooks` to make a feature pass. Those are the control plane. A human changes them on purpose.
-
-## New feature
-
-Run the generator for a new context, entity, or action. Do not create that slice by hand. Skip the generator when the files already exist and the work is behavior, tests, or docs.
+1. `generate` builds the subdomain: domain, model, and persistence. Pass every `--field` here. No `--action`. No `--transport`. It does not add a route.
+2. `query` adds the read onto that subdomain. Pass `--name`, `--param`, `--route`, and `--transport rest`. No `--field`. It writes the repository method, the application service, and `GET /api/<route>`.
 
 ```bash
-pnpm --filter @cellix/generator generate -- --context course --entity course --action create \
-  --field courseName:string --field isPublished:boolean \
-  --permission canManageCourse \
-  --nested address:street:string,city:string \
-  --nested activity-log:id:id,activityType:string
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --field <field>:<type>
+pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --route <route> --transport rest
 ```
 
-`--context`, `--entity`, and `--action` are kebab-case. `create`, `update`, and `delete` are mutations. `query`, `get`, and `find` are reads. Repeat `--field name:type` (`string`, `boolean`, `date`, `number`) and `--permission name` to fill the aggregate and the permissions interface. Repeat `--nested name:field:type,field:type`. A nested object that includes `id:id` is an entity, because it has its own identity. A nested object without an id is a value object. In a fields file, a nested `fields` entry may itself be a nested object, and the same id rule applies at every level. A nested entity can sit on the aggregate or inside another entity. It cannot sit inside a value object. The `--nested` flag stays one level deep. `--fields <file>` reads the same three lists from JSON. Flags after the file are added to it. `--resolver` writes the GraphQL schema and resolver that call `context.applicationServices`. Leave it off in this repo. `--transport rest` writes the REST adapter. `--transport graphql` is the same resolver output as `--resolver`.
+The repository method rejects with `not implemented`. Fill that method in. The result is `EntityReference[]`. Leave that array as it is in domain, persistence, and the application service. Shape the HTTP body in the REST index.
 
-```json
-{
-	"fields": [
-		{ "name": "firstName", "type": "string" },
-		{ "name": "accessBlocked", "type": "boolean" }
-	],
-	"permissions": ["canManageStaff"],
-	"nested": [
-		{ "name": "display-name", "fields": [{ "name": "label", "type": "string" }] },
-		{ "name": "activity-log", "fields": [{ "name": "id", "type": "id" }, { "name": "activityType", "type": "string" }, { "name": "detail", "fields": [{ "name": "label", "type": "string" }] }] }
-	]
-}
-```
+A new GraphQL read is the same two commands. No `--route`. The field name is `--name`.
+
+1. `generate` is the same subdomain command. Pass every `--field`. No `--action`. No `--transport`.
+2. `query` adds the query field. Pass `--name`, `--param`, and `--transport graphql`. No `--field`. No `--route`.
 
 ```bash
-pnpm --filter @cellix/generator generate -- --context user --entity staff-user --action create --fields staff-user.fields.json
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --field <field>:<type>
+pnpm --filter @cellix/generator query -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
 ```
 
-The generator runs Biome on those files before it reports success, so import order and line length already match `biome.json`.
+That `query` writes the resolver when the file does not exist yet. A later GraphQL query adds another query field.
 
-That command writes a scaffold. It does not finish the feature. The text of each new file is a template under `packages/cellix/generator/src/templates/`, in a folder named for the package that receives it. `src/plan.ts` chooses the paths. `src/write/new-files.ts` creates files that do not exist yet. `src/compose.ts` edits barrels that already exist. `src/session-files.ts` records the session.
+A mutation is `generate` with `--action`. Add `--transport graphql` on that command when the mutation should have a resolver. Leave it off and there is no resolver. `update` loads with `getById` inside `withScopedTransaction`. Fill in the assignment above `save`. A REST update requires `--route`. A GraphQL update does not. The field name is `--name`.
 
-`getNewInstance` builds `const newInstance` and calls `private markAsNew()`, which sets `isNew`. Setters assign the value. They do not call `visa.determineIf`. The visa, the permissions interface, and passport are there so a later edit can add a check. There is no created event. After the files exist, build the behavior they only sketch.
-
-The command writes:
-
-1. Domain permissions, visa, passport (passport is created once), value objects, aggregate, repository interface, unit-of-work interface
-2. `models/<entity>/<entity>.model.ts` and `models/<entity>/<entity>.seed.ts`
-3. Persistence domain adapter, repository, and `get<Entity>UnitOfWork`
-4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. Queries call `readonlyDataSource.<Context>.<Entity>.<Entity>ReadRepo`
-5. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
-
-`datasources/readonly/mongo-data-source.ts`, `datasources/readonly/index.ts`, and `datasources/readonly/<context>/index.ts` are created once. A later generate leaves them in place. Add the next entity to those indexes yourself.
-
-It refuses to overwrite an entity file. A second action in an existing entity is a new generator invocation only when that action file does not already exist; shared passport is left in place. If the generator stops, do not copy a file over the collision.
-
-Then build:
-
-- Value-object bounds and what the aggregate setters enforce
-- Repository methods behind `getNewInstance` and `getById`
-- The command fields and the body inside `withScopedTransaction` or `readonlyDataSource`
-- A visa check on a setter, when the feature needs one: `if (!this.isNew && !this.visa.determineIf(...)) throw new PermissionError(...)`
-- The `Domain` namespace, as `export * as Domain from './domain/index.ts'` on the domain package index. Do not add `export type { Course, ... }` or `export const Domain` there. Do not add document types to a domain adapter. Do not import `<camel>Seed` into a read repository or return it from one. An action imports `DataSources` from `@axc/persistence` and does not declare that type itself
-- The Azure function route in `apps/api/src/index.ts`
-- The Hono route in `packages/axc/rest/src/index.ts`. The handler calls `applicationServices.<Context>.<Entity>.<action>(command)`
-- The new service on the health host, `packages/axc/application-services/src/index.ts`. Add it beside `health` on `ApplicationServices` and return it from `buildApplicationServicesFactory`. Keep `health.getStatus`
-- The context factory's ports, when the action needs more than `DataSources`
-
-When that behavior is in place, run `pnpm run verify`. That command runs Cellix lint, then typecheck and build. Lint only checks file shape. Generate finishing is not that check. `pnpm run verify` is the last check before the work is done. It prints `CELLIX_VERIFY=pass` and writes `.cellix/verify.json` with `"flag": "pass"` only when every step exits 0. That file is the flag. Nothing prompts again. If the flag is missing, verify did not pass.
-
-## Testing
-
-Start the application with `pnpm run dev` and call the endpoint. The rows come from the database.
-
-`models/<entity>/<entity>.seed.ts` exports `<camel>Seed`, one example document. Insert that document into the `<Pascal>` collection, then read it back through the running app. Do not copy it into a REST handler, a GraphQL resolver, a read repository, or a test that replaces the database with an in-memory list.
-
-A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entity>.<action>(command)` inside the function that receives `applicationServices`. Context and Entity are PascalCase. Mentioning `applicationServices`, casting it, or calling a local list when the property is missing does not count. A REST file does not keep an array of documents.
-
-## Sessions
-
-The session rules are `packages/cellix/guardrails/src/session.mjs`. The write order is `packages/cellix/guardrails/src/write/decide.mjs`: `agentAccess` first, then an exact `true` path, then the session. A session belongs to one agent. It does not replace `agentAccess`, and it does not apply to any other agent.
-
-The harness sets `CELLIX_AGENT_ID` (`task-a`, `task-b`) in that agent's environment before the agent runs. The generator then writes `.cellix/sessions/<id>.json`. The write hook reads that same file. A write needs both: the first matching `agentAccess` entry is true, and the path is in that agent's list. An entry that ends with `/` is a directory. A second generate for the same id adds to the list.
-
-The directories are the new context, the new model, and `apps/docs/docs/<context>/`. `apps/docs/sidebars.ts` is included so that page can be linked. Every other file the generator edits is an exact path, including the REST handler, the REST index, and `apps/api/src/index.ts`. The rest of `packages/axc/rest`, `apps/api/src`, `apps/docs`, the acceptance package, and `packages/axc/service-mongoose` stay closed.
-
-An `agentAccess` key with no `*` stays writable during a session. A glob can be narrowed by the session. `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and `.snyk` stay fixable because they are exact `true` entries in `ocom-write.config.json`.
-
-No `CELLIX_AGENT_ID` means no session. Standing `agentAccess` is the only check. An empty file list or invalid JSON does not open the tree. The harness removes a session between runs. The agent does not delete the session file.
-
-## Verify flag
-
-The flag rules are `packages/cellix/guardrails/src/verify-flag.mjs`. `pnpm run verify` writes `.cellix/verify.json` and prints `CELLIX_VERIFY=pass` only after lint, typecheck, build, tests, audit, and Snyk all exit 0. The file records git HEAD and a hash of `git status --porcelain`, so the pass belongs to that tree. `pnpm run verify:flag` prints `CELLIX_VERIFY=pass` while the tree still matches and `CELLIX_VERIFY=stale` after another edit. `.cellix/verify.json` is not a writable product file. Turbo and Snyk print failures, not passing task logs.
-
-## Browser end-to-end tests
-
-The generator writes one API acceptance scenario. The steps call the running app and read `LastResponse.body()`. It does not write browser tests. Those follow the screen. CellixJS keeps them in `packages/ocom-verification/e2e-tests`: Playwright, portless, and Serenity screenplay, separate from `acceptance-api`. Add that package when a frontend exists, and write the scenario by hand.
-
-## agentAccess
-
-`ocom-write.config.json` is the only write list. The first matching `agentAccess` key wins. `true` allows the path. `false` locks it. A path with no match is denied. The session does not declare a second list.
-
-A shell write that does not name a file is denied. `pnpm --filter @cellix/generator generate` is allowed. `git status` and `git diff` are allowed. `git restore` of a locked file is denied.
-
-## After every edit
-
-The last check is `pnpm run verify`. It runs `pnpm run lint` first, which is Biome and `pnpm --filter @cellix/lint lint:cellix`, then typecheck, build, and the rest of the gate.
-
-`Cellix lint: ok` is the lint bar inside that command. A violation names the file, the rule, what was found, and the expected shape. Fix the file. Do not weaken the rule. Do not finish on lint or build alone.
-
-## File body
-
-Actions are one const whose name is the camelCase filename:
-
-```ts
-import type { Domain } from '@axc/domain';
-import type { DataSources } from '@axc/persistence';
-
-export interface CourseCreateCommand {
-	name: string;
-}
-
-export const create = (dataSources: DataSources) => {
-	return async (command: CourseCreateCommand): Promise<Domain.Contexts.Course.Course.CourseEntityReference> => {
-		return await dataSources.domainDataSource.Course.Course.CourseUnitOfWork.withScopedTransaction(async (repo) => {
-			return repo.save(await repo.getNewInstance(command.name));
-		});
-	};
-};
+```bash
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --action <action> --field <field>:<type>
+pnpm --filter @cellix/generator generate -- --context <context> --subdomain <subdomain> --action <action> --field <field>:<type> --transport graphql
+pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --route <route> --transport rest
+pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
 ```
 
-Reads use `dataSources.readonlyDataSource.<Context>.<Entity>.<Entity>ReadRepo`. The context `index.ts` imports every sibling action and returns them from `export const <Entity> = (dataSources: DataSources) => { return { ... } }`.
+`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt` as `--field`. The model sets those timestamps. `query` and `update` require `--transport rest` or `--transport graphql`. `--route` is required for rest and writes `/api/<route>`. Leave `--route` off for graphql. The field name is the function name. Do not pass `--return`. `--transport rest` adds `app.get` or `app.post` in the REST index. `--transport graphql` on `generate` with `--action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver file when it is missing. A later update adds a mutation.
 
-String setters on an aggregate check the visa and assign a value object:
+The generator prints the files to edit. The barrels are already wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. The generator adds every dependency those files import, including `@axc/persistence` on application services and `@lucaspaganini/value-objects` on `@axc/domain`. After `query`, `pnpm run agent-check -- pnpm run check` passes before you fill in behavior. If that check cannot find one of those modules, run `pnpm install` once.
 
-```ts
-set courseName(courseName: string) {
-	if (!this.isNew && !this.visa.determineIf((permissions) => permissions.canManageCourse)) {
-		throw new PermissionError('You do not have permission to change courseName');
-	}
-	this.props.courseName = new ValueObjects.CourseName(courseName).valueOf();
-}
-```
+`packages/axc/data-sources-mongoose-models/package.json` is required. Write it when it is missing so the workspace can resolve `@axc/data-sources-mongoose-models`. Match the other `@axc` packages: `"private": true`, `"type": "module"`, `"exports"` pointing at `./dist`. Depend on `@cellix/mongoose-seedwork` and `mongoose`. Add a dependency only when a file in that package imports it. A `tsconfig.json` that extends `@cellix/config-typescript/node`, with `rootDir` `src` and `outDir` `dist`, belongs next to that manifest. Do not add a second config style.
 
-Value-object classes are empty and extend `VOString({ trim, minLength, maxLength })`. Nested objects are their own value object or entity. Booleans, dates, ids, and `schemaVersion` stay raw props.
+A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`. Do not `generate` a create action unless the task writes rows through that action.
 
-## Visibility and the graph
+## Checks
 
-Import another layer only through its package barrel: `@axc/domain`, `@axc/persistence`, `@axc/application-services`. A deep path such as `@axc/domain/src/...` fails. An application context does not import a sibling context. A persistence entity folder imports only its siblings plus package barrels.
+While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
-`cellix/graph-layer` fails when a layer depends on one it is not allowed to see, including through a relative import. `cellix/graph-cycle` fails on an import cycle. Domain does not depend on persistence, application services, models, or transport. Application services may depend on domain and the persistence barrel. Transport depends on application services.
+Read the files the task names. Do not list the tree or cat a directory. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
 
-## Names that must match
+When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 
-| Stem | Domain | Persistence | Model | Application |
-| --- | --- | --- | --- | --- |
-| `course` | `CourseRepository` interface | `class CourseRepository` | `CourseModelFactory`, `CourseModelType`, `CourseModelName` | folder `course`, file `create.ts`, const `create` |
+Acceptance owns the database process. In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and set `process.env['MONGODB_URI']` to `getUri()` inside `setupEnvironment`, before the API process spawns. Stop the server in `afterAll`. `apps/api/src/index.ts` reads `process.env['MONGODB_URI']`. It does not construct `MongoMemoryServer`. Insert `<camel>Seed` from `packages/axc/service-mongoose/src/index.ts`. Re-export it from the models index: `export { <camel>Seed } from './models/<entity>/<entity>.seed.ts'`. Persistence does not import the seed.
 
-The application folder name must exist as a directory under domain.
+Do not glob a whole tree. Do not search without a directory. Read the file you are changing. The open trees are `packages/axc`, `packages/axc-verification`, `apps/api/src`, and `apps/docs`. Also open `AGENTS.md`, this skill, the task requirements file, and `cellix-lint.config.json`. Open `REFERENCE.md` only when a check error names a file role. `node_modules`, `packages/cellix`, `scripts`, `.cursor`, and `pnpm-lock.yaml` are closed.
 
-## Do not add
+## Writes
 
-- `helpers.ts`, `utils.ts`, `common.ts`, `shared.ts`, or a top-level `function` in a role file
-- A class with `execute()`
-- Mongoose above persistence and models
-- GraphQL or REST imports below the transport packages
-- A second exported const beside the action
-- `console` in an action, aggregate, or model
+`ocom-write.config.json` has a `read` map and a `write` map. The first matching key in that map wins. A session at `.cellix/sessions/<CELLIX_AGENT_ID>.json` can list `read` and `write` separately. `files` is the write list when `write` is absent. The file exists at startup and holds the agent id. It does not close the product tree. A session does not unlock a locked path. A shell assignment of `CELLIX_AGENT_ID` does not open a session. The shell may not have that variable.
+
+File roles, visibility, and the dependency graph are in `REFERENCE.md` next to this file. Open that when a lint or write error names them.

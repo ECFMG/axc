@@ -9,9 +9,11 @@ export async function writeNewFiles(options: GenerateFeatureOptions, files: Gene
 	const shared = new Set([passport, path.join(readonlyRoot, 'mongo-data-source.ts'), path.join(readonlyRoot, 'index.ts'), path.join(readonlyRoot, options.context, 'index.ts')]);
 	const collisions: string[] = [];
 	const writes: GeneratedFile[] = [];
+	const adding = options.operation === 'query' || options.operation === 'update';
 	for (const file of files) {
 		if (await exists(file.path)) {
 			if (shared.has(file.path)) continue;
+			if (adding && !ownsThisFunction(file.path, options)) continue;
 			collisions.push(file.path);
 			continue;
 		}
@@ -26,9 +28,18 @@ export async function writeNewFiles(options: GenerateFeatureOptions, files: Gene
 	return writes;
 }
 
+/** The action, its REST handler, and its acceptance files belong to this call. An existing entity stays. */
+function ownsThisFunction(file: string, options: GenerateFeatureOptions): boolean {
+	const relative = path.relative(options.root, file).split(path.sep).join('/');
+	const action = options.action;
+	const entity = options.entity;
+	return relative.endsWith(`/${action}.ts`) || relative.endsWith(`/${entity}-${action}.ts`) || relative.endsWith(`/${entity}-${action}.feature`) || relative.endsWith(`/${entity}-${action}.steps.ts`);
+}
+
 function assertInsideLayers(file: string, options: GenerateFeatureOptions): void {
 	const relative = path.relative(options.root, file).split(path.sep).join('/');
-	if (relative.startsWith('packages/axc-verification/acceptance-api/src/')) return;
+	const acceptance = options.lint.acceptance.replace(/\/$/, '');
+	if (relative === acceptance || relative.startsWith(`${acceptance}/`)) return;
 	const roots = Object.values(options.lint.layers).map((layer) => path.join(options.root, layer));
 	const posix = file.split(path.sep).join('/');
 	const allowed = roots.some((layer) => posix.startsWith(layer.split(path.sep).join('/')));

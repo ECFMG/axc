@@ -1,7 +1,7 @@
 // A shell command is treated as a write when SHELL_WRITE matches.
 // A node version directory on PATH is not a write. The hook skips tokens that contain versions/node.
 
-const redirectOrInPlaceEdit = [String.raw`--write\b`, '>(?!&)', String.raw`\bsed\s+-i`, String.raw`\bperl\s+-i`];
+const redirectOrInPlaceEdit = [String.raw`--write\b`, String.raw`>(?!&|\s*\/dev\/null)`, String.raw`\bsed\s+-i`, String.raw`\bperl\s+-i`];
 const fileCommands = [String.raw`\btee\b`, String.raw`\brm\b`, String.raw`\bmv\b`, String.raw`\bcp\b`, String.raw`\bmkdir\b`, String.raw`\btouch\b`, String.raw`\bchmod\b`];
 const gitCommandsThatChangeFiles = String.raw`\bgit\s+(?:restore|checkout|reset|clean|apply|stash|rebase|merge|pull|switch|revert)\b`;
 const interpreterAtStartOfCommand = String.raw`(?:^|&&|\|\||[;&|]\s)\s*(?:\.?\/)?(?:[\w@.+-]+\/)*`;
@@ -23,7 +23,7 @@ export function commandPaths(command) {
 	const paths = [];
 	for (const raw of command.split(/[\s'"`;|&<>]+/)) {
 		const token = raw.includes('=') ? raw.slice(raw.indexOf('=') + 1) : raw;
-		if (!token || token.includes('$') || token.includes('versions/node') || token.split(':').length > 2) continue;
+		if (!token || token === '/dev/null' || token.includes('$') || token.includes('versions/node') || token.split(':').length > 2) continue;
 		if (looksLikeFilePath(token)) paths.push(token);
 	}
 	return paths;

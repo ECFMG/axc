@@ -1,10 +1,13 @@
+// identity.mjs reads CELLIX_AGENT_ID. sessionStart sets it when the process has none.
 // session.mjs is one agent's file list.
-// write/agent-access.mjs reads ocom-write.config.json patterns.
+// write/agent-access.mjs compiles the ocom read and write maps.
 // write/shell.mjs decides which shell commands can write.
-// write/decide.mjs applies those three in order.
+// write/decide.mjs applies the map, then an exact true path, then the session.
+// budget.mjs decides what may enter the transcript. scripts/check-budget.mjs re-exports it.
+// report.mjs is the error block agent-check prints. Expected comes first.
 // verify-flag.mjs records a passing pnpm run verify.
 
-export { agentIdFromEnv, loadSession, recordSession, sessionAllows, sessionFile } from './session.mjs';
+export { agentIdForRecord, agentIdFromEnv, agentIdFromSession, clearSession, ensureStartupSession, loadSession, noteActiveAgent, recordSession, sessionAllows, sessionAllowsRead, sessionFile } from './session.mjs';
 export { checkFlag, workingTree, writeFlag } from './verify-flag.mjs';
 export { matchGlob, relativeToWorkspace } from './write/agent-access.mjs';
-export { decidePath, decideShell, policyFromConfig } from './write/decide.mjs';
+export { decidePath, decideRead, decideShell, policyFromConfig } from './write/decide.mjs';

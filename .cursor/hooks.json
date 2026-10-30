@@ -1,17 +1,49 @@
 {
 	"version": 1,
 	"hooks": {
+		"beforeReadFile": [
+			{
+				"command": "node .cursor/hooks/guard-transcript.mjs",
+				"failClosed": false
+			}
+		],
 		"preToolUse": [
 			{
 				"command": ".cursor/hooks/cellix-write-allow.mjs",
 				"matcher": "Write|StrReplace|Delete|EditNotebook|ApplyPatch",
 				"failClosed": true
+			},
+			{
+				"command": "node .cursor/hooks/guard-transcript.mjs",
+				"matcher": "Read|Grep|Glob|Shell",
+				"failClosed": false
 			}
 		],
 		"beforeShellExecution": [
 			{
 				"command": ".cursor/hooks/cellix-write-allow.mjs",
 				"failClosed": true
+			},
+			{
+				"command": "node .cursor/hooks/guard-transcript.mjs",
+				"failClosed": false
+			}
+		],
+		"stop": [
+			{
+				"command": ".cursor/hooks/cellix-verify-stop.mjs",
+				"failClosed": true,
+				"loop_limit": 5
+			}
+		],
+		"sessionEnd": [
+			{
+				"command": ".cursor/hooks/cellix-session-end.mjs"
+			}
+		],
+		"sessionStart": [
+			{
+				"command": "node .cursor/hooks/cellix-session-start.mjs"
 			}
 		]
 	}

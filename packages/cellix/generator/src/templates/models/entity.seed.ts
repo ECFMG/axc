@@ -6,7 +6,7 @@ export function seed(entity: string, entityPascal: string, shape: Shape): string
 	const fields = seedEntries(shape)
 		.map(([key, value]) => `\t\t${key}: ${value},`)
 		.join('\n');
-	const comment = `/** Insert ${seedName} into the ${entityPascal} collection. Start the application and read it back through the endpoint. Do not copy this document into a handler, a read repository, or an in-memory catalog. */`;
+	const comment = `/** Insert ${seedName} into the ${entityPascal} collection. One object is the example. A catalog task adds the other rows to this array. Start the application and read them back through the endpoint. Do not copy this document into a handler, a read repository, or an in-memory catalog. */`;
 	return `${comment}\nexport const ${seedName} = [\n\t{\n${fields}\n\t},\n];\n`;
 }
 
@@ -32,5 +32,8 @@ function sampleScalar(field: ShapeField): string {
 	if (field.type === 'boolean') return 'false';
 	if (field.type === 'date') return "new Date('2024-01-01T00:00:00.000Z')";
 	if (field.type === 'number') return '1';
+	if (field.type.endsWith('[]')) return `['Example ${field.name}']`;
+	const quoted = field.type.split('|').find((part) => /^'[^']+'$/.test(part.trim()));
+	if (quoted) return quoted.trim();
 	return `'Example ${field.name}'`;
 }
