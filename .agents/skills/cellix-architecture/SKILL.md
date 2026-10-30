@@ -48,7 +48,7 @@ pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdo
 pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
 ```
 
-`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. Write the type as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt`. The model sets those. `query` and `update` require `--transport rest` or `--transport graphql`. Rest requires `--route` and writes `/api/<route>`. Leave `--route` off for graphql. `--name` is kebab-case. Do not pass `--return`. Rest adds `app.get` or `app.post`. GraphQL `generate --action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver when it is missing. A later update adds a mutation.
+`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. Write the type as given (`string`, `string[]`, `'small'|'large'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt`. The model sets those. `query` and `update` require `--transport rest` or `--transport graphql`. Rest requires `--route` and writes `/api/<route>`. Leave `--route` off for graphql. `--name` is kebab-case. Do not pass `--return`. Rest adds `app.get` or `app.post`. GraphQL `generate --action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver when it is missing. A later update adds a mutation.
 
 The generator prints the files to edit. Barrels are wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. Dependencies and tsconfig references are already added. Do not edit `package.json`. Do not run `pnpm install`. After `query`, `pnpm run agent-check -- pnpm run check` passes before you fill in behavior.
 
@@ -72,7 +72,7 @@ While files change, run `pnpm run agent-check -- pnpm run check`. That is lint a
 
 Read the files the task names. Do not list the tree. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` or `.cellix/sessions`.
 
-When the search, the seed rows, the acceptance steps, and the mongo insert are in place, run `pnpm run agent-check -- pnpm run verify` once. Stop only after `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
+When the behavior, the seed rows, and the acceptance steps are in place, run `pnpm run agent-check -- pnpm run verify` once. Stop only after `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 
 In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and assign the uri before the API process spawns. `@axc/service-mongoose` and `mongoose` are already dependencies. Do not edit `package.json` to add them.
 
@@ -82,7 +82,7 @@ const env = process.env as { MONGODB_URI?: string };
 env.MONGODB_URI = mongoUri;
 ```
 
-Stop the server in `afterAll`. `apps/api/src/index.ts` reads the same cast (`const env = process.env as { MONGODB_URI?: string }`). It does not construct `MongoMemoryServer`. Import `<camel>Seed` from `@axc/service-mongoose` and insert it with the line from the seed file. The generator already re-exports `<camel>Seed`. Persistence does not import the seed. Edit the feature and the steps the generator wrote. Do not add a second feature file.
+Stop the server in `afterAll`. `apps/api/src/index.ts` already connects when `MONGODB_URI` is set. It does not construct `MongoMemoryServer`. Import `<camel>Seed` from `@axc/service-mongoose` and insert it with the line from the seed file. The generator already re-exports `<camel>Seed`. Persistence does not import the seed. Edit the feature and the steps the generator wrote. Do not add a second feature file. Do not add a fetch in a step. If you add one to see a failure, remove it and run verify again.
 
 `generate` narrows reads and writes to the files it printed. Instruction files stay readable. Do not edit `.cellix/sessions` to widen that list. A failing check names the next file. Do not glob a whole tree. Open `REFERENCE.md` only when a check names a file role.
 

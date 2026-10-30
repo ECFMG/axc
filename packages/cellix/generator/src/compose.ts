@@ -357,7 +357,8 @@ async function spliceGraphql(input: {
 
 async function spliceApi(file: string, input: { scope: string; entity: string; action: string; route: string; mutation: boolean }): Promise<WrittenFile[]> {
 	let current = await readFile(file, 'utf8');
-	if (current.includes(`'${input.entity}-${input.action}'`)) return [];
+	const handler = `'${input.entity}-${input.action}'`;
+	if (current.includes(handler) && current.includes('mongoose.connect') && current.includes('dataSourcesFactory:')) return [];
 	const method = input.mutation ? 'POST' : 'GET';
 	if (!current.includes(`from '${input.scope}/persistence'`)) {
 		current = `import mongoose from 'mongoose';\nimport { Persistence } from '${input.scope}/persistence';\n${current}`;
@@ -365,8 +366,14 @@ async function spliceApi(file: string, input: { scope: string; entity: string; a
 	if (!current.includes('dataSourcesFactory:')) {
 		current = current.replace('environment: RuntimeConfig.environment,', 'environment: RuntimeConfig.environment,\n\t\t\tdataSourcesFactory: Persistence({ service: mongoose }),');
 	}
-	const registration = `\n\t.registerAzureFunctionHttpHandler('${input.entity}-${input.action}', { route: 'api/${input.route}', methods: ['${method}'], authLevel: 'anonymous' }, restHandlerCreator)`;
-	current = current.replace('\t.startUp();', `${registration}\n\t.startUp();`);
+	if (!current.includes('mongoose.connect') && current.includes('Cellix.initializeInfrastructureServices')) {
+		const connect = `const env = process.env as { MONGODB_URI?: string };\nif (env.MONGODB_URI !== undefined) {\n\tawait mongoose.connect(env.MONGODB_URI);\n}\n\n`;
+		current = current.replace('Cellix.initializeInfrastructureServices', `${connect}Cellix.initializeInfrastructureServices`);
+	}
+	if (!current.includes(handler)) {
+		const registration = `\n\t.registerAzureFunctionHttpHandler('${input.entity}-${input.action}', { route: 'api/${input.route}', methods: ['${method}'], authLevel: 'anonymous' }, restHandlerCreator)`;
+		current = current.replace('\t.startUp();', `${registration}\n\t.startUp();`);
+	}
 	await writeFile(file, current);
 	return [{ path: file, contents: current }];
 }

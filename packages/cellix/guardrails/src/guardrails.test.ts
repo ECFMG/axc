@@ -271,6 +271,16 @@ describe('guardrails', () => {
 		}
 	});
 
+	it('shows the assertion instead of a dependency stack', () => {
+		const block = errorBlock([
+			'AssertionError: Expected 500 to equal 200',
+			'at CallAnApi.request (/repo/node_modules/@serenity-js/rest/src/screenplay/abilities/CallAnApi.ts:40:1)',
+			'[ELIFECYCLE] Command failed with exit code 1.',
+		]);
+		expect(block.some((line) => line.includes('AssertionError'))).toBe(true);
+		expect(block.some((line) => line.includes('node_modules'))).toBe(false);
+	});
+
 	it('names the file when a format failure hides behind the word error', () => {
 		const block = errorBlock([
 			'packages/axc-verification/acceptance-api/src/step-definitions/course-search-courses.steps.ts format ━━━━━━━━━━',

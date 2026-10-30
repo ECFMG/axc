@@ -134,7 +134,7 @@ describe('the transcript hook', () => {
 		assert.equal(bareSearch.permission, 'deny');
 	});
 
-	it('stops the third denial and the third verify', async () => {
+	it('stops the third denial', async () => {
 		const workspace = mkdtempSync(join(tmpdir(), 'cellix-repeat-'));
 		writeFileSync(join(workspace, 'ocom-write.config.json'), `${JSON.stringify({ read: { '**': true }, write: { '**': true } })}\n`);
 		const env = { CELLIX_AGENT_ID: 'task-a' };
@@ -149,7 +149,7 @@ describe('the transcript hook', () => {
 			assert.match(third.agent_message, /Stop/);
 			assert.equal((await hookDecision(verify, env, workspace)).permission, 'allow');
 			assert.equal((await hookDecision(verify, env, workspace)).permission, 'allow');
-			assert.equal((await hookDecision(verify, env, workspace)).permission, 'deny');
+			assert.equal((await hookDecision(verify, env, workspace)).permission, 'allow');
 		} finally {
 			rmSync(workspace, { recursive: true, force: true });
 		}

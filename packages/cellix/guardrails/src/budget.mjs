@@ -125,13 +125,7 @@ export function repeatMessage(count, message) {
 	return count > 2 ? STOP : message;
 }
 
-/** Wrapped verify and test:acceptance. Two runs are allowed. The third is refused. */
-export function commandCap(root, agentId, command) {
-	if (!agentId || typeof command !== 'string' || !command.includes('agent-check')) return undefined;
-	const key = /(?:^|\s)pnpm(?:\s+run)?\s+verify(?:\s|$)/.test(command) ? 'verify' : /test:acceptance/.test(command) ? 'acceptance' : undefined;
-	if (key === undefined) return undefined;
-	const count = noteRepeat(root, agentId, key);
-	if (count > 2) return `${key === 'verify' ? 'verify' : 'test:acceptance'} already ran twice. Edit the file the last failure named.`;
+export function commandCap(_root, _agentId, _command) {
 	return undefined;
 }
 
