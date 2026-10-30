@@ -4,39 +4,34 @@ version: v1.25.1
 ignore:
   SNYK-JS-BRACES-19963945:
     - '*':
-        reason: No upgrade or patch available (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
+        reason: No upgrade or patch available (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-09-28T22:36:43.528Z
   SNYK-JS-DEEPMERGE-19964053:
     - '*':
-        reason: No upgrade or patch available (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
+        reason: No upgrade or patch available (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-09-28T22:36:44.928Z
   SNYK-JS-HTTPCACHESEMANTICS-19964064:
     - '*':
-        reason: No upgrade or patch available (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
+        reason: No upgrade or patch available (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-09-28T22:36:46.299Z
   SNYK-JS-HTTPCACHESEMANTICS-19964068:
     - '*':
-        reason: No upgrade or patch available (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
+        reason: No upgrade or patch available (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-09-28T22:36:47.628Z
   SNYK-JS-URIJS-19963961:
     - '*':
-        reason: No upgrade or patch available (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
+        reason: No upgrade or patch available (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-09-28T22:36:48.969Z
   SNYK-JS-URIJS-19963963:
     - '*':
-        reason: No upgrade or patch available (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
+        reason: No upgrade or patch available (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-09-28T22:36:50.278Z
-  SNYK-JS-UUID-16133035:
-    - '*':
-        reason: uuid 11+ is ESM-only and breaks the Azure Functions bundle (re-checked 2026-10-28, still no fixed release)
-        expires: 2026-11-27T00:00:00.000Z
-        created: 2026-09-28T22:44:29.367Z
   SNYK-JS-URIJS-20341609:
     - '*':
         reason: No upgrade or patch available
@@ -44,22 +39,22 @@ ignore:
         created: 2026-10-12T22:36:51.126Z
   SNYK-JS-PICOMATCH-21248802:
     - '*':
-        reason: No released fix - advisory's fixed-in versions (2.4.8/3.1.9/4.2.3) are not published to npm yet
-        expires: 2026-11-20T00:00:00.000Z
+        reason: No released fix - advisory's fixed-in versions (2.4.8/3.1.9/4.2.3) are not published to npm yet (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-10-21T00:00:00.000Z
   SNYK-JS-HAPPYDOM-21691240:
     - '*':
-        reason: happy-dom pinned to 20.10.1 (upstream cellixjs pin) - 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
-        expires: 2026-11-26T00:00:00.000Z
+        reason: happy-dom pinned to 20.10.1 (upstream cellixjs pin) - 21.0.4's types need @types/node 26, which breaks @serenity-js/core types. Only serenity-framework's DOM adapter loads happy-dom; axc never runs it (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-10-27T00:00:00.000Z
   SNYK-JS-HAPPYDOM-21826828:
     - '*':
-        reason: happy-dom pinned to 20.10.1 - the only patched releases (20.14.6+, 21.x) break the build (TS2694 UnderlyingDefaultSource). Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
-        expires: 2026-11-28T00:00:00.000Z
+        reason: happy-dom pinned to 20.10.1 - the only patched releases (20.14.6+, 21.x) break the build (TS2694 UnderlyingDefaultSource). Only serenity-framework's DOM adapter loads happy-dom; axc never runs it (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-10-29T00:00:00.000Z
   SNYK-JS-HAPPYDOM-21826830:
     - '*':
-        reason: happy-dom pinned to 20.10.1 - patched 20.14.7 not published, 21.x breaks the build (TS2694 UnderlyingDefaultSource). Only serenity-framework's DOM adapter loads happy-dom; axc never runs it.
-        expires: 2026-11-28T00:00:00.000Z
+        reason: happy-dom pinned to 20.10.1 - patched 20.14.7 not published, 21.x breaks the build (TS2694 UnderlyingDefaultSource). Only serenity-framework's DOM adapter loads happy-dom; axc never runs it (re-checked 2026-10-30, still no fixed release)
+        expires: 2026-12-31T00:00:00.000Z
         created: 2026-10-29T00:00:00.000Z
 patch: {}
