@@ -20,6 +20,7 @@ import {
 	sessionAllows,
 	sessionAllowsRead,
 } from './index.mjs';
+import { errorBlock } from './report.mjs';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
@@ -270,10 +271,21 @@ describe('guardrails', () => {
 		}
 	});
 
+	it('names the file when a format failure hides behind the word error', () => {
+		const block = errorBlock([
+			'packages/axc-verification/acceptance-api/src/step-definitions/course-search-courses.steps.ts format ━━━━━━━━━━',
+			'× Formatter would have printed the following content:',
+			"Then('the course error field is {string}', (field: string) =>",
+			'[ELIFECYCLE] Command failed with exit code 1.',
+		]);
+		expect(block.some((line) => line.includes('course-search-courses.steps.ts'))).toBe(true);
+		expect(block.some((line) => line.includes('course error field'))).toBe(false);
+	});
+
 	it('narrows read and write separately', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-session-'));
 		try {
-			recordSession(root, 'task-a', { write: ['packages/axc/rest/src/index.ts'], read: ['packages/axc/domain/src/'] });
+			recordSession(root, 'task-a', { write: ['packages/axc/rest/src/index.ts'], read: ['packages/axc/domain/src/', 'apps/docs/'] });
 			const session = loadSession(root, 'task-a');
 			const policy = policyFromConfig(
 				{
@@ -286,6 +298,8 @@ describe('guardrails', () => {
 			expect(sessionAllows('packages/axc/rest/src/index.ts', session)).toBe(true);
 			expect(sessionAllows(domain, session)).toBe(false);
 			expect(sessionAllowsRead(domain, session)).toBe(true);
+			expect(sessionAllowsRead('apps/docs', session)).toBe(true);
+			expect(sessionAllowsRead('apps/docs/courses-api.md', session)).toBe(true);
 			expect(sessionAllowsRead('packages/axc/rest/src/index.ts', session)).toBe(false);
 			expect(decidePath(path.join(repoRoot, 'packages/axc/rest/src/index.ts'), repoRoot, policy).ok).toBe(true);
 			expect(decidePath(path.join(repoRoot, domain), repoRoot, policy).ok).toBe(false);

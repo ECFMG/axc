@@ -123,7 +123,7 @@ export function recordSession(root, agentId, filesOrLists) {
 }
 
 function entryCoversPath(entry, relativePath) {
-	if (entry.endsWith('/')) return relativePath.startsWith(entry);
+	if (entry.endsWith('/')) return relativePath === entry.slice(0, -1) || relativePath.startsWith(entry);
 	return entry === relativePath;
 }
 

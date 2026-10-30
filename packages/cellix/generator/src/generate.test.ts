@@ -457,6 +457,8 @@ describe('Cellix generator', () => {
 			'packages/axc/rest/src/index.ts',
 			`import type { ApplicationServicesFactory } from '@axc/application-services';\nimport { Hono } from 'hono';\n\nexport function createRestApp(applicationServicesFactory: ApplicationServicesFactory): Hono {\n\tconst app = new Hono();\n\treturn app;\n}\n`,
 		);
+		await writeStub(root, 'packages/axc-verification/acceptance-api/package.json', '{ "name": "@axc-verification/acceptance-api", "dependencies": { "@cellix/serenity-framework": "workspace:*" } }\n');
+		await writeStub(root, 'packages/axc-verification/acceptance-api/tsconfig.json', '{ "references": [{ "path": "../../cellix/serenity-framework" }] }\n');
 		const backend = await generateFeature({ root, lint, context: 'course', entity: 'course', fields: [parseField('title:string')] });
 		expect(backend.map((file) => file.path).join('\n')).toContain('course.aggregate.ts');
 		expect(backend.map((file) => file.path).join('\n')).not.toContain('.test.ts');
@@ -466,6 +468,10 @@ describe('Cellix generator', () => {
 		expect(shell).toContain('export interface CourseApplicationService');
 		expect(shell).not.toContain('export type CourseApplicationService');
 		expect(await readFile(path.join(root, 'packages/axc/rest/src/index.ts'), 'utf8')).not.toContain("app.get('/api/course'");
+		const acceptanceJson = await readFile(path.join(root, 'packages/axc-verification/acceptance-api/package.json'), 'utf8');
+		expect(acceptanceJson).toContain('"@axc/service-mongoose": "workspace:*"');
+		expect(acceptanceJson).toContain('"mongoose": "catalog:"');
+		expect(await readFile(path.join(root, 'packages/axc-verification/acceptance-api/tsconfig.json'), 'utf8')).toContain('../../axc/service-mongoose');
 		const empty = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(empty);
 		await expect(generateFeature({ root: empty, lint, context: 'course', entity: 'course', operation: 'query', action: 'search', route: 'course', transport: 'rest' })).rejects.toThrow('Generate the subdomain before query');
@@ -478,6 +484,7 @@ describe('Cellix generator', () => {
 		expect(restAfterQuery).toContain("app.get('/api/course'");
 		expect(restAfterQuery).toContain("...(c.req.query('q') === undefined ? {} : { q: c.req.query('q') })");
 		const serviceIndex = await readFile(path.join(root, 'packages/axc/application-services/src/contexts/course/course/index.ts'), 'utf8');
+		expect(serviceIndex).toContain("import type { Domain } from '@axc/domain'");
 		expect(serviceIndex).toContain('search: search(dataSources)');
 		await expect(checkCellixLint({ root, lint })).resolves.toStrictEqual([]);
 	});

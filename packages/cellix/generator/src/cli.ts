@@ -2,7 +2,6 @@
 import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { agentIdForRecord } from '@cellix/guardrails';
 import { type CellixLintConfig, checkCellixLint, defaultCellixLintConfig } from '@cellix/lint';
 import { filesToEdit } from './edit-targets.js';
 import { type GenerateFeatureOptions, generateFeature } from './generate.js';
@@ -69,8 +68,6 @@ if (violations.length > 0) {
 for (const file of filesToEdit(feature)) {
 	console.log(file);
 }
-const agentId = agentIdForRecord(root);
-if (agentId) console.log(`Session write list: .cellix/sessions/${agentId}.json`);
 console.log('Edit these. The barrels are already wired. Do not list the tree.');
 console.log('While editing, run pnpm run agent-check -- pnpm run check. Do not pipe it to tail. The Expected line is the next edit.');
 console.log('Run pnpm run agent-check -- pnpm run verify once before you stop.');

@@ -1,6 +1,6 @@
 // The next turn sees this block. Expected is first, so the shape is not truncated away.
 
-const DIAGNOSTIC = /Expected:|Found:|Found \d+ error|error TS\d+|\berror\b|Cellix lint|violation|Unused export|AssertionError|\.[A-Za-z0-9]+:\d+:\d+|\(\d+,\d+\)/;
+const DIAGNOSTIC = /Expected:|Found:|Found \d+ error|error TS\d+|Cellix lint|violation|Unused export|AssertionError|Formatter would have printed|\.[A-Za-z0-9]+:\d+:\d+|\(\d+,\d+\)|packages\/\S+\.(?:ts|tsx|mjs|js|json)/;
 const SUMMARY = /^(?:Found \d+ errors?\.?|Checked \d+ files.*)$/;
 
 /** At most one screen. Lines that state Expected come before the rest. */

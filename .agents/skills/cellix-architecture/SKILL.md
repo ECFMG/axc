@@ -62,8 +62,9 @@ Do not glob, grep, or read the tree first. Edit the files the generator printed,
 
 - Pass an optional command field with a spread, and omit the property when the value is undefined.
 - Copy the `insertMany` line from the seed file. The cast is already on that line.
+- A Mongo filter is a typed object. Use dot access. `Record<string, unknown>` and bracket keys fail the check.
 
-Run `pnpm run agent-check -- pnpm run check` while those behavior files change. The wrapper prints one short failure. Run `pnpm run agent-check -- pnpm run verify` once.
+Run `pnpm run agent-check -- pnpm run check` while those behavior files change. The wrapper prints one short failure. A passing check on the scaffold is not the end. Do not add a script under `apps/docs`.
 
 ## Checks
 
@@ -71,9 +72,9 @@ While files change, run `pnpm run agent-check -- pnpm run check`. That is lint a
 
 Read the files the task names. Do not list the tree. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` or `.cellix/sessions`.
 
-When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Stop only after `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
+When the search, the seed rows, the acceptance steps, and the mongo insert are in place, run `pnpm run agent-check -- pnpm run verify` once. Stop only after `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 
-In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and assign the uri before the API process spawns:
+In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and assign the uri before the API process spawns. `@axc/service-mongoose` and `mongoose` are already dependencies. Do not edit `package.json` to add them.
 
 ```ts
 const mongoUri = memoryMongo.getUri();

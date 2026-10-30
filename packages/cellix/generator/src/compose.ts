@@ -104,6 +104,7 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 	if (options.operation) {
 		written.push(
 			...(await spliceEntityAction(path.join(applicationSrc, 'contexts', context, entity, 'index.ts'), {
+				scope,
 				action,
 				actionCamel,
 				command: `${entityPascal}${pascal(action)}Command`,
@@ -246,10 +247,16 @@ async function spliceReadMethod(file: string, method: { entityPascal: string; na
 	return [{ path: file, contents: current }];
 }
 
-async function spliceEntityAction(file: string, input: { action: string; actionCamel: string; command: string; entityPascal: string; result: string }): Promise<WrittenFile[]> {
+async function spliceEntityAction(file: string, input: { scope: string; action: string; actionCamel: string; command: string; entityPascal: string; result: string }): Promise<WrittenFile[]> {
 	if (!(await exists(file))) return [];
 	let current = await readFile(file, 'utf8');
-	if (current.includes(`from './${input.action}.ts'`)) return [];
+	const needsDomain = input.result.includes('Domain.') && !current.includes(`from '${input.scope}/domain'`);
+	if (needsDomain) current = `import type { Domain } from '${input.scope}/domain';\n${current}`;
+	if (current.includes(`from './${input.action}.ts'`)) {
+		if (!needsDomain) return [];
+		await writeFile(file, current);
+		return [{ path: file, contents: current }];
+	}
 	const importLine = `import { type ${input.command}, ${input.actionCamel} } from './${input.action}.ts';\n`;
 	const lastImport = current.lastIndexOf('\nimport ');
 	const lineEnd = lastImport === -1 ? 0 : current.indexOf('\n', lastImport + 1) + 1;
@@ -373,6 +380,7 @@ async function ensureModelsPackage(options: GenerateFeatureOptions): Promise<Wri
 async function ensureCatalogWiring(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
 	const persistenceDir = path.join(options.root, options.lint.layers.persistence, '..');
 	const serviceDir = path.join(options.root, options.lint.layers.serviceMongoose, '..');
+	const acceptanceDir = path.join(options.root, options.lint.acceptance, '..');
 	const modelsDir = path.dirname(path.join(options.root, options.lint.layers.models));
 	return [
 		...(await ensureDependency(path.join(persistenceDir, 'package.json'), '@cellix/event-bus-seedwork-node', 'workspace:*')),
@@ -384,6 +392,9 @@ async function ensureCatalogWiring(options: GenerateFeatureOptions): Promise<Wri
 		...(await ensureProjectReference(path.join(persistenceDir, 'tsconfig.json'), path.relative(persistenceDir, modelsDir))),
 		...(await ensureDependency(path.join(serviceDir, 'package.json'), `${options.lint.scope}/data-sources-mongoose-models`, 'workspace:*')),
 		...(await ensureProjectReference(path.join(serviceDir, 'tsconfig.json'), path.relative(serviceDir, modelsDir))),
+		...(await ensureDependency(path.join(acceptanceDir, 'package.json'), `${options.lint.scope}/service-mongoose`, 'workspace:*')),
+		...(await ensureDependency(path.join(acceptanceDir, 'package.json'), 'mongoose', 'catalog:')),
+		...(await ensureProjectReference(path.join(acceptanceDir, 'tsconfig.json'), path.relative(acceptanceDir, serviceDir))),
 	];
 }
 
