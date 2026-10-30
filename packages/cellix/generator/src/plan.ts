@@ -58,19 +58,9 @@ function backendFiles(options: GenerateFeatureOptions): GeneratedFile[] {
 			),
 		},
 		{ path: path.join(entityDir, `${entity}.aggregate.ts`), contents: aggregate({ entity, entityPascal, context, shape }) },
-		{ path: path.join(entityDir, `${entity}.aggregate.test.ts`), contents: aggregateTest({ entity, entityPascal, shape }) },
-		{
-			path: path.join(entityDir, `${entity}.value-objects.test.ts`),
-			contents: valueObjectTest({
-				entity,
-				entityPascal,
-				classNames: shape.fields.filter((field) => field.type === 'string').map((field) => field.pascal),
-			}),
-		},
 		{ path: path.join(entityDir, `${entity}.repository.ts`), contents: domainRepository(entity, entityPascal) },
 		{ path: path.join(entityDir, `${entity}.uow.ts`), contents: domainUnitOfWork(entity, entityPascal) },
 		{ path: path.join(root, lint.layers.models, 'models', entity, `${entity}.model.ts`), contents: model(entityPascal, shape) },
-		{ path: path.join(root, lint.layers.models, 'models', entity, `${entity}.model.test.ts`), contents: modelTest({ entity, entityPascal }) },
 		{ path: path.join(root, lint.layers.models, 'models', entity, `${entity}.seed.ts`), contents: seed(entity, entityPascal, shape) },
 		{ path: path.join(persistenceDir, `${entity}.domain-adapter.ts`), contents: domainAdapter({ entityPascal, contextPascal, scope, shape }) },
 		{ path: path.join(persistenceDir, `${entity}.repository.ts`), contents: persistenceRepository({ entity, entityPascal, contextPascal, scope, shape }) },
@@ -188,91 +178,4 @@ function filesForNested(entityDir: string, context: string, item: ShapeNested, p
 	}
 	if (item.kind === 'entity') files.push({ path: path.join(entityDir, `${item.name}.entity.ts`), contents: nestedEntity(item, context, permission) });
 	return files;
-}
-
-function aggregateTest(input: { entity: string; entityPascal: string; shape: Shape }): string {
-	const { entity, entityPascal, shape } = input;
-	if (shape.nested.length > 0) {
-		return `import { describe, expect, it } from 'vitest';
-import { ${entityPascal} } from './${entity}.aggregate.ts';
-
-describe('${entityPascal}', () => {
-	it('opens a new instance', () => {
-		expect(${entityPascal}.getNewInstance).toEqual(expect.any(Function));
-	});
-});
-`;
-	}
-	const fields = shape.fields.map((field) => `\t\t${field.name}: ${sampleValue(field.type)},`);
-	const props = ["\t\tid: 'example',", '\t\tcreatedAt: now,', '\t\tupdatedAt: now,', "\t\tschemaVersion: '1.0.0',", ...fields].join('\n');
-	const command = fields.join('\n');
-	const stringChecks = shape.fields
-		.filter((field) => field.type === 'string')
-		.map((field) => `\t\texpect(created.${field.name}.valueOf()).toBe('example');`)
-		.join('\n');
-	return `import { describe, expect, it } from 'vitest';
-import { PassportFactory } from '../../passport.ts';
-import { ${entityPascal} } from './${entity}.aggregate.ts';
-
-describe('${entityPascal}', () => {
-	it('builds a new instance', () => {
-		const now = new Date('2024-01-01T00:00:00.000Z');
-		const created = ${entityPascal}.getNewInstance(
-			{
-${props}
-			},
-			{
-${command}
-			},
-			PassportFactory.forSystem(),
-		);
-		expect(created).toBeInstanceOf(${entityPascal});
-${stringChecks}
-	});
-});
-`;
-}
-
-function valueObjectTest(input: { entity: string; entityPascal: string; classNames: string[] }): string {
-	const names = input.classNames.length > 0 ? input.classNames : [`${input.entityPascal}Name`];
-	const cases = names
-		.map(
-			(name) => `\tit('trims ${name}', () => {
-		expect(new ${name}('  example  ').valueOf()).toBe('example');
-		expect(() => new ${name}('   ')).toThrow();
-	});`,
-		)
-		.join('\n\n');
-	return `import { describe, expect, it } from 'vitest';
-import { ${names.join(', ')} } from './${input.entity}.value-objects.ts';
-
-describe('${input.entityPascal} value objects', () => {
-${cases}
-});
-`;
-}
-
-function modelTest(input: { entity: string; entityPascal: string }): string {
-	return `import { describe, expect, it } from 'vitest';
-import { ${input.entityPascal}ModelName } from './${input.entity}.model.ts';
-
-describe('${input.entityPascal} model', () => {
-	it('names the mongoose model', () => {
-		expect(${input.entityPascal}ModelName).toBe('${input.entityPascal}');
-	});
-});
-`;
-}
-
-function sampleValue(type: string): string {
-	if (type === 'boolean') return 'true';
-	if (type === 'number') return '1';
-	if (type === 'date') return "new Date('2024-01-01T00:00:00.000Z')";
-	if (type.endsWith('[]')) return `[${sampleValue(type.slice(0, -2))}]`;
-	const quoted = type
-		.split('|')
-		.map((part) => part.trim())
-		.find((part) => part.startsWith("'"));
-	if (quoted) return quoted;
-	return "'example'";
 }

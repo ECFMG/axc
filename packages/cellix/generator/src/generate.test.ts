@@ -340,7 +340,7 @@ describe('Cellix generator', () => {
 		expect(update).not.toContain('packages/axc/domain/src/index.ts');
 	});
 
-	it('scaffolds a slice without closing the rest of the tree', async () => {
+	it('narrows reads to the edit list and leaves writes open', async () => {
 		const root = await mkdtemp(path.join(tmpdir(), 'cellix-generate-'));
 		roots.push(root);
 		const previous = process.env.CELLIX_AGENT_ID;
@@ -358,7 +358,23 @@ describe('Cellix generator', () => {
 			);
 			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course' });
 			await generateFeature({ root, lint: defaultCellixLintConfig(), context: 'course', entity: 'course', operation: 'query', action: 'search', params: [parseField('title:string')], route: 'course', transport: 'rest' });
-			expect(loadSession(root, 'task-a')).toBeNull();
+			const session = loadSession(root, 'task-a');
+			expect(session?.write).toBeUndefined();
+			expect(session?.read).toEqual(
+				expect.arrayContaining([
+					'packages/axc/domain/src/domain/contexts/course/course/course.aggregate.ts',
+					'packages/axc/domain/src/domain/contexts/course/course/course.value-objects.ts',
+					'packages/axc/data-sources-mongoose-models/src/models/course/course.seed.ts',
+					'packages/axc/application-services/src/contexts/course/course/search.ts',
+					'packages/axc/persistence/src/datasources/readonly/course/course/course.read-repository.ts',
+					'packages/axc/rest/src/index.ts',
+					'packages/axc-verification/acceptance-api/src/infrastructure.ts',
+					'packages/axc-verification/acceptance-api/src/features/',
+					'apps/api/src/index.ts',
+					'apps/docs/',
+				]),
+			);
+			expect(session?.read?.some((entry) => entry.endsWith('package.json'))).toBe(false);
 		} finally {
 			if (previous === undefined) delete process.env.CELLIX_AGENT_ID;
 			else process.env.CELLIX_AGENT_ID = previous;
@@ -421,10 +437,8 @@ describe('Cellix generator', () => {
 		);
 		const backend = await generateFeature({ root, lint, context: 'course', entity: 'course', fields: [parseField('title:string')] });
 		expect(backend.map((file) => file.path).join('\n')).toContain('course.aggregate.ts');
-		expect(backend.map((file) => file.path).join('\n')).toContain('course.aggregate.test.ts');
-		expect(backend.map((file) => file.path).join('\n')).toContain('course.value-objects.test.ts');
+		expect(backend.map((file) => file.path).join('\n')).not.toContain('.test.ts');
 		expect(backend.map((file) => file.path).join('\n')).toContain('course.model.ts');
-		expect(backend.map((file) => file.path).join('\n')).toContain('course.model.test.ts');
 		expect(backend.map((file) => file.path).join('\n')).not.toContain('/search.ts');
 		const shell = await readFile(path.join(root, 'packages/axc/application-services/src/contexts/course/course/index.ts'), 'utf8');
 		expect(shell).toContain('export interface CourseApplicationService');
@@ -700,7 +714,6 @@ async function expectDomainTypechecks(root: string): Promise<void> {
 	await writeFile(path.join(root, 'packages/axc/domain/package.json'), '{ "name": "@axc/domain", "type": "module" }\n');
 	await mkdir(path.join(modules, '@cellix'), { recursive: true });
 	await symlink(path.join(repoRoot, 'packages/cellix/domain-seedwork'), path.join(modules, '@cellix/domain-seedwork'));
-	await symlink(path.join(repoRoot, 'node_modules/vitest'), path.join(modules, 'vitest'));
 	const valueObjects = path.join(modules, '@lucaspaganini/value-objects');
 	await mkdir(valueObjects, { recursive: true });
 	await writeFile(path.join(valueObjects, 'package.json'), `${JSON.stringify({ name: '@lucaspaganini/value-objects', type: 'module', exports: { '.': { types: './index.d.ts', default: './index.js' } } })}\n`);

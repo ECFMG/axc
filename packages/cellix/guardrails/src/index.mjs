@@ -7,7 +7,20 @@
 // report.mjs is the error block agent-check prints. Expected comes first.
 // verify-flag.mjs records a passing pnpm run verify.
 
-export { agentIdForRecord, agentIdFromEnv, agentIdFromSession, clearSession, ensureStartupSession, loadSession, noteActiveAgent, recordSession, sessionAllows, sessionAllowsRead, sessionFile } from './session.mjs';
+export {
+	agentIdForRecord,
+	agentIdFromEnv,
+	agentIdFromSession,
+	clearSession,
+	ensureStartupSession,
+	loadSession,
+	noteActiveAgent,
+	recordingAgentId,
+	recordSession,
+	sessionAllows,
+	sessionAllowsRead,
+	sessionFile,
+} from './session.mjs';
 export { checkFlag, workingTree, writeFlag } from './verify-flag.mjs';
 export { matchGlob, relativeToWorkspace } from './write/agent-access.mjs';
 export { decidePath, decideRead, decideShell, policyFromConfig } from './write/decide.mjs';

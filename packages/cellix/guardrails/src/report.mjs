@@ -10,8 +10,8 @@ export function errorBlock(lines) {
 	if (diagnostic.length > 0) {
 		const expected = diagnostic.filter((line) => line.includes('Expected:'));
 		const rest = diagnostic.filter((line) => !line.includes('Expected:'));
-		return [...expected, ...rest].slice(0, 24);
+		return [...expected, ...rest].slice(0, 2);
 	}
 	const wrapper = trimmed.filter((line) => /\[ELIFECYCLE\]|\bFAIL\b|^\s*Failed:/.test(line));
-	return [...new Set([...wrapper, ...trimmed.slice(-12)])].slice(-24);
+	return [...new Set([...wrapper, ...trimmed.slice(-2)])].slice(-2);
 }

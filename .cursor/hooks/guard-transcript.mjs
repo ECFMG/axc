@@ -215,8 +215,10 @@ function logNames(blockedReference, cwd) {
 	const logPath = newestCheckLog();
 	if (logPath === undefined) return false;
 	const log = readFileSync(logPath, 'utf8').replaceAll('\\', '/');
-	const absolute = resolve(cwd ?? process.cwd(), blockedReference).replaceAll('\\', '/');
-	return logAllowsPath(log, blockedReference) || logAllowsPath(log, absolute);
+	const workspace = cwd ?? process.cwd();
+	const absolute = resolve(workspace, blockedReference).replaceAll('\\', '/');
+	const relativePath = relative(workspace, absolute).split(sep).join('/');
+	return logAllowsPath(log, blockedReference) || logAllowsPath(log, absolute) || logAllowsPath(log, relativePath);
 }
 
 function newestCheckLog() {

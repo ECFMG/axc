@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { camel, pascal } from './names.ts';
+import { recordAgentSession } from './session-files.ts';
 import { normalizeShape } from './shape.ts';
 import {
 	contextApplication,
@@ -62,8 +63,6 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/data-sources-mongoose-models`, 'workspace:*')),
 		...(await ensureCatalogWiring(options)),
 		...(await ensureSeedExports(options)),
-		...(await ensureVitest(path.join(domainSrc, '..'))),
-		...(await ensureVitest(path.dirname(path.join(options.root, options.lint.layers.models)))),
 		...(await writeIfAbsent(path.join(persistenceSrc, 'datasources/domain', context, entity, 'index.ts'), entityPersistence(scope, entity, entityPascal))),
 		...(await ensureObjectMember(path.join(persistenceSrc, 'datasources/domain', context, 'index.ts'), {
 			importLine: `import * as ${entityPascal} from './${entity}/index.ts';\n`,
@@ -157,6 +156,7 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 			);
 		}
 	}
+	recordAgentSession(options, written);
 	return written;
 }
 
@@ -370,17 +370,6 @@ async function ensureModelsPackage(options: GenerateFeatureOptions): Promise<Wri
 	return [...(await writeIfAbsent(path.join(packageDir, 'package.json'), modelsPackageJson(packageName))), ...(await writeIfAbsent(path.join(packageDir, 'tsconfig.json'), modelsTsconfig()))];
 }
 
-const vitestConfig = `import { nodeConfig } from '@cellix/config-vitest';
-import { defineConfig, mergeConfig } from 'vitest/config';
-
-export default mergeConfig(
-	nodeConfig,
-	defineConfig({
-		// Add package-specific overrides here if needed
-	}),
-);
-`;
-
 async function ensureCatalogWiring(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
 	const persistenceDir = path.join(options.root, options.lint.layers.persistence, '..');
 	const serviceDir = path.join(options.root, options.lint.layers.serviceMongoose, '..');
@@ -424,15 +413,6 @@ async function ensureSeedExports(options: GenerateFeatureOptions): Promise<Writt
 	];
 }
 
-async function ensureVitest(packageDir: string): Promise<WrittenFile[]> {
-	return [
-		...(await ensureDevDependency(path.join(packageDir, 'package.json'), 'vitest', 'catalog:')),
-		...(await ensureDevDependency(path.join(packageDir, 'package.json'), '@cellix/config-vitest', 'workspace:*')),
-		...(await ensureScript(path.join(packageDir, 'package.json'), 'test', 'vitest run --silent --reporter=dot')),
-		...(await writeIfAbsent(path.join(packageDir, 'vitest.config.ts'), vitestConfig)),
-	];
-}
-
 async function ensureDependency(file: string, name: string, spec: string): Promise<WrittenFile[]> {
 	if (!(await exists(file))) return [];
 	const current = await readFile(file, 'utf8');
@@ -442,30 +422,6 @@ async function ensureDependency(file: string, name: string, spec: string): Promi
 	if (/"dependencies"\s*:\s*\{/.test(current)) next = current.replace(/"dependencies"\s*:\s*\{/, (open) => `${open}${entry},`);
 	else if (/"devDependencies"\s*:/.test(current)) next = current.replace(/"devDependencies"\s*:/, `"dependencies": {${entry}\n\t},\n\t"devDependencies":`);
 	else next = current.replace(/\}\s*$/, `,\n\t"dependencies": {${entry}\n\t}\n}`);
-	await writeFile(file, next);
-	return [{ path: file, contents: next }];
-}
-
-async function ensureDevDependency(file: string, name: string, spec: string): Promise<WrittenFile[]> {
-	if (!(await exists(file))) return [];
-	const current = await readFile(file, 'utf8');
-	if (current.includes(`"${name}"`)) return [];
-	const entry = `\n\t\t"${name}": "${spec}"`;
-	let next: string;
-	if (/"devDependencies"\s*:\s*\{/.test(current)) next = current.replace(/"devDependencies"\s*:\s*\{/, (open) => `${open}${entry},`);
-	else next = current.replace(/\}\s*$/, `,\n\t"devDependencies": {${entry}\n\t}\n}`);
-	await writeFile(file, next);
-	return [{ path: file, contents: next }];
-}
-
-async function ensureScript(file: string, name: string, command: string): Promise<WrittenFile[]> {
-	if (!(await exists(file))) return [];
-	const current = await readFile(file, 'utf8');
-	if (current.includes(`"${name}":`)) return [];
-	const entry = `\n\t\t"${name}": "${command}"`;
-	let next: string;
-	if (/"scripts"\s*:\s*\{/.test(current)) next = current.replace(/"scripts"\s*:\s*\{/, (open) => `${open}${entry},`);
-	else next = current.replace(/\}\s*$/, `,\n\t"scripts": {${entry}\n\t}\n}`);
 	await writeFile(file, next);
 	return [{ path: file, contents: next }];
 }

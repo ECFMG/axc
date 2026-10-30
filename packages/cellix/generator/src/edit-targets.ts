@@ -21,3 +21,20 @@ export function filesToEdit(options: GenerateFeatureOptions): string[] {
 	if (operation !== 'query') files.push(seed);
 	return files;
 }
+
+/** Files the timed agent may read. Barrels, manifests, and tsconfig stay off this list. A failing check names any other file. */
+export function readsForEdit(options: GenerateFeatureOptions): string[] {
+	const { lint, context, entity } = options;
+	const acceptance = lint.acceptance;
+	const behavior = [
+		`${lint.layers.domain}/domain/contexts/${context}/${entity}/${entity}.value-objects.ts`,
+		...(acceptance ? [`${acceptance}/infrastructure.ts`, `${acceptance}/cucumber-lifecycle-hooks.ts`, `${acceptance}/features/`, `${acceptance}/step-definitions/`] : []),
+		...(lint.apiComposition ? [lint.apiComposition] : []),
+		'apps/docs/',
+		'AGENTS.md',
+		'.agents/skills/cellix-architecture/SKILL.md',
+		'.agents/skills/cellix-architecture/REFERENCE.md',
+		'cellix-lint.config.json',
+	];
+	return [...new Set([...filesToEdit(options), ...behavior])];
+}

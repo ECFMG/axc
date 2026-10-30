@@ -48,7 +48,7 @@ pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdo
 pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
 ```
 
-`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. Write the type as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt`. The model sets those. `query` and `update` require `--transport rest` or `--transport graphql`. Rest requires `--route` and writes `/api/<route>`. Leave `--route` off for graphql. The field name is the function name. Do not pass `--return`. Rest adds `app.get` or `app.post`. GraphQL `generate --action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver when it is missing. A later update adds a mutation.
+`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. Write the type as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt`. The model sets those. `query` and `update` require `--transport rest` or `--transport graphql`. Rest requires `--route` and writes `/api/<route>`. Leave `--route` off for graphql. `--name` is kebab-case. Do not pass `--return`. Rest adds `app.get` or `app.post`. GraphQL `generate --action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver when it is missing. A later update adds a mutation.
 
 The generator prints the files to edit. Barrels are wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. Dependencies and tsconfig references are already added. Do not edit `package.json`. Do not run `pnpm install`. After `query`, `pnpm run agent-check -- pnpm run check` passes before you fill in behavior.
 
@@ -58,16 +58,16 @@ A query name cannot start with `create`, `update`, or `delete`. An update name c
 
 ## Before the first check
 
-Do not glob, grep, or read the tree first. Edit the files the generator printed, and a file a failing check names. Do not edit `package.json`. Do not run `pnpm install`.
+Do not glob, grep, or read the tree first. Edit the files the generator printed, and a file a failing check names. Other reads are closed. Do not edit `package.json`. Do not run `pnpm install`. Do not redirect a check into a file.
 
 - Pass an optional command field with a spread, and omit the property when the value is undefined.
 - Copy the `insertMany` line from the seed file. The cast is already on that line.
 
-`generate` writes unit tests for the aggregate, the value objects, and the model. They already pass. `query` and `update` add none. Write an assertion only when you implement a method. Run `pnpm run agent-check -- pnpm run check` while those behavior files change. Run `pnpm run agent-check -- pnpm run verify` once.
+Run `pnpm run agent-check -- pnpm run check` while those behavior files change. The wrapper prints one short failure. Run `pnpm run agent-check -- pnpm run verify` once.
 
 ## Checks
 
-While files change, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
+While files change, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it, and do not redirect it into a file. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
 Read the files the task names. Do not list the tree. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json`.
 

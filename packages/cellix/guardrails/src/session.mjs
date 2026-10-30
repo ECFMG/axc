@@ -84,6 +84,13 @@ export function agentIdForRecord(root, env = process.env) {
 	return '';
 }
 
+/** Env id, or the id sessionStart stored. A lone session file is not enough, so a shell that does not own the session leaves the tree open. */
+export function recordingAgentId(root, env = process.env) {
+	const existing = agentIdFromEnv(env);
+	if (existing) return existing;
+	return readActiveId(root);
+}
+
 /** Remove this agent's session file. .cellix/verify.json is left in place. */
 export function clearSession(root, agentId) {
 	const id = agentIdFromEnv({ CELLIX_AGENT_ID: agentId });

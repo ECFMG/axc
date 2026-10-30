@@ -1,6 +1,10 @@
+import { recordingAgentId, recordSession } from '@cellix/guardrails';
+import { readsForEdit } from './edit-targets.ts';
 import type { GeneratedFile, GenerateFeatureOptions } from './types.ts';
 
-/** query scaffolds files. It does not record a read or write list. ocom-write.config.json stays the map. */
-export function recordAgentSession(_options: GenerateFeatureOptions, _written: GeneratedFile[]): void {
-	// The startup session already holds the agent id. A slice does not close the other files.
+/** Narrow reads to the files this slice edits. Writes stay on ocom-write.config.json. No agent id: leave the tree open. */
+export function recordAgentSession(options: GenerateFeatureOptions, _written: GeneratedFile[]): void {
+	const id = recordingAgentId(options.root);
+	if (!id) return;
+	recordSession(options.root, id, { read: readsForEdit(options) });
 }

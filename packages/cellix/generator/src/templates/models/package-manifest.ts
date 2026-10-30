@@ -20,7 +20,6 @@ export function modelsPackageJson(packageName: string): string {
 		"build": "tsgo --build",
 		"typecheck": "tsgo --noEmit",
 		"watch": "tsgo --watch",
-		"test": "vitest run --silent --reporter=dot",
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
@@ -29,10 +28,8 @@ export function modelsPackageJson(packageName: string): string {
 	},
 	"devDependencies": {
 		"@cellix/config-typescript": "workspace:*",
-		"@cellix/config-vitest": "workspace:*",
 		"rimraf": "catalog:",
-		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"typescript": "catalog:"
 	}
 }
 `;
