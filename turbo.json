@@ -1,31 +1,36 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"ui": "tui",
+	"ui": "stream",
 	"globalPassThroughEnv": ["WORKTREE_NAME", "NODE_ENV", "PORT"],
 	"tasks": {
 		"build": {
 			"description": "Compiles TypeScript and bundles each package",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build"],
 			"inputs": ["src/**", "tsconfig*.json", "rolldown.config.ts", "scripts/**", "host.json", "package.json"],
 			"outputs": ["dist/**", "deploy/**", "*.zip", "*.tsbuildinfo", "build/**"]
 		},
 		"typecheck": {
 			"description": "Typechecks packages that expose a typecheck script",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build"],
 			"outputs": []
 		},
 		"test": {
 			"description": "Runs unit and integration tests",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build", "@cellix/config-vitest#build"],
 			"inputs": ["$TURBO_DEFAULT$", "**/*.test.ts"]
 		},
 		"test:arch": {
 			"description": "Runs architecture fitness tests",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build", "@cellix/config-vitest#build", "@cellix/archunit-tests#build"],
 			"outputs": []
 		},
 		"test:acceptance": {
 			"description": "Runs Serenity/Cucumber acceptance tests",
+			"outputLogs": "errors-only",
 			"dependsOn": ["^build", "@apps/api#build", "@cellix/serenity-framework#build", "@cellix/local-dev#build"],
 			"outputs": ["reports/**", "target/**"],
 			"cache": false

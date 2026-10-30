@@ -15,6 +15,8 @@
 	},
 	"scripts": {
 		"generate": "tsx src/cli.ts",
+		"query": "tsx src/cli.ts query",
+		"update": "tsx src/cli.ts update",
 		"lint": "biome lint",
 		"prebuild": "biome lint",
 		"build": "tsgo --build",
@@ -23,6 +25,7 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
+		"@cellix/guardrails": "workspace:*",
 		"@cellix/lint": "workspace:*"
 	},
 	"devDependencies": {

@@ -2,11 +2,10 @@ import type { Dirent } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-const featuresRoot = 'packages/axc-verification/acceptance-api/src/features';
-const stepsRoot = 'packages/axc-verification/acceptance-api/src/step-definitions';
-
 /** Every acceptance feature calls the running application. Steps do not keep a document array. */
-export async function checkAcceptanceShape(root: string): Promise<string[]> {
+export async function checkAcceptanceShape(root: string, acceptance: string): Promise<string[]> {
+	const featuresRoot = path.join(acceptance, 'features');
+	const stepsRoot = path.join(acceptance, 'step-definitions');
 	const features = await walk(path.join(root, featuresRoot), '.feature');
 	const violations: string[] = [];
 	for (const featurePath of features) {
@@ -27,11 +26,19 @@ export async function checkAcceptanceShape(root: string): Promise<string[]> {
 		if (!steps.includes('GetRequest.to(')) {
 			violations.push(`${stepsRelative} must call GetRequest.to so the scenario hits the running application.`);
 		}
-		if (/=\s*\[/.test(steps)) {
+		if (!steps.includes('LastResponse.body')) {
+			violations.push(`${stepsRelative} must read LastResponse.body() and check the row the application returned.`);
+		}
+		if (keepsDocumentArray(steps)) {
 			violations.push(`${stepsRelative} keeps a document array. Read the row from the database through the running application.`);
 		}
 	}
 	return violations;
+}
+
+/** An array of objects is a catalog. A list of strings is not. */
+function keepsDocumentArray(steps: string): boolean {
+	return /=\s*\[\s*\{/.test(steps.replaceAll('\n', ' '));
 }
 
 async function walk(directory: string, extension: string): Promise<string[]> {

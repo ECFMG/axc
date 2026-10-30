@@ -1,4 +1,9 @@
-import { rm } from 'node:fs/promises';
+import { agentIdFromEnv, clearSession } from '../packages/cellix/guardrails/src/index.mjs';
 
-await rm('.cellix/session.json', { force: true });
-await rm('.cellix/verify.json', { force: true });
+const agentId = agentIdFromEnv();
+if (!agentId) {
+	console.error('Set CELLIX_AGENT_ID to remove that agent session.');
+	process.exit(1);
+}
+
+clearSession(process.cwd(), agentId);

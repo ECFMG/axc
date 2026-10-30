@@ -1,0 +1,27 @@
+{
+	"name": "@cellix/guardrails",
+	"version": "1.0.0",
+	"description": "Session, write access, and verify flag for a Cellix agent harness",
+	"private": true,
+	"type": "module",
+	"files": [
+		"src"
+	],
+	"exports": {
+		".": {
+			"types": "./src/index.d.ts",
+			"default": "./src/index.mjs"
+		}
+	},
+	"scripts": {
+		"lint": "biome lint",
+		"test": "vitest run"
+	},
+	"devDependencies": {
+		"@cellix/config-typescript": "workspace:*",
+		"@cellix/config-vitest": "workspace:*",
+		"@types/node": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	}
+}

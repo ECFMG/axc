@@ -488,6 +488,12 @@ function checkPersistence(files: string[], domainFiles: string[]): string[] {
 			violations.push(...rejectUnexpectedTypes(file, content, allowed, 'cellix/persistence-index-types'));
 			continue;
 		}
+		if (relative === 'models-context.ts') {
+			if (!/export\s+type\s+ModelsContext\b/.test(content)) {
+				violations.push(report(file, 'cellix/persistence-models-context', 'missing ModelsContext', 'export type ModelsContext = ReturnType<typeof mongooseContextBuilder>'));
+			}
+			continue;
+		}
 		if (relative.includes('datasources/domain/') && relative.endsWith('.repository.ts')) {
 			violations.push(...checkPersistenceRepository(file, content, domainRepositories));
 			continue;
@@ -594,8 +600,8 @@ function checkReadRepository(file: string, content: string): string[] {
 	if (!new RegExp(`export\\s+interface\\s+${pascal}ReadRepository\\b`).test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository', `missing ${pascal}ReadRepository`, `export interface ${pascal}ReadRepository`));
 	}
-	if (!new RegExp(`export\\s+class\\s+${pascal}ReadRepositoryImpl\\b`).test(content)) {
-		violations.push(report(file, 'cellix/persistence-read-repository-class', `missing ${pascal}ReadRepositoryImpl`, `export class ${pascal}ReadRepositoryImpl`));
+	if (!new RegExp(`class\\s+${pascal}ReadRepositoryImpl\\b`).test(content)) {
+		violations.push(report(file, 'cellix/persistence-read-repository-class', `missing ${pascal}ReadRepositoryImpl`, `class ${pascal}ReadRepositoryImpl`));
 	}
 	if (!new RegExp(`export\\s+const\\s+get${pascal}ReadRepository\\b`).test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository-factory', `missing get${pascal}ReadRepository`, `export const get${pascal}ReadRepository`));
@@ -603,12 +609,14 @@ function checkReadRepository(file: string, content: string): string[] {
 	if (!/async\s+getById\s*\(/.test(content) || !/findById\(/.test(content) || !/toDomain\(/.test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository-get-by-id', 'missing getById through the data source', 'async getById uses this.mongoDataSource.findById then this.converter.toDomain'));
 	}
-	for (const name of content.matchAll(/^(?:export\s+)?const\s+(\w+)/gm)) {
-		if (name[1] !== `get${pascal}ReadRepository`) {
-			violations.push(report(file, 'cellix/persistence-read-repository-seed', `extra const ${name[1]}`, `only export const get${pascal}ReadRepository. A catalog seed does not live in the read repository`));
+	for (const name of content.matchAll(/^(?:export\s+)?const\s+(\w+)([^\n]*)/gm)) {
+		const ident = name[1] ?? '';
+		const rest = name[2] ?? '';
+		if (ident === `get${pascal}ReadRepository`) continue;
+		if (ident.endsWith('Seed') || /=\s*\[/.test(rest) || /\[\s*\]/.test(rest)) {
+			violations.push(report(file, 'cellix/persistence-read-repository-seed', `const ${ident}`, 'insert the model seed into the database. A helper const is fine. An array of documents is not'));
 		}
 	}
-	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-read-repository-no-helper'));
 	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}ReadRepository`]), 'cellix/persistence-read-repository-types'));
 	return violations;
 }

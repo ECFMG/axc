@@ -14,6 +14,7 @@
 			"!**/node_modules",
 			"!**/coverage",
 			"!**/.turbo",
+			"!**/.cellix",
 			"!**/*.tsbuildinfo",
 			"!**/generated.*",
 			"!**/*.generated.*",
@@ -30,6 +31,16 @@
 			"includes": ["tailwind.config.js", "craco.config.js"],
 			"linter": {
 				"enabled": false
+			}
+		},
+		{
+			"includes": ["packages/axc/application-services/src/contexts/**/index.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noEmptyInterface": "off"
+					}
+				}
 			}
 		}
 	]

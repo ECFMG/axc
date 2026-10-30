@@ -12,6 +12,13 @@ if (version.status !== 0) {
 	process.exit(0);
 }
 
-console.log('Snyk: running snyk test --all-projects --policy-path=.snyk (local CLI, no monitor, no --remote-repo-url)');
-const test = spawnSync('snyk', ['test', '--all-projects', '--policy-path=.snyk'], { stdio: 'inherit' });
+const test = spawnSync('snyk', ['test', '--all-projects', '--policy-path=.snyk'], { encoding: 'utf8' });
+if ((test.status ?? 1) === 0) {
+	console.log('Snyk: ok');
+	process.exit(0);
+}
+const output = `${test.stdout ?? ''}\n${test.stderr ?? ''}`;
+const summary = output.split('\n').filter((line) => /SNYK-|✗|Tested |introduced by|Upgrade|security/i.test(line));
+console.error(summary.length > 0 ? summary.join('\n') : output.slice(-4000));
+console.error('Snyk: failed');
 process.exit(test.status ?? 1);

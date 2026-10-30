@@ -16,6 +16,10 @@
 		"packages/cellix/*": {
 			"project": ["src/**/*.ts"]
 		},
+		"packages/cellix/guardrails": {
+			"entry": ["src/index.mjs"],
+			"project": ["src/**/*.{mjs,ts}"]
+		},
 		"packages/cellix/serenity-framework": {
 			"project": ["src/**/*.ts"],
 			"ignoreDependencies": ["@testing-library/react", "playwright", "react"]

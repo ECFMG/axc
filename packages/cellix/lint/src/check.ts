@@ -18,7 +18,7 @@ export async function checkCellixLint(input: CellixLintInput): Promise<string[]>
 	const visibility = await checkCellixVisibility({ root: input.root, lint });
 	const graph = await checkCellixGraph({ root: input.root, lint });
 	const biome = await checkCellixBiomeConfig({ root: input.root });
-	const acceptance = await checkAcceptanceShape(input.root);
+	const acceptance = await checkAcceptanceShape(input.root, lint.acceptance);
 	return [...structure, ...content, ...visibility, ...graph, ...biome, ...acceptance];
 }
 

@@ -1,55 +1,63 @@
 #!/usr/bin/env node
+// Cursor runs this before a file edit (preToolUse) and before a shell command (beforeShellExecution).
+// Stdout is one JSON line: {"permission":"allow"} or {"permission":"deny","user_message","agent_message"}.
+// The rules are packages/cellix/guardrails/src/write/decide.mjs. This file only reads Cursor's payload.
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { decidePath, decideShell, policyFromConfig } from './cellix-write-policy.mjs';
+import { logNames } from '../../packages/cellix/guardrails/src/budget.mjs';
+import { agentIdFromEnv, decidePath, decideShell, loadSession, policyFromConfig } from '../../packages/cellix/guardrails/src/index.mjs';
 
-let input = {};
-try {
-	input = JSON.parse(readFileSync(0, 'utf8') || '{}');
-} catch {
-	deny('Refusing a write because the hook payload was not JSON.');
+const payload = readPayload();
+const workspace = typeof payload.cwd === 'string' && payload.cwd ? payload.cwd : process.cwd();
+const policy = policyFromConfig(readAgentAccess(workspace), readSession(workspace));
+const toolInput = toolInputObject(payload.tool_input);
+const toolName = String(payload.tool_name ?? payload.toolName ?? '');
+const command = String(payload.command ?? toolInput.command ?? '');
+
+if (command && (!toolName || toolName === 'Shell')) {
+	const decision = decideShell(command, workspace, policy);
+	if (decision.ok || openedByFailure(decision, workspace)) reply(allow());
+	reply(decision);
 }
 
-const root = typeof input.cwd === 'string' && input.cwd ? input.cwd : process.cwd();
-const policy = policyFromConfig(loadConfig(root));
-const toolInput = parseToolInput(input.tool_input);
-const tool = String(input.tool_name ?? input.toolName ?? '');
-const command = String(input.command ?? toolInput.command ?? '');
-const writeTool = /write|strreplace|delete|edit|patch|notebook/i.test(tool);
-
-if (command && (!tool || tool === 'Shell')) {
-	const decision = decideShell(command, root, policy);
-	if (!decision.ok) deny(decision.message);
-	allow();
+const editedPaths = pathsInToolInput(toolInput, payload);
+if (isFileEdit(toolName) && editedPaths.length === 0) reply(deny('Refusing a write whose path could not be read.'));
+for (const file of editedPaths) {
+	const decision = decidePath(file, workspace, policy);
+	if (!decision.ok && !openedByFailure(decision, workspace)) reply(decision);
 }
+reply(allow());
 
-const paths = collectPaths(toolInput, input);
-if (writeTool && paths.length === 0) deny('Refusing a write whose path could not be read.');
-for (const file of paths) {
-	const decision = decidePath(file, root, policy);
-	if (!decision.ok) deny(decision.message);
-}
-allow();
-
-function allow() {
-	process.stdout.write(`${JSON.stringify({ permission: 'allow' })}\n`);
-	process.exit(0);
-}
-
-function deny(message) {
-	process.stdout.write(`${JSON.stringify({ permission: 'deny', user_message: message, agent_message: message })}\n`);
-	process.exit(0);
-}
-
-function loadConfig(start) {
+function readPayload() {
 	try {
-		return JSON.parse(readFileSync(path.join(start, 'ocom-write.config.json'), 'utf8'));
+		return JSON.parse(readFileSync(0, 'utf8') || '{}');
+	} catch {
+		reply(deny('Refusing a write because the hook payload was not JSON.'));
+	}
+}
+
+function readSession(workspace) {
+	try {
+		const agentId = agentIdFromEnv();
+		return agentId ? loadSession(workspace, agentId) : null;
+	} catch (error) {
+		reply(deny(error instanceof Error ? error.message : 'CELLIX_AGENT_ID is invalid.'));
+	}
+}
+
+function readAgentAccess(workspace) {
+	try {
+		return JSON.parse(readFileSync(path.join(workspace, 'ocom-write.config.json'), 'utf8'));
 	} catch {
 		return {};
 	}
 }
 
-function parseToolInput(value) {
+function isFileEdit(toolName) {
+	return /write|strreplace|delete|edit|patch|notebook/i.test(toolName);
+}
+
+function toolInputObject(value) {
 	if (typeof value === 'string') {
 		try {
 			const parsed = JSON.parse(value);
@@ -61,7 +69,7 @@ function parseToolInput(value) {
 	return value && typeof value === 'object' ? value : {};
 }
 
-function collectPaths(toolInput, payload) {
+function pathsInToolInput(toolInput, payload) {
 	const found = [];
 	const visit = (value) => {
 		if (!value || typeof value !== 'object') return;
@@ -73,4 +81,29 @@ function collectPaths(toolInput, payload) {
 	visit(toolInput);
 	if (typeof payload.file_path === 'string') found.push(payload.file_path);
 	return found;
+}
+
+function allow() {
+	return { ok: true, message: '' };
+}
+
+function openedByFailure(decision, workspace) {
+	if (decision.ok) return false;
+	const marker = ' is outside the ';
+	const at = decision.message.indexOf(marker);
+	if (at < 0 || !decision.message.includes('write session')) return false;
+	return logNames(decision.message.slice(0, at), workspace);
+}
+
+function deny(message) {
+	return { ok: false, message };
+}
+
+function reply(decision) {
+	if (decision.ok) {
+		process.stdout.write(`${JSON.stringify({ permission: 'allow' })}\n`);
+		process.exit(0);
+	}
+	process.stdout.write(`${JSON.stringify({ permission: 'deny', user_message: decision.message, agent_message: decision.message })}\n`);
+	process.exit(0);
 }

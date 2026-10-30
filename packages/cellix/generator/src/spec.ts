@@ -1,4 +1,4 @@
-export type FieldType = 'string' | 'boolean' | 'date' | 'number' | 'id';
+export type FieldType = string;
 
 export interface FieldSpec {
 	name: string;
@@ -13,7 +13,8 @@ export interface NestedSpec {
 	fields: NestedMember[];
 }
 
-const FIELD_TYPES = new Set<FieldType>(['string', 'boolean', 'date', 'number', 'id']);
+const FIELD_TYPES = new Set(['string', 'boolean', 'date', 'number', 'id']);
+const PASSED_TYPE = /^[A-Za-z0-9_|&[\]'".-]+$/;
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CAMEL = /^[a-z][A-Za-z0-9]*$/;
 
@@ -27,7 +28,7 @@ export function parseArgv(argv: string[]): ParsedArgs {
 	const values = new Map<string, string>();
 	const lists = new Map<string, string[]>();
 	const flags = new Set<string>();
-	const repeated = new Set(['field', 'permission', 'nested']);
+	const repeated = new Set(['field', 'param', 'permission', 'nested']);
 	const booleans = new Set(['resolver']);
 	for (let index = 0; index < argv.length; index += 1) {
 		const token = argv[index] ?? '';
@@ -119,8 +120,8 @@ function readField(token: string): FieldSpec {
 	const name = camel(token.slice(0, separator));
 	const type = token.slice(separator + 1);
 	if (!CAMEL.test(name) && name !== 'id') throw new Error(`Field name must be camelCase, received ${token}`);
-	if (!FIELD_TYPES.has(type as FieldType)) throw new Error(`Field type must be string, boolean, date, number, or id, received ${token}`);
-	return { name, type: type as FieldType };
+	if (!FIELD_TYPES.has(type) && !PASSED_TYPE.test(type)) throw new Error(`Field type must be a type name, received ${token}`);
+	return { name, type };
 }
 
 function parseNestedValue(entry: unknown): NestedSpec {

@@ -1,36 +1,49 @@
 {
 	"version": 1,
 	"hooks": {
+		"beforeReadFile": [
+			{
+				"command": "node .cursor/hooks/guard-transcript.mjs",
+				"failClosed": false
+			}
+		],
 		"preToolUse": [
 			{
 				"command": ".cursor/hooks/cellix-write-allow.mjs",
 				"matcher": "Write|StrReplace|Delete|EditNotebook|ApplyPatch",
 				"failClosed": true
+			},
+			{
+				"command": "node .cursor/hooks/guard-transcript.mjs",
+				"matcher": "Read|Grep|Glob|Shell",
+				"failClosed": false
 			}
 		],
 		"beforeShellExecution": [
 			{
 				"command": ".cursor/hooks/cellix-write-allow.mjs",
 				"failClosed": true
-			}
-		],
-		"afterShellExecution": [
+			},
 			{
-				"command": ".cursor/hooks/cellix-evidence.mjs"
+				"command": "node .cursor/hooks/guard-transcript.mjs",
+				"failClosed": false
 			}
 		],
 		"stop": [
 			{
-				"command": ".cursor/hooks/cellix-evidence.mjs",
+				"command": ".cursor/hooks/cellix-verify-stop.mjs",
 				"failClosed": true,
-				"loop_limit": 1
+				"loop_limit": 5
 			}
 		],
-		"subagentStop": [
+		"sessionEnd": [
 			{
-				"command": ".cursor/hooks/cellix-evidence.mjs",
-				"failClosed": true,
-				"loop_limit": 1
+				"command": ".cursor/hooks/cellix-session-end.mjs"
+			}
+		],
+		"sessionStart": [
+			{
+				"command": "node .cursor/hooks/cellix-session-start.mjs"
 			}
 		]
 	}

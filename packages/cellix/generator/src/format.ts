@@ -12,7 +12,7 @@ export function formatGeneratedFiles(files: { path: string; contents: string }[]
 	if (!existsSync(biome) || !existsSync(config)) {
 		throw new Error('Biome is not available to format generated files');
 	}
-	const result = spawnSync(biome, ['check', '--write', `--config-path=${config}`, ...formattable.map((file) => file.path)], {
+	const result = spawnSync(biome, ['check', '--write', '--skip=lint/suspicious/noEmptyInterface', `--config-path=${config}`, ...formattable.map((file) => file.path)], {
 		cwd: repo,
 		encoding: 'utf8',
 	});

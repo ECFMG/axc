@@ -72,9 +72,8 @@ function checkPersistenceFolder(file: string, content: string, persistenceRoot: 
 		if (!specifier.startsWith('.')) continue;
 		const resolved = toPosix(path.normalize(path.join(path.dirname(file), specifier)));
 		const resolvedRelative = relativePosix(resolved, persistenceRoot);
-		if (!resolvedRelative.startsWith(`${folder}/`)) {
-			violations.push(report(file, 'cellix/visibility-persistence-folder', specifier, `a sibling file in ${folder}/ or a package barrel`));
-		}
+		if (resolvedRelative.startsWith(`${folder}/`) || resolvedRelative === 'models-context.ts') continue;
+		violations.push(report(file, 'cellix/visibility-persistence-folder', specifier, `a sibling file in ${folder}/ or a package barrel`));
 	}
 	return violations;
 }

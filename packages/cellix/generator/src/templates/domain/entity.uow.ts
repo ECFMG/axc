@@ -1,0 +1,3 @@
+export function unitOfWork(entity: string, entityPascal: string): string {
+	return `import type { InitializedUnitOfWork, UnitOfWork } from '@cellix/domain-seedwork/unit-of-work';\nimport type { Passport } from '../../passport.ts';\nimport type { ${entityPascal}, ${entityPascal}Props } from './${entity}.aggregate.ts';\nimport type { ${entityPascal}Repository } from './${entity}.repository.ts';\n\nexport interface ${entityPascal}UnitOfWork extends UnitOfWork<Passport, ${entityPascal}Props, ${entityPascal}<${entityPascal}Props>, ${entityPascal}Repository<${entityPascal}Props>>, InitializedUnitOfWork<Passport, ${entityPascal}Props, ${entityPascal}<${entityPascal}Props>, ${entityPascal}Repository<${entityPascal}Props>> {}\n`;
+}
