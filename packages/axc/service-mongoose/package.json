@@ -23,6 +23,7 @@
 		"clean": "rimraf dist tsconfig.tsbuildinfo"
 	},
 	"dependencies": {
+		"@axc/data-sources-mongoose-models": "workspace:*",
 		"@cellix/mongoose-seedwork": "workspace:*",
 		"mongodb-memory-server-core": "catalog:",
 		"mongoose": "catalog:"

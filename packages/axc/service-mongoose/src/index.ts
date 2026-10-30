@@ -2,6 +2,8 @@ import type { MongooseSeedwork } from '@cellix/mongoose-seedwork';
 import { MongoMemoryServer } from 'mongodb-memory-server-core';
 import type { Connection } from 'mongoose';
 
+export { courseSeed } from '@axc/data-sources-mongoose-models';
+
 /** Mongoose context factories added in this package use the Cellix mongoose seedwork. */
 export type PersistenceContextFactory = MongooseSeedwork.MongooseContextFactory;
 

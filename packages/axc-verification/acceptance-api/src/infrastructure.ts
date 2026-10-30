@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createMemoryMongoServer } from '@axc/service-mongoose';
 import { AzureFunctionsLocalSettings } from '@cellix/local-dev';
 import { ApiInfrastructure } from '@cellix/serenity-framework/infrastructure/api';
 import { ProcessTestServer } from '@cellix/serenity-framework/servers';
@@ -25,13 +26,28 @@ export const apiServer = new ProcessTestServer({
 	portsToCloseBeforeStart: [7071],
 });
 
+let memoryMongo: ReturnType<typeof createMemoryMongoServer> | undefined;
+
+export async function stopMemoryMongo(): Promise<void> {
+	if (memoryMongo !== undefined) {
+		await memoryMongo.stop();
+		memoryMongo = undefined;
+	}
+}
+
 export const infrastructure = ApiInfrastructure.create({
-	setupEnvironment: () => {
+	setupEnvironment: async () => {
+		memoryMongo = createMemoryMongoServer();
+		await memoryMongo.start();
+		const uri = memoryMongo.getUri();
+		// biome-ignore lint/complexity/useLiteralKeys: ProcessEnv.MONGODB_URI is an index signature under noPropertyAccessFromIndexSignature
+		process.env['MONGODB_URI'] = uri;
 		new AzureFunctionsLocalSettings({
 			appDir: apiDir,
 			values: {
 				FUNCTIONS_WORKER_RUNTIME: 'node',
 				AzureWebJobsFeatureFlags: 'EnableWorkerIndexing',
+				MONGODB_URI: uri,
 			},
 		}).sync();
 	},
