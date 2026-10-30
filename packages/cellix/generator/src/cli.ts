@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { agentIdForRecord } from '@cellix/guardrails';
@@ -52,7 +53,14 @@ const feature: GenerateFeatureOptions = {
 	...(result !== undefined ? { result } : {}),
 	...(route !== undefined ? { route } : {}),
 };
+const before = spawnSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' });
 const files = await generateFeature(feature);
+const after = spawnSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' });
+const manifests = (after.stdout ?? '').split('\n').filter((line) => line.includes('package.json') && !(before.stdout ?? '').includes(line));
+if (manifests.length > 0) {
+	const install = spawnSync('pnpm', ['install'], { cwd: root, stdio: 'inherit' });
+	if (install.status !== 0) process.exit(install.status ?? 1);
+}
 const violations = (await checkCellixLint({ root, lint })).filter((violation) => files.some((file) => violation.includes(file.path.split(path.sep).join('/'))));
 if (violations.length > 0) {
 	console.error(violations.join('\n\n'));

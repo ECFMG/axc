@@ -95,7 +95,7 @@ That command writes a scaffold. It does not finish the feature. The text of each
 The command writes:
 
 1. Domain permissions, visa, passport (passport is created once), value objects, aggregate, repository interface, unit-of-work interface
-2. `models/<entity>/<entity>.model.ts`, `models/<entity>/<entity>.seed.ts`, and `packages/axc/data-sources-mongoose-models/package.json` when that manifest is missing. The package is `@axc/data-sources-mongoose-models`, private, `"type": "module"`, with `exports` pointing at `./dist`. Its `tsconfig.json` extends `@cellix/config-typescript/node`. Depend on `@cellix/mongoose-seedwork` and `mongoose`, plus a dependency only when a file in that package imports it.
+2. `models/<entity>/<entity>.model.ts`, `models/<entity>/<entity>.seed.ts`, and `packages/axc/data-sources-mongoose-models/package.json` when that manifest is missing. The package is `@axc/data-sources-mongoose-models`, private, `"type": "module"`, with `exports` pointing at `./dist`. Its `tsconfig.json` extends `@cellix/config-typescript/node`. It depends on `@cellix/mongoose-seedwork` and `mongoose`. Do not edit that manifest.
 3. Persistence domain adapter, repository, and `get<Entity>UnitOfWork`
 4. The read side: `datasources/readonly/<context>/<entity>/<entity>.data.ts`, `<entity>.read-repository.ts`, and the entity index that returns `<Entity>ReadRepo`. The `query` command adds `<name>` on that read repository. The `update` command writes the `withScopedTransaction` action. `create` and `delete` call `getNewInstance` inside `withScopedTransaction`.
 5. `contexts/<context>/<entity>/<action>.ts` and the context `index.ts`
@@ -122,7 +122,7 @@ When that behavior is in place, run `pnpm run verify`. That command runs Cellix 
 
 Start the application with `pnpm run dev` and call the endpoint. The rows come from the database.
 
-`models/<entity>/<entity>.seed.ts` exports `<camel>Seed`, one example document. Insert that document into the `<Pascal>` collection, then read it back through the running app. Do not copy it into a REST handler, a GraphQL resolver, a read repository, or a test that replaces the database with an in-memory list.
+`models/<entity>/<entity>.seed.ts` exports `<camel>Seed`, one example document. Copy the `insertMany` line from that file. The cast is already on that line. Do not copy the seed into a REST handler, a GraphQL resolver, a read repository, or a test that replaces the database with an in-memory list.
 
 A REST handler other than `index.ts` calls `applicationServices.<Context>.<Entity>.<action>(command)` inside the function that receives `applicationServices`. Context and Entity are PascalCase. Mentioning `applicationServices`, casting it, or calling a local list when the property is missing does not count. A REST file does not keep an array of documents.
 
@@ -210,7 +210,8 @@ The application folder name must exist as a directory under domain.
 
 ## Do not add
 
-- `helpers.ts`, `utils.ts`, `common.ts`, `shared.ts`, or a top-level `function` in a role file
+- `helpers.ts`, `utils.ts`, `common.ts`, `shared.ts`
+- A top-level `function` in a role file. A helper function, or a helper const that is not an array of documents, is fine in the read repository. A const whose name ends with `Seed` is not
 - A class with `execute()`
 - Mongoose above persistence and models
 - GraphQL or REST imports below the transport packages

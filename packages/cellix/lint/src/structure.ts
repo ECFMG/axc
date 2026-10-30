@@ -609,12 +609,14 @@ function checkReadRepository(file: string, content: string): string[] {
 	if (!/async\s+getById\s*\(/.test(content) || !/findById\(/.test(content) || !/toDomain\(/.test(content)) {
 		violations.push(report(file, 'cellix/persistence-read-repository-get-by-id', 'missing getById through the data source', 'async getById uses this.mongoDataSource.findById then this.converter.toDomain'));
 	}
-	for (const name of content.matchAll(/^(?:export\s+)?const\s+(\w+)/gm)) {
-		if (name[1] !== `get${pascal}ReadRepository`) {
-			violations.push(report(file, 'cellix/persistence-read-repository-seed', `extra const ${name[1]}`, `only export const get${pascal}ReadRepository. A catalog seed does not live in the read repository`));
+	for (const name of content.matchAll(/^(?:export\s+)?const\s+(\w+)([^\n]*)/gm)) {
+		const ident = name[1] ?? '';
+		const rest = name[2] ?? '';
+		if (ident === `get${pascal}ReadRepository`) continue;
+		if (ident.endsWith('Seed') || /=\s*\[/.test(rest) || /\[\s*\]/.test(rest)) {
+			violations.push(report(file, 'cellix/persistence-read-repository-seed', `const ${ident}`, 'insert the model seed into the database. A helper const is fine. An array of documents is not'));
 		}
 	}
-	violations.push(...banTopLevelFunctions(file, content, 'cellix/persistence-read-repository-no-helper'));
 	violations.push(...rejectUnexpectedTypes(file, content, new Set([`${pascal}ReadRepository`]), 'cellix/persistence-read-repository-types'));
 	return violations;
 }

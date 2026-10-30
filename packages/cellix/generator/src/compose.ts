@@ -60,6 +60,10 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 		...(await ensureDependency(path.join(applicationSrc, '..', 'package.json'), `${scope}/persistence`, 'workspace:*')),
 		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/domain`, 'workspace:*')),
 		...(await ensureDependency(path.join(persistenceSrc, '..', 'package.json'), `${scope}/data-sources-mongoose-models`, 'workspace:*')),
+		...(await ensureCatalogWiring(options)),
+		...(await ensureSeedExports(options)),
+		...(await ensureVitest(path.join(domainSrc, '..'))),
+		...(await ensureVitest(path.dirname(path.join(options.root, options.lint.layers.models)))),
 		...(await writeIfAbsent(path.join(persistenceSrc, 'datasources/domain', context, entity, 'index.ts'), entityPersistence(scope, entity, entityPascal))),
 		...(await ensureObjectMember(path.join(persistenceSrc, 'datasources/domain', context, 'index.ts'), {
 			importLine: `import * as ${entityPascal} from './${entity}/index.ts';\n`,
@@ -127,6 +131,7 @@ export async function wireComposition(options: GenerateFeatureOptions): Promise<
 		}
 		const apiIndex = path.join(options.root, options.lint.apiComposition);
 		if (await exists(apiIndex)) written.push(...(await spliceApi(apiIndex, { scope, entity, action, route: options.route ?? entity, mutation })));
+		written.push(...(await ensureApiWiring(options)));
 	}
 	if (routeOperation) {
 		const graphqlDir = path.join(options.root, options.lint.layers.graphql, 'schema/types');
@@ -365,6 +370,69 @@ async function ensureModelsPackage(options: GenerateFeatureOptions): Promise<Wri
 	return [...(await writeIfAbsent(path.join(packageDir, 'package.json'), modelsPackageJson(packageName))), ...(await writeIfAbsent(path.join(packageDir, 'tsconfig.json'), modelsTsconfig()))];
 }
 
+const vitestConfig = `import { nodeConfig } from '@cellix/config-vitest';
+import { defineConfig, mergeConfig } from 'vitest/config';
+
+export default mergeConfig(
+	nodeConfig,
+	defineConfig({
+		// Add package-specific overrides here if needed
+	}),
+);
+`;
+
+async function ensureCatalogWiring(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
+	const persistenceDir = path.join(options.root, options.lint.layers.persistence, '..');
+	const serviceDir = path.join(options.root, options.lint.layers.serviceMongoose, '..');
+	const acceptanceDir = path.join(options.root, options.lint.acceptance, '..');
+	const modelsDir = path.dirname(path.join(options.root, options.lint.layers.models));
+	return [
+		...(await ensureDependency(path.join(persistenceDir, 'package.json'), '@cellix/event-bus-seedwork-node', 'workspace:*')),
+		...(await ensureDependency(path.join(persistenceDir, 'package.json'), '@cellix/mongoose-seedwork', 'workspace:*')),
+		...(await ensureDependency(path.join(persistenceDir, 'package.json'), 'mongoose', 'catalog:')),
+		...(await ensureProjectReference(path.join(persistenceDir, 'tsconfig.json'), path.relative(persistenceDir, path.join(options.root, 'packages/cellix/event-bus-seedwork-node')))),
+		...(await ensureProjectReference(path.join(persistenceDir, 'tsconfig.json'), path.relative(persistenceDir, path.join(options.root, 'packages/cellix/mongoose-seedwork')))),
+		...(await ensureProjectReference(path.join(persistenceDir, 'tsconfig.json'), path.relative(persistenceDir, path.join(options.root, options.lint.layers.domain, '..')))),
+		...(await ensureProjectReference(path.join(persistenceDir, 'tsconfig.json'), path.relative(persistenceDir, modelsDir))),
+		...(await ensureDependency(path.join(serviceDir, 'package.json'), `${options.lint.scope}/data-sources-mongoose-models`, 'workspace:*')),
+		...(await ensureProjectReference(path.join(serviceDir, 'tsconfig.json'), path.relative(serviceDir, modelsDir))),
+		...(await ensureDependency(path.join(acceptanceDir, 'package.json'), `${options.lint.scope}/service-mongoose`, 'workspace:*')),
+		...(await ensureProjectReference(path.join(acceptanceDir, 'tsconfig.json'), path.relative(acceptanceDir, serviceDir))),
+	];
+}
+
+async function ensureApiWiring(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
+	const apiDir = path.join(options.root, path.dirname(options.lint.apiComposition), '..');
+	const persistenceDir = path.join(options.root, options.lint.layers.persistence, '..');
+	const serviceDir = path.join(options.root, options.lint.layers.serviceMongoose, '..');
+	return [
+		...(await ensureDependency(path.join(apiDir, 'package.json'), `${options.lint.scope}/persistence`, 'workspace:*')),
+		...(await ensureDependency(path.join(apiDir, 'package.json'), `${options.lint.scope}/service-mongoose`, 'workspace:*')),
+		...(await ensureDependency(path.join(apiDir, 'package.json'), 'mongoose', 'catalog:')),
+		...(await ensureProjectReference(path.join(apiDir, 'tsconfig.json'), path.relative(apiDir, persistenceDir))),
+		...(await ensureProjectReference(path.join(apiDir, 'tsconfig.json'), path.relative(apiDir, serviceDir))),
+	];
+}
+
+async function ensureSeedExports(options: GenerateFeatureOptions): Promise<WrittenFile[]> {
+	const entity = options.entity;
+	const seed = `${camel(entity)}Seed`;
+	const scope = options.lint.scope;
+	return [
+		...(await ensureExport(path.join(options.root, options.lint.layers.models, 'index.ts'), `export { ${seed} } from './models/${entity}/${entity}.seed.ts';\n`)),
+		...(await ensureExport(path.join(options.root, options.lint.layers.serviceMongoose, 'index.ts'), `export { ${seed} } from '${scope}/data-sources-mongoose-models';\n`)),
+	];
+}
+
+async function ensureVitest(packageDir: string): Promise<WrittenFile[]> {
+	return [
+		...(await ensureDevDependency(path.join(packageDir, 'package.json'), 'vitest', 'catalog:')),
+		...(await ensureDevDependency(path.join(packageDir, 'package.json'), '@cellix/config-vitest', 'workspace:*')),
+		...(await ensureScript(path.join(packageDir, 'package.json'), 'test', 'vitest run --silent --reporter=dot')),
+		...(await writeIfAbsent(path.join(packageDir, 'vitest.config.ts'), vitestConfig)),
+	];
+}
+
 async function ensureDependency(file: string, name: string, spec: string): Promise<WrittenFile[]> {
 	if (!(await exists(file))) return [];
 	const current = await readFile(file, 'utf8');
@@ -376,6 +444,52 @@ async function ensureDependency(file: string, name: string, spec: string): Promi
 	else next = current.replace(/\}\s*$/, `,\n\t"dependencies": {${entry}\n\t}\n}`);
 	await writeFile(file, next);
 	return [{ path: file, contents: next }];
+}
+
+async function ensureDevDependency(file: string, name: string, spec: string): Promise<WrittenFile[]> {
+	if (!(await exists(file))) return [];
+	const current = await readFile(file, 'utf8');
+	if (current.includes(`"${name}"`)) return [];
+	const entry = `\n\t\t"${name}": "${spec}"`;
+	let next: string;
+	if (/"devDependencies"\s*:\s*\{/.test(current)) next = current.replace(/"devDependencies"\s*:\s*\{/, (open) => `${open}${entry},`);
+	else next = current.replace(/\}\s*$/, `,\n\t"devDependencies": {${entry}\n\t}\n}`);
+	await writeFile(file, next);
+	return [{ path: file, contents: next }];
+}
+
+async function ensureScript(file: string, name: string, command: string): Promise<WrittenFile[]> {
+	if (!(await exists(file))) return [];
+	const current = await readFile(file, 'utf8');
+	if (current.includes(`"${name}":`)) return [];
+	const entry = `\n\t\t"${name}": "${command}"`;
+	let next: string;
+	if (/"scripts"\s*:\s*\{/.test(current)) next = current.replace(/"scripts"\s*:\s*\{/, (open) => `${open}${entry},`);
+	else next = current.replace(/\}\s*$/, `,\n\t"scripts": {${entry}\n\t}\n}`);
+	await writeFile(file, next);
+	return [{ path: file, contents: next }];
+}
+
+async function ensureProjectReference(file: string, reference: string): Promise<WrittenFile[]> {
+	if (!(await exists(file))) return [];
+	const posix = reference.split(path.sep).join('/');
+	const current = await readFile(file, 'utf8');
+	if (current.includes(`"${posix}"`)) return [];
+	const entry = `{ "path": "${posix}" }`;
+	let next: string;
+	if (/"references"\s*:\s*\[/.test(current)) next = current.replace(/"references"\s*:\s*\[/, (open) => `${open}${entry}, `);
+	else next = current.replace(/\}\s*$/, `,\n\t"references": [${entry}]\n}`);
+	await writeFile(file, next);
+	return [{ path: file, contents: next }];
+}
+
+async function ensureExport(file: string, line: string): Promise<WrittenFile[]> {
+	if (!(await exists(file))) return [];
+	const current = await readFile(file, 'utf8');
+	if (current.includes(line.trim())) return [];
+	const contents = current.endsWith('\n') ? `${current}${line}` : `${current}\n${line}`;
+	await writeFile(file, contents);
+	return [{ path: file, contents }];
 }
 
 async function writeIfAbsent(file: string, contents: string): Promise<WrittenFile[]> {

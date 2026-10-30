@@ -48,25 +48,34 @@ pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdo
 pnpm --filter @cellix/generator update -- --context <context> --subdomain <subdomain> --name <name> --param <param>:<type> --transport graphql
 ```
 
-`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. The type is written as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt` as `--field`. The model sets those timestamps. `query` and `update` require `--transport rest` or `--transport graphql`. `--route` is required for rest and writes `/api/<route>`. Leave `--route` off for graphql. The field name is the function name. Do not pass `--return`. `--transport rest` adds `app.get` or `app.post` in the REST index. `--transport graphql` on `generate` with `--action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver file when it is missing. A later update adds a mutation.
+`--subdomain` is the subdomain name. `--field` and `--param` are `name:type`. Write the type as given (`string`, `string[]`, `'draft'|'archived'`). Quote a value that contains `[]` or `|`. Do not pass `createdAt` or `updatedAt`. The model sets those. `query` and `update` require `--transport rest` or `--transport graphql`. Rest requires `--route` and writes `/api/<route>`. Leave `--route` off for graphql. The field name is the function name. Do not pass `--return`. Rest adds `app.get` or `app.post`. GraphQL `generate --action` writes that mutation's resolver. A GraphQL `query` writes the query field, and the resolver when it is missing. A later update adds a mutation.
 
-The generator prints the files to edit. The barrels are already wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. The generator adds every dependency those files import, including `@axc/persistence` on application services and `@lucaspaganini/value-objects` on `@axc/domain`. After `query`, `pnpm run agent-check -- pnpm run check` passes before you fill in behavior. If that check cannot find one of those modules, run `pnpm install` once.
+The generator prints the files to edit. Barrels are wired. Do not open them. Leave the read method and the update assignment blank until you fill them in. Do not copy `<camel>Seed` into a handler or a read repository. Dependencies and tsconfig references are already added. Do not edit `package.json`. Do not run `pnpm install`. After `query`, `pnpm run agent-check -- pnpm run check` passes before you fill in behavior.
 
-`packages/axc/data-sources-mongoose-models/package.json` is required. Write it when it is missing so the workspace can resolve `@axc/data-sources-mongoose-models`. Match the other `@axc` packages: `"private": true`, `"type": "module"`, `"exports"` pointing at `./dist`. Depend on `@cellix/mongoose-seedwork` and `mongoose`. Add a dependency only when a file in that package imports it. A `tsconfig.json` that extends `@cellix/config-typescript/node`, with `rootDir` `src` and `outDir` `dist`, belongs next to that manifest. Do not add a second config style.
+The generator writes `packages/axc/data-sources-mongoose-models` when that package is missing. Do not write that manifest yourself.
 
 A query name cannot start with `create`, `update`, or `delete`. An update name cannot start with `query`, `get`, or `find`. Do not `generate` a create action unless the task writes rows through that action.
 
+## Before the first check
+
+Do not glob, grep, or read the tree first. Edit the files the generator printed, and a file a failing check names. Do not edit `package.json`. Do not run `pnpm install`.
+
+- Pass an optional command field with a spread, and omit the property when the value is undefined.
+- Copy the `insertMany` line from the seed file. The cast is already on that line.
+
+`generate` writes unit tests for the aggregate, the value objects, and the model. They already pass. `query` and `update` add none. Write an assertion only when you implement a method. Run `pnpm run agent-check -- pnpm run check` while those behavior files change. Run `pnpm run agent-check -- pnpm run verify` once.
+
 ## Checks
 
-While the files are still changing, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
+While files change, run `pnpm run agent-check -- pnpm run check`. That is lint and typecheck. The wrapper prints the next edit. Do not pipe it to `tail` or `head`. The `Expected` line is the shape to restore. Read a file again only when that line names it.
 
-Read the files the task names. Do not list the tree or cat a directory. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json` to open another one.
+Read the files the task names. Do not list the tree. A new subdomain starts with `generate`. Add `query` only after that backend exists. Any other change edits the existing file. Do not assign `CELLIX_AGENT_ID`. A denial names a wrong path. Do not edit `ocom-write.config.json`.
 
-When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Finish only after it prints `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
+When the behavior is in place, run `pnpm run agent-check -- pnpm run verify` once. Stop only after `CELLIX_VERIFY=pass`. Do not write `.cellix/verify.json`.
 
-Acceptance owns the database process. In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and set `process.env['MONGODB_URI']` to `getUri()` inside `setupEnvironment`, before the API process spawns. Stop the server in `afterAll`. `apps/api/src/index.ts` reads `process.env['MONGODB_URI']`. It does not construct `MongoMemoryServer`. Insert `<camel>Seed` from `packages/axc/service-mongoose/src/index.ts`. Re-export it from the models index: `export { <camel>Seed } from './models/<entity>/<entity>.seed.ts'`. Persistence does not import the seed.
+In `packages/axc-verification/acceptance-api/src/infrastructure.ts`, call `createMemoryMongoServer` from `@axc/service-mongoose`, await `start()`, and set `process.env['MONGODB_URI']` to `getUri()` inside `setupEnvironment`, before the API process spawns. Stop the server in `afterAll`. That dependency is already declared. `apps/api/src/index.ts` reads `process.env['MONGODB_URI']`. It does not construct `MongoMemoryServer`. Import `<camel>Seed` from `@axc/service-mongoose` and insert it with the line from the seed file. The generator already re-exports `<camel>Seed`. Persistence does not import the seed.
 
-Do not glob a whole tree. Do not search without a directory. Read the file you are changing. The open trees are `packages/axc`, `packages/axc-verification`, `apps/api/src`, and `apps/docs`. Also open `AGENTS.md`, this skill, the task requirements file, and `cellix-lint.config.json`. Open `REFERENCE.md` only when a check error names a file role. `node_modules`, `packages/cellix`, `scripts`, `.cursor`, and `pnpm-lock.yaml` are closed.
+Do not glob a whole tree. Do not search without a directory. Open trees: `packages/axc`, `packages/axc-verification`, `apps/api/src`, `apps/docs`, `AGENTS.md`, this skill, the task requirements, and `cellix-lint.config.json`. Open `REFERENCE.md` only when a check names a file role. Closed: `node_modules`, `packages/cellix`, `scripts`, `.cursor`, `pnpm-lock.yaml`.
 
 ## Writes
 

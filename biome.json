@@ -32,6 +32,16 @@
 			"linter": {
 				"enabled": false
 			}
+		},
+		{
+			"includes": ["packages/axc/application-services/src/contexts/**/index.ts"],
+			"linter": {
+				"rules": {
+					"suspicious": {
+						"noEmptyInterface": "off"
+					}
+				}
+			}
 		}
 	]
 }

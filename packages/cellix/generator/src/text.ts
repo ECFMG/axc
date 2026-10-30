@@ -93,7 +93,7 @@ export function persistenceModelsImport(depth: number): string {
 }
 
 export function httpReadArgument(shape: { fields: ShapeField[]; nested: ShapeNested[] }): string {
-	const parts = [...shape.fields.map((field) => `${field.name}: ${httpValue(field)}`), ...shape.nested.map((item) => `${item.camel}: {} as ${structuralType(item)}`)];
+	const parts = [...shape.fields.map((field) => httpSpread(field)), ...shape.nested.map((item) => `${item.camel}: {} as ${structuralType(item)}`)];
 	if (parts.length === 0) return "{ id: c.req.query('id') ?? '' }";
 	return `{ ${parts.join(', ')} }`;
 }
@@ -105,10 +105,10 @@ function mongooseScalar(type: string): string {
 	return 'String';
 }
 
-function httpValue(field: ShapeField): string {
+function httpSpread(field: ShapeField): string {
 	const raw = `c.req.query('${field.name}')`;
-	if (field.type === 'boolean') return `${raw} === undefined ? undefined : ${raw} === 'true'`;
-	if (field.type === 'number') return `${raw} === undefined ? undefined : Number(${raw})`;
-	if (field.type === 'date') return `${raw} === undefined ? undefined : new Date(${raw})`;
-	return raw;
+	if (field.type === 'boolean') return `...(${raw} === undefined ? {} : { ${field.name}: ${raw} === 'true' })`;
+	if (field.type === 'number') return `...(${raw} === undefined ? {} : { ${field.name}: Number(${raw}) })`;
+	if (field.type === 'date') return `...(${raw} === undefined ? {} : { ${field.name}: new Date(${raw}) })`;
+	return `...(${raw} === undefined ? {} : { ${field.name}: ${raw} })`;
 }
